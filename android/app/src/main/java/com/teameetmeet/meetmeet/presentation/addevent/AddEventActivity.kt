@@ -16,5 +16,20 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
         super.onCreate(savedInstanceState)
 
         binding.vm = viewModel
+
+        setTopAppBar()
+
+    private fun setTopAppBar() {
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.menu_save -> {
+                    viewModel.eventSave()
+                    true
+                }
+
+                else -> false
+            }
+        }
+    }
     }
 }
