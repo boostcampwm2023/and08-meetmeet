@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/layout_app_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/top_app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:menu="@menu/top_app_bar_add_event"
+                app:navigationIcon="@drawable/ic_arrow_back"
+                app:title="@string/add_event" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_event_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="42dp"
+            android:hint="@string/event_name"
+            android:maxLength="64"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_app_bar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_event_name"
+                style="@style/medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_event_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/event_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tf_event_name">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_event_time"
+                style="@style/medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_event_alarm"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/event_alarm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tf_event_time">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_event_alarm"
+                style="@style/medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_event_color_title"
+            style="@style/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/event_color"
+            app:layout_constraintStart_toStartOf="@id/tf_event_alarm"
+            app:layout_constraintTop_toBottomOf="@id/tf_event_alarm" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_event_color_red"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            app:cardBackgroundColor="@color/event_color_red"
+            app:cardCornerRadius="28dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
+            app:layout_constraintStart_toEndOf="@id/tv_event_color_title"
+            app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_event_color_orange"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="9dp"
+            app:cardBackgroundColor="@color/event_color_orange"
+            app:cardCornerRadius="28dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
+            app:layout_constraintStart_toEndOf="@id/cv_event_color_red"
+            app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_event_color_green"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="9dp"
+            app:cardBackgroundColor="@color/event_color_green"
+            app:cardCornerRadius="28dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
+            app:layout_constraintStart_toEndOf="@id/cv_event_color_orange"
+            app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_event_color_blue"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="9dp"
+            app:cardBackgroundColor="@color/event_color_blue"
+            app:cardCornerRadius="28dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
+            app:layout_constraintStart_toEndOf="@id/cv_event_color_green"
+            app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cv_event_color_purple"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="9dp"
+            app:cardBackgroundColor="@color/event_color_purple"
+            app:cardCornerRadius="28dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
+            app:layout_constraintStart_toEndOf="@id/cv_event_color_blue"
+            app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_event_repeat"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/event_repeat"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_event_color_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_event_repeat"
+                style="@style/medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_event_memo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:hint="@string/event_memo"
+            android:maxLength="255"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tf_event_repeat">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_event_memo"
+                style="@style/medium"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/tv_event_open_title"
+            style="@style/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
+            android:checked="true"
+            android:text="@string/open_state"
+            app:layout_constraintStart_toStartOf="@id/tf_event_memo"
+            app:layout_constraintTop_toBottomOf="@id/tf_event_memo" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/tv_event_join_title"
+            style="@style/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:checked="true"
+            android:text="@string/join_state"
+            app:layout_constraintStart_toStartOf="@id/tv_event_open_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_event_open_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

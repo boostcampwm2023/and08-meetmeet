@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MeetMeetApp</string>
+    <string name="save">저장</string>
+    <string name="add_event">일정 추가</string>
+    <string name="event_name">일정 이름</string>
+    <string name="join_state">참가 여부</string>
+    <string name="open_state">공개 여부</string>
+    <string name="event_memo">일정 메모</string>
+    <string name="event_repeat">일정 반복</string>
+    <string name="event_color">일정 색</string>
+    <string name="event_alarm">일정 알림</string>
+    <string name="event_time">일정 시간</string>
 </resources>
