@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="item"
+            type="com.teameetmeet.meetmeet.presentation.model.CalendarItem" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,6 +20,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:text="@{item.getDay()}"
             tools:text="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

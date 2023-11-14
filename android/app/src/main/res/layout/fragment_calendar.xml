@@ -34,7 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:local_date="@{vm.selectedDate}"
+            app:local_date="@{vm.currentDate.date}"
             tools:text="2023년 11월" />
 
         <ImageButton
@@ -132,7 +132,8 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendar_rv_calendar"
-            local_date="@{vm.selectedDate}"
+            app:day_list="@{vm.daysInMonth}"
+            app:vm="@{vm}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"

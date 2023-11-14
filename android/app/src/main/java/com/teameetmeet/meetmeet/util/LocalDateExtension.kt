@@ -10,7 +10,7 @@ fun LocalDate.toYearMonth(): String {
     return format(formatter)
 }
 
-fun LocalDate.getDayListInMonth(): List<CalendarItem> {
+fun LocalDate.getDayListInMonth(calendarItem: CalendarItem? = null): List<CalendarItem> {
     val dayList = mutableListOf<CalendarItem>()
     val lastDay = YearMonth.from(this).lengthOfMonth()
     val firstDayOfWeek = withDayOfMonth(1).dayOfWeek.value
@@ -18,7 +18,11 @@ fun LocalDate.getDayListInMonth(): List<CalendarItem> {
         dayList.add(CalendarItem())
     }
     for (day in 1..lastDay) {
-        dayList.add(CalendarItem(date = LocalDate.of(year, month, day)))
+        if (calendarItem != null && calendarItem.date?.dayOfMonth == day) {
+            dayList.add(calendarItem)
+        } else {
+            dayList.add(CalendarItem(date = LocalDate.of(year, month, day)))
+        }
     }
     return dayList
 }
