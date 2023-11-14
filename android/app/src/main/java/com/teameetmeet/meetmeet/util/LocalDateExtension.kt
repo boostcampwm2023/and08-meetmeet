@@ -18,7 +18,7 @@ fun LocalDate.getDayListInMonth(): List<CalendarItem> {
         dayList.add(CalendarItem())
     }
     for (day in 1..lastDay) {
-        dayList.add(CalendarItem(day = "$day", dayOfYear = dayOfYear))
+        dayList.add(CalendarItem(date = LocalDate.of(year, month, day)))
     }
     return dayList
 }

@@ -31,7 +31,7 @@ class CalendarAdapter :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: CalendarItem, position: Int) {
-            binding.itemCalendarTvDate.text = item.day
+            binding.itemCalendarTvDate.text = item.getDay()
             if ((position + 1) % 7 == 6) {
                 binding.itemCalendarTvDate.setTextColor(
                     ContextCompat.getColor(
@@ -60,7 +60,7 @@ class CalendarAdapter :
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<CalendarItem>() {
             override fun areItemsTheSame(oldItem: CalendarItem, newItem: CalendarItem): Boolean {
-                return oldItem.dayOfYear == newItem.dayOfYear
+                return oldItem.date == newItem.date
             }
 
             override fun areContentsTheSame(oldItem: CalendarItem, newItem: CalendarItem): Boolean {

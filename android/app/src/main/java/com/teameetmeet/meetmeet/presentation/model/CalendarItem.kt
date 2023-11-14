@@ -1,8 +1,13 @@
 package com.teameetmeet.meetmeet.presentation.model
 
+import java.time.LocalDate
+
 
 data class CalendarItem(
-    val day: String = "",
+    val date: LocalDate? = null,
     val events: List<String> = emptyList(),
-    val dayOfYear: Int = 0
-)
+) {
+    fun getDay() : String {
+        return date?.dayOfMonth?.toString() ?: ""
+    }
+}
