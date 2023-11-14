@@ -5,11 +5,18 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import androidx.activity.viewModels
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.model.EventNotification
+import com.teameetmeet.meetmeet.data.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.databinding.ActivityAddEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +35,9 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
         setTextChangeListener()
         setDatePicker()
         setTimePicker()
+        setNotificationOptions()
+        setRepeatTermOptions()
+    }
 
     private fun setTopAppBar() {
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
@@ -131,5 +141,70 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
             viewModel.setEventEndTime(endTimePicker.hour, endTimePicker.minute)
         }
     }
+
+    private fun setNotificationOptions() {
+        val notificationOptions = EventNotification.values()
+        val adapter = object : ArrayAdapter<EventNotification>(
+            this, R.layout.item_text_field, notificationOptions
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                getItem(position)?.let {
+                    (view as TextView).text = getString(it.stringResId)
+                }
+                return view
+            }
+        }
+
+        (binding.tfEventAlarm.editText as? AutoCompleteTextView)?.setText(
+            getString(viewModel.eventNotification.value.stringResId), false
+        )
+
+        (binding.tfEventAlarm.editText as? AutoCompleteTextView)?.let { tv ->
+            tv.setAdapter(adapter)
+            adapter.setDropDownViewResource(R.layout.item_text_field)
+
+            tv.setOnItemClickListener { _, _, position, _ ->
+                val selectedNotification = adapter.getItem(position)
+                selectedNotification?.let {
+                    viewModel.setEventNotification(it)
+                    val selectedNotificationText = getString(it.stringResId)
+                    tv.setText(selectedNotificationText, false)
+                }
+            }
+        }
+    }
+
+    private fun setRepeatTermOptions() {
+        val repeatTermOptions = EventRepeatTerm.values()
+        val adapter = object : ArrayAdapter<EventRepeatTerm>(
+            this, R.layout.item_text_field, repeatTermOptions
+        ) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                getItem(position)?.let {
+                    (view as TextView).text = getString(it.stringResId)
+                }
+                return view
+            }
+        }
+
+        (binding.tfEventRepeat.editText as? AutoCompleteTextView)?.setText(
+            getString(viewModel.eventRepeatTerm.value.stringResId), false
+        )
+
+        (binding.tfEventRepeat.editText as? AutoCompleteTextView)?.let { tv ->
+            tv.setAdapter(adapter)
+            adapter.setDropDownViewResource(R.layout.item_text_field)
+
+            tv.setOnItemClickListener { _, _, position, _ ->
+                val selectedRepeatOption = adapter.getItem(position)
+                selectedRepeatOption?.let {
+                    viewModel.setEventRepeatTerm(it)
+                    val selectedNotificationText = getString(it.stringResId)
+                    tv.setText(selectedNotificationText, false)
+                }
+            }
+        }
     }
 }
