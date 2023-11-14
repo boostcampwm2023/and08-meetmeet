@@ -4,10 +4,24 @@
     <string name="add_event">일정 추가</string>
     <string name="event_name">일정 이름</string>
     <string name="join_state">참가 여부</string>
-    <string name="open_state">공개 여부</string>
+    <string name="visible_state">공개 여부</string>
     <string name="event_memo">일정 메모</string>
     <string name="event_repeat">일정 반복</string>
     <string name="event_color">일정 색</string>
     <string name="event_alarm">일정 알림</string>
     <string name="event_time">일정 시간</string>
+    <string name="start_date">시작 날짜</string>
+    <string name="end_date">종료 날짜</string>
+    <string name="start_time">시작 시각</string>
+    <string name="end_time">종료 시각</string>
+    <string name="notification_none">알림 없음</string>
+    <string name="notification_ten_minutes_before">10분 전</string>
+    <string name="notification_one_hour_before">1시간 전</string>
+    <string name="notification_one_day_before">1일 전</string>
+    <string name="notification_one_week_before">일주일 전</string>
+    <string name="repeat_term_none">반복 없음</string>
+    <string name="repeat_term_day">매일 반복</string>
+    <string name="repeat_term_week">매주 반복</string>
+    <string name="repeat_term_month">매월 반복</string>
+    <string name="repeat_term_year">매년 반복</string>
 </resources>
