@@ -2,10 +2,11 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    
+
     <color name="event_color_red">#FF6565</color>
     <color name="event_color_orange">#FFC165</color>
     <color name="event_color_green">#7BFF65</color>
     <color name="event_color_blue">#65A3FF</color>
     <color name="event_color_purple">#D765FF</color>
+    <color name="event_color_checked">#6750A4</color>
 </resources>

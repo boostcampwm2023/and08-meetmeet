@@ -175,66 +175,67 @@
                     app:layout_constraintStart_toStartOf="@id/tf_event_alarm"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_alarm" />
 
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_event_color_red"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
+                <RadioGroup
+                    android:id="@+id/radio_group_event_color"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    app:cardBackgroundColor="@color/event_color_red"
-                    app:cardCornerRadius="28dp"
+                    android:checkedButton="@id/radio_red"
+                    android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
                     app:layout_constraintStart_toEndOf="@id/tv_event_color_title"
-                    app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+                    app:layout_constraintTop_toTopOf="@id/tv_event_color_title">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_event_color_orange"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="9dp"
-                    app:cardBackgroundColor="@color/event_color_orange"
-                    app:cardCornerRadius="28dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
-                    app:layout_constraintStart_toEndOf="@id/cv_event_color_red"
-                    app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+                    <RadioButton
+                        android:id="@+id/radio_red"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="9dp"
+                        android:background="@drawable/radio_button_event_color"
+                        android:backgroundTint="@color/event_color_red"
+                        android:backgroundTintMode="multiply"
+                        android:button="@android:color/transparent" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_event_color_green"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="9dp"
-                    app:cardBackgroundColor="@color/event_color_green"
-                    app:cardCornerRadius="28dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
-                    app:layout_constraintStart_toEndOf="@id/cv_event_color_orange"
-                    app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+                    <RadioButton
+                        android:id="@+id/radio_orange"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="9dp"
+                        android:background="@drawable/radio_button_event_color"
+                        android:backgroundTint="@color/event_color_orange"
+                        android:backgroundTintMode="multiply"
+                        android:button="@android:color/transparent" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_event_color_blue"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="9dp"
-                    app:cardBackgroundColor="@color/event_color_blue"
-                    app:cardCornerRadius="28dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
-                    app:layout_constraintStart_toEndOf="@id/cv_event_color_green"
-                    app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+                    <RadioButton
+                        android:id="@+id/radio_green"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="9dp"
+                        android:background="@drawable/radio_button_event_color"
+                        android:backgroundTint="@color/event_color_green"
+                        android:backgroundTintMode="multiply"
+                        android:button="@android:color/transparent" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_event_color_purple"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="9dp"
-                    app:cardBackgroundColor="@color/event_color_purple"
-                    app:cardCornerRadius="28dp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
-                    app:layout_constraintStart_toEndOf="@id/cv_event_color_blue"
-                    app:layout_constraintTop_toTopOf="@id/tv_event_color_title" />
+                    <RadioButton
+                        android:id="@+id/radio_blue"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="9dp"
+                        android:background="@drawable/radio_button_event_color"
+                        android:backgroundTint="@color/event_color_blue"
+                        android:backgroundTintMode="multiply"
+                        android:button="@android:color/transparent" />
+
+                    <RadioButton
+                        android:id="@+id/radio_purple"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_marginStart="9dp"
+                        android:background="@drawable/radio_button_event_color"
+                        android:backgroundTint="@color/event_color_purple"
+                        android:backgroundTintMode="multiply"
+                        android:button="@android:color/transparent" />
+                </RadioGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tf_event_repeat"
