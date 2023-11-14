@@ -11,10 +11,11 @@ import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 
 class CalendarFragment() : BaseFragment<FragmentCalendarBinding>(R.layout.fragment_calendar) {
 
-    val viewModel: CalendarViewModel by viewModels()
+    private val viewModel: CalendarViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.vm = viewModel
         super.onViewCreated(view, savedInstanceState)
+        binding.vm = viewModel
+        binding.calendarRvCalendar.adapter = CalendarAdapter()
     }
 }

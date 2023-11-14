@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#FF0000FF</color>
     <color name="red">#FFFF0000</color>
+    <color name="calendar_background_purple">#E8DEF8</color>
 </resources>

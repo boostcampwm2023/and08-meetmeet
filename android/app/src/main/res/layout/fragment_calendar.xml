@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.calendar.CalendarViewModel" />
@@ -53,8 +52,8 @@
 
         <TextView
             android:id="@+id/calendar_tv_day_monday"
-            style="@style/small.bold"
-            android:layout_width="wrap_content"
+            style="@style/caption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/calendar_day_of_week_monday"
@@ -65,8 +64,8 @@
 
         <TextView
             android:id="@+id/calendar_tv_day_tuesday"
-            style="@style/small.bold"
-            android:layout_width="wrap_content"
+            style="@style/caption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_tuesday"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
@@ -76,8 +75,8 @@
 
         <TextView
             android:id="@+id/calendar_tv_day_wednesday"
-            style="@style/small.bold"
-            android:layout_width="wrap_content"
+            style="@style/caption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_wednesday"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
@@ -87,8 +86,8 @@
 
         <TextView
             android:id="@+id/calendar_tv_day_thursday"
-            style="@style/small.bold"
-            android:layout_width="wrap_content"
+            style="@style/caption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_thursday"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
@@ -98,8 +97,8 @@
 
         <TextView
             android:id="@+id/calendar_tv_day_friday"
-            style="@style/small.bold"
-            android:layout_width="wrap_content"
+            style="@style/caption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_friday"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
@@ -109,8 +108,8 @@
 
         <TextView
             android:id="@+id/calendar_tv_day_saturday"
-            style="@style/small.bold"
-            android:layout_width="wrap_content"
+            style="@style/caption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_saturday"
             android:textColor="@color/blue"
@@ -121,8 +120,8 @@
 
         <TextView
             android:id="@+id/calendar_tv_day_sunday"
-            style="@style/small.bold"
-            android:layout_width="wrap_content"
+            style="@style/caption"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_sunday"
             android:textColor="@color/red"
@@ -133,6 +132,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendar_rv_calendar"
+            local_date="@{vm.selectedDate}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
