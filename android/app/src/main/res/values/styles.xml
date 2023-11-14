@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="large">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:lineSpacingExtra">2sp</item>
+
+    </style>
+    <style name="large.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="medium">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:lineSpacingExtra">-2sp</item>
+    </style>
+    <style name="medium.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="small">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+    </style>
+    <style name="small.bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="caption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:lineSpacingExtra">-1sp</item>
+    </style>
+</resources>
