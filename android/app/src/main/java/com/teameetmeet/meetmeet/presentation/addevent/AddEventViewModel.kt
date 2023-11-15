@@ -51,8 +51,8 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
     private val _isJoin: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isJoin: StateFlow<Boolean> = _isJoin
 
-    fun setEventName(name: String) {
-        _eventName.update { name }
+    fun setEventName(name: CharSequence?) {
+        _eventName.update { name.toString() }
     }
 
     fun setEventDate(start: Long, end: Long) {
@@ -75,8 +75,8 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
         _eventRepeatTerm.update { repeatTerm }
     }
 
-    fun setEventMemo(memo: String) {
-        _eventMemo.update { memo }
+    fun setEventMemo(memo: CharSequence?) {
+        _eventMemo.update { memo.toString() }
     }
 
     fun setVisibleState(isChecked: Boolean) {

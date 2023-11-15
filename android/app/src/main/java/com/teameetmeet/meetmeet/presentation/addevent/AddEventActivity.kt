@@ -2,8 +2,6 @@ package com.teameetmeet.meetmeet.presentation.addevent
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +30,6 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
         binding.vm = viewModel
 
         setTopAppBar()
-        setTextChangeListener()
         setDatePicker()
         setTimePicker()
         setNotificationOptions()
@@ -52,40 +49,19 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
         }
     }
 
-    private fun setTextChangeListener() {
-        binding.etEventName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.setEventName(binding.etEventName.text.toString())
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-                binding.etEventName.text?.let { name ->
-                    if (name.isEmpty()) {
-                        binding.tfEventName.error = getString(R.string.add_event_err_event_name)
-                    } else {
-                        binding.tfEventName.error = null
                     }
                 }
             }
-        })
-
-        binding.etEventMemo.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.setEventMemo(binding.etEventMemo.text.toString())
+            setNavigationOnClickListener {
+                finish()
             }
-
-            override fun afterTextChanged(p0: Editable?) {}
-        })
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setDatePicker() {
         val datePicker =
-            MaterialDatePicker.Builder.dateRangePicker().setTitleText(getString(R.string.add_event_title))
+            MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText(getString(R.string.add_event_title))
                 .setSelection(
                     viewModel.eventDate.value
                 ).build()
@@ -112,12 +88,14 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
     private fun setTimePicker() {
         val startTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(viewModel.eventStartTime.value.hour)
-            .setMinute(viewModel.eventStartTime.value.minute).setTitleText(getString(R.string.add_event_err_start_time))
+            .setMinute(viewModel.eventStartTime.value.minute)
+            .setTitleText(getString(R.string.add_event_err_start_time))
             .build()
 
         val endTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(viewModel.eventEndTime.value.hour)
-            .setMinute(viewModel.eventEndTime.value.minute).setTitleText(getString(R.string.add_event_err_end_time)).build()
+            .setMinute(viewModel.eventEndTime.value.minute)
+            .setTitleText(getString(R.string.add_event_err_end_time)).build()
 
         binding.etEventStartTime.setOnTouchListener { _, e ->
             if (e.action == MotionEvent.ACTION_UP) {

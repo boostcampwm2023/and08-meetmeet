@@ -51,7 +51,6 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="20dp"
                     android:hint="@string/add_event_name"
-                    android:maxLength="64"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -60,7 +59,9 @@
                         android:id="@+id/et_event_name"
                         style="@style/medium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:maxLength="64"
+                        android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setEventName(p0)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
