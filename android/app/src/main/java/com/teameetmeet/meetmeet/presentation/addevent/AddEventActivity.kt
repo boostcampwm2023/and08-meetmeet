@@ -37,24 +37,21 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
     }
 
     private fun setTopAppBar() {
-        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.menu_save -> {
-                    viewModel.eventSave()
-                    true
-                }
-
-                else -> false
-            }
-        }
-    }
-
+        with(binding.topAppBar) {
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.menu_save -> {
+                        viewModel.eventSave()
+                        true
                     }
+
+                    else -> false
                 }
             }
             setNavigationOnClickListener {
                 finish()
             }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
