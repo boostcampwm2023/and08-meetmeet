@@ -24,4 +24,12 @@
     <string name="repeat_term_week">매주 반복</string>
     <string name="repeat_term_month">매월 반복</string>
     <string name="repeat_term_year">매년 반복</string>
+
+    <string name="calendar_day_of_week_monday">월</string>
+    <string name="calendar_day_of_week_tuesday">화</string>
+    <string name="calendar_day_of_week_wednesday">수</string>
+    <string name="calendar_day_of_week_thursday">목</string>
+    <string name="calendar_day_of_week_friday">금</string>
+    <string name="calendar_day_of_week_saturday">토</string>
+    <string name="calendar_day_of_week_sunday">일</string>
 </resources>
