@@ -13,14 +13,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MeetMeetApp"
         tools:targetApi="31">
+
         <activity
-            android:name=".presentation.home.HomeActivity"
+            android:name=".presentation.login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".presentation.home.HomeActivity"
+            android:exported="true" />
+
         <activity android:name=".presentation.addevent.AddEventActivity" />
     </application>
 
