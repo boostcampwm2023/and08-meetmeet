@@ -27,8 +27,8 @@
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
                 app:menu="@menu/top_app_bar_add_event"
-                app:navigationIcon="@drawable/ic_arrow_back"
-                app:title="@string/add_event" />
+                app:navigationIcon="@drawable/ic_nav_pre"
+                app:title="@string/add_event_title" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/event_name"
+                    android:hint="@string/add_event_name"
                     android:maxLength="64"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/start_date"
+                    android:hint="@string/add_event_start_date"
                     app:layout_constraintEnd_toStartOf="@id/tf_event_end_time"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_name">
@@ -91,7 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="16dp"
-                    android:hint="@string/end_date"
+                    android:hint="@string/add_event_end_date"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tf_event_start_time"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_name">
@@ -111,7 +111,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:hint="@string/start_time"
+                    android:hint="@string/add_event_start_time"
                     app:layout_constraintEnd_toStartOf="@id/tf_event_end_time"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_start_date">
@@ -130,7 +130,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:hint="@string/end_time"
+                    android:hint="@string/add_event_end_time"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tf_event_start_time"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_start_date">
@@ -151,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/event_alarm"
+                    android:hint="@string/add_event_alarm"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_start_time">
@@ -171,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginTop="20dp"
-                    android:text="@string/event_color"
+                    android:text="@string/add_event_color"
                     app:layout_constraintStart_toStartOf="@id/tf_event_alarm"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_alarm" />
 
@@ -244,7 +244,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/event_repeat"
+                    android:hint="@string/add_event_repeat"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_event_color_title">
@@ -263,7 +263,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="20dp"
-                    android:hint="@string/event_memo"
+                    android:hint="@string/add_event_memo"
                     android:maxLength="255"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -286,7 +286,7 @@
                     android:layout_marginTop="20dp"
                     android:checked="@{vm.isVisible}"
                     android:onCheckedChanged="@{(bv, check) -> vm.setVisibleState(check)}"
-                    android:text="@string/visible_state"
+                    android:text="@string/add_event_visible_state"
                     app:layout_constraintStart_toStartOf="@id/tf_event_memo"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_memo" />
 
@@ -298,7 +298,7 @@
                     android:layout_marginTop="5dp"
                     android:checked="@{vm.isJoin}"
                     android:onCheckedChanged="@{(bv, check) -> vm.setJoinState(check)}"
-                    android:text="@string/join_state"
+                    android:text="@string/add_event_join_state"
                     app:layout_constraintStart_toStartOf="@id/tv_event_open_title"
                     app:layout_constraintTop_toBottomOf="@id/tv_event_open_title" />
 

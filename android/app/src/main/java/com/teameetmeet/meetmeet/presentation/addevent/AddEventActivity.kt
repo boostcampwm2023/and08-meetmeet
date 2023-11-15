@@ -63,7 +63,7 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
             override fun afterTextChanged(p0: Editable?) {
                 binding.etEventName.text?.let { name ->
                     if (name.isEmpty()) {
-                        binding.tfEventName.error = "일정 이름을 입력해 주세요."
+                        binding.tfEventName.error = getString(R.string.add_event_err_event_name)
                     } else {
                         binding.tfEventName.error = null
                     }
@@ -85,7 +85,7 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
     @SuppressLint("ClickableViewAccessibility")
     private fun setDatePicker() {
         val datePicker =
-            MaterialDatePicker.Builder.dateRangePicker().setTitleText(getString(R.string.add_event))
+            MaterialDatePicker.Builder.dateRangePicker().setTitleText(getString(R.string.add_event_title))
                 .setSelection(
                     viewModel.eventDate.value
                 ).build()
@@ -112,12 +112,12 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
     private fun setTimePicker() {
         val startTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(viewModel.eventStartTime.value.hour)
-            .setMinute(viewModel.eventStartTime.value.minute).setTitleText("시작 시간을 지정해 주세요.")
+            .setMinute(viewModel.eventStartTime.value.minute).setTitleText(getString(R.string.add_event_err_start_time))
             .build()
 
         val endTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(viewModel.eventEndTime.value.hour)
-            .setMinute(viewModel.eventEndTime.value.minute).setTitleText("종료 시간을 지정해 주세요.").build()
+            .setMinute(viewModel.eventEndTime.value.minute).setTitleText(getString(R.string.add_event_err_end_time)).build()
 
         binding.etEventStartTime.setOnTouchListener { _, e ->
             if (e.action == MotionEvent.ACTION_UP) {
