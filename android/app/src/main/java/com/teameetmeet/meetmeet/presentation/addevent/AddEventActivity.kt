@@ -134,11 +134,11 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
             }
         }
 
-        (binding.tfEventAlarm.editText as? AutoCompleteTextView)?.setText(
+        (binding.tfEventAlarm.editText as AutoCompleteTextView).setText(
             getString(viewModel.eventNotification.value.stringResId), false
         )
 
-        (binding.tfEventAlarm.editText as? AutoCompleteTextView)?.let { tv ->
+        (binding.tfEventAlarm.editText as AutoCompleteTextView).let { tv ->
             tv.setAdapter(adapter)
             adapter.setDropDownViewResource(R.layout.item_text_field)
 
@@ -167,11 +167,11 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
             }
         }
 
-        (binding.tfEventRepeat.editText as? AutoCompleteTextView)?.setText(
+        (binding.tfEventRepeat.editText as AutoCompleteTextView).setText(
             getString(viewModel.eventRepeatTerm.value.stringResId), false
         )
 
-        (binding.tfEventRepeat.editText as? AutoCompleteTextView)?.let { tv ->
+        (binding.tfEventRepeat.editText as AutoCompleteTextView).let { tv ->
             tv.setAdapter(adapter)
             adapter.setDropDownViewResource(R.layout.item_text_field)
 
