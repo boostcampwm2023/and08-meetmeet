@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_nav_graph"
     app:startDestination="@id/entranceFragment">
 
     <fragment
         android:id="@+id/entranceFragment"
         android:name="com.teameetmeet.meetmeet.presentation.login.entrance.EntranceFragment"
-        android:label="EntranceFragment" />
+        android:label="EntranceFragment"
+        tools:layout="@layout/fragment_entrance">
+        <action
+            android:id="@+id/action_entranceFragment_to_self_login_fragment"
+            app:destination="@id/self_login_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/self_login_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.login.selflogin.SelfLoginFragment"
+        android:label="self_login_fragment"
+        tools:layout="@layout/fragment_self_login" />
 </navigation>
