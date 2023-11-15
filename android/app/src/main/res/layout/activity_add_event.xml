@@ -82,7 +82,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
-                        android:text="@{vm.eventDate.first.toString()}" />
+                        long_date_text="@{vm.eventDate.first}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -103,7 +103,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
-                        android:text="@{vm.eventDate.second.toString()}" />
+                        long_date_text="@{vm.eventDate.second}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -265,7 +265,6 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="20dp"
                     android:hint="@string/add_event_memo"
-                    android:maxLength="255"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tf_event_repeat">
@@ -274,7 +273,9 @@
                         android:id="@+id/et_event_memo"
                         style="@style/medium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:maxLength="255"
+                        android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setEventMemo(p0)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
