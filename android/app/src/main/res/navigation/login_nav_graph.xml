@@ -13,10 +13,18 @@
         <action
             android:id="@+id/action_entranceFragment_to_self_login_fragment"
             app:destination="@id/self_login_fragment" />
+        <action
+            android:id="@+id/action_entranceFragment_to_sign_up_fragment"
+            app:destination="@id/sign_up_fragment" />
     </fragment>
     <fragment
         android:id="@+id/self_login_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.login.selflogin.SelfLoginFragment"
         android:label="self_login_fragment"
         tools:layout="@layout/fragment_self_login" />
+    <fragment
+        android:id="@+id/sign_up_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.login.signup.SignUpFragment"
+        tools:layout="@layout/fragment_sign_up"
+        android:label="sign_up_fragment" />
 </navigation>

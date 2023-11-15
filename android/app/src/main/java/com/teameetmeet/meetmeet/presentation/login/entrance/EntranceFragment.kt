@@ -28,7 +28,9 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
         }
 
         binding.loginTvAppSignUp.setOnClickListener {
-
+            findNavController().navigate(
+                EntranceFragmentDirections.actionEntranceFragmentToSignUpFragment()
+            )
         }
     }
 }
