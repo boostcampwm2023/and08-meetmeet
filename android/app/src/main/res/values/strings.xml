@@ -46,4 +46,6 @@
     <string name="login_kakao_login_button_description">kakao login button</string>
     <string name="login_app_login">로그인</string>
     <string name="login_app_sign_up">회원가입</string>
+    <string name="login_app_password">비밀번호</string>
+    <string name="login_app_email">이메일</string>
 </resources>
