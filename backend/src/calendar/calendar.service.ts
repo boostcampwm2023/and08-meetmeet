@@ -12,19 +12,20 @@ export class CalendarService {
   }
 
   createEvent(createEventDto: CreateEventDto) {
-    const { title, startDate, endDate, isAllday, isJoin, isVisible, memo } =
+    const { title, startDate, endDate, isJoinable, isVisible, memo } =
       createEventDto;
 
+    // TODO: repeat event일 경우
     const event: IEvent = {
       id: this.events.length + 1,
       title,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
-      isAllday,
-      isJoin,
+      isJoinable,
       isVisible,
       memo,
     };
+
     this.events.push(event);
   }
 }
