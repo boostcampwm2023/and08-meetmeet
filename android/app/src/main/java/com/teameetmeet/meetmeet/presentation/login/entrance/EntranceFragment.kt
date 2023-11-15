@@ -1,7 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.login.entrance
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
@@ -9,10 +8,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEntranceBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
@@ -48,10 +43,11 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.kakaoLoginEvent.collect {
-                    when(it) {
+                    when (it) {
                         is KakaoLoginEvent.Success -> {
                             navigateToHomeActivity(it.id)
                         }
+
                         is KakaoLoginEvent.Failure -> {
                             showMessage(it.message)
                         }

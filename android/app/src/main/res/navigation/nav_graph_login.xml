@@ -7,12 +7,12 @@
     <fragment
         android:id="@+id/entrance_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.login.entrance.EntranceFragment"
-        android:label="EntranceFragment" >
+        android:label="EntranceFragment">
         <action
             android:id="@+id/entrance_fragment_to_home_activity"
             app:destination="@id/home_activity"
             app:popUpTo="@id/entrance_fragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
     <activity
         android:id="@+id/home_activity"

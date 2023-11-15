@@ -14,5 +14,5 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideLoginApi() : LoginApi = FakeLoginApi()
+    fun provideLoginApi(): LoginApi = FakeLoginApi()
 }

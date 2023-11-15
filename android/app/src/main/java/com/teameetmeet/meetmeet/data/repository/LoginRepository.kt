@@ -13,7 +13,7 @@ class LoginRepository @Inject constructor(
 ) {
     fun loginKakao(id: Long): Flow<Int> {
         return flowOf(true)
-            .map{
+            .map {
                 loginApi.loginKakao(kakaoLoginRequest = KakaoLoginRequest(id))
             }.catch {
                 throw it
