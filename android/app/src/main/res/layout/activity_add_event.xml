@@ -182,6 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:checkedButton="@id/radio_red"
+                    android:onCheckedChanged="@{(group, id) -> vm.setEventColor(group, id)}"
                     android:orientation="horizontal"
                     app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
                     app:layout_constraintStart_toEndOf="@id/tv_event_color_title"

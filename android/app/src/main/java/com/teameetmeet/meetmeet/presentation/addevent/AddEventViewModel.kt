@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
+import android.widget.RadioGroup
 import androidx.core.util.Pair
 import androidx.lifecycle.ViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -40,6 +41,10 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
         MutableStateFlow(EventNotification.NONE)
     val eventNotification: StateFlow<EventNotification> = _eventNotification
 
+    private val _eventColor: MutableStateFlow<EventColor> =
+        MutableStateFlow(EventColor.RED)
+    val eventColor: StateFlow<EventColor> = _eventColor
+
     private val _eventRepeatTerm: MutableStateFlow<EventRepeatTerm> =
         MutableStateFlow(EventRepeatTerm.NONE)
     val eventRepeatTerm: StateFlow<EventRepeatTerm> = _eventRepeatTerm
@@ -72,6 +77,11 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
         _eventNotification.update { notification }
     }
 
+    fun setEventColor(radioGroup: RadioGroup, id: Int) {
+        val index = radioGroup.indexOfChild(radioGroup.findViewById(id))
+        _eventColor.update { EventColor.values()[index] }
+    }
+
     fun setEventRepeatTerm(repeatTerm: EventRepeatTerm) {
         _eventRepeatTerm.update { repeatTerm }
     }
@@ -97,6 +107,7 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
             eventStartTime : ${_eventStartTime.value}
             eventEndTime : ${_eventEndTime.value}
             eventNoti : ${_eventNotification.value}
+            eventColor : ${_eventColor.value}
             eventRepeatTerm : ${_eventRepeatTerm.value}
             eventMemo : ${_eventMemo.value}
             isVisible : ${_isVisible.value}
