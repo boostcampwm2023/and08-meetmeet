@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.login.LoginActivity">
+
+        <ImageView
+            android:id="@+id/login_iv_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/login_app_logo_description"
+            android:src="@drawable/ic_launcher_foreground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3" />
+
+        <ImageButton
+            android:id="@+id/login_ib_kakao_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:background="@null"
+            android:contentDescription="@string/login_kakao_login_button_description"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/button_kakao_login"
+            app:layout_constraintBottom_toTopOf="@id/login_tv_app_sign_up"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/login_tv_app_login"
+            style="@style/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:text="@string/login_app_login"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/login_tv_app_sign_up"
+            app:layout_constraintStart_toStartOf="@id/login_ib_kakao_login"
+            app:layout_constraintTop_toBottomOf="@id/login_iv_logo" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:dividerColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@id/login_tv_app_sign_up"
+            app:layout_constraintEnd_toStartOf="@id/login_tv_app_sign_up"
+            app:layout_constraintStart_toEndOf="@id/login_tv_app_login"
+            app:layout_constraintTop_toTopOf="@id/login_tv_app_sign_up" />
+
+        <TextView
+            android:id="@+id/login_tv_app_sign_up"
+            style="@style/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:text="@string/login_app_sign_up"
+            app:layout_constraintEnd_toEndOf="@id/login_ib_kakao_login"
+            app:layout_constraintStart_toEndOf="@id/login_tv_app_login"
+            app:layout_constraintTop_toTopOf="@id/login_tv_app_login" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
