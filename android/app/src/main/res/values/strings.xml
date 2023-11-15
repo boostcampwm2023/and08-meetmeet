@@ -32,4 +32,10 @@
     <string name="calendar_day_of_week_friday">금</string>
     <string name="calendar_day_of_week_saturday">토</string>
     <string name="calendar_day_of_week_sunday">일</string>
+    <string name="login_app_logo_description">meetmeet logo</string>
+    <string name="login_kakao_login_button_description">kakao login button</string>
+    <string name="login_app_login">로그인</string>
+    <string name="login_app_sign_up">회원가입</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
