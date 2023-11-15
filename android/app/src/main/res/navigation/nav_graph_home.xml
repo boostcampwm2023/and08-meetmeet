@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_home"
+    app:startDestination="@id/calendar_fragment">
+
+    <fragment
+        android:id="@+id/calendar_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.calendar.CalendarFragment"
+        android:label="calendar_fragment"
+        tools:layout="@layout/fragment_calendar">
+        <action
+            android:id="@+id/action_calendar_fragment_to_add_event_activity"
+            app:destination="@id/add_event_activity" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/follow_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.follow.FollowFragment"
+        android:label="follow_fragment"
+        tools:layout="@layout/fragment_follow" />
+
+    <fragment
+        android:id="@+id/group_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.group.GroupFragment"
+        android:label="group_fragment"
+        tools:layout="@layout/fragment_group" />
+
+    <activity
+        android:id="@+id/add_event_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.addevent.AddEventActivity"
+        android:label="add_event_activity"
+        tools:layout="@layout/activity_add_event" />
+</navigation>
