@@ -24,6 +24,8 @@ class SearchActivity : BaseActivity<ActivitySearchEventBinding>(
             searchEventSv.setupWithSearchBar(searchEventSb)
             searchEventSpinner.setSelection(1)
         }
+
+        setDatePicker()
     }
 
     private fun setDatePicker() {
