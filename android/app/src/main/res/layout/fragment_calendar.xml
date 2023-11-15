@@ -145,5 +145,15 @@
             app:spanCount="7"
             tools:itemCount="31" />
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_event"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/add_event"
+            app:srcCompat="@drawable/ic_plus"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
