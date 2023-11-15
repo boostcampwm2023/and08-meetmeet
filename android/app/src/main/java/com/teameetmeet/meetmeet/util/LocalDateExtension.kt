@@ -3,11 +3,20 @@ package com.teameetmeet.meetmeet.util
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 fun LocalDate.toYearMonth(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월")
     return format(formatter)
+}
+
+fun LocalDate.toStartLong(): Long {
+    return atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
+
+fun LocalDate.toEndLong(): Long {
+    return plusDays(1).toStartLong() - 1
 }
 
 fun LocalDate.getDayListInMonth(calendarItem: CalendarItem? = null): List<CalendarItem> {
