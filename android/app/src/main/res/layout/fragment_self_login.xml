@@ -37,10 +37,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:hint="@string/login_app_email"
-            android:maxLength="64"
             app:layout_constraintBottom_toTopOf="@id/self_login_tf_password"
             app:layout_constraintEnd_toEndOf="parent"
-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_app_bar"
             app:layout_constraintVertical_chainStyle="packed">
@@ -49,7 +47,9 @@
                 android:id="@+id/self_login_et_email"
                 style="@style/medium"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:maxLength="64"
+                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setEmail(p0)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,17 +60,20 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="40dp"
             android:hint="@string/login_app_password"
-            android:maxLength="64"
             app:layout_constraintBottom_toTopOf="@id/self_login_btn_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/self_login_tf_email">
+            app:layout_constraintTop_toBottomOf="@id/self_login_tf_email"
+            app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/self_login_et_password"
                 style="@style/medium"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:maxLength="14"
+                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setPassword(p0)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,6 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="40dp"
+            android:onClick="@{() -> vm.login()}"
             android:text="@string/login_app_login"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
