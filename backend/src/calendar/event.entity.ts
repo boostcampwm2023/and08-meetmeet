@@ -10,10 +10,9 @@ export interface IEvent {
   title: string;
   startDate: Date;
   endDate: Date;
-  isAllday: boolean;
-  isJoin: boolean;
+  isJoinable: boolean;
   isVisible?: boolean;
   memo?: string;
   announcement?: string;
-  repeatePolicyId?: number;
+  repeatPolicyId?: number; // TODO: repeatPolicy 테이블 생성
 }

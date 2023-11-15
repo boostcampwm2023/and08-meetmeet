@@ -20,15 +20,13 @@ export class CreateEventDto {
   endDate: string;
 
   @IsNotEmpty()
-  isAllday: boolean;
-
-  @IsNotEmpty()
-  isJoin: boolean;
+  isJoinable: boolean;
 
   @IsNotEmpty()
   isVisible: boolean;
 
   memo?: string;
-  repeateTerm?: RepeatTerm;
+  repeatTerm?: RepeatTerm;
+  repeatFrequency?: number;
   repeatEndDate?: string;
 }
