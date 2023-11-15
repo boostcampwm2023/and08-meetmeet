@@ -3,9 +3,10 @@ package com.teameetmeet.meetmeet.presentation.addevent
 import androidx.core.util.Pair
 import androidx.lifecycle.ViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.teameetmeet.meetmeet.data.model.EventNotification
-import com.teameetmeet.meetmeet.data.model.EventRepeatTerm
-import com.teameetmeet.meetmeet.data.model.EventTime
+import com.teameetmeet.meetmeet.presentation.model.EventColor
+import com.teameetmeet.meetmeet.presentation.model.EventNotification
+import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
+import com.teameetmeet.meetmeet.presentation.model.EventTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

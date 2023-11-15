@@ -13,10 +13,10 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.teameetmeet.meetmeet.R
-import com.teameetmeet.meetmeet.data.model.EventNotification
-import com.teameetmeet.meetmeet.data.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.databinding.ActivityAddEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
+import com.teameetmeet.meetmeet.presentation.model.EventNotification
+import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
