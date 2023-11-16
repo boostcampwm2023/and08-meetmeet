@@ -27,6 +27,9 @@ class SelfLoginViewModel @Inject constructor(
     private val _event: MutableSharedFlow<SelfLoginEvent> = MutableSharedFlow()
     val event: SharedFlow<SelfLoginEvent> = _event
 
+    private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
+
     fun setEmail(email: CharSequence?) {
         val emailString = email.toString()
         val state = if (emailString.isNotEmpty()) EmailState.Valid else EmailState.None
@@ -40,19 +43,15 @@ class SelfLoginViewModel @Inject constructor(
     }
 
     fun login() {
-        // todo 로그인 API 호출
-        println(
-            """
-            email : ${_uiState.value.email}
-            password : ${_uiState.value.password}
-        """.trimIndent()
-        )
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             userRepository.login(_uiState.value.email, _uiState.value.password)
                 .catch {
                     // 예외 처리
+                    _showPlaceholder.update { false }
                 }.collectLatest {
                     _event.emit(SelfLoginEvent.SelfLoginSuccess)
+                    _showPlaceholder.update { false }
                 }
         }
     }
