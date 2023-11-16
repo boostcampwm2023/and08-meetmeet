@@ -9,7 +9,6 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
-import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginResponse
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow

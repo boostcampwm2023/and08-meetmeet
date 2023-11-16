@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
+import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -20,14 +21,21 @@ class LoginRepository @Inject constructor(
         return flowOf(true)
             .map {
                 val response = loginApi.loginKakao(kakaoLoginRequest = KakaoLoginRequest(id.toString()))
-                dataStore.edit{
-                    it[ACCESS_TOKEN] = response.accessToken
-                    it[REFRESH_TOKEN] = response.refreshToken
-                }
-                Unit
+                storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
                 throw it
-                //추가 예외처리 필요
+                //TODO("추가 예외처리 필요")
+            }
+    }
+
+    fun autoLoginApp(token: String) :Flow<Unit> {
+        return flowOf(true)
+            .map {
+                val response = loginApi.autoLoginApp(AutoLoginRequest(token))
+                storeAppToken(response.accessToken, response.refreshToken)
+            }.catch {
+                throw it
+                //TODO("추가 예외처리 필요")
             }
     }
 
@@ -35,6 +43,13 @@ class LoginRepository @Inject constructor(
         dataStore.edit {
             it[KAKAO_ACCESS_TOKEN] = accessToken
             it[KAKAO_REFRESH_TOKEN] = refreshToken
+        }
+    }
+
+    private suspend fun storeAppToken(accessToken: String, refreshToken: String) {
+        dataStore.edit{
+            it[ACCESS_TOKEN] = accessToken
+            it[REFRESH_TOKEN] = refreshToken
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivitySplashBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
+import com.teameetmeet.meetmeet.presentation.home.HomeActivity
 import com.teameetmeet.meetmeet.presentation.login.LoginActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,12 +30,16 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { event ->
                     when(event) {
-                        is SplashEvent.AutoLogin -> {}
+                        is SplashEvent.LoginSuccess -> navigateToHomeActivity()
                         is SplashEvent.Login -> navigateToLoginActivity()
                     }
                 }
             }
         }
+    }
+
+    private fun navigateToHomeActivity() {
+        startActivity(Intent(this, HomeActivity::class.java))
     }
 
     private fun navigateToLoginActivity() {
