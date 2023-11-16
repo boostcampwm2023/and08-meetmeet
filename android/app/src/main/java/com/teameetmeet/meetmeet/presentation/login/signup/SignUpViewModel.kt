@@ -28,6 +28,9 @@ class SignUpViewModel @Inject constructor(
     private val _event: MutableSharedFlow<SignUpEvent> = MutableSharedFlow()
     val event: SharedFlow<SignUpEvent> = _event
 
+    private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
+
     fun setEmail(email: CharSequence?) {
         val emailString = email.toString()
         val state = getEmailState(emailString)
@@ -65,31 +68,30 @@ class SignUpViewModel @Inject constructor(
     fun checkDuplicate() {
         // todo email 중복 확인 API 호출
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             userRepository.checkEmailDuplicate(_uiState.value.email)
                 .catch {
                     // 예외 처리
+                    _showPlaceholder.update { false }
                 }.collectLatest { result ->
                     _uiState.update { it.copy(emailDuplicateCheck = result) }
+                    _showPlaceholder.update { false }
                 }
         }
     }
 
     fun signUp() {
         // todo 회원가입 API 호출
-        println(
-            """
-            email : ${_uiState.value.email}
-            password : ${_uiState.value.password}
-            passwordConfirm : ${_uiState.value.passwordConfirm}
-        """.trimIndent()
-        )
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             userRepository.signUp(_uiState.value.email, _uiState.value.password)
                 .catch {
                     // 예외 처리
+                    _showPlaceholder.update { false }
                 }
                 .collectLatest {
                     _event.emit(SignUpEvent.SignUpSuccess)
+                    _showPlaceholder.update { false }
                 }
         }
     }

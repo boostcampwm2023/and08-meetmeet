@@ -120,7 +120,7 @@
             android:layout_height="wrap_content"
             android:visibility="@{vm.showPlaceholder ?View.VISIBLE:View.GONE}"
             app:constraint_referenced_ids="view_loading_background, progress_bar"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
