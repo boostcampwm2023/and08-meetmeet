@@ -79,6 +79,7 @@
 
         <Button
             android:id="@+id/self_login_btn_login"
+            self_login_enabled="@{vm.uiState}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
