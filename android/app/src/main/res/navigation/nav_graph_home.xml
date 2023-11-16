@@ -17,11 +17,8 @@
             android:id="@+id/action_calendar_fragment_to_setting_activity"
             app:destination="@id/setting_activity" />
         <action
-            android:id="@+id/action_calendar_fragment_to_search_activity"
-            app:destination="@id/search_activity" />
-        <action
-            android:id="@+id/action_calendar_fragment_to_notification_activity"
-            app:destination="@id/notification_activity" />
+            android:id="@+id/action_calendar_fragment_to_bottomSheet"
+            app:destination="@id/bottomSheet" />
     </fragment>
 
     <fragment
@@ -46,12 +43,9 @@
         android:name="com.teameetmeet.meetmeet.presentation.setting.SettingActivity"
         android:label="setting_activity"
         tools:layout="@layout/activity_setting" />
-    <activity
-        android:id="@+id/search_activity"
-        android:name="com.teameetmeet.meetmeet.presentation.searchevent.SearchActivity"
-        android:label="search_activity" />
-    <activity
-        android:id="@+id/notification_activity"
-        android:name="com.teameetmeet.meetmeet.presentation.notification.NotificationActivity"
-        android:label="Notification_activity" />
+
+    <dialog
+        android:id="@+id/bottomSheet"
+        android:name="com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment"
+        tools:layout="@layout/fragment_bottom_sheet_events_per_day" />
 </navigation>
