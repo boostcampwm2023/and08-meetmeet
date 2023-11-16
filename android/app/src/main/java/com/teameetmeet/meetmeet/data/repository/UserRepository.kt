@@ -41,8 +41,12 @@ class UserRepository @Inject constructor(
     fun getToken(): Flow<String?> =
         dataStore.data.map { it[ACCESS_TOKEN] }
 
+    fun getKakaoToken(): Flow<String?> =
+        dataStore.data.map { it[KAKAO_ACCESS_TOKEN]}
+
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("accessToken")
         val REFRESH_TOKEN = stringPreferencesKey("refreshToken")
+        val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakaoAccessToken")
     }
 }
