@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_calendar_fragment_to_add_event_activity"
             app:destination="@id/add_event_activity" />
+        <action
+            android:id="@+id/action_calendar_fragment_to_search_activity"
+            app:destination="@id/search_activity" />
     </fragment>
 
     <fragment
@@ -32,4 +35,8 @@
         android:name="com.teameetmeet.meetmeet.presentation.addevent.AddEventActivity"
         android:label="add_event_activity"
         tools:layout="@layout/activity_add_event" />
+    <activity
+        android:id="@+id/search_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.searchevent.SearchActivity"
+        android:label="search_activity" />
 </navigation>

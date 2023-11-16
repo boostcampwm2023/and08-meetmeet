@@ -28,5 +28,13 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         binding.calendarClProfile.setOnClickListener {
 
         }
+
+        binding.calendarIbSearch.setOnClickListener {
+            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToSearchActivity())
+        }
+
+        binding.calendarFlNotification.setOnClickListener {
+
+        }
     }
 }

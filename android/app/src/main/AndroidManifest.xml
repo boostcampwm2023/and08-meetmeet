@@ -43,6 +43,7 @@
         </activity>
 
         <activity android:name=".presentation.addevent.AddEventActivity" />
+        <activity android:name=".presentation.searchevent.SearchActivity"/>
     </application>
 
 </manifest>

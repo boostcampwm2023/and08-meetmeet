@@ -55,6 +55,42 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <FrameLayout
+            android:id="@+id/calendar_fl_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_notification"
+            app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
+            app:layout_constraintEnd_toStartOf="@id/calendar_ib_search"
+            app:layout_constraintTop_toTopOf="@id/calendar_cl_profile">
+
+
+            <ImageView
+                android:id="@+id/calendar_ib_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:src="@drawable/ic_notification" />
+
+        </FrameLayout>
+
+
+        <ImageButton
+            android:id="@+id/calendar_ib_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_search"
+            app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/calendar_cl_profile" />
+
 
         <ImageButton
             android:id="@+id/calendar_ib_nav_pre_month"
