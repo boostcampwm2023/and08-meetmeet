@@ -4,10 +4,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Calendar } from './calendar/entities/calendar.entity';
 import { CalendarModule } from './calendar/calendar.module';
-import { Event } from './event/entities/event.entity';
 import { EventModule } from './event/event.module';
+import { DetailModule } from './detail/detail.module';
+import { EventMemberModule } from './event-member/event-member.module';
+import { InviteModule } from './invite/invite.module';
+import { CommentModule } from './comment/comment.module';
+import { GroupModule } from './group/group.module';
+import { FollowModule } from './follow/follow.module';
 
 @Module({
   imports: [
@@ -22,7 +26,7 @@ import { EventModule } from './event/event.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [Event, Calendar],
+        entities: ['dist/**/*.entity{.ts,.js}'],
         synchronize: false,
         logging: true,
         namingStrategy: new SnakeNamingStrategy(),
@@ -30,6 +34,12 @@ import { EventModule } from './event/event.module';
     }),
     CalendarModule,
     EventModule,
+    DetailModule,
+    EventMemberModule,
+    InviteModule,
+    CommentModule,
+    GroupModule,
+    FollowModule,
   ],
   controllers: [AppController],
   providers: [AppService],
