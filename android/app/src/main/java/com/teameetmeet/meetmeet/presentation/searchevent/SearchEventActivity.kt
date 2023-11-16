@@ -26,8 +26,10 @@ class SearchActivity : BaseActivity<ActivitySearchEventBinding>(
             vm = viewModel
             searchEventSv.setupWithSearchBar(searchEventSb)
             searchEventSpinner.setSelection(1)
+            searchEventSb.setNavigationOnClickListener {
+                finish()
+            }
         }
-
         setDatePicker()
     }
 
