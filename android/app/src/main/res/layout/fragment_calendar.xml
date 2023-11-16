@@ -13,6 +13,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/calendar_cl_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:padding="16dp"
+            >
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/calendar_cv_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="100dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                >
+
+                <ImageView
+                    android:id="@+id/calendar_iv_profile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:backgroundTint="@color/black" />
+
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/calendar_tv_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="밋밋최고"
+                style="@style/medium.bold"
+                app:layout_constraintTop_toTopOf="@id/calendar_cv_profile"
+                app:layout_constraintBottom_toBottomOf="@id/calendar_cv_profile"
+                app:layout_constraintStart_toEndOf="@id/calendar_cv_profile"
+                android:layout_marginStart="16dp"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         <ImageButton
             android:id="@+id/calendar_ib_nav_pre_month"
             android:layout_width="wrap_content"
