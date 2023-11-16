@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="search_event_date_range">
+        <item>구간</item>
+        <item>2 주</item>
+        <item>2 개월</item>
+        <item>6 개월</item>
+    </string-array>
+</resources>

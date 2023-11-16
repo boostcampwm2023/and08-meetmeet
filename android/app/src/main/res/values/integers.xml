@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="text_length_short">64</integer>
+    <integer name="text_length_long">255</integer>
+</resources>
