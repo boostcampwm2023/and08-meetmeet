@@ -7,8 +7,9 @@ import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.toEventDto
 import com.teameetmeet.meetmeet.data.toLocalEventEntity
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class CalendarRepository(
+class CalendarRepository @Inject constructor(
     private val localCalendarDataSource: LocalCalendarDataSource,
     private val remoteCalendarDataSource: RemoteCalendarDataSource
 ) {

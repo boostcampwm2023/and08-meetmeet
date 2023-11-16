@@ -16,6 +16,7 @@ import javax.inject.Singleton
 class DatabaseModule {
 
     @Provides
+    @Singleton
     fun provideDao(database: AppDatabase): EventDao {
         return database.eventEntityDao()
     }
