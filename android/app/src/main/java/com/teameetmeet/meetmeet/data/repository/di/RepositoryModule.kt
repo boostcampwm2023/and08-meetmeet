@@ -22,7 +22,10 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideLoginRepository(loginApi: LoginApi) = LoginRepository(loginApi)
+    fun provideLoginRepository(
+        loginApi: LoginApi,
+        dataStore: DataStore<Preferences>
+    ) = LoginRepository(loginApi, dataStore)
 
     @Singleton
     @Provides
