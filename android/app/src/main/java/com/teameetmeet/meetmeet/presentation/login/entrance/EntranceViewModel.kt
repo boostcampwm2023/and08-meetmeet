@@ -8,8 +8,10 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -23,32 +25,14 @@ class EntranceViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : AndroidViewModel(application) {
 
-    private val _kakaoLoginEvent = MutableSharedFlow<KakaoLoginEvent>()
+    private val _kakaoLoginEvent = MutableSharedFlow<KakaoLoginEvent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val kakaoLoginEvent: SharedFlow<KakaoLoginEvent> = _kakaoLoginEvent.asSharedFlow()
 
     private val kakaoLoginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
-            Log.e("KAKAO", "카카오계정으로 로그인 실패", error)
+            _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Failure(R.string.login_kakao_message_kakao_login_fail, error.message.orEmpty()))
         } else if (token != null) {
-            UserApiClient.instance.me { user, error ->
-                viewModelScope.launch {
-                    if (error != null) {
-                        Log.e("KAKAO", "사용자 정보 요청 실패", error)
-                    } else if (user?.id != null) {
-                        Log.i("KAKAO", "사용자 정보 요청 성공\n회원번호: ${user.id}")
-                        loginRepository.loginKakao(user.id!!).catch {
-                            _kakaoLoginEvent.emit(KakaoLoginEvent.Failure(it.message.orEmpty()))
-                        }.collect {
-                            when (it) {
-                                200 -> _kakaoLoginEvent.emit(KakaoLoginEvent.Success(user.id!!))
-                                //TODO(들어오는 부분 있으면 예외처리 필요)
-                            }
-                        }
-                    } else {
-                        Log.e("KAKAO", "사용자 정보 요청 실패", error)
-                    }
-                }
-            }
+            loginApp()
         }
     }
 
@@ -58,7 +42,7 @@ class EntranceViewModel @Inject constructor(
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(application)) {
                 UserApiClient.instance.loginWithKakaoTalk(application) { token, error ->
                     if (error != null) {
-                        Log.e("KAKAO", "카카오톡으로 로그인 실패", error)
+                        _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Failure(R.string.login_kakao_message_kakao_login_fail, error.message.orEmpty()))
                         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
                             return@loginWithKakaoTalk
                         }
@@ -67,8 +51,7 @@ class EntranceViewModel @Inject constructor(
                             callback = kakaoLoginCallback
                         )
                     } else if (token != null) {
-                        Log.i("KAKAO", "카카오톡으로 로그인 성공 ${token.accessToken}")
-
+                        loginApp()
                     }
                 }
             } else {
@@ -78,5 +61,32 @@ class EntranceViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun loginApp() {
+        fetchKakaoToken()
+        UserApiClient.instance.me { user, error ->
+            viewModelScope.launch {
+                if (error != null) {
+                    _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Failure(R.string.login_kakao_message_kakao_login_fail, error.message.orEmpty()))
+                } else if (user?.id != null) {
+                    Log.i("KAKAO", "사용자 정보 요청 성공\n회원번호: ${user.id}")
+                    loginRepository.loginKakao(user.id!!).catch {
+                        _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Failure(R.string.login_kakao_message_kakao_login_fail, it.message.orEmpty()))
+                    }.collect {
+                        when (it) {
+                            200 -> _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Success(user.id!!))
+                            //TODO(들어오는 부분 있으면 예외처리 필요)
+                        }
+                    }
+                } else {
+                    _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Failure(R.string.login_kakao_message_no_user_data))
+                }
+            }
+        }
+    }
+
+    private fun fetchKakaoToken() {
+        //TODO(카카오 토큰 저장 -> DATASTORE)
     }
 }

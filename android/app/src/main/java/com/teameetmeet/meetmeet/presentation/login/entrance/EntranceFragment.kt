@@ -53,7 +53,7 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
                         }
 
                         is KakaoLoginEvent.Failure -> {
-                            showMessage(it.message)
+                            showMessage(it.message, it.extraMessage)
                         }
                     }
                 }
@@ -61,11 +61,16 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
         }
     }
 
-    private fun showMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    private fun showMessage(messageId: Int, extraMessage: String) {
+        if(extraMessage.isNotEmpty()) {
+            Toast.makeText(requireContext(), String.format(getString(messageId), extraMessage), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), getString(messageId), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun navigateToHomeActivity(id: Long) {
         findNavController().navigate(EntranceFragmentDirections.entranceFragmentToHomeActivity(id))
+        requireActivity().finish()
     }
 }

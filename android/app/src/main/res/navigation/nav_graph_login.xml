@@ -12,9 +12,7 @@
         android:label="EntranceFragment">
         <action
             android:id="@+id/entrance_fragment_to_home_activity"
-            app:destination="@id/home_activity"
-            app:popUpTo="@id/entrance_fragment"
-            app:popUpToInclusive="true" />
+            app:destination="@id/home_activity" />
         <action
             android:id="@+id/action_entranceFragment_to_self_login_fragment"
             app:destination="@id/self_login_fragment" />
