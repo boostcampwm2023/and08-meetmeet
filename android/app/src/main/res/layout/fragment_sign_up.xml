@@ -33,10 +33,13 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_email"
+            duplicate_check="@{vm.uiState.emailDuplicateCheck}"
+            sign_up_email_state="@{vm.uiState.emailState}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:hint="@string/login_app_email"
+            app:helperTextTextColor="@color/green"
             app:layout_constraintBottom_toTopOf="@id/sign_up_tf_password"
             app:layout_constraintEnd_toStartOf="@id/sign_up_btn_email_check"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,6 +59,7 @@
         <Button
             android:id="@+id/sign_up_btn_email_check"
             style="@style/Widget.Material3.Button.TonalButton"
+            email_duplicate_enabled="@{vm.uiState.emailState}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
