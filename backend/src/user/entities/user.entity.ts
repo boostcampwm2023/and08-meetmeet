@@ -1,0 +1,23 @@
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { commonEntity } from 'src/common/common.entity';
+import { Content } from 'src/content/entities/content.entity';
+import { OauthProvider } from './oauthProvider.entity';
+
+@Entity()
+export class User extends commonEntity {
+  @Column({ type: 'varchar', length: 255, unique: true })
+  email: string;
+
+  @Column({ type: 'varchar', length: 255 })
+  password: string;
+
+  @Column({ type: 'varchar', length: 64, unique: true })
+  nickname: string;
+
+  @ManyToOne(() => Content)
+  @JoinColumn()
+  profile: Content;
+
+  @ManyToOne(() => OauthProvider, { nullable: true })
+  oauthProviderId: OauthProvider;
+}
