@@ -64,4 +64,11 @@
     <string name="setting_nickname">닉네임</string>
     <string name="setting_new_password">새 비밀번호</string>
     <string name="setting_password_confirm">비밀번호 확인</string>
+
+    <string name="sign_up_duplicate_check_complete">중복확인 완료</string>
+    <string name="sign_up_email_invalid">이메일 형식에 맞지 않습니다</string>
+    <string name="sign_up_safe_password">안전한 비밀번호 입니다</string>
+    <string name="sign_up_password_invalid">영문자, 숫자, 특수문자 !@#*를 포함한 9자 이상 14자 이하</string>
+    <string name="sign_up_password_confirm_valid">비밀번호가 일치합니다</string>
+    <string name="sign_up_password_confirm_invalid">비밀번호가 일치하지 않습니다</string>
 </resources>
