@@ -6,7 +6,6 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
-import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
@@ -22,8 +21,8 @@ class LoginRepository @Inject constructor(
             .map {
                 val response = loginApi.loginKakao(kakaoLoginRequest = KakaoLoginRequest(id.toString()))
                 dataStore.edit{
-                    it[KAKAO_ACCESS_TOKEN] = response.accessToken
-                    it[KAKAO_REFRESH_TOKEN] = response.refreshToken
+                    it[ACCESS_TOKEN] = response.accessToken
+                    it[REFRESH_TOKEN] = response.refreshToken
                 }
                 Unit
             }.catch {
@@ -32,8 +31,17 @@ class LoginRepository @Inject constructor(
             }
     }
 
+    suspend fun fetchKakaoToken(accessToken: String, refreshToken: String)  {
+        dataStore.edit {
+            it[KAKAO_ACCESS_TOKEN] = accessToken
+            it[KAKAO_REFRESH_TOKEN] = refreshToken
+        }
+    }
+
     companion object {
-        val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakaoAccessToken")
-        val KAKAO_REFRESH_TOKEN = stringPreferencesKey("kakaoRefreshToken")
+        val ACCESS_TOKEN = stringPreferencesKey("accessToken")
+        val REFRESH_TOKEN = stringPreferencesKey("refreshToken")
+        val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakao_AccessToken")
+        val KAKAO_REFRESH_TOKEN = stringPreferencesKey("kakao_RefreshToken")
     }
 }

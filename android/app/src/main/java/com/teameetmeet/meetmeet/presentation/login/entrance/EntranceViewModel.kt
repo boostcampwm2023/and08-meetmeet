@@ -41,7 +41,7 @@ class EntranceViewModel @Inject constructor(
                 )
             )
         } else if (token != null) {
-            loginApp()
+            loginApp(token)
         }
     }
 
@@ -65,7 +65,7 @@ class EntranceViewModel @Inject constructor(
                             callback = kakaoLoginCallback
                         )
                     } else if (token != null) {
-                        loginApp()
+                        loginApp(token)
                     }
                 }
             } else {
@@ -77,8 +77,8 @@ class EntranceViewModel @Inject constructor(
         }
     }
 
-    private fun loginApp() {
-        fetchKakaoToken()
+    private fun loginApp(token: OAuthToken) {
+        fetchKakaoToken(token)
         UserApiClient.instance.me { user, error ->
             viewModelScope.launch {
                 if (error != null) {
@@ -97,8 +97,7 @@ class EntranceViewModel @Inject constructor(
                                 it.message.orEmpty()
                             )
                         )
-                    }.collect { response ->
-                        fetchAppToken(response)
+                    }.collect {
                         _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Success(user.id!!))
                     }
 
@@ -109,11 +108,9 @@ class EntranceViewModel @Inject constructor(
         }
     }
 
-    private fun fetchKakaoToken() {
-        //TODO(카카오 토큰 저장 -> DATASTORE)
-    }
-
-    private fun fetchAppToken(response: KakaoLoginResponse) {
-        //TODO(자체 토큰 저장 -> DATASTORE)
+    private fun fetchKakaoToken(token: OAuthToken) {
+        viewModelScope.launch {
+            loginRepository.fetchKakaoToken(token.accessToken, token.refreshToken)
+        }
     }
 }
