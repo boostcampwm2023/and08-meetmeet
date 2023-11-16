@@ -2,11 +2,15 @@ package com.teameetmeet.meetmeet.presentation.searchevent
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.util.Pair
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivitySearchEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
+import com.teameetmeet.meetmeet.util.addUtcTimeOffset
+import com.teameetmeet.meetmeet.util.removeUtcTimeOffset
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -33,19 +37,42 @@ class SearchActivity : BaseActivity<ActivitySearchEventBinding>(
             MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText(getString(R.string.search_event_title))
 
-        binding.searchEventTvDateRange.setOnClickListener {
-            datePickerBuilder.build().apply {
-                this.addOnPositiveButtonClickListener {
-                    viewModel.setSearchDateRange(it)
-                    binding.searchEventSpinner.setSelection(0)
-                }
-            }.show(supportFragmentManager, "datePicker")
-        }
+        val constraintsBuilder = CalendarConstraints.Builder()
 
+        showDatePicker(datePickerBuilder, constraintsBuilder)
+        setDatePickerBuilders(datePickerBuilder, constraintsBuilder)
+    }
+
+    private fun setDatePickerBuilders(
+        datePickerBuilder: MaterialDatePicker.Builder<Pair<Long, Long>>,
+        constraintsBuilder: CalendarConstraints.Builder
+    ) {
         lifecycleScope.launch {
             viewModel.searchDateRange.collectLatest {
-                datePickerBuilder.setSelection(it)
+                datePickerBuilder.setSelection(
+                    Pair(it.first.addUtcTimeOffset(), it.second.addUtcTimeOffset())
+                )
+                constraintsBuilder.setOpenAt(it.first.addUtcTimeOffset())
             }
+        }
+    }
+
+    private fun showDatePicker(
+        datePickerBuilder: MaterialDatePicker.Builder<Pair<Long, Long>>,
+        constraintsBuilder: CalendarConstraints.Builder
+    ) {
+        binding.searchEventTvDateRange.setOnClickListener {
+            datePickerBuilder
+                .setCalendarConstraints(constraintsBuilder.build())
+                .build()
+                .apply {
+                    this.addOnPositiveButtonClickListener {
+                        viewModel.setSearchDateRange(
+                            Pair(it.first.removeUtcTimeOffset(), it.second.removeUtcTimeOffset())
+                        )
+                        binding.searchEventSpinner.setSelection(0)
+                    }
+                }.show(supportFragmentManager, "datePicker")
         }
     }
 }
