@@ -60,9 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
-            android:src="@drawable/ic_notification"
             app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
             app:layout_constraintEnd_toStartOf="@id/calendar_ib_search"
             app:layout_constraintTop_toTopOf="@id/calendar_cl_profile">
@@ -71,7 +69,8 @@
             <ImageView
                 android:id="@+id/calendar_ib_notification"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:background="@null"
                 android:src="@drawable/ic_notification" />
 

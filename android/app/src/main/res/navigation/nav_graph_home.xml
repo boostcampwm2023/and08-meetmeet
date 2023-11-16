@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_calendar_fragment_to_search_activity"
             app:destination="@id/search_activity" />
+        <action
+            android:id="@+id/action_calendar_fragment_to_notification_activity"
+            app:destination="@id/notification_activity" />
     </fragment>
 
     <fragment
@@ -39,4 +42,8 @@
         android:id="@+id/search_activity"
         android:name="com.teameetmeet.meetmeet.presentation.searchevent.SearchActivity"
         android:label="search_activity" />
+    <activity
+        android:id="@+id/notification_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.notification.NotificationActivity"
+        android:label="Notification_activity" />
 </navigation>
