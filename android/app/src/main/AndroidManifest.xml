@@ -16,7 +16,9 @@
         android:theme="@style/Theme.MeetMeetApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".presentation.notification.NotificationActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.login.LoginActivity"
             android:exported="true"></activity>
@@ -44,6 +46,7 @@
         </activity>
 
         <activity android:name=".presentation.addevent.AddEventActivity" />
+        <activity android:name=".presentation.searchevent.SearchActivity" />
         <activity android:name=".presentation.setting.SettingActivity" />
     </application>
 
