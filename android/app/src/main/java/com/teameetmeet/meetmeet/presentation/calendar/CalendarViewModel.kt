@@ -7,8 +7,11 @@ import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
 import com.teameetmeet.meetmeet.util.getDayListInMonth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val userRepository: UserRepository
-)  : ViewModel(), OnCalendarItemClickListener {
+) : ViewModel(), OnCalendarItemClickListener {
 
     private val _currentDate =
         MutableStateFlow<CalendarItem>(CalendarItem(date = LocalDate.now(), isSelected = true))
@@ -36,11 +39,12 @@ class CalendarViewModel @Inject constructor(
     private val _calendarViewMode = MutableStateFlow<CalendarViewMode>(CalendarViewMode.MONTH)
     val calendarViewMode: StateFlow<CalendarViewMode> = _calendarViewMode
 
+    private val _dayClickEvent = MutableSharedFlow<DayClickEvent>()
+    val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
+
     init {
         fetchUserProfile()
     }
-
-
 
     private fun fetchUserProfile() {
         viewModelScope.launch {
@@ -107,6 +111,10 @@ class CalendarViewModel @Inject constructor(
             _currentDate.update {
                 it.copy(date = calendarItem.date)
             }
+        }
+
+        viewModelScope.launch {
+            _dayClickEvent.emit(DayClickEvent(calendarItem.events))
         }
     }
 }

@@ -24,7 +24,6 @@ class SearchActivity : BaseActivity<ActivitySearchEventBinding>(
 
         with(binding) {
             vm = viewModel
-            lifecycleOwner = this@SearchActivity
             searchEventSv.setupWithSearchBar(searchEventSb)
             searchEventSpinner.setSelection(1)
         }
