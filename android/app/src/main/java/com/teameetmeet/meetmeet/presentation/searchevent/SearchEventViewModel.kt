@@ -2,17 +2,23 @@ package com.teameetmeet.meetmeet.presentation.searchevent
 
 import androidx.core.util.Pair
 import androidx.lifecycle.ViewModel
+import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.util.getLocalDate
 import com.teameetmeet.meetmeet.util.toEndLong
 import com.teameetmeet.meetmeet.util.toLocalDate
 import com.teameetmeet.meetmeet.util.toStartLong
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import java.time.LocalDateTime
 import java.time.ZoneId
+import javax.inject.Inject
 
-class SearchEventViewModel : ViewModel() {
+@HiltViewModel
+class SearchEventViewModel @Inject constructor(
+    private val calendarRepository: CalendarRepository
+) : ViewModel() {
     private val _searchKeyword: MutableStateFlow<String> = MutableStateFlow("")
     val searchKeyword: StateFlow<String> = _searchKeyword
 
