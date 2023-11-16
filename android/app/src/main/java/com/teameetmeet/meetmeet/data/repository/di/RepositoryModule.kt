@@ -1,5 +1,7 @@
 package com.teameetmeet.meetmeet.data.repository.di
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
@@ -21,5 +23,8 @@ class RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideUserRepository(userApi: UserApi) = UserRepository(userApi)
+    fun provideUserRepository(
+        userApi: UserApi,
+        dataStore: DataStore<Preferences>
+    ) = UserRepository(userApi, dataStore)
 }
