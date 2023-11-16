@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Calendar } from './calendar/entities/calendar.entity';
 import { CalendarModule } from './calendar/calendar.module';
-import { EventEntity } from './calendar/event.entity';
+import { Event } from './event/entities/event.entity';
+import { EventModule } from './event/event.module';
 
 @Module({
   imports: [
@@ -19,12 +22,14 @@ import { EventEntity } from './calendar/event.entity';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [EventEntity],
+        entities: [Event, Calendar],
         synchronize: false,
         logging: true,
+        namingStrategy: new SnakeNamingStrategy(),
       }),
     }),
     CalendarModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],
