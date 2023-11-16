@@ -97,4 +97,8 @@ dependencies {
 
     //KAKAO 로그인
     implementation("com.kakao.sdk:v2-user:2.18.0")
+
+    //Glide(이미지 로더)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 }

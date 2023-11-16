@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.calendar.CalendarViewModel" />
@@ -12,6 +13,48 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/calendar_cl_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/calendar_cv_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/calendar_iv_profile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:image="@{vm.userProfileImage}"
+                    android:backgroundTint="@color/black" />
+
+            </androidx.cardview.widget.CardView>
+
+
+            <TextView
+                android:id="@+id/calendar_tv_nickname"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@id/calendar_cv_profile"
+                app:layout_constraintStart_toEndOf="@id/calendar_cv_profile"
+                app:layout_constraintTop_toTopOf="@id/calendar_cv_profile"
+                android:text="@{vm.userNickName}"
+                tools:text="밋밋최고" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <ImageButton
             android:id="@+id/calendar_ib_nav_pre_month"
@@ -30,10 +73,9 @@
             style="@style/medium.bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/calendar_cl_profile"
             app:local_date="@{vm.currentDate.date}"
             tools:text="2023년 11월" />
 
@@ -132,28 +174,28 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendar_rv_calendar"
-            app:day_list="@{vm.daysInMonth}"
-            app:vm="@{vm}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
+            app:day_list="@{vm.daysInMonth}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_tv_day_monday"
             app:spanCount="7"
+            app:vm="@{vm}"
             tools:itemCount="31" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_margin="16dp"
             android:contentDescription="@string/add_event_title"
-            app:srcCompat="@drawable/ic_plus"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_plus" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

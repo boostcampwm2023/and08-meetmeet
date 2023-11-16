@@ -1,7 +1,9 @@
 package com.teameetmeet.meetmeet.data.network.di
 
 import com.teameetmeet.meetmeet.data.network.api.FakeLoginApi
+import com.teameetmeet.meetmeet.data.network.api.FakeUserApi
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
+import com.teameetmeet.meetmeet.data.network.api.UserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,4 +17,8 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideLoginApi(): LoginApi = FakeLoginApi()
+
+    @Singleton
+    @Provides
+    fun provideUserApi(): UserApi = FakeUserApi()
 }

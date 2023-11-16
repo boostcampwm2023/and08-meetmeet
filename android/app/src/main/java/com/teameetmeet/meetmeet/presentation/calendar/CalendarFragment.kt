@@ -17,9 +17,16 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.vm = viewModel
+        setClickListener()
+    }
 
+    private fun setClickListener() {
         binding.fabAddEvent.setOnClickListener {
             findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToAddEventActivity())
+        }
+
+        binding.calendarClProfile.setOnClickListener {
+
         }
     }
 }
