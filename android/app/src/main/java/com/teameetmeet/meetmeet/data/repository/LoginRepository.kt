@@ -39,13 +39,6 @@ class LoginRepository @Inject constructor(
             }
     }
 
-    suspend fun fetchKakaoToken(accessToken: String, refreshToken: String)  {
-        dataStore.edit {
-            it[KAKAO_ACCESS_TOKEN] = accessToken
-            it[KAKAO_REFRESH_TOKEN] = refreshToken
-        }
-    }
-
     private suspend fun storeAppToken(accessToken: String, refreshToken: String) {
         dataStore.edit{
             it[ACCESS_TOKEN] = accessToken
@@ -56,7 +49,5 @@ class LoginRepository @Inject constructor(
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("accessToken")
         val REFRESH_TOKEN = stringPreferencesKey("refreshToken")
-        val KAKAO_ACCESS_TOKEN = stringPreferencesKey("kakao_AccessToken")
-        val KAKAO_REFRESH_TOKEN = stringPreferencesKey("kakao_RefreshToken")
     }
 }

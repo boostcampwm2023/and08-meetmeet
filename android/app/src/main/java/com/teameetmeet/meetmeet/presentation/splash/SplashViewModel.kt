@@ -2,6 +2,8 @@ package com.teameetmeet.meetmeet.presentation.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kakao.sdk.auth.AuthApiClient
+import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,9 +13,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class SplashViewModel(
+class SplashViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val loginRepository: LoginRepository
 ) : ViewModel() {
@@ -27,12 +30,20 @@ class SplashViewModel(
 
     private fun checkAutoLoginPossible() {
         viewModelScope.launch {
-            userRepository.getKakaoToken().collect { token ->
-                if(token == null) {
-                    checkAppToken()
-                } else {
-                    autoLoginKakao(token)
+            if (AuthApiClient.instance.hasToken()) {
+                UserApiClient.instance.accessTokenInfo { _, error ->
+                    if (error != null) {
+                        _event.tryEmit(SplashEvent.Login)
+                    }
+                    else {
+                        viewModelScope.launch {
+                            checkAppToken()
+                        }
+                    }
                 }
+            }
+            else {
+                checkAppToken()
             }
         }
     }
@@ -55,9 +66,5 @@ class SplashViewModel(
                 _event.tryEmit(SplashEvent.LoginSuccess)
             }
         }
-    }
-
-    private fun autoLoginKakao(token: String) {
-        //TODO(카카오 자동 로그인 구현)
     }
 }

@@ -77,7 +77,6 @@ class EntranceViewModel @Inject constructor(
     }
 
     private fun loginApp(token: OAuthToken) {
-        fetchKakaoToken(token)
         UserApiClient.instance.me { user, error ->
             viewModelScope.launch {
                 if (error != null) {
@@ -104,12 +103,6 @@ class EntranceViewModel @Inject constructor(
                     _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Failure(R.string.login_kakao_message_no_user_data))
                 }
             }
-        }
-    }
-
-    private fun fetchKakaoToken(token: OAuthToken) {
-        viewModelScope.launch {
-            loginRepository.fetchKakaoToken(token.accessToken, token.refreshToken)
         }
     }
 }
