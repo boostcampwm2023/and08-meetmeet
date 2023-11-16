@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Event } from '../event/entities/event.entity';
+import { Calendar } from './entities/calendar.entity';
 
 @Injectable()
 export class CalendarService {
   constructor(
-    @InjectRepository(Event)
-    private eventRepository: Repository<Event>,
+    @InjectRepository(Calendar)
+    private calendarRepository: Repository<Calendar>,
   ) {}
 
-  findAll(): Promise<Event[]> {
-    return this.eventRepository.find();
+  findAll(): Promise<Calendar[]> {
+    return this.calendarRepository.find();
   }
 }

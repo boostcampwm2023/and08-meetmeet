@@ -1,15 +1,18 @@
+import { Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { commonEntity } from 'src/common/common.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
-import { Event } from '../../event/entities/event.entity';
+import { User } from 'src/user/entities/user.entity';
+import { Group } from 'src/group/entities/group.entity';
+import { Event } from 'src/event/entities/event.entity';
 
 @Entity()
 export class Calendar extends commonEntity {
-  @Column({ type: 'int', nullable: true })
-  // @OneToOne(() => User, {nullable: true})
-  userId: number;
+  @OneToOne(() => User)
+  @JoinColumn()
+  user: User;
 
-  @Column({ type: 'int', nullable: true })
-  groupId: number;
+  @OneToOne(() => Group)
+  @JoinColumn()
+  group: Group;
 
   @OneToMany(() => Event, (event) => event.calendar)
   events: Event[];
