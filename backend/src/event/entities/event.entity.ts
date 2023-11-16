@@ -1,10 +1,12 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { commonEntity } from 'src/common/common.entity';
-import { Calendar } from '../../calendar/entities/calendar.entity';
+import { Calendar } from 'src/calendar/entities/calendar.entity';
+import { EventMember } from 'src/event-member/entities/eventMember.entity';
+import { RepeatPolicy } from './repeatPolicy.entity';
 
 @Entity()
 export class Event extends commonEntity {
-  @ManyToOne(() => Calendar, (calendar) => calendar.events)
+  @ManyToOne(() => Calendar, (calendar) => calendar.events, { nullable: false })
   calendar: Calendar;
 
   @Column({ type: 'varchar', length: 64 })
@@ -22,7 +24,9 @@ export class Event extends commonEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   announcement: string;
 
-  @Column({ type: 'int', nullable: true })
-  // @OneToOne(() => RepeatPolicy, {nullable: true})
-  repeatPolicy: number;
+  @ManyToOne(() => RepeatPolicy, (repeatPolicy) => repeatPolicy.events)
+  repeatPolicy: RepeatPolicy;
+
+  @OneToMany(() => EventMember, (eventMember) => eventMember.event)
+  eventMembers: EventMember[];
 }
