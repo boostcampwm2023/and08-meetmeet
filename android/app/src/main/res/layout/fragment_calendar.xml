@@ -40,10 +40,9 @@
 
             </androidx.cardview.widget.CardView>
 
-
             <TextView
                 android:id="@+id/calendar_tv_nickname"
-                style="@style/medium.bold"
+                style="@style/caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -54,6 +53,20 @@
                 tools:text="밋밋최고" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Spinner
+            android:id="@+id/calendar_sp_view_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/calendar_view_mode"
+            android:textAlignment="center"
+            android:onItemSelected="@{(p1,v,p2,i) -> vm.changeViewMode(p2)}"
+            app:layout_constraintStart_toEndOf="@id/calendar_cl_profile"
+            app:layout_constraintEnd_toStartOf="@id/calendar_fl_notification"
+            app:layout_constraintTop_toTopOf="@id/calendar_cl_profile"
+            app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
+            />
+
 
         <FrameLayout
             android:id="@+id/calendar_fl_notification"
