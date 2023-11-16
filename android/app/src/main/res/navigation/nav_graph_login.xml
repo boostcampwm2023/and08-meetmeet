@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/login_nav_graph"
+    app:startDestination="@id/entrance_fragment">
+
+    <fragment
+        android:id="@+id/entrance_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.login.entrance.EntranceFragment"
+        android:label="EntranceFragment">
+        <action
+            android:id="@+id/entrance_fragment_to_home_activity"
+            app:destination="@id/home_activity"
+            app:popUpTo="@id/entrance_fragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <activity
+        android:id="@+id/home_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.home.HomeActivity"
+        android:label="HomeActivity">
+        <argument
+            android:name="user_id"
+            app:argType="long" />
+    </activity>
+</navigation>
