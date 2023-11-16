@@ -62,4 +62,6 @@
     <string name="setting_duplicate_check">중복확인</string>
     <string name="setting_complete">완료</string>
     <string name="setting_nickname">닉네임</string>
+    <string name="setting_new_password">새 비밀번호</string>
+    <string name="setting_password_confirm">비밀번호 확인</string>
 </resources>
