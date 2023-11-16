@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_calendar_fragment_to_setting_activity"
             app:destination="@id/setting_activity" />
+        <action
+            android:id="@+id/action_calendar_fragment_to_bottomSheet"
+            app:destination="@id/bottomSheet" />
     </fragment>
 
     <fragment
@@ -40,4 +43,9 @@
         android:name="com.teameetmeet.meetmeet.presentation.setting.SettingActivity"
         android:label="setting_activity"
         tools:layout="@layout/activity_setting" />
+
+    <dialog
+        android:id="@+id/bottomSheet"
+        android:name="com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment"
+        tools:layout="@layout/fragment_bottom_sheet_events_per_day" />
 </navigation>
