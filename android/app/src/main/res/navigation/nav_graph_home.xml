@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_calendar_fragment_to_add_event_activity"
             app:destination="@id/add_event_activity" />
+        <action
+            android:id="@+id/action_calendar_fragment_to_setting_activity"
+            app:destination="@id/setting_activity" />
     </fragment>
 
     <fragment
@@ -32,4 +35,9 @@
         android:name="com.teameetmeet.meetmeet.presentation.addevent.AddEventActivity"
         android:label="add_event_activity"
         tools:layout="@layout/activity_add_event" />
+    <activity
+        android:id="@+id/setting_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.setting.SettingActivity"
+        android:label="setting_activity"
+        tools:layout="@layout/activity_setting" />
 </navigation>
