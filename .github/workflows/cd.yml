@@ -10,7 +10,7 @@ on:
 jobs:
   pull_from_registry:
     name: connect server ssh and pull from NCP
-    needs: push_to_registry
+#    needs: push_to_registry
     runs-on: ubuntu-20.04
     steps:
       - name: connect ssh
