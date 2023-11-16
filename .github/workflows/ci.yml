@@ -8,13 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./backend
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
-
-      - name: Change Directory
-        run: cd backend
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
