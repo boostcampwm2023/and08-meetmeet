@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
+import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
 import com.teameetmeet.meetmeet.util.getDayListInMonth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -32,6 +32,9 @@ class CalendarViewModel @Inject constructor(
 
     private val _userNickName = MutableStateFlow<String>("")
     val userNickName: StateFlow<String> = _userNickName
+
+    private val _calendarViewMode = MutableStateFlow<CalendarViewMode>(CalendarViewMode.MONTH)
+    val calendarViewMode: StateFlow<CalendarViewMode> = _calendarViewMode
 
     init {
         fetchUserProfile()
@@ -69,6 +72,16 @@ class CalendarViewModel @Inject constructor(
         _daysInMonth.update {
             currentDate.value.date!!.getDayListInMonth(currentDate.value)
         }
+    }
+
+    fun changeViewMode(position: Int) {
+       _calendarViewMode.update {
+           when(position) {
+               0 -> CalendarViewMode.MONTH
+               1 -> CalendarViewMode.WEEK
+               else -> CalendarViewMode.MONTH
+           }
+       }
     }
 
     override fun onItemClick(calendarItem: CalendarItem) {
