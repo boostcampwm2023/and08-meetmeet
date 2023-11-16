@@ -33,6 +33,10 @@ class CalendarViewModel @Inject constructor(
     private val _userNickName = MutableStateFlow<String>("")
     val userNickName: StateFlow<String> = _userNickName
 
+    init {
+        fetchUserProfile()
+    }
+
 
 
     private fun fetchUserProfile() {
