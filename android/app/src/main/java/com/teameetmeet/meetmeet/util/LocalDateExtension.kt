@@ -11,12 +11,12 @@ fun LocalDate.toYearMonth(): String {
     return format(formatter)
 }
 
-fun LocalDate.toStartLong(): Long {
-    return atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+fun LocalDate.toStartLong(zoneId: ZoneId): Long {
+    return atStartOfDay(zoneId).toInstant().toEpochMilli()
 }
 
-fun LocalDate.toEndLong(): Long {
-    return plusDays(1).toStartLong() - 1
+fun LocalDate.toEndLong(zoneId: ZoneId): Long {
+    return plusDays(1).toStartLong(zoneId) - 1
 }
 
 fun LocalDate.getDayListInMonth(calendarItem: CalendarItem? = null): List<CalendarItem> {

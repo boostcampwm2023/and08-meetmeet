@@ -1,18 +1,41 @@
-export interface ICalendar {
-  id: number;
-  userId?: number;
-  groupId?: number;
-}
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
-export interface IEvent {
+@Entity()
+export class EventEntity {
+  @PrimaryGeneratedColumn()
   id: number;
-  calendarId?: number; // TODO: user 생성 후 수정
+
+  @Column('varchar', { length: 64 })
   title: string;
+
+  @Column()
   startDate: Date;
+
+  @Column()
   endDate: Date;
+
+  @Column()
   isJoinable: boolean;
-  isVisible?: boolean;
-  memo?: string;
-  announcement?: string;
-  repeatPolicyId?: number; // TODO: repeatPolicy 테이블 생성
+
+  @Column('varchar', { length: 255 })
+  announcement: string;
+
+  // @ManyToOne()
+  // repeatPolicy_id: number;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
