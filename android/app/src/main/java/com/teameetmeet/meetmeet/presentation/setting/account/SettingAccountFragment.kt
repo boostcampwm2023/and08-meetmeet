@@ -16,11 +16,20 @@ class SettingAccountFragment :
         super.onViewCreated(view, savedInstanceState)
 
         setTopAppBar()
+        setNavigation()
     }
 
     private fun setTopAppBar() {
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun setNavigation() {
+        binding.settingAccountBtnPasswordChange.setOnClickListener {
+            findNavController().navigate(
+                SettingAccountFragmentDirections.actionSettingAccountFragmentToSettingPasswordChangeFragment()
+            )
         }
     }
 }

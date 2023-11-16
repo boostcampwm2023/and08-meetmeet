@@ -58,4 +58,5 @@
     <string name="setting_alarm">알림 설정</string>
     <string name="setting_logout">로그아웃</string>
     <string name="setting_password_change">비밀번호 변경</string>
+    <string name="setting_account_delete">계정 탈퇴</string>
 </resources>
