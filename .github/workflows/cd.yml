@@ -11,6 +11,10 @@ jobs:
   push_to_registry:
     name: PUSH to NCP
     runs-on: ubuntu-20.04
+    defaults:
+      run:
+        working-directory: ./backend
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
