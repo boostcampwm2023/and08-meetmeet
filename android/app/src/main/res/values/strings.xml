@@ -59,4 +59,7 @@
     <string name="setting_logout">로그아웃</string>
     <string name="setting_password_change">비밀번호 변경</string>
     <string name="setting_account_delete">계정 탈퇴</string>
+    <string name="setting_duplicate_check">중복확인</string>
+    <string name="setting_complete">완료</string>
+    <string name="setting_nickname">닉네임</string>
 </resources>
