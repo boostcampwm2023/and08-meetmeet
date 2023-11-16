@@ -11,9 +11,11 @@ import com.teameetmeet.meetmeet.databinding.ActivitySearchEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.util.addUtcTimeOffset
 import com.teameetmeet.meetmeet.util.removeUtcTimeOffset
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SearchActivity : BaseActivity<ActivitySearchEventBinding>(
     R.layout.activity_search_event
 ) {
@@ -26,8 +28,10 @@ class SearchActivity : BaseActivity<ActivitySearchEventBinding>(
             vm = viewModel
             searchEventSv.setupWithSearchBar(searchEventSb)
             searchEventSpinner.setSelection(1)
+            searchEventSb.setNavigationOnClickListener {
+                finish()
+            }
         }
-
         setDatePicker()
     }
 
