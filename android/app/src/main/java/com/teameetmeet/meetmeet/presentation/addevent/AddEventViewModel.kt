@@ -1,11 +1,13 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
+import android.widget.RadioGroup
 import androidx.core.util.Pair
 import androidx.lifecycle.ViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.teameetmeet.meetmeet.data.model.EventNotification
-import com.teameetmeet.meetmeet.data.model.EventRepeatTerm
-import com.teameetmeet.meetmeet.data.model.EventTime
+import com.teameetmeet.meetmeet.presentation.model.EventColor
+import com.teameetmeet.meetmeet.presentation.model.EventNotification
+import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
+import com.teameetmeet.meetmeet.presentation.model.EventTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -39,6 +41,10 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
         MutableStateFlow(EventNotification.NONE)
     val eventNotification: StateFlow<EventNotification> = _eventNotification
 
+    private val _eventColor: MutableStateFlow<EventColor> =
+        MutableStateFlow(EventColor.RED)
+    val eventColor: StateFlow<EventColor> = _eventColor
+
     private val _eventRepeatTerm: MutableStateFlow<EventRepeatTerm> =
         MutableStateFlow(EventRepeatTerm.NONE)
     val eventRepeatTerm: StateFlow<EventRepeatTerm> = _eventRepeatTerm
@@ -51,8 +57,8 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
     private val _isJoin: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isJoin: StateFlow<Boolean> = _isJoin
 
-    fun setEventName(name: String) {
-        _eventName.update { name }
+    fun setEventName(name: CharSequence?) {
+        _eventName.update { name.toString() }
     }
 
     fun setEventDate(start: Long, end: Long) {
@@ -71,12 +77,17 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
         _eventNotification.update { notification }
     }
 
+    fun setEventColor(radioGroup: RadioGroup, id: Int) {
+        val index = radioGroup.indexOfChild(radioGroup.findViewById(id))
+        _eventColor.update { EventColor.values()[index] }
+    }
+
     fun setEventRepeatTerm(repeatTerm: EventRepeatTerm) {
         _eventRepeatTerm.update { repeatTerm }
     }
 
-    fun setEventMemo(memo: String) {
-        _eventMemo.update { memo }
+    fun setEventMemo(memo: CharSequence?) {
+        _eventMemo.update { memo.toString() }
     }
 
     fun setVisibleState(isChecked: Boolean) {
@@ -96,6 +107,7 @@ class AddEventViewModel @Inject constructor() : ViewModel() {
             eventStartTime : ${_eventStartTime.value}
             eventEndTime : ${_eventEndTime.value}
             eventNoti : ${_eventNotification.value}
+            eventColor : ${_eventColor.value}
             eventRepeatTerm : ${_eventRepeatTerm.value}
             eventMemo : ${_eventMemo.value}
             isVisible : ${_isVisible.value}
