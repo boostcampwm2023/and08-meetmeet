@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.calendar
 
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -22,4 +23,12 @@ fun bindDayInMonth(
         recyclerView.adapter = CalendarAdapter(viewModel)
     }
     (recyclerView.adapter as CalendarAdapter).submitList(dayList)
+}
+
+@BindingAdapter("image")
+fun bindUserProfileImage(
+    imageView: ImageView,
+    profileImage: String
+) {
+
 }
