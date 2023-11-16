@@ -63,7 +63,7 @@ jobs:
             
             sudo docker pull ${{ secrets.NCP_REGISTRY }}/nest:latest
             
-#            sudo service nginx stop
-#            sudo docker compose down
-#            sudo docker compose up -d
-#            sudo service nginx start
+            sudo service nginx stop
+            sudo docker compose down
+            sudo docker compose up -d
+            sudo service nginx start
