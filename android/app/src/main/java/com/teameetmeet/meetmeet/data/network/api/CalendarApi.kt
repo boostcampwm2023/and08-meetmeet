@@ -10,4 +10,11 @@ interface CalendarApi {
         @Query("startDate") startDate: String,
         @Query("endDate") endDate: String,
     ): List<EventResponse>
+
+    @GET("calendar/search")
+    fun searchEvents(
+        @Query("keyword") keyword: String?,
+        @Query("startDate") startDate: String,
+        @Query("endDate") endDate: String,
+    ): List<EventResponse>
 }
