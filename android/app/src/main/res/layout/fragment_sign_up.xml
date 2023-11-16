@@ -73,11 +73,13 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_password"
+            sign_up_password_state="@{vm.uiState.passwordState}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="40dp"
             android:hint="@string/login_app_password"
+            app:helperTextTextColor="@color/green"
             app:layout_constraintBottom_toTopOf="@id/sign_up_tf_password_confirm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -97,10 +99,12 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_password_confirm"
+            sign_up_password_confirm_state="@{vm.uiState.passwordConfirmState}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:hint="@string/login_app_password_confirm"
+            app:helperTextTextColor="@color/green"
             app:layout_constraintBottom_toTopOf="@id/sign_up_btn_sign_up"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -124,6 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="40dp"
+            sign_up_enabled="@{vm.uiState}"
             android:onClick="@{() -> vm.signUp()}"
             android:text="@string/login_app_sign_up"
             app:layout_constraintBottom_toBottomOf="parent"

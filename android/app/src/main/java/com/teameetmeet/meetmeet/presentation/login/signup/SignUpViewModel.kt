@@ -28,8 +28,16 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
 
     fun setPassword(password: CharSequence?) {
         val passwordString = password.toString()
-        val state = getPasswordState(passwordString)
-        _uiState.update { it.copy(password = passwordString, passwordState = state) }
+        val passwordState = getPasswordState(passwordString)
+        val passwordConfirmState =
+            getPasswordConfirmState(passwordString, _uiState.value.passwordConfirm)
+        _uiState.update {
+            it.copy(
+                password = passwordString,
+                passwordState = passwordState,
+                passwordConfirmState = passwordConfirmState
+            )
+        }
     }
 
     fun setPasswordConfirm(passwordConfirm: CharSequence?) {
