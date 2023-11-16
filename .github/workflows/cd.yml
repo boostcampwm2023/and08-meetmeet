@@ -54,6 +54,9 @@ jobs:
           port: ${{ secrets.DEV_PORT }}
           script: |
             cd /home/meetmeet/backend
+            
+            docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+            
             docker pull ${{ secrets.NCP_REGISTRY }}/nest:latest
   #            docker-compose down
   #            docker-compose up -d
