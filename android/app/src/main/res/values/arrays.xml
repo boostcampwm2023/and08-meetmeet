@@ -6,4 +6,8 @@
         <item>2 개월</item>
         <item>6 개월</item>
     </string-array>
+    <string-array name="calendar_view_mode">
+        <item>month</item>
+        <item>week</item>
+    </string-array>
 </resources>

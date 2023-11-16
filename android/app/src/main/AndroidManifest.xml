@@ -18,8 +18,13 @@
         tools:targetApi="31">
 
         <activity
+            android:name=".presentation.notification.NotificationActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".presentation.login.LoginActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
+
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
@@ -34,6 +39,7 @@
                     android:scheme="kakao${kakao_auth_host}" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".presentation.home.HomeActivity"
             android:exported="true">
@@ -44,7 +50,9 @@
         </activity>
 
         <activity android:name=".presentation.addevent.AddEventActivity" />
+
         <activity android:name=".presentation.searchevent.SearchActivity" />
+
         <activity android:name=".presentation.setting.SettingActivity" />
     </application>
 
