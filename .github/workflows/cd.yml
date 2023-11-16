@@ -8,6 +8,23 @@ on:
 #      - closed
 
 jobs:
+  pull_from_registry:
+    name: connect server ssh and pull from NCP
+    needs: push_to_registry
+    runs-on: ubuntu-20.04
+    steps:
+      - name: connect ssh
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DEV_HOST }}
+          username: ${{ secrets.DEV_USERNAME }}
+          password: ${{ secrets.DEV_PASSWORD }}
+          port: ${{ secrets.DEV_PORT }}
+          script: |
+            cd /home/meetmeet/backend
+            docker pull ${{ secrets.NCP_REGISTRY }}/nest:latest
+  #            docker-compose down
+  #            docker-compose up -d
 #  push_to_registry:
 #    name: PUSH to NCP
 #    runs-on: ubuntu-20.04
@@ -40,20 +57,3 @@ jobs:
 #          secrets: |
 #            GIT_AUTH_TOKEN=${{ secrets.GITHUB_TOKEN }}
 
-  pull_from_registry:
-    name: connect server ssh and pull from NCP
-    needs: push_to_registry
-    runs-on: ubuntu-20.04
-    steps:
-      - name: connect ssh
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.DEV_HOST }}
-          username: ${{ secrets.DEV_USERNAME }}
-          password: ${{ secrets.DEV_PASSWORD }}
-          port: ${{ secrets.DEV_PORT }}
-          script: |
-            cd /home/meetmeet/backend
-            docker pull ${{ secrets.NCP_REGISTRY }}/nest:latest
-#            docker-compose down
-#            docker-compose up -d
