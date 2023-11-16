@@ -49,7 +49,7 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
                 viewModel.kakaoLoginEvent.collect {
                     when (it) {
                         is KakaoLoginEvent.Success -> {
-                            navigateToHomeActivity(it.id)
+                            navigateToHomeActivity()
                         }
 
                         is KakaoLoginEvent.Failure -> {
@@ -65,7 +65,7 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun navigateToHomeActivity(id: Long) {
-        findNavController().navigate(EntranceFragmentDirections.entranceFragmentToHomeActivity(id))
+    private fun navigateToHomeActivity() {
+        findNavController().navigate(EntranceFragmentDirections.entranceFragmentToHomeActivity())
     }
 }
