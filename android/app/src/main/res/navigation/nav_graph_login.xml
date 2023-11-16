@@ -1,25 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_nav_graph"
     app:startDestination="@id/entrance_fragment">
 
     <fragment
         android:id="@+id/entrance_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.login.entrance.EntranceFragment"
+        tools:layout="@layout/fragment_entrance"
         android:label="EntranceFragment">
         <action
             android:id="@+id/entrance_fragment_to_home_activity"
             app:destination="@id/home_activity"
             app:popUpTo="@id/entrance_fragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_entranceFragment_to_self_login_fragment"
+            app:destination="@id/self_login_fragment" />
+        <action
+            android:id="@+id/action_entranceFragment_to_sign_up_fragment"
+            app:destination="@id/sign_up_fragment" />
     </fragment>
     <activity
         android:id="@+id/home_activity"
         android:name="com.teameetmeet.meetmeet.presentation.home.HomeActivity"
+        tools:layout="@layout/activity_home"
         android:label="HomeActivity">
         <argument
             android:name="user_id"
             app:argType="long" />
     </activity>
+    <fragment
+        android:id="@+id/self_login_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.login.selflogin.SelfLoginFragment"
+        android:label="self_login_fragment"
+        tools:layout="@layout/fragment_self_login" />
+    <fragment
+        android:id="@+id/sign_up_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.login.signup.SignUpFragment"
+        tools:layout="@layout/fragment_sign_up"
+        android:label="sign_up_fragment" />
 </navigation>

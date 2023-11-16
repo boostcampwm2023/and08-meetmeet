@@ -31,11 +31,15 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
         }
 
         binding.loginTvAppLogin.setOnClickListener {
-
+            findNavController().navigate(
+                EntranceFragmentDirections.actionEntranceFragmentToSelfLoginFragment()
+            )
         }
 
         binding.loginTvAppSignUp.setOnClickListener {
-
+            findNavController().navigate(
+                EntranceFragmentDirections.actionEntranceFragmentToSignUpFragment()
+            )
         }
     }
 
