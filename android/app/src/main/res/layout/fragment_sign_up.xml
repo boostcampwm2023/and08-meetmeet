@@ -36,8 +36,10 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_email"
-            duplicate_check="@{vm.uiState.emailDuplicateCheck}"
+            invalid_form_text="@{@string/sign_up_email_invalid}"
+            invalid_text="@{@string/sign_up_duplicate_check_fail}"
             sign_up_email_state="@{vm.uiState.emailState}"
+            valid_text="@{@string/sign_up_duplicate_check_complete}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -76,7 +78,9 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_password"
+            invalid_text="@{@string/sign_up_password_invalid}"
             sign_up_password_state="@{vm.uiState.passwordState}"
+            valid_text="@{@string/sign_up_safe_password}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -102,7 +106,9 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_password_confirm"
-            sign_up_password_confirm_state="@{vm.uiState.passwordConfirmState}"
+            invalid_text="@{@string/sign_up_password_confirm_invalid}"
+            sign_up_password_state="@{vm.uiState.passwordConfirmState}"
+            valid_text="@{@string/sign_up_password_confirm_valid}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"

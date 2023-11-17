@@ -1,7 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.login.selflogin
 
-import com.teameetmeet.meetmeet.presentation.model.EmailState
-import com.teameetmeet.meetmeet.presentation.model.PasswordState
+import com.teameetmeet.meetmeet.presentation.login.signup.EmailState
+import com.teameetmeet.meetmeet.presentation.login.signup.PasswordState
 
 data class SelfLoginUiState(
     val email: String = "",

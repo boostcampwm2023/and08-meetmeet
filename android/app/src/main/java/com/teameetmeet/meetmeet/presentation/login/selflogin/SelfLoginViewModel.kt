@@ -3,8 +3,8 @@ package com.teameetmeet.meetmeet.presentation.login.selflogin
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.data.repository.UserRepository
-import com.teameetmeet.meetmeet.presentation.model.EmailState
-import com.teameetmeet.meetmeet.presentation.model.PasswordState
+import com.teameetmeet.meetmeet.presentation.login.signup.EmailState
+import com.teameetmeet.meetmeet.presentation.login.signup.PasswordState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +32,7 @@ class SelfLoginViewModel @Inject constructor(
 
     fun updateEmail(email: CharSequence?) {
         val emailString = email.toString()
-        val state = if (emailString.isNotEmpty()) EmailState.Valid else EmailState.None
+        val state = if (emailString.isNotEmpty()) EmailState.ValidForm else EmailState.None
         _uiState.update { it.copy(email = email.toString(), emailState = state) }
     }
 

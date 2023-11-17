@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.model
+package com.teameetmeet.meetmeet.presentation.login.signup
 
 sealed class PasswordState {
     data object None : PasswordState()

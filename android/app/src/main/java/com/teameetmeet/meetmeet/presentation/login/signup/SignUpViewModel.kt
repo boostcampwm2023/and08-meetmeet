@@ -3,8 +3,6 @@ package com.teameetmeet.meetmeet.presentation.login.signup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.data.repository.UserRepository
-import com.teameetmeet.meetmeet.presentation.model.EmailState
-import com.teameetmeet.meetmeet.presentation.model.PasswordState
 import com.teameetmeet.meetmeet.util.Verification
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -33,19 +31,19 @@ class SignUpViewModel @Inject constructor(
 
     fun updateEmail(email: CharSequence?) {
         val emailString = email.toString()
-        val state = getEmailState(emailString)
+        val state = getEmailStateOf(emailString)
         _uiState.update {
             it.copy(
-                email = emailString, emailState = state, emailDuplicateCheck = false
+                email = emailString, emailState = state
             )
         }
     }
 
     fun updatePassword(password: CharSequence?) {
         val passwordString = password.toString()
-        val passwordState = getPasswordState(passwordString)
+        val passwordState = getPasswordStateOf(passwordString)
         val passwordConfirmState =
-            getPasswordConfirmState(passwordString, _uiState.value.passwordConfirm)
+            getPasswordConfirmStateOf(passwordString, _uiState.value.passwordConfirm)
         _uiState.update {
             it.copy(
                 password = passwordString,
@@ -57,7 +55,7 @@ class SignUpViewModel @Inject constructor(
 
     fun updatePasswordConfirm(passwordConfirm: CharSequence?) {
         val passwordConfirmString = passwordConfirm.toString()
-        val state = getPasswordConfirmState(_uiState.value.password, passwordConfirmString)
+        val state = getPasswordConfirmStateOf(_uiState.value.password, passwordConfirmString)
         _uiState.update {
             it.copy(
                 passwordConfirm = passwordConfirmString, passwordConfirmState = state
@@ -72,9 +70,10 @@ class SignUpViewModel @Inject constructor(
             userRepository.checkEmailDuplicate(_uiState.value.email)
                 .catch {
                     // 예외 처리
+                    _uiState.update { it.copy(emailState = EmailState.Invalid) }
                     _showPlaceholder.update { false }
-                }.collectLatest { result ->
-                    _uiState.update { it.copy(emailDuplicateCheck = result) }
+                }.collectLatest {
+                    _uiState.update { it.copy(emailState = EmailState.Valid) }
                     _showPlaceholder.update { false }
                 }
         }
@@ -96,15 +95,15 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun getEmailState(email: String): EmailState {
+    private fun getEmailStateOf(email: String): EmailState {
         return when {
             email.isEmpty() -> EmailState.None
-            Verification.isValidEmail(email) -> EmailState.Valid
-            else -> EmailState.Invalid
+            Verification.isValidEmail(email) -> EmailState.ValidForm
+            else -> EmailState.InvalidForm
         }
     }
 
-    private fun getPasswordState(password: String): PasswordState {
+    private fun getPasswordStateOf(password: String): PasswordState {
         return when {
             password.isEmpty() -> PasswordState.None
             Verification.isValidPassword(password) -> PasswordState.Valid
@@ -112,7 +111,10 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun getPasswordConfirmState(password: String, passwordConfirm: String): PasswordState {
+    private fun getPasswordConfirmStateOf(
+        password: String,
+        passwordConfirm: String
+    ): PasswordState {
         return when {
             passwordConfirm.isEmpty() -> PasswordState.None
             password == passwordConfirm -> PasswordState.Valid

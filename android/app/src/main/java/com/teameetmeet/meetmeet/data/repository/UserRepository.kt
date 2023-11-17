@@ -48,10 +48,12 @@ class UserRepository @Inject constructor(
         emit(true)
     }
 
-    fun checkEmailDuplicate(email: String): Flow<Boolean> = flow {
-        // todo API 호출
-        emit(true)
-    }
+    fun checkEmailDuplicate(email: String): Flow<Unit> = flowOf(true)
+        .map {
+
+        }.catch {
+            throw Exception()
+        }
 
     fun getToken(): Flow<String?> =
         dataStore.data.map { it[ACCESS_TOKEN] }
