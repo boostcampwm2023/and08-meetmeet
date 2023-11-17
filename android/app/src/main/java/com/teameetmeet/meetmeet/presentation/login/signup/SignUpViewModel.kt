@@ -31,7 +31,7 @@ class SignUpViewModel @Inject constructor(
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
 
-    fun setEmail(email: CharSequence?) {
+    fun updateEmail(email: CharSequence?) {
         val emailString = email.toString()
         val state = getEmailState(emailString)
         _uiState.update {
@@ -41,7 +41,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun setPassword(password: CharSequence?) {
+    fun updatePassword(password: CharSequence?) {
         val passwordString = password.toString()
         val passwordState = getPasswordState(passwordString)
         val passwordConfirmState =
@@ -55,7 +55,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun setPasswordConfirm(passwordConfirm: CharSequence?) {
+    fun updatePasswordConfirm(passwordConfirm: CharSequence?) {
         val passwordConfirmString = passwordConfirm.toString()
         val state = getPasswordConfirmState(_uiState.value.password, passwordConfirmString)
         _uiState.update {
@@ -99,7 +99,7 @@ class SignUpViewModel @Inject constructor(
     private fun getEmailState(email: String): EmailState {
         return when {
             email.isEmpty() -> EmailState.None
-            Verification.isEmail(email) -> EmailState.Valid
+            Verification.isValidEmail(email) -> EmailState.Valid
             else -> EmailState.Invalid
         }
     }
@@ -107,7 +107,7 @@ class SignUpViewModel @Inject constructor(
     private fun getPasswordState(password: String): PasswordState {
         return when {
             password.isEmpty() -> PasswordState.None
-            Verification.isPassword(password) -> PasswordState.Valid
+            Verification.isValidPassword(password) -> PasswordState.Valid
             else -> PasswordState.Invalid
         }
     }

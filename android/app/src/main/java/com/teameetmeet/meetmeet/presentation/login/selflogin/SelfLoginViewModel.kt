@@ -30,13 +30,13 @@ class SelfLoginViewModel @Inject constructor(
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
 
-    fun setEmail(email: CharSequence?) {
+    fun updateEmail(email: CharSequence?) {
         val emailString = email.toString()
         val state = if (emailString.isNotEmpty()) EmailState.Valid else EmailState.None
         _uiState.update { it.copy(email = email.toString(), emailState = state) }
     }
 
-    fun setPassword(password: CharSequence?) {
+    fun updatePassword(password: CharSequence?) {
         val passwordString = password.toString()
         val state = if (passwordString.isNotEmpty()) PasswordState.Valid else PasswordState.None
         _uiState.update { it.copy(password = password.toString(), passwordState = state) }
