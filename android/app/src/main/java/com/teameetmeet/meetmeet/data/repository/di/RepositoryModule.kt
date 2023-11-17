@@ -1,9 +1,8 @@
 package com.teameetmeet.meetmeet.data.repository.di
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
 import com.teameetmeet.meetmeet.data.datasource.RemoteCalendarDataSource
+import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
@@ -24,14 +23,14 @@ class RepositoryModule {
     @Provides
     fun provideLoginRepository(
         loginApi: LoginApi,
-        dataStore: DataStore<Preferences>
+        dataStore: DataStoreHelper
     ) = LoginRepository(loginApi, dataStore)
 
     @Singleton
     @Provides
     fun provideUserRepository(
         userApi: UserApi,
-        dataStore: DataStore<Preferences>
+        dataStore: DataStoreHelper
     ) = UserRepository(userApi, dataStore)
 
     @Singleton

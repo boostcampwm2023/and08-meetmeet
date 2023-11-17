@@ -40,7 +40,7 @@ class EntranceViewModel @Inject constructor(
                 )
             )
         } else if (token != null) {
-            loginApp(token)
+            loginApp()
         }
     }
 
@@ -64,7 +64,7 @@ class EntranceViewModel @Inject constructor(
                             callback = kakaoLoginCallback
                         )
                     } else if (token != null) {
-                        loginApp(token)
+                        loginApp()
                     }
                 }
             } else {
@@ -76,7 +76,7 @@ class EntranceViewModel @Inject constructor(
         }
     }
 
-    private fun loginApp(token: OAuthToken) {
+    private fun loginApp() {
         UserApiClient.instance.me { user, error ->
             viewModelScope.launch {
                 if (error != null) {

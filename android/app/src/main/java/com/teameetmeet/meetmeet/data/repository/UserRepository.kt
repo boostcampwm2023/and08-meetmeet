@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
+import android.util.Log
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.teameetmeet.meetmeet.data.NoDataException
@@ -31,14 +32,22 @@ class UserRepository @Inject constructor(
             }
     }
 
-    private fun getLocalUserProfile(): Flow<UserProfile> {
-        return dataStore.getUserProfile().catch {
+    fun getToken() : Flow<String?> {
+        return dataStore.getAppToken()
+            .catch {
                 throw it
-                //TODO(예외 처리 필요)
+                //TODO("예외 처리 필요")
             }
     }
 
-    suspend private fun fetchUserProfile(userProfile: UserProfile) {
+    private fun getLocalUserProfile(): Flow<UserProfile> {
+        return dataStore.getUserProfile().catch {
+            throw it
+            //TODO(예외 처리 필요)
+        }
+    }
+
+    private suspend fun fetchUserProfile(userProfile: UserProfile) {
         dataStore.fetchUserProfile(userProfile)
     }
 
@@ -50,7 +59,17 @@ class UserRepository @Inject constructor(
         emit(true)
     }
 
-    fun logout() {
+    fun logout(): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                val token = dataStore.getAppToken().first() ?: throw NoDataException()
+                userApi.logout(token)
+                dataStore.deleteAppToken()
+                dataStore.deleteUserProfile()
+            }.catch {
+                throw it
+                //TODO("예외 처리 필요")
+            }
 
     }
 
