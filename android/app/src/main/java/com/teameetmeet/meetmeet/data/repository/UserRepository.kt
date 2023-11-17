@@ -1,9 +1,8 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.network.entity.UserProfile
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +14,7 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val userApi: UserApi,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStoreHelper
 ) {
     fun getUserProfile(accessToken: String): Flow<UserProfile> {
         return flowOf(true)
@@ -31,20 +30,14 @@ class UserRepository @Inject constructor(
 
         // todo API 호출, DataStore 저장
 
-        dataStore.edit {
-            it[ACCESS_TOKEN] = email
-            it[REFRESH_TOKEN] = password
-        }
+        dataStore.storeAppToken(email, password)
         emit(true)
     }
 
     fun signUp(email: String, password: String): Flow<Boolean> = flow {
         // todo API 호출, DataStore 저장
 
-        dataStore.edit {
-            it[ACCESS_TOKEN] = email
-            it[REFRESH_TOKEN] = password
-        }
+        dataStore.storeAppToken(email, password)
         emit(true)
     }
 
@@ -55,12 +48,5 @@ class UserRepository @Inject constructor(
             throw Exception()
         }
 
-    fun getToken(): Flow<String?> =
-        dataStore.data.map { it[ACCESS_TOKEN] }
 
-
-    companion object {
-        val ACCESS_TOKEN = stringPreferencesKey("accessToken")
-        val REFRESH_TOKEN = stringPreferencesKey("refreshToken")
-    }
 }

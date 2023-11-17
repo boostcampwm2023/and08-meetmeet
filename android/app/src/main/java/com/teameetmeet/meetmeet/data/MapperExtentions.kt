@@ -1,6 +1,6 @@
 package com.teameetmeet.meetmeet.data
 
-import com.teameetmeet.meetmeet.data.database.entity.Event
+import com.teameetmeet.meetmeet.data.local.database.entity.Event
 import com.teameetmeet.meetmeet.data.dto.EventDto
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 

@@ -1,9 +1,8 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
@@ -15,7 +14,7 @@ import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
     private val loginApi: LoginApi,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStoreHelper
 ) {
     fun loginKakao(id: Long): Flow<Unit> {
         return flowOf(true)
@@ -40,14 +39,7 @@ class LoginRepository @Inject constructor(
     }
 
     private suspend fun storeAppToken(accessToken: String, refreshToken: String) {
-        dataStore.edit{
-            it[ACCESS_TOKEN] = accessToken
-            it[REFRESH_TOKEN] = refreshToken
-        }
+        dataStore.storeAppToken(accessToken, refreshToken)
     }
 
-    companion object {
-        val ACCESS_TOKEN = stringPreferencesKey("accessToken")
-        val REFRESH_TOKEN = stringPreferencesKey("refreshToken")
-    }
 }
