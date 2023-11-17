@@ -2,12 +2,17 @@ package com.teameetmeet.meetmeet.presentation.setting.home
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentSettingHomeBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingHomeFragment :
@@ -20,6 +25,7 @@ class SettingHomeFragment :
         setBinding()
         setTopAppBar()
         setNavigation()
+        collectViewModelEvent()
     }
 
     private fun setBinding() {
@@ -42,6 +48,28 @@ class SettingHomeFragment :
                 SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingAlarmFragment()
             )
         }
+    }
+
+    private fun collectViewModelEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collect { event ->
+                    when(event) {
+                        is SettingHomeEvent.NavigateToLoginActivity -> navigateToLoginActivity()
+                        is SettingHomeEvent.ShowMessage -> showToastMessage(event.message)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showToastMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun navigateToLoginActivity() {
+        findNavController().navigate(SettingHomeFragmentDirections.actionSettingHomeFragmentToLoginActivity())
+        requireActivity().finish()
     }
 
     private fun setTopAppBar() {

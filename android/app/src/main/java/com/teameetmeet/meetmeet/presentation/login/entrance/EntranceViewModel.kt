@@ -44,7 +44,6 @@ class EntranceViewModel @Inject constructor(
         }
     }
 
-
     fun loginKakao() {
         viewModelScope.launch {
             if (UserApiClient.instance.isKakaoTalkLoginAvailable(application)) {

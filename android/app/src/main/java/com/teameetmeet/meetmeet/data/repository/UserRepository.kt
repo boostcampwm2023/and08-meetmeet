@@ -64,8 +64,8 @@ class UserRepository @Inject constructor(
             .map {
                 val token = dataStore.getAppToken().first() ?: throw NoDataException()
                 userApi.logout(token)
-                dataStore.deleteAppToken()
                 dataStore.deleteUserProfile()
+                dataStore.deleteAppToken()
             }.catch {
                 throw it
                 //TODO("예외 처리 필요")
