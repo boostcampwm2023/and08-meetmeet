@@ -12,6 +12,7 @@
 
     <color name="blue">#FF0000FF</color>
     <color name="red">#FFFF0000</color>
+    <color name="green">#4DA430</color>
     <color name="calendar_background_purple">#E8DEF8</color>
     <color name="background_splash">#FF7374E2</color>
 
@@ -19,4 +20,6 @@
     <color name="grey2">#828282</color>
     <color name="grey3">#E0E0E0</color>
     <color name="grey4">#F5F5F7</color>
+
+    <color name="loading_background">#30000000</color>
 </resources>

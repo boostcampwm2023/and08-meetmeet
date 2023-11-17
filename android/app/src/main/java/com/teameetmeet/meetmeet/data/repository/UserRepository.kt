@@ -38,6 +38,23 @@ class UserRepository @Inject constructor(
         emit(true)
     }
 
+    fun signUp(email: String, password: String): Flow<Boolean> = flow {
+        // todo API 호출, DataStore 저장
+
+        dataStore.edit {
+            it[ACCESS_TOKEN] = email
+            it[REFRESH_TOKEN] = password
+        }
+        emit(true)
+    }
+
+    fun checkEmailDuplicate(email: String): Flow<Unit> = flowOf(true)
+        .map {
+
+        }.catch {
+            throw Exception()
+        }
+
     fun getToken(): Flow<String?> =
         dataStore.data.map { it[ACCESS_TOKEN] }
 

@@ -38,5 +38,9 @@
         android:id="@+id/sign_up_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.login.signup.SignUpFragment"
         android:label="sign_up_fragment"
-        tools:layout="@layout/fragment_sign_up" />
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_sign_up_fragment_to_home_activity"
+            app:destination="@id/home_activity" />
+    </fragment>
 </navigation>

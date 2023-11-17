@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
 
         <variable
             name="vm"
@@ -33,10 +36,15 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_email"
+            invalid_form_text="@{@string/sign_up_email_invalid}"
+            invalid_text="@{@string/sign_up_duplicate_check_fail}"
+            sign_up_email_state="@{vm.uiState.emailState}"
+            valid_text="@{@string/sign_up_duplicate_check_complete}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:hint="@string/login_app_email"
+            app:helperTextTextColor="@color/green"
             app:layout_constraintBottom_toTopOf="@id/sign_up_tf_password"
             app:layout_constraintEnd_toStartOf="@id/sign_up_btn_email_check"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,13 +57,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="64"
-                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setEmail(p0)}" />
+                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updateEmail(p0)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/sign_up_btn_email_check"
             style="@style/Widget.Material3.Button.TonalButton"
+            email_duplicate_enabled="@{vm.uiState.emailState}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -69,11 +78,15 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_password"
+            invalid_text="@{@string/sign_up_password_invalid}"
+            sign_up_password_state="@{vm.uiState.passwordState}"
+            valid_text="@{@string/sign_up_safe_password}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="40dp"
             android:hint="@string/login_app_password"
+            app:helperTextTextColor="@color/green"
             app:layout_constraintBottom_toTopOf="@id/sign_up_tf_password_confirm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,16 +100,20 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:maxLength="14"
-                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setPassword(p0)}" />
+                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updatePassword(p0)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/sign_up_tf_password_confirm"
+            invalid_text="@{@string/sign_up_password_confirm_invalid}"
+            sign_up_password_state="@{vm.uiState.passwordConfirmState}"
+            valid_text="@{@string/sign_up_password_confirm_valid}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:hint="@string/login_app_password_confirm"
+            app:helperTextTextColor="@color/green"
             app:layout_constraintBottom_toTopOf="@id/sign_up_btn_sign_up"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -110,12 +127,13 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:maxLength="14"
-                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setPasswordConfirm(p0)}" />
+                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updatePasswordConfirm(p0)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/sign_up_btn_sign_up"
+            sign_up_enabled="@{vm.uiState}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -126,6 +144,34 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/sign_up_tf_password_confirm" />
+
+        <View
+            android:id="@+id/view_loading_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/loading_background"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{vm.showPlaceholder ?View.VISIBLE:View.GONE}"
+            app:constraint_referenced_ids="view_loading_background, progress_bar"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
