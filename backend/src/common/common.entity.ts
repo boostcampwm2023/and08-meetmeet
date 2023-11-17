@@ -6,7 +6,7 @@ import {
 } from 'typeorm';
 
 export class commonEntity {
-  @PrimaryGeneratedColumn({ type: 'int' })
+  @PrimaryGeneratedColumn()
   id: number;
 
   @CreateDateColumn({ type: 'timestamp' })
