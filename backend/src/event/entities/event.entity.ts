@@ -24,6 +24,9 @@ export class Event extends commonEntity {
   @Column({ type: 'varchar', length: 255, nullable: true })
   announcement: string;
 
+  @Column({ nullable: true })
+  repeatPolicyId: number;
+
   @ManyToOne(() => RepeatPolicy, (repeatPolicy) => repeatPolicy.events)
   repeatPolicy: RepeatPolicy;
 
