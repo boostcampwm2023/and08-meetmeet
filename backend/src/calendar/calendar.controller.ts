@@ -1,16 +1,13 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
-import { EventEntity } from './event.entity';
+import { Calendar } from './entities/calendar.entity';
 
 @Controller('calendar')
 export class CalendarController {
   constructor(private readonly calendarService: CalendarService) {}
 
   @Get()
-  async getEvents(
-    @Param('startDate') startDate: string,
-    @Param('endDate') endDate: string,
-  ): Promise<EventEntity[]> {
+  async getEvents(): Promise<Calendar[]> {
     return await this.calendarService.findAll();
   }
 }
