@@ -4,6 +4,9 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.setting.alarm.SettingAlarmViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,5 +31,36 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/setting_alarm_switch_push_alarm"
+            style="@style/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@{vm.isPushAlarmOn}"
+            android:onCheckedChanged="@{(p1,p2) -> vm.changeAlarmState(p2)}"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:padding="20dp"
+            android:text="@string/setting_push_alarm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="16dp"
+            app:dividerColor="@color/grey3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/setting_alarm_switch_push_alarm" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="16dp"
+            app:dividerColor="@color/grey3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/setting_alarm_switch_push_alarm" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

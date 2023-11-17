@@ -14,6 +14,7 @@
     <color name="red">#FFFF0000</color>
     <color name="green">#4DA430</color>
     <color name="calendar_background_purple">#E8DEF8</color>
+    <color name="background_splash">#FF7374E2</color>
 
     <color name="grey1">#4F4F4F</color>
     <color name="grey2">#828282</color>

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CalendarController } from './calendar.controller';
+import { Calendar } from './entities/calendar.entity';
 import { CalendarService } from './calendar.service';
-import { EventEntity } from './event.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([EventEntity])],
+  imports: [TypeOrmModule.forFeature([Calendar])],
   controllers: [CalendarController],
   providers: [CalendarService],
 })

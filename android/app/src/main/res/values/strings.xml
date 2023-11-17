@@ -42,8 +42,11 @@
     <string name="calendar_day_of_week_friday">금</string>
     <string name="calendar_day_of_week_saturday">토</string>
     <string name="calendar_day_of_week_sunday">일</string>
+
     <string name="login_app_logo_description">meetmeet logo</string>
     <string name="login_kakao_login_button_description">kakao login button</string>
+    <string name="login_kakao_message_no_user_data">유저 정보를 불러올 수 없습니다.</string>
+    <string name="login_kakao_message_kakao_login_fail">카카오 로그인 실패.\n%s</string>
     <string name="login_app_login">로그인</string>
     <string name="login_app_sign_up">회원가입</string>
     <string name="login_app_password">비밀번호</string>
@@ -64,6 +67,7 @@
     <string name="setting_nickname">닉네임</string>
     <string name="setting_new_password">새 비밀번호</string>
     <string name="setting_password_confirm">비밀번호 확인</string>
+    <string name="setting_push_alarm">푸시 알림</string>
 
     <string name="sign_up_duplicate_check_complete">중복확인 완료</string>
     <string name="sign_up_duplicate_check_fail">중복된 이메일 입니다</string>
