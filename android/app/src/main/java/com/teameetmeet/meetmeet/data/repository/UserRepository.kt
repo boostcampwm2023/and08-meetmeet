@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -23,20 +24,21 @@ class UserRepository @Inject constructor(
             .map {
                 val token = dataStore.getAppToken().first() ?: throw NoDataException()
                 userApi.getUserProfile(token)
+            }.onEach {
+                fetchUserProfile(it)
             }.catch {
-                throw it
-                //TODO(예외 처리 필요)
+                getLocalUserProfile()
             }
     }
 
-    fun getLocalUserProfile(): Flow<UserProfile> {
+    private fun getLocalUserProfile(): Flow<UserProfile> {
         return dataStore.getUserProfile().catch {
                 throw it
                 //TODO(예외 처리 필요)
             }
     }
 
-    suspend fun fetchUserProfile(userProfile: UserProfile) {
+    suspend private fun fetchUserProfile(userProfile: UserProfile) {
         dataStore.fetchUserProfile(userProfile)
     }
 
@@ -46,6 +48,10 @@ class UserRepository @Inject constructor(
 
         dataStore.storeAppToken(email, password)
         emit(true)
+    }
+
+    fun logout() {
+
     }
 
     fun signUp(email: String, password: String): Flow<Boolean> = flow {

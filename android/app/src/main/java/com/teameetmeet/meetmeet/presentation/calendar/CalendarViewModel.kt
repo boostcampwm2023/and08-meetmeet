@@ -50,19 +50,10 @@ class CalendarViewModel @Inject constructor(
     private fun fetchUserProfile() {
         viewModelScope.launch {
             userRepository.getUserProfile().catch {
-                fetchLocalUserProfile()
+                //TODO("유저 프로필을 못 불러올 때 어떻게 해야할 지 생각")
             }.collect { userProfile ->
-                userRepository.fetchUserProfile(userProfile)
                 updateUserProfile(userProfile)
             }
-        }
-    }
-
-    private suspend fun fetchLocalUserProfile() {
-        userRepository.getLocalUserProfile().catch {
-            //TODO("유저 프로필을 못 불러올 때 어떻게 해야할 지 생각")
-        }.collect { userProfile ->
-            updateUserProfile(userProfile)
         }
     }
 
