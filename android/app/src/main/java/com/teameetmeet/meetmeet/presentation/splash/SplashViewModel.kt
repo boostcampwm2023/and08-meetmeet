@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.splash
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.auth.AuthApiClient
@@ -53,7 +54,7 @@ class SplashViewModel @Inject constructor(
         userRepository.getToken().catch {
             _event.tryEmit(SplashEvent.NavigateToLoginActivity)
         }.collect { token ->
-            if (token == null) {
+            if (token.isNullOrEmpty()) {
                 _event.tryEmit(SplashEvent.NavigateToLoginActivity)
             } else {
                 autoLoginApp(token)
