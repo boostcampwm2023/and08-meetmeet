@@ -6,7 +6,7 @@
 ## 문서
 | 그라운드 룰                                                  | 디자인       | 회의록       | 깃허브 컨벤션       |
 | ------------------------------------------------------------ | ------------ |  ------------ |  ------------ |
-| 🐧 [그라운드 룰](https://github.com/boostcampwm2023/and08-meetmeet/wiki/%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0#%EC%97%AD%ED%95%A0-%EB%B6%84%EB%8B%B4) | 🐒 [디자인]() | 👀 [회의록]() | 😺 [깃허브 컨벤션](https://github.com/boostcampwm2023/and08-meetmeet/wiki/Github--%EC%BB%A8%EB%B2%A4%EC%85%98) |
+| 🐧 [그라운드 룰](https://github.com/boostcampwm2023/and08-meetmeet/wiki/%EA%B7%B8%EB%9D%BC%EC%9A%B4%EB%93%9C-%EB%A3%B0#%EC%97%AD%ED%95%A0-%EB%B6%84%EB%8B%B4) | 🐒 [디자인](https://www.figma.com/file/eylSOsOSmhctNtNpyFTNZe/Android-MeetMeet?type=design&node-id=0%3A1&mode=dev) | 👀 [회의록](https://shocking-emery-8d2.notion.site/3afcd93b33c042aead08f4a53aacd137?pvs=4) | 😺 [깃허브 컨벤션](https://github.com/boostcampwm2023/and08-meetmeet/wiki/Github--%EC%BB%A8%EB%B2%A4%EC%85%98) |
 
 
 ## 밋밋 팀원 : 소개

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.setting.home.SettingHomeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/layout_app_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/top_app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:navigationIcon="@drawable/ic_nav_pre" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/setting_home_cv_profile"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="30dp"
+            app:cardBackgroundColor="@color/grey3"
+            app:cardCornerRadius="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_app_bar">
+
+            <ImageView
+                android:id="@+id/setting_home_iv_profile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:src="@drawable/ic_launcher_foreground" />
+
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/setting_home_tv_nickname"
+            style="@style/medium.bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_cv_profile"
+            tools:text="닉네임" />
+
+        <TextView
+            android:id="@+id/setting_home_tv_email"
+            style="@style/medium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="13dp"
+            android:textColor="@color/grey2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_tv_nickname"
+            tools:text="meetmeet@kakao.com" />
+
+        <Button
+            android:id="@+id/setting_home_btn_account_setting"
+            style="@style/medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="80dp"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="left"
+            android:paddingBottom="15dp"
+            android:text="@string/setting_account"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_tv_email"
+            tools:ignore="RtlHardcoded" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:dividerColor="@color/grey3"
+            app:layout_constraintEnd_toEndOf="@id/setting_home_btn_account_setting"
+            app:layout_constraintStart_toStartOf="@id/setting_home_btn_account_setting"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_btn_account_setting" />
+
+        <Button
+            android:id="@+id/setting_home_btn_profile_setting"
+            style="@style/medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="left"
+            android:paddingBottom="15dp"
+            android:text="@string/setting_profile"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_btn_account_setting"
+            tools:ignore="RtlHardcoded" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:dividerColor="@color/grey3"
+            app:layout_constraintEnd_toEndOf="@id/setting_home_btn_profile_setting"
+            app:layout_constraintStart_toStartOf="@id/setting_home_btn_profile_setting"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_btn_profile_setting" />
+
+        <Button
+            android:id="@+id/setting_home_btn_alarm_setting"
+            style="@style/medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="left"
+            android:paddingBottom="15dp"
+            android:text="@string/setting_alarm"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_btn_profile_setting"
+            tools:ignore="RtlHardcoded" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:dividerColor="@color/grey3"
+            app:layout_constraintEnd_toEndOf="@id/setting_home_btn_alarm_setting"
+            app:layout_constraintStart_toStartOf="@id/setting_home_btn_alarm_setting"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_btn_alarm_setting" />
+
+        <Button
+            android:id="@+id/setting_home_btn_logout"
+            style="@style/medium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:drawableEnd="@drawable/ic_arrow_right"
+            android:gravity="left"
+            android:paddingBottom="15dp"
+            android:text="@string/setting_logout"
+            android:onClick="@{() -> vm.logout()}"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_btn_alarm_setting"
+            tools:ignore="RtlHardcoded" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:dividerColor="@color/grey3"
+            app:layout_constraintEnd_toEndOf="@id/setting_home_btn_logout"
+            app:layout_constraintStart_toStartOf="@id/setting_home_btn_logout"
+            app:layout_constraintTop_toBottomOf="@id/setting_home_btn_logout" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

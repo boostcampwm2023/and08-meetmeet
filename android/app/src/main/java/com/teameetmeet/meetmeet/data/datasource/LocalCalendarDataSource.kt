@@ -1,13 +1,14 @@
 package com.teameetmeet.meetmeet.data.datasource
 
-import com.teameetmeet.meetmeet.data.database.dao.EventDao
-import com.teameetmeet.meetmeet.data.database.entity.Event
+import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
+import com.teameetmeet.meetmeet.data.local.database.entity.Event
 import com.teameetmeet.meetmeet.data.toDateLong
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import javax.inject.Inject
 
-class LocalCalendarDataSource(private val dao: EventDao) {
-    suspend fun getEvents(startDate: String, endDate: String): Flow<List<Event>> {
+class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
+    fun getEvents(startDate: String, endDate: String): Flow<List<Event>> {
         return startDate.toDateLong()?.let { startDateLong ->
             endDate.toDateLong()?.let { endDateLong ->
                 dao.getEvents(startDateLong, endDateLong)

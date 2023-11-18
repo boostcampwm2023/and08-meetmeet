@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_setting"
+    app:startDestination="@id/setting_home_fragment">
+
+    <fragment
+        android:id="@+id/setting_home_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.setting.home.SettingHomeFragment"
+        android:label="setting_home_fragment"
+        tools:layout="@layout/fragment_setting_home">
+        <action
+            android:id="@+id/action_setting_home_fragment_to_setting_account_fragment"
+            app:destination="@id/setting_account_fragment" />
+        <action
+            android:id="@+id/action_setting_home_fragment_to_setting_profile_fragment"
+            app:destination="@id/setting_profile_fragment" />
+        <action
+            android:id="@+id/action_setting_home_fragment_to_setting_alarm_fragment"
+            app:destination="@id/setting_alarm_fragment" />
+        <action
+            android:id="@+id/action_setting_home_fragment_to_login_activity"
+            app:destination="@id/login_activity" />
+    </fragment>
+    <fragment
+        android:id="@+id/setting_account_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.setting.account.SettingAccountFragment"
+        android:label="setting_account_fragment"
+        tools:layout="@layout/fragment_setting_account">
+        <action
+            android:id="@+id/action_setting_account_fragment_to_setting_password_change_fragment"
+            app:destination="@id/setting_password_change_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setting_profile_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.setting.profile.SettingProfileFragment"
+        android:label="setting_profile_fragment"
+        tools:layout="@layout/fragment_setting_profile" />
+    <fragment
+        android:id="@+id/setting_alarm_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.setting.alarm.SettingAlarmFragment"
+        android:label="setting_alarm_fragment"
+        tools:layout="@layout/fragment_setting_alarm" />
+    <fragment
+        android:id="@+id/setting_password_change_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.setting.passwordchange.SettingPasswordChangeFragment"
+        android:label="setting_password_change_fragment"
+        tools:layout="@layout/fragment_setting_password_change" />
+    <activity
+        android:id="@+id/login_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.login.LoginActivity"
+        android:label="login_activity" />
+</navigation>

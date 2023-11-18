@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.calendar.CalendarViewModel" />
@@ -12,6 +13,96 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/calendar_cl_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/calendar_cv_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="100dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/calendar_iv_profile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    app:image="@{vm.userProfileImage}"
+                    android:backgroundTint="@color/black" />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/calendar_tv_nickname"
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@id/calendar_cv_profile"
+                app:layout_constraintStart_toEndOf="@id/calendar_cv_profile"
+                app:layout_constraintTop_toTopOf="@id/calendar_cv_profile"
+                android:text="@{vm.userNickName}"
+                tools:text="밋밋최고" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <Spinner
+            android:id="@+id/calendar_sp_view_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:entries="@array/calendar_view_mode"
+            android:textAlignment="center"
+            android:onItemSelected="@{(p1,v,p2,i) -> vm.changeViewMode(p2)}"
+            app:layout_constraintStart_toEndOf="@id/calendar_cl_profile"
+            app:layout_constraintEnd_toStartOf="@id/calendar_fl_notification"
+            app:layout_constraintTop_toTopOf="@id/calendar_cl_profile"
+            app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
+            />
+
+
+        <FrameLayout
+            android:id="@+id/calendar_fl_notification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
+            app:layout_constraintEnd_toStartOf="@id/calendar_ib_search"
+            app:layout_constraintTop_toTopOf="@id/calendar_cl_profile">
+
+
+            <ImageView
+                android:id="@+id/calendar_ib_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:background="@null"
+                android:src="@drawable/ic_notification" />
+
+        </FrameLayout>
+
+
+        <ImageButton
+            android:id="@+id/calendar_ib_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="@null"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/ic_search"
+            app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/calendar_cl_profile" />
+
 
         <ImageButton
             android:id="@+id/calendar_ib_nav_pre_month"
@@ -30,10 +121,9 @@
             style="@style/medium.bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/calendar_cl_profile"
             app:local_date="@{vm.currentDate.date}"
             tools:text="2023년 11월" />
 
@@ -132,28 +222,28 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendar_rv_calendar"
-            app:day_list="@{vm.daysInMonth}"
-            app:vm="@{vm}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
+            app:day_list="@{vm.daysInMonth}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_tv_day_monday"
             app:spanCount="7"
+            app:vm="@{vm}"
             tools:itemCount="31" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:layout_margin="16dp"
             android:contentDescription="@string/add_event_title"
-            app:srcCompat="@drawable/ic_plus"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_plus" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
