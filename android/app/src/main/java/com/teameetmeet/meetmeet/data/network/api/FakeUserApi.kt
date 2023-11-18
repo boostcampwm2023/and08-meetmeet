@@ -9,4 +9,8 @@ class FakeUserApi : UserApi {
             "코딩 천재 김근범"
         )
     }
+
+    override fun logout(accessToken: String): Int {
+        return 200
+    }
 }

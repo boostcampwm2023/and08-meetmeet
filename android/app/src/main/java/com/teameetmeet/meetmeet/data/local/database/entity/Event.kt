@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.data.database.entity
+package com.teameetmeet.meetmeet.data.local.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

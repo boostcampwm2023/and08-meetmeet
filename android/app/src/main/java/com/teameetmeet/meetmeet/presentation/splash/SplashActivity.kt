@@ -29,8 +29,8 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { event ->
                     when(event) {
-                        is SplashEvent.LoginSuccess -> navigateToHomeActivity()
-                        is SplashEvent.Login -> navigateToLoginActivity()
+                        is SplashEvent.NavigateToHomeActivity -> navigateToHomeActivity()
+                        is SplashEvent.NavigateToLoginActivity -> navigateToLoginActivity()
                     }
                 }
             }

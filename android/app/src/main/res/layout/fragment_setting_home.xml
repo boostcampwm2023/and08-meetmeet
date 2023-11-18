@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.setting.home.SettingHomeViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -160,6 +162,7 @@
             android:gravity="left"
             android:paddingBottom="15dp"
             android:text="@string/setting_logout"
+            android:onClick="@{() -> vm.logout()}"
             android:textColor="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

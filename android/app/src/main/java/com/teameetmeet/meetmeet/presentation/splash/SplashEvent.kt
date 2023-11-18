@@ -1,7 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.splash
 
 sealed class SplashEvent {
-    data object Login : SplashEvent()
-    data object LoginSuccess : SplashEvent()
+    data object NavigateToLoginActivity : SplashEvent()
+    data object NavigateToHomeActivity : SplashEvent()
 
 }

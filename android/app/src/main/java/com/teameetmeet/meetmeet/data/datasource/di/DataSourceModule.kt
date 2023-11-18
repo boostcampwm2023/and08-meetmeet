@@ -1,6 +1,6 @@
 package com.teameetmeet.meetmeet.data.datasource.di
 
-import com.teameetmeet.meetmeet.data.database.dao.EventDao
+import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
 import com.teameetmeet.meetmeet.data.datasource.RemoteCalendarDataSource
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi

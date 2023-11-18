@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.splash
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.auth.AuthApiClient
@@ -21,8 +22,11 @@ class SplashViewModel @Inject constructor(
     private val loginRepository: LoginRepository
 ) : ViewModel() {
 
-    private val _event = MutableSharedFlow<SplashEvent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    val event : SharedFlow<SplashEvent> = _event.asSharedFlow()
+    private val _event = MutableSharedFlow<SplashEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val event: SharedFlow<SplashEvent> = _event.asSharedFlow()
 
     init {
         checkAutoLoginPossible()
@@ -33,25 +37,25 @@ class SplashViewModel @Inject constructor(
             if (AuthApiClient.instance.hasToken()) {
                 UserApiClient.instance.accessTokenInfo { _, error ->
                     if (error != null) {
-                        _event.tryEmit(SplashEvent.Login)
-                    }
-                    else {
+                        _event.tryEmit(SplashEvent.NavigateToLoginActivity)
+                    } else {
                         viewModelScope.launch {
                             checkAppToken()
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 checkAppToken()
             }
         }
     }
 
     private suspend fun checkAppToken() {
-        userRepository.getToken().collect { token ->
-            if(token == null) {
-                _event.tryEmit(SplashEvent.Login)
+        userRepository.getToken().catch {
+            _event.tryEmit(SplashEvent.NavigateToLoginActivity)
+        }.collect { token ->
+            if (token.isNullOrEmpty()) {
+                _event.tryEmit(SplashEvent.NavigateToLoginActivity)
             } else {
                 autoLoginApp(token)
             }
@@ -61,9 +65,9 @@ class SplashViewModel @Inject constructor(
     private fun autoLoginApp(token: String) {
         viewModelScope.launch {
             loginRepository.autoLoginApp(token).catch {
-                _event.tryEmit(SplashEvent.Login)
+                _event.tryEmit(SplashEvent.NavigateToLoginActivity)
             }.collect {
-                _event.tryEmit(SplashEvent.LoginSuccess)
+                _event.tryEmit(SplashEvent.NavigateToHomeActivity)
             }
         }
     }

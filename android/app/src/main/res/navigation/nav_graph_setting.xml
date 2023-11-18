@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_setting_home_fragment_to_setting_alarm_fragment"
             app:destination="@id/setting_alarm_fragment" />
+        <action
+            android:id="@+id/action_setting_home_fragment_to_login_activity"
+            app:destination="@id/login_activity" />
     </fragment>
     <fragment
         android:id="@+id/setting_account_fragment"
@@ -44,4 +47,8 @@
         android:name="com.teameetmeet.meetmeet.presentation.setting.passwordchange.SettingPasswordChangeFragment"
         android:label="setting_password_change_fragment"
         tools:layout="@layout/fragment_setting_password_change" />
+    <activity
+        android:id="@+id/login_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.login.LoginActivity"
+        android:label="login_activity" />
 </navigation>

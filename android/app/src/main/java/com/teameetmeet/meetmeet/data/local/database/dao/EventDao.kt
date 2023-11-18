@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.data.database.dao
+package com.teameetmeet.meetmeet.data.local.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.teameetmeet.meetmeet.data.database.entity.Event
+import com.teameetmeet.meetmeet.data.local.database.entity.Event
 import kotlinx.coroutines.flow.Flow
 
 @Dao

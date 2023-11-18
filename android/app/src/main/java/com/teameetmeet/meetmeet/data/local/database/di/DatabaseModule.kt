@@ -1,9 +1,9 @@
-package com.teameetmeet.meetmeet.data.database.di
+package com.teameetmeet.meetmeet.data.local.database.di
 
 import android.content.Context
 import androidx.room.Room
-import com.teameetmeet.meetmeet.data.database.AppDatabase
-import com.teameetmeet.meetmeet.data.database.dao.EventDao
+import com.teameetmeet.meetmeet.data.local.database.AppDatabase
+import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

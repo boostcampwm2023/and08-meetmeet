@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.presentation.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.data.network.entity.UserProfile
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
@@ -48,15 +49,17 @@ class CalendarViewModel @Inject constructor(
 
     private fun fetchUserProfile() {
         viewModelScope.launch {
-            val accessToken = "123456778" //TODO(DATA STORE에서 ACCESS TOKEN 받아오기
-            userRepository.getUserProfile(accessToken).catch {
-                //TODO(DATA STORE의 유저 정보가 있으면 갱신)
+            userRepository.getUserProfile().catch {
+                //TODO("유저 프로필을 못 불러올 때 어떻게 해야할 지 생각")
             }.collect { userProfile ->
-                //TODO(DATA STORE에 갱신)
-                _userProfileImage.update { userProfile.profileImage.orEmpty() }
-                _userNickName.update { userProfile.nickname }
+                updateUserProfile(userProfile)
             }
         }
+    }
+
+    private fun updateUserProfile(userProfile: UserProfile) {
+        _userProfileImage.update { userProfile.profileImage.orEmpty() }
+        _userNickName.update { userProfile.nickname }
     }
 
 
