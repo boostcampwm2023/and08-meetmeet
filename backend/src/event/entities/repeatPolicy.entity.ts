@@ -8,7 +8,6 @@ export class RepeatPolicy extends commonEntity {
   startDate: Date;
 
   @Column('timestamp', {
-    name: 'endDate',
     default: () => "'2038-01-18 00:00:00'",
   })
   endDate: Date;
