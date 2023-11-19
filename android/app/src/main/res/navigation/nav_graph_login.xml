@@ -50,5 +50,9 @@
         android:id="@+id/setting_profile_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.setting.profile.SettingProfileFragment"
         android:label="setting_profile_fragment" >
+        <argument
+            android:name="isFirstSignIn"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
 </navigation>

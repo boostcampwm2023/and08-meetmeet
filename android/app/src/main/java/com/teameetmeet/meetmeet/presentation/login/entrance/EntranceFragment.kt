@@ -3,7 +3,6 @@ package com.teameetmeet.meetmeet.presentation.login.entrance
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -80,6 +79,6 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
     }
 
     private fun navigateToProfileSettingFragment() {
-        findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToSettingProfileFragment())
+        findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToSettingProfileFragment().setIsFirstSignIn(true))
     }
 }

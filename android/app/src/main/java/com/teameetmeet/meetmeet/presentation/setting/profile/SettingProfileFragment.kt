@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.setting.profile
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentSettingProfileBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
@@ -12,9 +13,11 @@ import dagger.hilt.android.AndroidEntryPoint
 class SettingProfileFragment :
     BaseFragment<FragmentSettingProfileBinding>(R.layout.fragment_setting_profile) {
 
+    private val args: SettingProfileFragmentArgs by navArgs()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setTopAppBar(true)
+        setTopAppBar(args.isFirstSignIn)
     }
 
     private fun setTopAppBar(isFirstSignIn: Boolean) {
