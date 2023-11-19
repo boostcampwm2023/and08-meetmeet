@@ -80,6 +80,6 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
     }
 
     private fun navigateToProfileSettingFragment() {
-        findNavController().navigate(R.id.action_entrance_fragment_to_setting_profile_fragment, bundleOf("isFirstSignIn" to true))
+        findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToSettingProfileFragment())
     }
 }

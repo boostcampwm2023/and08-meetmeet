@@ -11,7 +11,7 @@ class FakeLoginApi : LoginApi {
     override fun loginKakao(kakaoLoginRequest: KakaoLoginRequest): LoginResponse {
         val case = Random.nextInt()
         if (case % 2 == 0) {
-            throw FirstSignIn()
+            throw FirstSignIn("accessToken", "refreshToken")
         }
         return LoginResponse("accessToken", "refreshToken")
     }

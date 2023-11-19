@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.data.repository
 
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
@@ -22,6 +23,11 @@ class LoginRepository @Inject constructor(
                 val response = loginApi.loginKakao(kakaoLoginRequest = KakaoLoginRequest(id.toString()))
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
+                when(it) {
+                    is FirstSignIn -> {
+                        storeAppToken(it.accessToken, it.responseToken)
+                    }
+                }
                 throw it
                 //TODO("추가 예외처리 필요")
             }
