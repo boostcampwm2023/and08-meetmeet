@@ -1,15 +1,14 @@
 package com.teameetmeet.meetmeet.data.local.datastore
 
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.network.entity.UserProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -44,6 +43,17 @@ class DataStoreHelper @Inject constructor(
             }
     }
 
+    fun getAlarmState(): Flow<Boolean> {
+        return dataStore.data
+            .map { it[IS_PUSH_ALARM_ON] ?: false }
+    }
+
+    suspend fun storeAlarmState(isOn: Boolean) {
+        dataStore.edit {
+            it[IS_PUSH_ALARM_ON] = isOn
+        }
+    }
+
     suspend fun deleteAppToken() {
         dataStore.edit {
             it[ACCESS_TOKEN] = ""
@@ -58,11 +68,11 @@ class DataStoreHelper @Inject constructor(
         }
     }
 
-
     companion object {
         val ACCESS_TOKEN = stringPreferencesKey("accessToken")
         val REFRESH_TOKEN = stringPreferencesKey("refreshToken")
         val USER_PROFILE_IMAGE = stringPreferencesKey("userProfileImage")
         val USER_NICKNAME = stringPreferencesKey("userNickName")
+        val IS_PUSH_ALARM_ON = booleanPreferencesKey("isPushAlarmOn")
     }
 }
