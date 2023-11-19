@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.network.api
 
+import android.util.Log
 import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest

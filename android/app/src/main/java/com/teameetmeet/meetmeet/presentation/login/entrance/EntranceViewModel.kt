@@ -90,7 +90,7 @@ class EntranceViewModel @Inject constructor(
                     Log.i("KAKAO", "사용자 정보 요청 성공\n회원번호: ${user.id}")
                     loginRepository.loginKakao(user.id!!).catch { exception ->
                         when(exception) {
-                            is FirstSignIn -> _kakaoLoginEvent.tryEmit(KakaoLoginEvent.NavigateToProfileSettingFragment)
+                            is FirstSignIn -> _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToProfileSettingFragment)
                             else -> _kakaoLoginEvent.tryEmit(
                                 KakaoLoginEvent.ShowMessage(
                                     R.string.login_kakao_message_kakao_login_fail,
@@ -99,11 +99,11 @@ class EntranceViewModel @Inject constructor(
                             )
                         }
                     }.collect {
-                        _kakaoLoginEvent.tryEmit(KakaoLoginEvent.NavigateToHomeActivity(user.id!!))
+                        _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToHomeActivity(user.id!!))
                     }
 
                 } else {
-                    _kakaoLoginEvent.tryEmit(KakaoLoginEvent.ShowMessage(R.string.login_kakao_message_no_user_data))
+                    _kakaoLoginEvent.emit(KakaoLoginEvent.ShowMessage(R.string.login_kakao_message_no_user_data))
                 }
             }
         }
