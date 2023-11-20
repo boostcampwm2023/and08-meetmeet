@@ -12,17 +12,26 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async createUser(email: string, password: string, nickname: string) {
+  async localCreateUser(email: string, password: string, nickname: string) {
     const hashedPassword = await hash(password, SALTROUND);
 
-    return await this.userRepository.save({
+    const user = this.userRepository.create({
       email: email,
       password: hashedPassword,
       nickname: nickname,
     });
+
+    return await this.userRepository.save(user);
   }
 
   async findUserByEmail(email: string) {
-    return await this.userRepository.findOne({ where: { email: email } });
+    return await this.userRepository.findOne({
+      where: { email: email },
+      select: ['id', 'nickname', 'email', 'password'],
+    });
+  }
+
+  async findUserByNickname(nickname: string) {
+    return await this.userRepository.findOne({ where: { nickname: nickname } });
   }
 }

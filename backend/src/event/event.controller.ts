@@ -1,8 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Event } from './entities/event.entity';
 import { EventService } from './event.service';
 
-@Controller('events')
+@ApiTags('event')
+@Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
