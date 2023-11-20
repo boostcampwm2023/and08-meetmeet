@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.setting.profile
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -17,9 +18,8 @@ class SettingProfileFragment :
     private val args: SettingProfileFragmentArgs by navArgs()
     private lateinit var callback: OnBackPressedCallback
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         if (args.isFirstSignIn) {
             callback = object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
@@ -31,6 +31,10 @@ class SettingProfileFragment :
         } else {
             findNavController().popBackStack()
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setTopAppBar(args.isFirstSignIn)
     }
