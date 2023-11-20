@@ -78,4 +78,8 @@
     <string name="sign_up_password_confirm_invalid">비밀번호가 일치하지 않습니다</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="event_story_menu_title_see_more">더보기</string>
+    <string name="event_story_title_event_time">일정 시간</string>
+    <string name="event_story_title_event_members">일정 멤버</string>
+    <string name="event_story_title_event_notification">일정 공지</string>
 </resources>

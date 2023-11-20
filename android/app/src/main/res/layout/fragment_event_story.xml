@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -8,7 +9,115 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/event_story_abl"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                style="?attr/collapsingToolbarLayoutMediumStyle"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
+                app:expandedTitleTextAppearance="@style/large.bold"
+                app:maxLines="1">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/event_story_tbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:minHeight="?attr/actionBarSize"
+                    app:menu="@menu/menu_top_app_bar_event_story"
+                    app:navigationIcon="@drawable/ic_nav_pre"
+                    tools:title="밋밋 3차 오프라인 미팅" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/event_story_tv_title_event_time"
+            style="@style/medium.bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/event_story_title_event_time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_story_abl" />
+
+        <TextView
+            android:id="@+id/event_story_tv_value_event_time"
+            style="@style/small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+            app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_time"
+            tools:text="2023.11.06 11:30 - 2023.11.06 21:30" />
+
+        <TextView
+            android:id="@+id/event_story_tv_title_event_members"
+            style="@style/medium.bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/event_story_title_event_members"
+            app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+            app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_time" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/event_story_rv_value_event_members"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_members"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_members" />
+
+        <TextView
+            android:id="@+id/event_story_tv_title_event_notification"
+            style="@style/medium.bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/event_story_title_event_notification"
+            app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+            app:layout_constraintTop_toBottomOf="@id/event_story_rv_value_event_members" />
+
+        <TextView
+            android:id="@+id/event_story_tv_value_event_notification"
+            style="@style/small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ellipsize="marquee"
+            android:maxLines="3"
+            app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_notification"
+            app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_notification"
+            tools:text="다들 11시 반까지 광명역 앞으로 집합해주세요~" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/event_story_rv_event_feed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+            app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_notification"
+            app:spanCount="3"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
