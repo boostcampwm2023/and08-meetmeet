@@ -57,6 +57,6 @@
             app:argType="boolean" />
         <action
             android:id="@+id/action_setting_profile_fragment_to_home_activity"
-            app:destination="@id/home_activity" />
+            app:destination="#@id/home_activity" />
     </fragment>
 </navigation>
