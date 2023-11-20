@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
+import com.teameetmeet.meetmeet.data.network.entity.EmailDuplicationCheckRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.LoginResponse
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
@@ -17,4 +18,10 @@ interface LoginApi {
 
     @POST()
     fun autoLoginApp(@Body autoLoginRequest: AutoLoginRequest): LoginResponse
+
+    @POST()
+    fun checkEmailDuplication(@Body emailDuplicationCheckRequest: EmailDuplicationCheckRequest): Boolean
+
+    @POST("/auth/register")
+    fun signUp(@Body selfSignRequest: SelfSignRequest): LoginResponse
 }
