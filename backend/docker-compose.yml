@@ -6,4 +6,6 @@ services:
     restart: always
     ports:
       - 3000:3000
+    volumes:
+      - .env:/var/app/.env
     command: npm run start:dev
