@@ -41,7 +41,8 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
                     when (event) {
                         is SignUpEvent.SignUpSuccess -> {
                             findNavController().navigate(
-                                SignUpFragmentDirections.actionSignUpFragmentToHomeActivity()
+                                SignUpFragmentDirections.actionSignUpFragmentToSettingProfileFragment()
+                                    .setIsFirstSignIn(true)
                             )
                             requireActivity().finish()
                         }
