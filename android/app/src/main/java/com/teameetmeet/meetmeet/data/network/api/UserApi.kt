@@ -8,7 +8,4 @@ interface UserApi {
 
     @GET
     fun getUserProfile(accessToken: String) : UserProfile
-
-    @POST
-    fun logout(accessToken: String) : Int
 }

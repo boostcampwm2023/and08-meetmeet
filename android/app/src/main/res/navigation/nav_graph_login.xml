@@ -26,7 +26,7 @@
     <activity
         android:id="@+id/home_activity"
         android:name="com.teameetmeet.meetmeet.presentation.home.HomeActivity"
-        android:label="HomeActivity"
+        android:label="home_activity"
         tools:layout="@layout/activity_home" />
     <fragment
         android:id="@+id/self_login_fragment"
@@ -57,6 +57,6 @@
             app:argType="boolean" />
         <action
             android:id="@+id/action_setting_profile_fragment_to_home_activity"
-            app:destination="#@id/home_activity" />
+            app:destination="@id/home_activity" />
     </fragment>
 </navigation>

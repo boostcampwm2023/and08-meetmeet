@@ -62,8 +62,6 @@ class UserRepository @Inject constructor(
     fun logout(): Flow<Unit> {
         return flowOf(true)
             .map {
-                val token = dataStore.getAppToken().first() ?: throw NoDataException()
-                userApi.logout(token)
                 dataStore.deleteUserProfile()
                 dataStore.deleteAppToken()
             }.catch {
