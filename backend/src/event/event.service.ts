@@ -5,38 +5,136 @@ import { Event } from './entities/event.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateScheduleDto } from './dto/createSchedule.dto';
 import { CalendarService } from '../calendar/calendar.service';
+import { RepeatPolicy } from './entities/repeatPolicy.entity';
+import { DetailService } from '../detail/detail.service';
+import { EventMemberService } from '../event-member/event-memer.service';
 
 @Injectable()
 export class EventService {
   constructor(
     @InjectRepository(Event)
     private eventRepository: Repository<Event>,
+    @InjectRepository(RepeatPolicy)
+    private repeatPolicyRepository: Repository<RepeatPolicy>,
     private calendarService: CalendarService,
+    private detailService: DetailService,
+    private eventMemberService: EventMemberService,
   ) {}
 
-  async getEvents(startDate: string, endDate: string) {
-    return await this.eventRepository.find({
-      where: [
-        {
-          startDate: Between(new Date(startDate), new Date(endDate)),
-        },
-        { endDate: Between(new Date(startDate), new Date(endDate)) },
-        {
-          startDate: LessThan(new Date(startDate)),
-          endDate: MoreThan(new Date(endDate)),
-        },
-      ],
-    });
+  async getEvents(user: User, startDate: string, endDate: string) {
+    const events = await this.eventMemberService.getEventByUser(
+      user,
+      new Date(this.formatDateString(startDate)),
+      new Date(this.formatDateString(endDate)),
+    );
+    if (!events) {
+      return { events: [] };
+    }
+    return { events: events };
   }
 
   async createEvent(user: User, createScheduleDto: CreateScheduleDto) {
     // todo: calendar 어떻게 처리할지 의논
     const calendar = await this.calendarService.getCalendarByUserId(user.id);
-    const event = this.eventRepository.create({
-      ...createScheduleDto,
-      calendar,
+
+    if (this.isReapeatPolicy(createScheduleDto)) {
+      if (!this.isReapeatPolicyValid(createScheduleDto)) {
+        throw new Error('repeat policy is not valid');
+      }
+
+      const repeatPolicy = await this.createRepeatPolicy(createScheduleDto);
+      if (!repeatPolicy) {
+        throw new Error('repeat policy is not valid');
+      }
+      const event = this.eventRepository.create({
+        ...createScheduleDto,
+        calendar,
+        repeatPolicy,
+      });
+      const savedEvent = await this.eventRepository.save(event);
+      const detail = await this.detailService.createDetail(createScheduleDto);
+      const authority = await this.eventMemberService.getAuthorityId('OWNER');
+      if (!authority) {
+        throw new Error('authority is not valid');
+      }
+      await this.eventMemberService.createEventMember(
+        savedEvent,
+        user,
+        detail,
+        authority,
+      );
+    } else {
+      const event = this.eventRepository.create({
+        ...createScheduleDto,
+        calendar,
+      });
+      const savedEvent = await this.eventRepository.save(event);
+      const detail = await this.detailService.createDetail(createScheduleDto);
+      const authority = await this.eventMemberService.getAuthorityId('OWNER');
+      if (!authority) {
+        throw new Error('authority is not valid');
+      }
+      await this.eventMemberService.createEventMember(
+        savedEvent,
+        user,
+        detail,
+        authority,
+      );
+    }
+  }
+
+  isReapeatPolicyValid(createScheduleDto: CreateScheduleDto) {
+    if (!createScheduleDto.repeatTerm || !createScheduleDto.repeatFrequency) {
+      return false;
+    }
+
+    if (
+      createScheduleDto.repeatFrequency <= 0 ||
+      createScheduleDto.repeatFrequency > 7
+    ) {
+      return false;
+    }
+    return true;
+  }
+  isReapeatPolicy(createScheduleDto: CreateScheduleDto) {
+    if (createScheduleDto.repeatTerm) {
+      return true;
+    }
+    return false;
+  }
+
+  async createRepeatPolicy(createScheduleDto: CreateScheduleDto) {
+    const repeatPolicy = this.repeatPolicyRepository.create({
+      startDate: createScheduleDto.startDate,
+      endDate: createScheduleDto.endDate,
     });
-    console.log(event);
-    return await this.eventRepository.save(event);
+    if (!createScheduleDto.repeatFrequency) {
+      throw new Error('repeat frequency is not valid');
+    }
+    switch (createScheduleDto.repeatTerm) {
+      case 'DAY':
+        repeatPolicy.repeatDay = createScheduleDto.repeatFrequency;
+        break;
+      case 'WEEK':
+        repeatPolicy.repeatWeek = createScheduleDto.repeatFrequency;
+        break;
+      case 'MONTH':
+        repeatPolicy.repeatMonth = createScheduleDto.repeatFrequency;
+        break;
+      case 'YEAR':
+        repeatPolicy.repeatYear = createScheduleDto.repeatFrequency;
+        break;
+    }
+    return await this.repeatPolicyRepository.save(repeatPolicy);
+  }
+
+  formatDateString(date: string) {
+    const year = date.substring(0, 4);
+    const month = date.substring(4, 6);
+    const day = date.substring(6, 8);
+
+    const formattedDate = `${year}-${month}-${day}`;
+
+    return formattedDate;
   }
 }

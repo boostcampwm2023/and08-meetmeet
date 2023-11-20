@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Event } from './entities/event.entity';
 import { EventService } from './event.service';
@@ -13,15 +21,18 @@ import { CreateScheduleDto } from './dto/createSchedule.dto';
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getEvents(
+    @GetUser() user: User,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
-  ): Promise<Event[]> {
-    return await this.eventService.getEvents(startDate, endDate);
+  ): Promise<{ events: Event[] }> {
+    return await this.eventService.getEvents(user, startDate, endDate);
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(201)
   @Post('')
   async createEvent(
     @GetUser() user: User,
