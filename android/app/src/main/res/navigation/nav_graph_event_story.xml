@@ -9,5 +9,14 @@
         android:id="@+id/event_story_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.EventStoryFragment"
         tools:layout="@layout/fragment_event_story"
-        android:label="event_story_fragment" />
+        android:label="event_story_fragment" >
+        <action
+            android:id="@+id/action_event_story_fragment_to_event_story_detail_fragment"
+            app:destination="@id/event_story_detail_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/event_story_detail_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.EventStoryDetailFragment"
+        tools:layout="@layout/fragment_event_story_detail"
+        android:label="event_story_detail_fragment" />
 </navigation>
