@@ -84,5 +84,4 @@ class LoginRepository @Inject constructor(
     private suspend fun storeAppToken(accessToken: String, refreshToken: String) {
         dataStore.storeAppToken(accessToken, refreshToken)
     }
-
 }

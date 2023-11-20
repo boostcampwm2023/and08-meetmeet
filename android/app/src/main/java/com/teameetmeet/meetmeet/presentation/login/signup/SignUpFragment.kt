@@ -36,11 +36,15 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.event.collectLatest { event ->
                 when (event) {
-                    SignUpEvent.SignUpSuccess -> {
+                    is SignUpEvent.SignUpSuccess -> {
                         findNavController().navigate(
                             SignUpFragmentDirections.actionSignUpFragmentToHomeActivity()
                         )
                         requireActivity().finish()
+                    }
+
+                    is SignUpEvent.ShowMessage -> {
+                        showMessage(event.message, event.extraMessage)
                     }
                 }
             }
