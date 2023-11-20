@@ -59,4 +59,20 @@ export class AuthService {
       },
     );
   }
+
+  async checkEmail(email: string) {
+    const user = await this.userService.findUserByEmail(email);
+
+    return {
+      isAvailable: user ? false : true,
+    };
+  }
+
+  async checkNickname(nickname: string) {
+    const user = await this.userService.findUserByNickname(nickname);
+
+    return {
+      isAvailable: user ? false : true,
+    };
+  }
 }

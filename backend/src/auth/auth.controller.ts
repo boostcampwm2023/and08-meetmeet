@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
@@ -24,5 +24,15 @@ export class AuthController {
   @Post('login')
   login(@GetUser() user: User) {
     return this.authService.login(user);
+  }
+
+  @Get('check/email')
+  checkEmail(@Query('email') email: string) {
+    return this.authService.checkEmail(email);
+  }
+
+  @Get('check/nickname')
+  checkNickname(@Query('nickname') nickname: string) {
+    return this.authService.checkNickname(nickname);
   }
 }
