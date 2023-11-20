@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/event_story_fragment"
-        android:name="com.teameetmeet.meetmeet.presentation.eventstory.EventStoryFragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstory.EventStoryFragment"
         tools:layout="@layout/fragment_event_story"
         android:label="event_story_fragment" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/event_story_detail_fragment"
-        android:name="com.teameetmeet.meetmeet.presentation.eventstory.EventStoryDetailFragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailFragment"
         tools:layout="@layout/fragment_event_story_detail"
         android:label="event_story_detail_fragment" />
 </navigation>

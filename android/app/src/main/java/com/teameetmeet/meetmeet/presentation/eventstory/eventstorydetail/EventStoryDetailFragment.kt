@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.eventstory
+package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryBinding
