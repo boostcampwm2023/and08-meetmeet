@@ -24,7 +24,7 @@ export class AuthService {
     const nickname = uuidv4().split('-').at(0)!;
     // TODO: nickname 중복 확인
 
-    this.userService.localCreateUser(email, password, nickname);
+    await this.userService.localCreateUser(email, password, nickname);
   }
 
   async validateUser(email: string, password: string) {
@@ -39,9 +39,35 @@ export class AuthService {
 
   async login(user: User) {
     return {
-      accessToken: await this.jwtService.signAsync({
-        nickname: user.nickname,
-      }),
+      accessToken: await this.jwtService.signAsync(
+        {
+          nickname: user.nickname,
+        },
+        { expiresIn: '5m' },
+      ),
+      refreshToken: await this.jwtService.signAsync(
+        {
+          nickname: user.nickname,
+        },
+        { expiresIn: '7d' },
+      ),
+    };
+  }
+
+  async refresh(user: User) {
+    return {
+      accessToken: await this.jwtService.signAsync(
+        {
+          nickname: user.nickname,
+        },
+        { expiresIn: '5m' },
+      ),
+      refreshToken: await this.jwtService.signAsync(
+        {
+          nickname: user.nickname,
+        },
+        { expiresIn: '7d' },
+      ),
     };
   }
 }
