@@ -49,10 +49,14 @@
     <fragment
         android:id="@+id/setting_profile_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.setting.profile.SettingProfileFragment"
-        android:label="setting_profile_fragment" >
+        android:label="setting_profile_fragment"
+        tools:layout="@layout/fragment_setting_profile">
         <argument
             android:name="isFirstSignIn"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_setting_profile_fragment_to_home_activity"
+            app:destination="@id/home_activity" />
     </fragment>
 </navigation>

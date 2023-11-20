@@ -36,11 +36,7 @@
         android:id="@+id/setting_profile_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.setting.profile.SettingProfileFragment"
         android:label="setting_profile_fragment"
-        tools:layout="@layout/fragment_setting_profile" >
-        <action
-            android:id="@+id/action_setting_profile_fragment_to_home_activity"
-            app:destination="@id/home_activity" />
-    </fragment>
+        tools:layout="@layout/fragment_setting_profile" />
     <fragment
         android:id="@+id/setting_alarm_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.setting.alarm.SettingAlarmFragment"
@@ -55,8 +51,4 @@
         android:id="@+id/login_activity"
         android:name="com.teameetmeet.meetmeet.presentation.login.LoginActivity"
         android:label="login_activity" />
-    <activity
-        android:id="@+id/home_activity"
-        android:name="com.teameetmeet.meetmeet.presentation.home.HomeActivity"
-        android:label="home_activity" />
 </navigation>
