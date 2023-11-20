@@ -1,8 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   UseGuards,
@@ -38,5 +41,16 @@ export class EventController {
     @Body() createScheduleDto: CreateScheduleDto,
   ) {
     return await this.eventService.createEvent(user, createScheduleDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('/:eventId')
+  async deleteEvent(
+    @GetUser() user: User,
+    @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
+    eventId: number,
+  ) {
+    console.log(eventId);
+    return await this.eventService.deleteEvent(user, eventId);
   }
 }

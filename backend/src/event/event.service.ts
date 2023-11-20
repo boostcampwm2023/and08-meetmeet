@@ -76,12 +76,6 @@ export class EventService {
         throw new Error('repeat policy is not valid');
       }
 
-      // const event = this.eventRepository.create({
-      //   ...createScheduleDto,
-      //   calendar,
-      //   repeatPolicy,
-      // });
-      // const savedEvent = await this.eventRepository.save(event);
       const events = await this.createRepeatEvent(
         user,
         createScheduleDto,
@@ -120,6 +114,38 @@ export class EventService {
         authority,
       );
     }
+  }
+
+  async deleteEvent(user: User, eventId: number) {
+    const event = await this.eventRepository
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.eventMembers', 'eventMember')
+      .leftJoinAndSelect('eventMember.user', 'user')
+      .leftJoinAndSelect('eventMember.authority', 'authority')
+      .where('user.id = :userId', { userId: user.id })
+      .andWhere('event.id = :eventId', { eventId })
+      .getOne();
+
+    const updatedEvent: any = { ...event, authority: undefined };
+    if (!event) {
+      throw new Error('event is not valid');
+    }
+    updatedEvent.deletedAt = new Date();
+    event.eventMembers.forEach((eventMember) => {
+      if (eventMember.user.id === user.id) {
+        updatedEvent.authority = eventMember.authority.displayName;
+      }
+    });
+    console.log(updatedEvent);
+    if (updatedEvent.authority === 'OWNER') {
+      await this.eventRepository.softRemove(event);
+      // todo : delete eventMember
+    } else if (updatedEvent.authority === 'ADMIN') {
+      // 운영자는 어떻게 할지 고민
+    } else if (updatedEvent.authority === 'MEMBER') {
+      // 멤버는 멤버만 삭제
+    }
+    return { message: 'success' };
   }
 
   isReapeatPolicyValid(createScheduleDto: CreateScheduleDto) {
