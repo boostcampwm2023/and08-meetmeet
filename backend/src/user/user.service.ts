@@ -30,4 +30,8 @@ export class UserService {
       select: ['id', 'nickname', 'email', 'password'],
     });
   }
+
+  async findUserByNickname(nickname: string) {
+    return await this.userRepository.findOne({ where: { nickname: nickname } });
+  }
 }
