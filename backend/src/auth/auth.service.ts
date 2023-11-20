@@ -39,6 +39,23 @@ export class AuthService {
     return user;
   }
 
+  async kakaoLogin(kakaoId: string) {
+    const user = await this.userService.findUserByOAuth(kakaoId, 'kakao');
+
+    if (user) {
+      return this.login(user);
+    }
+
+    const nickname = uuidv4().split('-').at(0)!;
+    const createdUser = await this.userService.oauthCreateUser(
+      kakaoId,
+      nickname,
+      'kakao',
+    );
+
+    return this.login(createdUser);
+  }
+
   async login(user: User) {
     return {
       accessToken: await this.jwtService.signAsync({
