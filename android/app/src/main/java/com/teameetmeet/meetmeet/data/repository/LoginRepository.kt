@@ -5,7 +5,7 @@ import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
-import com.teameetmeet.meetmeet.data.network.entity.SelfLoginRequest
+import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
@@ -36,7 +36,7 @@ class LoginRepository @Inject constructor(
     fun loginSelf(email: String, password: String): Flow<Unit> {
         return flowOf(true)
             .map {
-                val request = SelfLoginRequest(email, password)
+                val request = SelfSignRequest(email, password)
                 val response = loginApi.loginSelf(request)
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
