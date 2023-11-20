@@ -32,13 +32,14 @@ class EventStoryViewModel @Inject constructor(
     fun getStory(id: Int) {
         viewModelScope.launch {
             eventStoryRepository.getEventStory(id).onStart {
-                _event.emit(EventStoryEvent.ShowProgressBar)
+                _eventStoryUiState.update {
+                    it.copy(isLoading = true)
+                }
             }.catch {
                 _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_event_story_fail, it.message.orEmpty()))
             }.collect { eventStory ->
-                _event.emit(EventStoryEvent.StopShowProgressBar)
                 _eventStoryUiState.update {
-                    it.copy(eventStory = eventStory)
+                    it.copy(eventStory = eventStory, isLoading = false)
                 }
             }
         }

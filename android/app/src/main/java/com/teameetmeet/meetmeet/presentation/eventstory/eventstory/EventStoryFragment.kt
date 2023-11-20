@@ -23,6 +23,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBinding()
         setTopAppBar()
         collectViewModelEvent()
     }
@@ -46,26 +47,20 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         }
     }
 
+    private fun setBinding() {
+        binding.vm = viewModel
+    }
+
     private fun collectViewModelEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
                     when(event) {
                         is EventStoryEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
-                        is EventStoryEvent.ShowProgressBar -> showProgressBar()
-                        is EventStoryEvent.StopShowProgressBar -> stopShowProgressBar()
                     }
                 }
             }
         }
-    }
-
-    private fun stopShowProgressBar() {
-        binding.eventStoryIvLoading.isVisible = false
-    }
-
-    private fun showProgressBar() {
-        binding.eventStoryIvLoading.isVisible = true
     }
 
     private fun showMessage(messageId: Int, extraMessage: String) {

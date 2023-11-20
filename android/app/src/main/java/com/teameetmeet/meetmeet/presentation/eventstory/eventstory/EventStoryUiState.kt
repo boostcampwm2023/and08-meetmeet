@@ -4,5 +4,6 @@ import com.teameetmeet.meetmeet.data.model.EventStory
 
 data class EventStoryUiState(
     val eventStory: EventStory? = null,
-    val isEventMemberUiExpanded: Boolean = false
+    val isEventMemberUiExpanded: Boolean = false,
+    val isLoading: Boolean = false
 )

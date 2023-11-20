@@ -5,6 +5,11 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.eventstory.eventstory.EventStoryViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -49,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/event_story_title_event_time"
+            android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/event_story_abl" />
 
@@ -69,6 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/event_story_title_event_members"
+            android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
             app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_time" />
 
@@ -80,8 +87,8 @@
             android:layout_marginEnd="16dp"
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_members"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_members"
             app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_members" />
 
         <TextView
@@ -91,6 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/event_story_title_event_notification"
+            android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
             app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
             app:layout_constraintTop_toBottomOf="@id/event_story_rv_value_event_members" />
 
@@ -116,20 +124,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
             app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_notification"
-            app:spanCount="3"
-            />
+            app:spanCount="3" />
 
         <ImageView
             android:id="@+id/event_story_iv_loading"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:src="@drawable/loading_animation"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="@{vm.eventStoryUiState.loading == true ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="visible"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
