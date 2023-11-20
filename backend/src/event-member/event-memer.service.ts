@@ -22,18 +22,6 @@ export class EventMemberService {
     });
   }
 
-  async getEventByUser(user: User, startDate: Date, endDate: Date) {
-    if (!user) return null;
-    const eventMembers = await this.eventMemberRepository.find({
-      relations: ['event'],
-      where: {
-        user: { id: user.id },
-        event: { startDate: Between(startDate, endDate) },
-      },
-    });
-    return eventMembers.map((eventMember) => eventMember.event);
-  }
-
   async createEventMember(
     event: Event,
     user: User,

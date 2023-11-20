@@ -22,15 +22,43 @@ export class EventService {
   ) {}
 
   async getEvents(user: User, startDate: string, endDate: string) {
-    const events = await this.eventMemberService.getEventByUser(
-      user,
-      new Date(this.formatDateString(startDate)),
-      new Date(this.formatDateString(endDate)),
-    );
-    if (!events) {
+    const eventsWithMembersAndAuthority = await this.eventRepository
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.eventMembers', 'eventMember')
+      .leftJoinAndSelect('eventMember.user', 'user')
+      .leftJoinAndSelect('eventMember.authority', 'authority')
+      .where('user.id = :userId', { userId: user.id })
+      .andWhere('event.startDate BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      })
+      .getMany();
+
+    const result = eventsWithMembersAndAuthority.map((event) => {
+      return {
+        id: event.id,
+        title: event.title,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        eventMembers: event.eventMembers.map((eventMember) => ({
+          id: eventMember.id,
+          nickname: eventMember.user.nickname,
+          profile: `/user/profile/${eventMember.user.id}`,
+          authority: eventMember.authority.displayName,
+        })),
+        authority:
+          event.eventMembers.find(
+            (eventMember) => eventMember.user.id === user.id,
+          )?.authority?.displayName || null,
+        repeatPolicyId: event.repeatPolicyId,
+        isJoinable: event.isJoinable,
+      };
+    });
+
+    if (!result) {
       return { events: [] };
     }
-    return { events: events };
+    return { events: result };
   }
 
   async createEvent(user: User, createScheduleDto: CreateScheduleDto) {

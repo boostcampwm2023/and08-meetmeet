@@ -27,7 +27,7 @@ export class EventController {
     @GetUser() user: User,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
-  ): Promise<{ events: Event[] }> {
+  ) {
     return await this.eventService.getEvents(user, startDate, endDate);
   }
 
