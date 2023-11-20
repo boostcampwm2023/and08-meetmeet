@@ -5,12 +5,14 @@ import { compare } from 'bcrypt';
 import { UserService } from 'src/user/user.service';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { User } from 'src/user/entities/user.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async register(authUserDto: AuthUserDto) {
@@ -42,6 +44,19 @@ export class AuthService {
       accessToken: await this.jwtService.signAsync({
         nickname: user.nickname,
       }),
+      refreshToken: await this.generateRefreshToken(user),
     };
+  }
+
+  async generateRefreshToken(user: User): Promise<string> {
+    return await this.jwtService.signAsync(
+      { id: user.id },
+      {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get<string>(
+          'JWT_REFRESH_EXPIRATION_TIME',
+        ),
+      },
+    );
   }
 }
