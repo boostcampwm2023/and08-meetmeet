@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { compare } from 'bcrypt';
 import { UserService } from 'src/user/user.service';
 import { AuthUserDto } from './dto/auth-user.dto';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,8 +18,7 @@ export class AuthService {
 
     const existedUser = await this.userService.findUserByEmail(email);
     if (existedUser) {
-      // TODO: email 중복 확인
-      return;
+      throw new BadRequestException('중복된 이메일입니다.');
     }
 
     const nickname = uuidv4().split('-').at(0)!;
@@ -37,10 +37,10 @@ export class AuthService {
     return user;
   }
 
-  async login(authUserDto: AuthUserDto) {
+  async login(user: User) {
     return {
       accessToken: await this.jwtService.signAsync({
-        email: authUserDto.email,
+        nickname: user.nickname,
       }),
     };
   }
