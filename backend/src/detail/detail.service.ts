@@ -17,4 +17,15 @@ export class DetailService {
     });
     return await this.detailRepository.save(detail);
   }
+
+  async createDetailBulk(createScheduleDto: CreateScheduleDto, count: number) {
+    const detailArray = [];
+    for (let i = 0; i < count; i++) {
+      const detail = this.detailRepository.create({
+        ...createScheduleDto,
+      });
+      detailArray.push(detail);
+    }
+    return await this.detailRepository.save(detailArray);
+  }
 }

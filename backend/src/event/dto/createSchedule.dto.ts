@@ -7,7 +7,7 @@ import {
   Length,
 } from 'class-validator';
 
-enum RepeatTerm {
+export enum RepeatTerm {
   DAY = 'DAY',
   WEEK = 'WEEK',
   MONTH = 'MONTH',
@@ -44,5 +44,5 @@ export class CreateScheduleDto {
 
   @IsOptional()
   @IsDateString()
-  repeatEndDate?: string;
+  repeatEndDate?: Date;
 }

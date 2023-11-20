@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EventMember } from './entities/eventMember.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Detail } from '../detail/entities/detail.entity';
 import { Authority } from './entities/authority.entity';
@@ -35,5 +35,24 @@ export class EventMemberService {
       event: event,
     });
     await this.eventMemberRepository.save(eventMember);
+  }
+
+  async createEventMemberBulk(
+    events: Event[],
+    user: User,
+    details: Detail[],
+    authority: Authority,
+  ) {
+    const eventMembers = [];
+    for (let i = 0; i < events.length; i++) {
+      eventMembers.push({
+        user: user,
+        detail: details[i],
+        authority: authority,
+        event: events[i],
+      });
+    }
+    console.log(eventMembers);
+    await this.eventMemberRepository.save(eventMembers);
   }
 }

@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, LessThan, MoreThan, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
 import { User } from '../user/entities/user.entity';
-import { CreateScheduleDto } from './dto/createSchedule.dto';
+import { CreateScheduleDto, RepeatTerm } from './dto/createSchedule.dto';
 import { CalendarService } from '../calendar/calendar.service';
 import { RepeatPolicy } from './entities/repeatPolicy.entity';
 import { DetailService } from '../detail/detail.service';
 import { EventMemberService } from '../event-member/event-memer.service';
+import { Calendar } from '../calendar/entities/calendar.entity';
 
 @Injectable()
 export class EventService {
@@ -74,21 +75,31 @@ export class EventService {
       if (!repeatPolicy) {
         throw new Error('repeat policy is not valid');
       }
-      const event = this.eventRepository.create({
-        ...createScheduleDto,
+
+      // const event = this.eventRepository.create({
+      //   ...createScheduleDto,
+      //   calendar,
+      //   repeatPolicy,
+      // });
+      // const savedEvent = await this.eventRepository.save(event);
+      const events = await this.createRepeatEvent(
+        user,
+        createScheduleDto,
         calendar,
         repeatPolicy,
-      });
-      const savedEvent = await this.eventRepository.save(event);
-      const detail = await this.detailService.createDetail(createScheduleDto);
+      );
+      const details = await this.detailService.createDetailBulk(
+        createScheduleDto,
+        events.length,
+      );
       const authority = await this.eventMemberService.getAuthorityId('OWNER');
       if (!authority) {
         throw new Error('authority is not valid');
       }
-      await this.eventMemberService.createEventMember(
-        savedEvent,
+      await this.eventMemberService.createEventMemberBulk(
+        events,
         user,
-        detail,
+        details,
         authority,
       );
     } else {
@@ -164,5 +175,65 @@ export class EventService {
     const formattedDate = `${year}-${month}-${day}`;
 
     return formattedDate;
+  }
+
+  incrementDate(date: Date, repeatTerm: RepeatTerm, repeatFrequency: number) {
+    switch (repeatTerm) {
+      case RepeatTerm.DAY:
+        date.setDate(date.getDate() + repeatFrequency);
+        break;
+      case RepeatTerm.WEEK:
+        date.setDate(date.getDate() + 7 * repeatFrequency);
+        break;
+      case RepeatTerm.MONTH:
+        date.setMonth(date.getMonth() + repeatFrequency);
+        break;
+      case RepeatTerm.YEAR:
+        date.setFullYear(date.getFullYear() + repeatFrequency);
+        break;
+    }
+  }
+
+  async createRepeatEvent(
+    user: User,
+    createScheduleDto: CreateScheduleDto,
+    calendar: Calendar,
+    repeatPolicy: RepeatPolicy,
+  ) {
+    if (!createScheduleDto.repeatEndDate) {
+      createScheduleDto.repeatEndDate = new Date('2038-01-18');
+    }
+    const endDate = new Date(createScheduleDto.repeatEndDate);
+
+    const startDateCursor = new Date(createScheduleDto.startDate);
+    const endDateCursor = new Date(createScheduleDto.endDate);
+    const events = [];
+
+    while (endDateCursor < endDate) {
+      const event = this.eventRepository.create({
+        ...createScheduleDto,
+        calendar,
+        repeatPolicy,
+        startDate: startDateCursor,
+        endDate: endDateCursor,
+      });
+      events.push(event);
+      if (
+        createScheduleDto.repeatTerm &&
+        createScheduleDto.repeatFrequency != null
+      ) {
+        this.incrementDate(
+          startDateCursor,
+          createScheduleDto.repeatTerm,
+          createScheduleDto.repeatFrequency,
+        );
+        this.incrementDate(
+          endDateCursor,
+          createScheduleDto.repeatTerm,
+          createScheduleDto.repeatFrequency,
+        );
+      }
+    }
+    return await this.eventRepository.save(events);
   }
 }
