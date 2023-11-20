@@ -44,7 +44,6 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
                                 SignUpFragmentDirections.actionSignUpFragmentToSettingProfileFragment()
                                     .setIsFirstSignIn(true)
                             )
-                            requireActivity().finish()
                         }
 
                         is SignUpEvent.ShowMessage -> {
