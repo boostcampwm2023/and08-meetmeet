@@ -19,5 +19,5 @@ export class User extends commonEntity {
   profile: Content;
 
   @ManyToOne(() => OauthProvider, { nullable: true })
-  oauthProviderId: OauthProvider;
+  oauthProvider: OauthProvider;
 }

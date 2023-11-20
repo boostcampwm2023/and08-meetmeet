@@ -12,6 +12,8 @@ import { InviteModule } from './invite/invite.module';
 import { CommentModule } from './comment/comment.module';
 import { GroupModule } from './group/group.module';
 import { FollowModule } from './follow/follow.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { FollowModule } from './follow/follow.module';
     CommentModule,
     GroupModule,
     FollowModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
