@@ -1,13 +1,11 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -21,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EventStoryViewModel @Inject constructor(
     private val eventStoryRepository: EventStoryRepository
-) : ViewModel() {
+) : ViewModel(), OnItemClickListener {
 
     private val _eventStoryUiState = MutableStateFlow<EventStoryUiState>(EventStoryUiState())
     val eventStoryUiState: StateFlow<EventStoryUiState> = _eventStoryUiState
@@ -42,6 +40,12 @@ class EventStoryViewModel @Inject constructor(
                     it.copy(eventStory = eventStory, isLoading = false)
                 }
             }
+        }
+    }
+
+    override fun onItemClick() {
+        _eventStoryUiState.update {
+            it.copy(isEventMemberUiExpanded = eventStoryUiState.value.isEventMemberUiExpanded.not())
         }
     }
 }

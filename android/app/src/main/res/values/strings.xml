@@ -82,4 +82,8 @@
     <string name="event_story_title_event_members">일정 멤버</string>
     <string name="event_story_title_event_notification">일정 공지</string>
     <string name="event_story_message_event_story_fail">스토리를 불러올 수 없습니다.\n%s</string>
+    <string name="event_story_event_date">%1s - %2s</string>
+
+    <string name="common_none"> </string>
+    <string name="event_story_description_loading_image">loading_image</string>
 </resources>

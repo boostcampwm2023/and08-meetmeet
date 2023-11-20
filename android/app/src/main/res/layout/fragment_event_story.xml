@@ -41,6 +41,7 @@
                     android:minHeight="?attr/actionBarSize"
                     app:menu="@menu/menu_top_app_bar_event_story"
                     app:navigationIcon="@drawable/ic_nav_pre"
+                    app:title="@{vm.eventStoryUiState.eventStory.title ?? @string/common_none}"
                     tools:title="밋밋 3차 오프라인 미팅" />
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -64,6 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            app:event_story="@{vm.eventStoryUiState.eventStory}"
             app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
             app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_time"
             tools:text="2023.11.06 11:30 - 2023.11.06 21:30" />
@@ -86,6 +88,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginEnd="16dp"
             android:orientation="horizontal"
+            app:event_members="@{vm.eventStoryUiState.eventStory.eventMembers}"
+            app:is_expanded="@{vm.eventStoryUiState.eventMemberUiExpanded}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_members"
@@ -110,6 +114,7 @@
             android:layout_marginTop="12dp"
             android:ellipsize="marquee"
             android:maxLines="3"
+            android:text="@{vm.eventStoryUiState.eventStory.announcement ?? @string/common_none}"
             app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_notification"
             app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_notification"
             tools:text="다들 11시 반까지 광명역 앞으로 집합해주세요~" />
@@ -117,13 +122,15 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/event_story_rv_event_feed"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
+            app:event_feeds="@{vm.eventStoryUiState.eventStory.feeds}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
             app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_notification"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:spanCount="3" />
 
         <ImageView
@@ -135,7 +142,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/event_story_description_loading_image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
