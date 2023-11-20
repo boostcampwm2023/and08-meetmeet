@@ -48,18 +48,23 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.kakaoLoginEvent.collect {
                     when (it) {
-                        is KakaoLoginEvent.Success -> {
+                        is KakaoLoginEvent.NavigateToHomeActivity -> {
                             navigateToHomeActivity()
                         }
 
-                        is KakaoLoginEvent.Failure -> {
+                        is KakaoLoginEvent.ShowMessage -> {
                             showMessage(it.message, it.extraMessage)
+                        }
+
+                        is KakaoLoginEvent.NavigateToProfileSettingFragment -> {
+                            navigateToProfileSettingFragment()
                         }
                     }
                 }
             }
         }
     }
+
 
     private fun showMessage(messageId: Int, extraMessage: String) {
         if(extraMessage.isNotEmpty()) {
@@ -70,6 +75,10 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
     }
 
     private fun navigateToHomeActivity() {
-        findNavController().navigate(EntranceFragmentDirections.entranceFragmentToHomeActivity())
+        findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToHomeActivity())
+    }
+
+    private fun navigateToProfileSettingFragment() {
+        findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToSettingProfileFragment().setIsFirstSignIn(true))
     }
 }

@@ -1,6 +1,8 @@
 package com.teameetmeet.meetmeet.presentation.login.entrance
 
 sealed class KakaoLoginEvent {
-    data class Success(val id: Long) : KakaoLoginEvent()
-    data class Failure(val message: Int, val extraMessage: String = "") : KakaoLoginEvent()
+    data class NavigateToHomeActivity(val id: Long) : KakaoLoginEvent()
+
+    data object NavigateToProfileSettingFragment : KakaoLoginEvent()
+    data class ShowMessage(val message: Int, val extraMessage: String = "") : KakaoLoginEvent()
 }

@@ -39,9 +39,11 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
 
     private fun navigateToHomeActivity() {
         startActivity(Intent(this, HomeActivity::class.java))
+        finish()
     }
 
     private fun navigateToLoginActivity() {
         startActivity(Intent(this, LoginActivity::class.java))
+        finish()
     }
 }

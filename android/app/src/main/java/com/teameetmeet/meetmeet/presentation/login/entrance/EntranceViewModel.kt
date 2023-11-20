@@ -9,6 +9,7 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -34,7 +35,7 @@ class EntranceViewModel @Inject constructor(
     private val kakaoLoginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             _kakaoLoginEvent.tryEmit(
-                KakaoLoginEvent.Failure(
+                KakaoLoginEvent.ShowMessage(
                     R.string.login_kakao_message_kakao_login_fail,
                     error.message.orEmpty()
                 )
@@ -50,7 +51,7 @@ class EntranceViewModel @Inject constructor(
                 UserApiClient.instance.loginWithKakaoTalk(application) { token, error ->
                     if (error != null) {
                         _kakaoLoginEvent.tryEmit(
-                            KakaoLoginEvent.Failure(
+                            KakaoLoginEvent.ShowMessage(
                                 R.string.login_kakao_message_kakao_login_fail,
                                 error.message.orEmpty()
                             )
@@ -80,26 +81,29 @@ class EntranceViewModel @Inject constructor(
             viewModelScope.launch {
                 if (error != null) {
                     _kakaoLoginEvent.tryEmit(
-                        KakaoLoginEvent.Failure(
+                        KakaoLoginEvent.ShowMessage(
                             R.string.login_kakao_message_kakao_login_fail,
                             error.message.orEmpty()
                         )
                     )
                 } else if (user?.id != null) {
                     Log.i("KAKAO", "사용자 정보 요청 성공\n회원번호: ${user.id}")
-                    loginRepository.loginKakao(user.id!!).catch {
-                        _kakaoLoginEvent.tryEmit(
-                            KakaoLoginEvent.Failure(
-                                R.string.login_kakao_message_kakao_login_fail,
-                                it.message.orEmpty()
+                    loginRepository.loginKakao(user.id!!).catch { exception ->
+                        when(exception) {
+                            is FirstSignIn -> _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToProfileSettingFragment)
+                            else -> _kakaoLoginEvent.tryEmit(
+                                KakaoLoginEvent.ShowMessage(
+                                    R.string.login_kakao_message_kakao_login_fail,
+                                    exception.message.orEmpty()
+                                )
                             )
-                        )
+                        }
                     }.collect {
-                        _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Success(user.id!!))
+                        _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToHomeActivity(user.id!!))
                     }
 
                 } else {
-                    _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Failure(R.string.login_kakao_message_no_user_data))
+                    _kakaoLoginEvent.emit(KakaoLoginEvent.ShowMessage(R.string.login_kakao_message_no_user_data))
                 }
             }
         }
