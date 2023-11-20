@@ -1,6 +1,8 @@
 package com.teameetmeet.meetmeet.data.network.di
 
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
+import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
+import com.teameetmeet.meetmeet.data.network.api.FakeEventStoryApi
 import com.teameetmeet.meetmeet.data.network.api.FakeLoginApi
 import com.teameetmeet.meetmeet.data.network.api.FakeUserApi
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
@@ -40,4 +42,8 @@ class NetworkModule {
     @Singleton
     @Provides
     fun provideUserApi(): UserApi = FakeUserApi()
+
+    @Singleton
+    @Provides
+    fun provideEventStoryApi(): EventStoryApi = FakeEventStoryApi()
 }

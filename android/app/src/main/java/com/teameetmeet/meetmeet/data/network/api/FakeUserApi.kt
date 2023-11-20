@@ -1,6 +1,6 @@
 package com.teameetmeet.meetmeet.data.network.api
 
-import com.teameetmeet.meetmeet.data.network.entity.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserProfile
 
 class FakeUserApi : UserApi {
     override fun getUserProfile(accessToken: String): UserProfile {
