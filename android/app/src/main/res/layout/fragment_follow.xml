@@ -23,10 +23,20 @@
                 android:id="@+id/follow_search_sb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/search_event_hint"
+                android:hint="@string/follow_search_hint"
                 app:navigationIcon="@drawable/ic_nav_pre" />
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.search.SearchView
+            android:id="@+id/follow_search_sv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:hint="@string/follow_search_hint"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/follow_search_tl"

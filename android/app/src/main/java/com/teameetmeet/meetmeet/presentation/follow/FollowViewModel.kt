@@ -15,6 +15,7 @@ class FollowViewModel @Inject constructor() : ViewModel() {
     val users: StateFlow<List<UserProfile>> = _users
 
     fun getFollower() {
+        // TODO 팔로워 목록 API 갱신
         val tmp = listOf(
             UserProfile(null, "팔로워1"),
             UserProfile(null, "팔로워2"),
@@ -26,6 +27,7 @@ class FollowViewModel @Inject constructor() : ViewModel() {
     }
 
     fun getFollowing() {
+        // TODO 팔로윙 목록 API 갱신
         val tmp = listOf(
             UserProfile(null, "팔로잉1"),
             UserProfile(null, "팔로잉2"),

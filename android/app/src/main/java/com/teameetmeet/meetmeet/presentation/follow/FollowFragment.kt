@@ -17,6 +17,7 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.followSearchSv.setupWithSearchBar(binding.followSearchSb)
         binding.followSearchVp.adapter = FollowPagerAdapter(requireActivity())
 
         TabLayoutMediator(binding.followSearchTl, binding.followSearchVp) { tab, position ->

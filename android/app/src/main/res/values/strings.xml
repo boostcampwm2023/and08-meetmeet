@@ -81,4 +81,5 @@
 
     <string name="follow_following">팔로잉 %d명</string>
     <string name="follow_follower">팔로워 %d명</string>
+    <string name="follow_search_hint">닉네임을 입력하세요</string>
 </resources>
