@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { compare } from 'bcrypt';
@@ -58,11 +62,28 @@ export class AuthService {
 
   async login(user: User) {
     return {
-      accessToken: await this.jwtService.signAsync({
-        nickname: user.nickname,
-      }),
+      accessToken: await this.generateAccessToken(user),
       refreshToken: await this.generateRefreshToken(user),
     };
+  }
+
+  async refresh(user: User, refreshToken: string) {
+    const payload = this.jwtService.verify(refreshToken, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+    });
+
+    // TODO: refresh token db 검증
+    if (user.id !== payload.id) {
+      throw new UnauthorizedException('Invalid User');
+    }
+
+    return { accessToken: await this.generateAccessToken(user) };
+  }
+
+  async generateAccessToken(user: User): Promise<string> {
+    return await this.jwtService.signAsync({
+      nickname: user.nickname,
+    });
   }
 
   async generateRefreshToken(user: User): Promise<string> {
