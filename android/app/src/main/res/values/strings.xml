@@ -47,6 +47,8 @@
     <string name="login_kakao_login_button_description">kakao login button</string>
     <string name="login_kakao_message_no_user_data">유저 정보를 불러올 수 없습니다.</string>
     <string name="login_kakao_message_kakao_login_fail">카카오 로그인 실패.\n%s</string>
+    <string name="login_message_self_login_fail">로그인 실패</string>
+    <string name="login_message_sign_up_fail">회원가입 실패</string>
     <string name="login_app_login">로그인</string>
     <string name="login_app_sign_up">회원가입</string>
     <string name="login_app_password">비밀번호</string>
