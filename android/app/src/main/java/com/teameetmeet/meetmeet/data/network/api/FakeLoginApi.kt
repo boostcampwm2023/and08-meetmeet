@@ -5,6 +5,7 @@ import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.LoginResponse
+import com.teameetmeet.meetmeet.data.network.entity.SelfLoginRequest
 import kotlin.random.Random
 
 class FakeLoginApi : LoginApi {
@@ -14,6 +15,10 @@ class FakeLoginApi : LoginApi {
         if (case % 2 == 0) {
             throw FirstSignIn("accessToken", "refreshToken")
         }
+        return LoginResponse("accessToken", "refreshToken")
+    }
+
+    override fun loginSelf(selfLoginRequest: SelfLoginRequest): LoginResponse {
         return LoginResponse("accessToken", "refreshToken")
     }
 

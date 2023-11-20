@@ -1,8 +1,5 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import android.util.Log
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.UserApi
@@ -32,7 +29,7 @@ class UserRepository @Inject constructor(
             }
     }
 
-    fun getToken() : Flow<String?> {
+    fun getToken(): Flow<String?> {
         return dataStore.getAppToken()
             .catch {
                 throw it
@@ -49,14 +46,6 @@ class UserRepository @Inject constructor(
 
     private suspend fun fetchUserProfile(userProfile: UserProfile) {
         dataStore.fetchUserProfile(userProfile)
-    }
-
-    fun login(email: String, password: String): Flow<Boolean> = flow {
-
-        // todo API 호출, DataStore 저장
-
-        dataStore.storeAppToken(email, password)
-        emit(true)
     }
 
     fun logout(): Flow<Unit> {
