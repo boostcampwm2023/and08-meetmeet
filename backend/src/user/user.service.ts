@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { User } from './entities/user.entity';
 import { OauthProvider } from './entities/oauthProvider.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 const SALTROUND = 10;
 
@@ -45,6 +50,15 @@ export class UserService {
     user.oauthProvider = oauthProvider;
 
     return await this.userRepository.save(user);
+  }
+
+  async update(id: number, user: User, updateUserDto: UpdateUserDto) {
+    if (id !== user.id) {
+      throw new UnauthorizedException('잘못된 유저입니다.');
+    }
+
+    await this.userRepository.update(id, updateUserDto);
+    return await this.userRepository.findOne({ where: { id: id } });
   }
 
   async findUserByOAuth(email: string, oauthProvider: string) {
