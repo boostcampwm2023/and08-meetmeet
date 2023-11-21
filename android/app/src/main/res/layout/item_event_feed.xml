@@ -15,6 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:background="@drawable/background_with_gray_border"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
         android:layout_height="wrap_content">
 
         <ImageView

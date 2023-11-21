@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -45,6 +46,12 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
             eventStoryTvValueEventNotification.setOnClickListener {
                 showDialog(viewModel.getNoti())
             }
+            eventStoryIbSeeMoreMember.setOnClickListener {
+                Log.d("test", "hi")
+            }
+            eventStoryCvInviteMember.setOnClickListener {
+                Log.d("test", "bye")
+            }
         }
     }
 
@@ -65,7 +72,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
     private fun setBinding() {
         with(binding) {
             eventStoryRvValueEventMembers.adapter = EventMemberListAdapter(viewModel)
-            eventStoryRvEventFeed.adapter = EventFeedListAdapter()
+            eventStoryRvEventFeed.adapter = EventFeedListAdapter(viewModel)
             vm = viewModel
         }
     }
@@ -79,6 +86,9 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                             event.messageId,
                             event.extraMessage
                         )
+                        is EventStoryEvent.NavigateToFeedFragment -> {
+                            Log.d("test", "화면 전환")
+                        }
                     }
                 }
             }

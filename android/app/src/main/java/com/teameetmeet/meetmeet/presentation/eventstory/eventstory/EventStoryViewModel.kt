@@ -2,8 +2,11 @@ package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
+import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
+import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.BufferOverflow
@@ -48,9 +51,16 @@ class EventStoryViewModel @Inject constructor(
         return eventStoryUiState.value.eventStory?.announcement.orEmpty()
     }
 
-    override fun onItemClick() {
-        _eventStoryUiState.update {
-            it.copy(isEventMemberUiExpanded = eventStoryUiState.value.isEventMemberUiExpanded.not())
+    override fun onItemClick(viewHolder: RecyclerView.ViewHolder) {
+        when(viewHolder) {
+            is EventFeedListAdapter.EventFeedViewHolder -> {
+                _event.tryEmit(EventStoryEvent.NavigateToFeedFragment)
+            }
+            is EventMemberListAdapter.EventMemberViewHolder -> {
+                _eventStoryUiState.update {
+                    it.copy(isEventMemberUiExpanded = eventStoryUiState.value.isEventMemberUiExpanded.not())
+                }
+            }
         }
     }
 

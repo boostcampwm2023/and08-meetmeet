@@ -90,70 +90,60 @@
                 android:id="@+id/event_story_layout_members"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
-                app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_members"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginEnd="16dp"
-                >
+                android:layout_marginTop="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+                app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_members">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/event_story_rv_value_event_members"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_weight="2"
+                    android:orientation="horizontal"
                     app:is_expanded="@{vm.eventStoryUiState.eventMemberUiExpanded}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_event_member"
-                    tools:itemCount="15"
                     app:sub_list="@{vm.eventStoryUiState.eventStory.eventMembers}"
-                    app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_members"
-                    app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_members"
-                    app:layout_constraintEnd_toStartOf="@id/event_story_ib_see_more_member"
-                    />
+                    tools:itemCount="15"
+                    tools:listitem="@layout/item_event_member" />
 
                 <ImageButton
                     android:id="@+id/event_story_ib_see_more_member"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:background="@null"
-                    android:src="@drawable/ic_more_hoz"
                     android:layout_marginStart="12dp"
-                    android:visibility="@{vm.eventStoryUiState.eventMemberUiExpanded == true ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toTopOf="@id/event_story_rv_value_event_members"
-                    app:layout_constraintBottom_toBottomOf="@id/event_story_rv_value_event_members"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:layout_marginEnd="16dp"
-                    />
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_more_hoz"
+                    android:visibility="@{vm.eventStoryUiState.eventMemberUiExpanded == true ? View.VISIBLE : View.GONE}" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/event_story_cv_invite_member"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:contentPadding="6dp"
                     android:layout_gravity="center_vertical"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
                     android:visibility="@{vm.eventStoryUiState.eventMemberUiExpanded == true ? View.VISIBLE : View.GONE}"
-                    app:cardCornerRadius="100dp">
+                    app:cardCornerRadius="100dp"
+                    app:contentPadding="6dp">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/black"
-                        android:src="@drawable/ic_plus"/>
+                        android:src="@drawable/ic_plus" />
 
                 </androidx.cardview.widget.CardView>
 
                 <View
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.1"
-                    />
+                    android:layout_weight="0.1" />
 
-                </LinearLayout>
-
-
-
+            </LinearLayout>
 
 
             <TextView
