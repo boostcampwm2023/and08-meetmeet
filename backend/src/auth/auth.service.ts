@@ -77,7 +77,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid User');
     }
 
-    return { accessToken: await this.generateAccessToken(user) };
+    return {
+      accessToken: await this.generateAccessToken(user),
+      refreshToken: await this.generateRefreshToken(user),
+    };
   }
 
   async generateAccessToken(user: User): Promise<string> {
