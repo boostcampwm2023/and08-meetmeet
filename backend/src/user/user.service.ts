@@ -1,9 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { User } from './entities/user.entity';
 import { OauthProvider } from './entities/oauthProvider.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 const SALTROUND = 10;
 
@@ -47,6 +52,31 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+  async updateUser(
+    id: number,
+    user: User,
+    updateUserDto: UpdateUserDto,
+    profileImage: Express.Multer.File,
+  ) {
+    if (id !== user.id) {
+      throw new UnauthorizedException('잘못된 유저입니다.');
+    }
+    if (updateUserDto.password) {
+      updateUserDto.password = await hash(updateUserDto.password, SALTROUND);
+    }
+
+    await this.userRepository.update(id, updateUserDto);
+    return await this.userRepository.findOne({ where: { id: id } });
+  }
+
+  async deleteUser(id: number, user: User) {
+    if (id !== user.id) {
+      throw new UnauthorizedException('잘못된 유저입니다.');
+    }
+
+    await this.userRepository.softDelete(id);
+  }
+
   async findUserByOAuth(email: string, oauthProvider: string) {
     const result = await this.userRepository
       .createQueryBuilder('user')
@@ -58,11 +88,15 @@ export class UserService {
     return result;
   }
 
-  async findUserByEmail(email: string) {
+  async findUserWithPasswordByEmail(email: string) {
     return await this.userRepository.findOne({
       where: { email: email },
       select: ['id', 'nickname', 'email', 'password'],
     });
+  }
+
+  async findUserByEmail(email: string) {
+    return await this.userRepository.findOne({ where: { email: email } });
   }
 
   async findUserByNickname(nickname: string) {

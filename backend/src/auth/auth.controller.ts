@@ -8,7 +8,6 @@ import { GetUser } from './get-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('auth')
-@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -54,7 +53,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('refresh')
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'access token 갱신 API',
   })
