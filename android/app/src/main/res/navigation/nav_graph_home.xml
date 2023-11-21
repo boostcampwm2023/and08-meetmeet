@@ -23,7 +23,7 @@
             android:id="@+id/action_calendar_fragment_to_notification_activity"
             app:destination="@id/notification_activity" />
         <action
-            android:id="@+id/action_calendar_fragment_to_bottomSheet"
+            android:id="@+id/action_calendar_fragment_to_bottom_sheet_dialog"
             app:destination="@id/bottom_sheet_dialog" />
     </fragment>
 
