@@ -28,8 +28,6 @@ class SettingProfileFragment :
                 }
             }
             requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
-        } else {
-            findNavController().popBackStack()
         }
     }
 
@@ -41,7 +39,9 @@ class SettingProfileFragment :
 
     override fun onDetach() {
         super.onDetach()
-        callback.remove()
+        if (args.isFirstSignIn) {
+            callback.remove()
+        }
     }
 
     private fun setTopAppBar(isFirstSignIn: Boolean) {
