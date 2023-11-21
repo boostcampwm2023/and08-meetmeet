@@ -77,7 +77,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid User');
     }
 
-    return { accessToken: await this.generateAccessToken(user) };
+    return {
+      accessToken: await this.generateAccessToken(user),
+      refreshToken: await this.generateRefreshToken(user),
+    };
   }
 
   async generateAccessToken(user: User): Promise<string> {
@@ -98,6 +101,21 @@ export class AuthService {
     );
   }
 
+  async verifyToken(token: string) {
+    try {
+      const payload = this.jwtService.verify(token, {
+        secret: this.configService.get<string>('JWT_SECRET_KEY'),
+      });
+      return {
+        isVerified: !this.isExpired(payload.exp),
+      };
+    } catch (err) {
+      return {
+        isVerified: false,
+      };
+    }
+  }
+
   async checkEmail(email: string) {
     const user = await this.userService.findUserByEmail(email);
 
@@ -112,5 +130,9 @@ export class AuthService {
     return {
       isAvailable: user ? false : true,
     };
+  }
+
+  isExpired(exp: number) {
+    return exp < new Date().getTime() / 1000;
   }
 }

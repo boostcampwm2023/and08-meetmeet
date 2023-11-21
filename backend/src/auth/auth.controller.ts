@@ -57,11 +57,30 @@ export class AuthController {
   @ApiOperation({
     summary: 'access token 갱신 API',
   })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        refreshToken: {
+          type: 'string',
+          description: '새로운 access token 발급을 위한 refresh token',
+        },
+      },
+    },
+  })
   async refresh(
     @GetUser() user: User,
     @Body('refreshToken') refreshToken: string,
   ) {
     return this.authService.refresh(user, refreshToken);
+  }
+
+  @Get('check/token')
+  @ApiOperation({
+    summary: 'access token 검증 API',
+  })
+  checkAccessToken(@Query('token') token: string) {
+    return this.authService.verifyToken(token);
   }
 
   @Get('check/email')

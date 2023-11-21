@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   UploadedFile,
@@ -17,6 +18,7 @@ import {
 } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { multerOptions } from 'src/common/config/multer.config';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -28,12 +30,21 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('profile', { dest: './uploads/' }))
+  @Get('info')
+  @ApiOperation({
+    summary: '사용자 프로필 조회 API',
+    description: 'kakao 회원의 경우 email에 kakao라고 조회됩니다.',
+  })
+  getUserInfo(@GetUser() user: User) {
+    return this.userService.getUserInfo(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('profile', multerOptions))
   @Patch(':id/info')
   @ApiOperation({
     summary: '사용자 프로필, 계정 수정 API',
-    description:
-      'multipart/form-data 형식\nparameter의 id와 access token의 user id가 같아야 합니다.',
+    description: 'parameter의 id와 access token의 user id가 같아야 합니다.',
   })
   @ApiConsumes('multipart/form-data')
   updateUserInfo(
