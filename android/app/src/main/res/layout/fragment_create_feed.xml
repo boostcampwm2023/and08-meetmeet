@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.story.createfeed.CreateFeedViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.story.createfeed.CreateFeedFragment">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/layout_app_bar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/top_app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:menu="@menu/top_app_bar_add_event"
+                app:navigationIcon="@drawable/ic_nav_pre" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/create_feed_til"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:hint="@string/create_feed_text_hint"
+            android:paddingHorizontal="20dp"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/text_length_long"
+            app:counterTextAppearance="@style/small"
+            app:layout_constraintBottom_toTopOf="@id/create_feed_ll_media"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_app_bar">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/create_feed_et"
+                style="@style/medium"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:maxLength="@integer/text_length_long"
+                android:onTextChanged="@{(p1,p2,p3,p4) -> vm.setFeedText(p1)}"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:id="@+id/create_feed_ll_media"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingVertical="5dp"
+            android:paddingStart="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/create_feed_til">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/create_feed_cv_add_photo"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginEnd="12dp"
+                app:cardCornerRadius="5dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_add_photo" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                uris="@{vm.mediaList}"
+                listener="@{vm}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_create_feed_media" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
