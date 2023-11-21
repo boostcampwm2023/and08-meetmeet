@@ -1,16 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".presentation.eventstory.eventstorydetail.EventStoryDetailFragment">
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".presentation.eventstory.eventstorydetail.EventStoryDetailFragment">
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/story_detail_mtb"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:title="일정 상세"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:navigationIcon="@drawable/ic_nav_pre"
+                app:titleTextAppearance="@style/large"
+                app:menu="@menu/top_app_bar_add_event"
+                />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/story_detail_guideline_left"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.07"
+                />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/story_detail_guideline_right"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.93"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_mtb"
+                android:layout_marginTop="36dp"
+                android:hint="@string/story_detail_event_name"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/story_detail_et_event_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_name"
+                android:layout_marginTop="24dp"
+                android:hint="@string/story_detail_event_time"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/story_detail_et_event_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_alarm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_time"
+                android:layout_marginTop="24dp"
+                android:hint="@string/story_detail_event_alarm"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/story_detail_et_event_alarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/event_story_tv_event_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_alarm"
+                android:layout_marginTop="24dp"
+                android:text="@string/story_detail_event_color"
+                style="@style/medium.bold"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_repeat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintTop_toBottomOf="@id/event_story_tv_event_color"
+                android:layout_marginTop="24dp"
+                android:hint="@string/story_detail_event_repeat"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/story_detail_et_event_repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_memo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_repeat"
+                android:layout_marginTop="24dp"
+                android:hint="@string/story_detail_event_memo"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/story_detail_et_event_memo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/story_detail_tv_event_public"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_memo"
+                android:layout_marginTop="24dp"
+                android:text="@string/story_detail_public"
+                style="@style/medium.bold"
+                />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/story_detail_switch_event_public"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/story_detail_tv_event_public"
+                app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_event_public"
+                app:layout_constraintStart_toEndOf="@id/story_detail_tv_event_public"
+                android:layout_marginStart="16dp"
+                />
+
+            <TextView
+                android:id="@+id/story_detail_tv_event_joinable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_event_public"
+                android:layout_marginTop="24dp"
+                android:text="@string/story_detail_joinable"
+                style="@style/medium.bold"
+                />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/story_detail_switch_joinable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/story_detail_tv_event_joinable"
+                app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_event_joinable"
+                app:layout_constraintStart_toEndOf="@id/story_detail_tv_event_joinable"
+                android:layout_marginStart="16dp"
+                />
+
+            <Button
+                android:id="@+id/story_detail_btn_remove_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                android:backgroundTint="@color/event_color_warning"
+                android:text="@string/story_detail_remove_event"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_event_joinable"
+                android:layout_marginTop="24dp"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 </layout>

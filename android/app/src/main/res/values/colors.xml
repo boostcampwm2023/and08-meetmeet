@@ -10,6 +10,7 @@
     <color name="event_color_purple">#D765FF</color>
     <color name="event_color_checked">#6750A4</color>
 
+    <color name="event_color_warning">#B11212</color>
     <color name="blue">#FF0000FF</color>
     <color name="red">#FFFF0000</color>
     <color name="green">#4DA430</color>

@@ -71,6 +71,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     private fun setBinding() {
         with(binding) {
+            eventStoryRvValueEventMembers.itemAnimator = null
             eventStoryRvValueEventMembers.adapter = EventMemberListAdapter(viewModel)
             eventStoryRvEventFeed.adapter = EventFeedListAdapter(viewModel)
             vm = viewModel

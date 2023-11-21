@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation
+package com.teameetmeet.meetmeet.presentation.bindingadapter
 
 import android.graphics.Rect
 import android.view.View
