@@ -75,6 +75,14 @@ export class AuthController {
     return this.authService.refresh(user, refreshToken);
   }
 
+  @Get('check/token')
+  @ApiOperation({
+    summary: 'access token 검증 API',
+  })
+  checkAccessToken(@Query('token') token: string) {
+    return this.authService.verifyToken(token);
+  }
+
   @Get('check/email')
   @ApiOperation({
     summary: 'email 중복 확인 API',
