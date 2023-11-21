@@ -1,16 +1,22 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { compare } from 'bcrypt';
 import { UserService } from 'src/user/user.service';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { User } from 'src/user/entities/user.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
-    private jwtService: JwtService,
+    private readonly userService: UserService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async register(authUserDto: AuthUserDto) {
@@ -37,37 +43,74 @@ export class AuthService {
     return user;
   }
 
+  async kakaoLogin(kakaoId: string) {
+    const user = await this.userService.findUserByOAuth(kakaoId, 'kakao');
+
+    if (user) {
+      return this.login(user);
+    }
+
+    const nickname = uuidv4().split('-').at(0)!;
+    const createdUser = await this.userService.oauthCreateUser(
+      kakaoId,
+      nickname,
+      'kakao',
+    );
+
+    return this.login(createdUser);
+  }
+
   async login(user: User) {
     return {
-      accessToken: await this.jwtService.signAsync(
-        {
-          nickname: user.nickname,
-        },
-        { expiresIn: '5m' },
-      ),
-      refreshToken: await this.jwtService.signAsync(
-        {
-          nickname: user.nickname,
-        },
-        { expiresIn: '7d' },
-      ),
+      accessToken: await this.generateAccessToken(user),
+      refreshToken: await this.generateRefreshToken(user),
     };
   }
 
-  async refresh(user: User) {
+  async refresh(user: User, refreshToken: string) {
+    const payload = this.jwtService.verify(refreshToken, {
+      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+    });
+
+    // TODO: refresh token db 검증
+    if (user.id !== payload.id) {
+      throw new UnauthorizedException('Invalid User');
+    }
+
+    return { accessToken: await this.generateAccessToken(user) };
+  }
+
+  async generateAccessToken(user: User): Promise<string> {
+    return await this.jwtService.signAsync({
+      nickname: user.nickname,
+    });
+  }
+
+  async generateRefreshToken(user: User): Promise<string> {
+    return await this.jwtService.signAsync(
+      { id: user.id },
+      {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get<string>(
+          'JWT_REFRESH_EXPIRATION_TIME',
+        ),
+      },
+    );
+  }
+
+  async checkEmail(email: string) {
+    const user = await this.userService.findUserByEmail(email);
+
     return {
-      accessToken: await this.jwtService.signAsync(
-        {
-          nickname: user.nickname,
-        },
-        { expiresIn: '5m' },
-      ),
-      refreshToken: await this.jwtService.signAsync(
-        {
-          nickname: user.nickname,
-        },
-        { expiresIn: '7d' },
-      ),
+      isAvailable: user ? false : true,
+    };
+  }
+
+  async checkNickname(nickname: string) {
+    const user = await this.userService.findUserByNickname(nickname);
+
+    return {
+      isAvailable: user ? false : true,
     };
   }
 }

@@ -45,6 +45,9 @@
         <action
             android:id="@+id/action_sign_up_fragment_to_home_activity"
             app:destination="@id/home_activity" />
+        <action
+            android:id="@+id/action_sign_up_fragment_to_setting_profile_fragment"
+            app:destination="@id/setting_profile_fragment" />
     </fragment>
     <fragment
         android:id="@+id/setting_profile_fragment"

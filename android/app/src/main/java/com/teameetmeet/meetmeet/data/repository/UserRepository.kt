@@ -1,8 +1,5 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import android.util.Log
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.UserApi
@@ -10,7 +7,6 @@ import com.teameetmeet.meetmeet.data.network.entity.UserProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -32,7 +28,7 @@ class UserRepository @Inject constructor(
             }
     }
 
-    fun getToken() : Flow<String?> {
+    fun getToken(): Flow<String?> {
         return dataStore.getAppToken()
             .catch {
                 throw it
@@ -51,14 +47,6 @@ class UserRepository @Inject constructor(
         dataStore.fetchUserProfile(userProfile)
     }
 
-    fun login(email: String, password: String): Flow<Boolean> = flow {
-
-        // todo API 호출, DataStore 저장
-
-        dataStore.storeAppToken(email, password)
-        emit(true)
-    }
-
     fun logout(): Flow<Unit> {
         return flowOf(true)
             .map {
@@ -72,20 +60,4 @@ class UserRepository @Inject constructor(
             }
 
     }
-
-    fun signUp(email: String, password: String): Flow<Boolean> = flow {
-        // todo API 호출, DataStore 저장
-
-        dataStore.storeAppToken(email, password)
-        emit(true)
-    }
-
-    fun checkEmailDuplicate(email: String): Flow<Unit> = flowOf(true)
-        .map {
-
-        }.catch {
-            throw Exception()
-        }
-
-
 }

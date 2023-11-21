@@ -2,10 +2,12 @@ package com.teameetmeet.meetmeet.presentation.login.selflogin
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import com.teameetmeet.meetmeet.presentation.login.signup.EmailState
 import com.teameetmeet.meetmeet.presentation.login.signup.PasswordState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -18,13 +20,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelfLoginViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val loginRepository: LoginRepository
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SelfLoginUiState> = MutableStateFlow(SelfLoginUiState())
     val uiState: StateFlow<SelfLoginUiState> = _uiState
 
-    private val _event: MutableSharedFlow<SelfLoginEvent> = MutableSharedFlow()
+    private val _event: MutableSharedFlow<SelfLoginEvent> = MutableSharedFlow(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val event: SharedFlow<SelfLoginEvent> = _event
 
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -45,9 +50,9 @@ class SelfLoginViewModel @Inject constructor(
     fun login() {
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            userRepository.login(_uiState.value.email, _uiState.value.password)
+            loginRepository.loginSelf(_uiState.value.email, _uiState.value.password)
                 .catch {
-                    // 예외 처리
+                    _event.emit(SelfLoginEvent.ShowMessage(R.string.login_message_self_login_fail))
                     _showPlaceholder.update { false }
                 }.collectLatest {
                     _event.emit(SelfLoginEvent.SelfLoginSuccess)
