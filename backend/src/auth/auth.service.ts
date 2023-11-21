@@ -34,7 +34,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string) {
-    const user = await this.userService.findUserByEmail(email);
+    const user = await this.userService.findUserWithPasswordByEmail(email);
 
     if (!user || !(await compare(password, user.password))) {
       throw new BadRequestException();
@@ -82,7 +82,7 @@ export class AuthService {
 
   async generateAccessToken(user: User): Promise<string> {
     return await this.jwtService.signAsync({
-      nickname: user.nickname,
+      email: user.email,
     });
   }
 

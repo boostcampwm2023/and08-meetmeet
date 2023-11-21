@@ -52,7 +52,12 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async updateUser(id: number, user: User, updateUserDto: UpdateUserDto) {
+  async updateUser(
+    id: number,
+    user: User,
+    updateUserDto: UpdateUserDto,
+    profileImage: Express.Multer.File,
+  ) {
     if (id !== user.id) {
       throw new UnauthorizedException('잘못된 유저입니다.');
     }
@@ -83,11 +88,15 @@ export class UserService {
     return result;
   }
 
-  async findUserByEmail(email: string) {
+  async findUserWithPasswordByEmail(email: string) {
     return await this.userRepository.findOne({
       where: { email: email },
       select: ['id', 'nickname', 'email', 'password'],
     });
+  }
+
+  async findUserByEmail(email: string) {
+    return await this.userRepository.findOne({ where: { email: email } });
   }
 
   async findUserByNickname(nickname: string) {
