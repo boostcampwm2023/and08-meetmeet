@@ -58,7 +58,11 @@ class EventStoryViewModel @Inject constructor(
             }
             is EventMemberListAdapter.EventMemberViewHolder -> {
                 _eventStoryUiState.update {
-                    it.copy(isEventMemberUiExpanded = eventStoryUiState.value.isEventMemberUiExpanded.not())
+                    if(eventStoryUiState.value.isEventMemberUiExpanded) {
+                        it.copy(isEventMemberUiExpanded = false, maxMember = SHRINK_MAX_MEMBER)
+                    } else {
+                        it.copy(isEventMemberUiExpanded = true, maxMember = EXPANDED_MAX_MEMBER)
+                    }
                 }
             }
         }
