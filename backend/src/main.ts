@@ -10,7 +10,12 @@ async function bootstrap() {
     .setTitle(`MeetMeet's backend api`)
     .setDescription(`The MeetMeet's API description`)
     .setVersion('1.0')
-    .addTag('cats')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      name: 'JWT',
+      in: 'header',
+    })
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

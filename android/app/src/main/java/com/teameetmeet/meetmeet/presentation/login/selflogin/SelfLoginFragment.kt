@@ -3,7 +3,9 @@ package com.teameetmeet.meetmeet.presentation.login.selflogin
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentSelfLoginBinding
@@ -34,13 +36,19 @@ class SelfLoginFragment : BaseFragment<FragmentSelfLoginBinding>(R.layout.fragme
 
     private fun collectViewModelEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.event.collectLatest { event ->
-                when (event) {
-                    SelfLoginEvent.SelfLoginSuccess -> {
-                        findNavController().navigate(
-                            SelfLoginFragmentDirections.actionSelfLoginFragmentToHomeActivity()
-                        )
-                        requireActivity().finish()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collectLatest { event ->
+                    when (event) {
+                        is SelfLoginEvent.SelfLoginSuccess -> {
+                            findNavController().navigate(
+                                SelfLoginFragmentDirections.actionSelfLoginFragmentToHomeActivity()
+                            )
+                            requireActivity().finish()
+                        }
+
+                        is SelfLoginEvent.ShowMessage -> {
+                            showMessage(event.message, event.extraMessage)
+                        }
                     }
                 }
             }

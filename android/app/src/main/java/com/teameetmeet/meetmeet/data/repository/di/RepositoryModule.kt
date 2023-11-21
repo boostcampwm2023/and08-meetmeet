@@ -3,9 +3,11 @@ package com.teameetmeet.meetmeet.data.repository.di
 import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
 import com.teameetmeet.meetmeet.data.datasource.RemoteCalendarDataSource
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
+import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
+import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import com.teameetmeet.meetmeet.data.repository.SettingRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
@@ -40,6 +42,12 @@ class RepositoryModule {
         localCalendarDataSource: LocalCalendarDataSource,
         remoteCalendarDataSource: RemoteCalendarDataSource
     ) = CalendarRepository(localCalendarDataSource, remoteCalendarDataSource)
+
+    @Singleton
+    @Provides
+    fun provideEventStoryRepository(
+        eventStoryApi: EventStoryApi
+    ) = EventStoryRepository(eventStoryApi)
 
     @Singleton
     @Provides

@@ -27,14 +27,3 @@ fun bindDayInMonth(
     }
     (recyclerView.adapter as CalendarAdapter).submitList(dayList)
 }
-
-@BindingAdapter("image")
-fun bindUserProfileImage(
-    imageView: ImageView,
-    profileImage: String
-) {
-    Log.d("test", profileImage)
-    Glide.with(imageView.context).load(profileImage)
-        .centerCrop().fallback(R.drawable.ic_plus).error(R.drawable.ic_follow)
-        .placeholder(R.drawable.ic_person).into(imageView)
-}

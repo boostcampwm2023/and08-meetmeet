@@ -2,7 +2,7 @@ package com.teameetmeet.meetmeet.presentation.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.teameetmeet.meetmeet.data.network.entity.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode

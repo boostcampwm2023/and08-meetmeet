@@ -66,19 +66,14 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
     }
 
 
-    private fun showMessage(messageId: Int, extraMessage: String) {
-        if(extraMessage.isNotEmpty()) {
-            Toast.makeText(requireContext(), String.format(getString(messageId), extraMessage), Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), getString(messageId), Toast.LENGTH_SHORT).show()
-        }
-    }
-
     private fun navigateToHomeActivity() {
         findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToHomeActivity())
     }
 
     private fun navigateToProfileSettingFragment() {
-        findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToSettingProfileFragment().setIsFirstSignIn(true))
+        findNavController().navigate(
+            EntranceFragmentDirections.actionEntranceFragmentToSettingProfileFragment()
+                .setIsFirstSignIn(true)
+        )
     }
 }
