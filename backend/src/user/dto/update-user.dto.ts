@@ -1,21 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
-  @ApiProperty({ name: 'nickname', example: 'nickname' })
+  @ApiProperty({
+    name: 'nickname',
+    example: 'nickname',
+    required: false,
+  })
   @IsOptional()
+  @IsNotEmpty()
   @IsString()
   nickname: string;
 
   // TODO: profile image update
-
-  @ApiProperty({ name: 'email', example: 'email' })
+  @ApiProperty({
+    name: 'profileImage',
+    type: 'string',
+    format: 'binary',
+    required: false,
+  })
   @IsOptional()
-  @IsString()
-  email: string;
+  profile: Express.Multer.File;
 
-  @ApiProperty({ name: 'password', example: 'password' })
+  @ApiProperty({ name: 'password', example: 'password', required: false })
   @IsOptional()
+  @IsNotEmpty()
   @IsString()
   password: string;
 }
