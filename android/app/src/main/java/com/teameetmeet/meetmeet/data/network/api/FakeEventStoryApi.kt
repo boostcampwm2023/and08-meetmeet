@@ -25,8 +25,23 @@ class FakeEventStoryApi : EventStoryApi {
             memo = "9시 반 기차로 서대구역에서 출발해야함.",
             feeds = listOf(
                 Feed(1, "https://github.com/agfalcon.png", "this is memo"),
+                Feed(2, null, "this is memo"),
+                Feed(3, null, null),
+                Feed(4, "https://github.com/agfalcon.png", "this is memo"),
                 Feed(5, null, "this is memo"),
-                Feed(2, null, null)
+                Feed(6, null, null),
+                Feed(7, "https://github.com/agfalcon.png", "this is memo"),
+                Feed(8, null, "this is memo"),
+                Feed(9, null, null),
+                Feed(10, "https://github.com/agfalcon.png", "this is memo"),
+                Feed(11, null, "this is memo"),
+                Feed(12, null, null),
+                Feed(13, "https://github.com/agfalcon.png", "this is memo"),
+                Feed(14, null, "this is memo"),
+                Feed(15, null, null),
+                Feed(16, "https://github.com/agfalcon.png", "this is memo"),
+                Feed(17, null, "this is memo"),
+                Feed(18, null, null)
             )
         )
     }

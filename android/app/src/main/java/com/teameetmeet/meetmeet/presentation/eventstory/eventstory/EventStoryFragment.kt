@@ -55,24 +55,6 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         with(binding) {
             eventStoryRvValueEventMembers.adapter = EventMemberListAdapter(viewModel)
             eventStoryRvEventFeed.adapter = EventFeedListAdapter()
-            eventStoryRvEventFeed.addItemDecoration(object : RecyclerView.ItemDecoration(){
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    val position = parent.getChildAdapterPosition(view)
-                    val column = position % 3 + 1
-
-                    if (position >= 3){
-                        outRect.top = 20
-                    }
-                    if (column != 1){
-                        outRect.left = 20
-                    }
-                }
-            })
             vm = viewModel
         }
     }
