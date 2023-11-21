@@ -16,7 +16,16 @@ class FakeEventStoryApi : EventStoryApi {
                 EventMember(1, "chani", "https://github.com/chani1209.png"),
                 EventMember(2, "dajung", "https://github.com/cdj2073.png"),
                 EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
-                EventMember(4, "chanmin", "https://github.com/p-chanmin.png")
+                EventMember(4, "chanmin", "https://github.com/p-chanmin.png"),
+                EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
+                EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
+                EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
+                EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
+                EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
+                EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
+                EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
+                EventMember(3, "hailim", "https://github.com/LeeHaiLim.png"),
+
             ),
             announcement = "다들 11시 반에 광명역에서 집합입니다~",
             authority = "owner",

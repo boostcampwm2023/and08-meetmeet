@@ -12,6 +12,13 @@ fun <T, VH : RecyclerView.ViewHolder> RecyclerView.bindAdapter(listData: List<T>
     (this.adapter as ListAdapter<T, VH>).submitList(listData)
 }
 
+@BindingAdapter("sub_list", "limit")
+fun <T, VH : RecyclerView.ViewHolder> RecyclerView.bindAdapterWithLimit(listData: List<T>, limit: Int = 0) {
+    val newLimit = if(limit > listData.size) listData.size else limit
+    val list = if(newLimit == 0) listData else listData.subList(0, newLimit)
+    (this.adapter as ListAdapter<T, VH>).submitList(list)
+}
+
 @BindingAdapter("is_expanded")
 fun RecyclerView.bindOffset(isExpanded: Boolean) {
     if(itemDecorationCount >= 1) {
