@@ -5,6 +5,11 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.setting.profile.SettingProfileViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,6 +47,7 @@
 
             <ImageView
                 android:id="@+id/setting_home_iv_profile"
+                image="@{vm.uiState.profileImage}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:src="@drawable/ic_launcher_foreground" />
@@ -63,6 +69,9 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/setting_profile_tf_nickname"
+            invalid_text="@{@string/setting_nickname_duplicate_check_fail}"
+            setting_profile_nickname_state="@{vm.uiState.nickNameState}"
+            valid_text="@{@string/setting_nickname_duplicate_check_complete}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -78,7 +87,9 @@
                 style="@style/medium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="12" />
+                android:maxLength="12"
+                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updateUserNickName(p0)}"
+                android:text="@{vm.uiState.nickname}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -89,6 +100,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="16dp"
+            android:enabled="@{vm.uiState.duplicatedEnable}"
+            android:onClick="@{() -> vm.checkDuplicate()}"
             android:text="@string/setting_duplicate_check"
             app:layout_constraintBottom_toBottomOf="@id/setting_profile_tf_nickname"
             app:layout_constraintEnd_toEndOf="parent"
@@ -106,6 +119,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/setting_profile_tf_nickname" />
 
+        <View
+            android:id="@+id/view_loading_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/loading_background"
+            android:clickable="true"
+            android:elevation="2dp"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{vm.showPlaceholder ?View.VISIBLE:View.GONE}"
+            app:constraint_referenced_ids="view_loading_background, progress_bar"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

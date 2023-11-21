@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.teameetmeet.meetmeet.R
@@ -17,6 +18,7 @@ class SettingProfileFragment :
 
     private val args: SettingProfileFragmentArgs by navArgs()
     private lateinit var callback: OnBackPressedCallback
+    private val viewModel: SettingProfileViewModel by viewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -34,14 +36,8 @@ class SettingProfileFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.vm = viewModel
         setTopAppBar(args.isFirstSignIn)
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        if (args.isFirstSignIn) {
-            callback.remove()
-        }
     }
 
     private fun setTopAppBar(isFirstSignIn: Boolean) {
@@ -52,6 +48,13 @@ class SettingProfileFragment :
             } else {
                 findNavController().popBackStack()
             }
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        if (args.isFirstSignIn) {
+            callback.remove()
         }
     }
 }
