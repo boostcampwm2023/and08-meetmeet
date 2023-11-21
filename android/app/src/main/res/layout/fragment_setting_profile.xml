@@ -110,6 +110,7 @@
 
         <Button
             android:id="@+id/setting_profile_submit"
+            update_profile_enabled="@{vm.uiState}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"

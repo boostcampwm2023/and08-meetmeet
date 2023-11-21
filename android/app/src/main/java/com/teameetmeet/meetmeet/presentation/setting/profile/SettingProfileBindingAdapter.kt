@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.setting.profile
 
+import android.widget.Button
 import androidx.databinding.BindingAdapter
 import com.google.android.material.textfield.TextInputLayout
 
@@ -19,6 +20,22 @@ fun TextInputLayout.bindNickNameState(
         else -> {
             this.error = null
             this.helperText = null
+        }
+    }
+}
+
+@BindingAdapter("update_profile_enabled")
+fun Button.bindUpdateProfileEnabled(state: SettingProfileUiState) {
+    this.isEnabled = if (state.currentUserProfile.profileImage != state.profileImage) {
+        when (state.nickNameState) {
+            NickNameState.Same -> true
+            NickNameState.Valid -> true
+            else -> false
+        }
+    } else {
+        when (state.nickNameState) {
+            NickNameState.Valid -> true
+            else -> false
         }
     }
 }

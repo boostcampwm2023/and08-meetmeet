@@ -7,5 +7,5 @@ data class SettingProfileUiState(
     val profileImage: String? = null,
     val nickname: String = "",
     val duplicatedEnable: Boolean = false,
-    val nickNameState: NickNameState = NickNameState.None,
+    val nickNameState: NickNameState = NickNameState.Same,
 )
