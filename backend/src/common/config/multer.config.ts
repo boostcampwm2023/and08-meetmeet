@@ -9,7 +9,7 @@ export const multerOptions = {
       const filePath: string = 'uploads';
 
       if (!fs.existsSync(filePath)) {
-        fs.mkdirSync(filePath, { recursive: true });
+        fs.mkdirSync(filePath);
       }
 
       callback(null, filePath);
