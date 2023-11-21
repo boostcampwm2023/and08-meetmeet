@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +10,7 @@ import { hash } from 'bcrypt';
 import { User } from './entities/user.entity';
 import { OauthProvider } from './entities/oauthProvider.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ContentService } from 'src/content/content.service';
 
 const SALTROUND = 10;
 
@@ -18,6 +20,7 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(OauthProvider)
     private oauthProviderRepository: Repository<OauthProvider>,
+    private readonly contentService: ContentService,
   ) {}
 
   async localCreateUser(email: string, password: string, nickname: string) {
@@ -65,8 +68,39 @@ export class UserService {
       updateUserDto.password = await hash(updateUserDto.password, SALTROUND);
     }
 
-    await this.userRepository.update(id, updateUserDto);
+    if (profileImage) {
+      const userProfile = await this.updateProfileImage(
+        user.profileId,
+        profileImage,
+      );
+
+      user.profile = userProfile;
+    }
+    console.log('profile', user.profile);
+    await this.userRepository.update(id, {
+      ...updateUserDto,
+      profileId: user.profile?.id ?? null,
+    });
     return await this.userRepository.findOne({ where: { id: id } });
+  }
+
+  async updateProfileImage(
+    profileId: number | null,
+    profileImage: Express.Multer.File,
+  ) {
+    if (!profileId) {
+      return await this.contentService.createContent(profileImage);
+    }
+
+    const result = await this.contentService.updateContent(
+      profileId,
+      profileImage,
+    );
+    if (!result) {
+      throw new InternalServerErrorException('프로필 변경에 실패했습니다.');
+    }
+
+    return result;
   }
 
   async deleteUser(id: number, user: User) {
