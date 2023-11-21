@@ -52,13 +52,24 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async update(id: number, user: User, updateUserDto: UpdateUserDto) {
+  async updateUser(id: number, user: User, updateUserDto: UpdateUserDto) {
     if (id !== user.id) {
       throw new UnauthorizedException('잘못된 유저입니다.');
+    }
+    if (updateUserDto.password) {
+      updateUserDto.password = await hash(updateUserDto.password, SALTROUND);
     }
 
     await this.userRepository.update(id, updateUserDto);
     return await this.userRepository.findOne({ where: { id: id } });
+  }
+
+  async deleteUser(id: number, user: User) {
+    if (id !== user.id) {
+      throw new UnauthorizedException('잘못된 유저입니다.');
+    }
+
+    await this.userRepository.softDelete(id);
   }
 
   async findUserByOAuth(email: string, oauthProvider: string) {
