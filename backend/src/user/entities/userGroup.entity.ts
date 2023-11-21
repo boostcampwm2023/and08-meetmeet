@@ -1,5 +1,5 @@
 import { Entity, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Authority } from 'src/event-member/entities/autority.entity';
+import { Authority } from 'src/event-member/entities/authority.entity';
 import { Group } from 'src/group/entities/group.entity';
 import { User } from './user.entity';
 

@@ -3,7 +3,7 @@ import { commonEntity } from 'src/common/common.entity';
 import { Detail } from 'src/detail/entities/detail.entity';
 import { Event } from 'src/event/entities/event.entity';
 import { User } from 'src/user/entities/user.entity';
-import { Authority } from './autority.entity';
+import { Authority } from './authority.entity';
 
 @Entity()
 export class EventMember extends commonEntity {

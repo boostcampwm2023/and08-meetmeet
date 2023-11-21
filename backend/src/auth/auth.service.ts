@@ -30,7 +30,7 @@ export class AuthService {
     const nickname = uuidv4().split('-').at(0)!;
     // TODO: nickname 중복 확인
 
-    this.userService.localCreateUser(email, password, nickname);
+    await this.userService.localCreateUser(email, password, nickname);
   }
 
   async validateUser(email: string, password: string) {

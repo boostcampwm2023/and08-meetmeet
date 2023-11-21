@@ -8,6 +8,7 @@ import { GetUser } from './get-user.decorator';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('auth')
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
