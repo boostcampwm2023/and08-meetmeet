@@ -55,6 +55,29 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+  async getUserInfo(user: User) {
+    const result = await this.userRepository
+      .createQueryBuilder('user')
+      .select([
+        'user.email',
+        'user.nickname',
+        'profile.path',
+        'oauth.displayName',
+      ])
+      .leftJoin('user.profile', 'profile')
+      .leftJoin('user.oauthProvider', 'oauth')
+      .where('user.id = :id', { id: user.id })
+      .getOne();
+
+    const userInfo = {
+      email: result?.oauthProvider?.displayName ?? result?.email,
+      nickname: result?.nickname,
+      profileUrl: result?.profile?.path ?? null,
+    };
+
+    return userInfo;
+  }
+
   async updateUser(
     id: number,
     user: User,
@@ -76,7 +99,7 @@ export class UserService {
 
       user.profile = userProfile;
     }
-    console.log('profile', user.profile);
+
     await this.userRepository.update(id, {
       ...updateUserDto,
       profileId: user.profile?.id ?? null,

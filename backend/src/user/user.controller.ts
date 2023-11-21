@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   UploadedFile,
@@ -27,6 +28,16 @@ import { UserService } from './user.service';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('info')
+  @ApiOperation({
+    summary: '사용자 프로필 조회 API',
+    description: 'kakao 회원의 경우 email에 kakao라고 조회됩니다.',
+  })
+  getUserInfo(@GetUser() user: User) {
+    return this.userService.getUserInfo(user);
+  }
 
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('profile', multerOptions))
