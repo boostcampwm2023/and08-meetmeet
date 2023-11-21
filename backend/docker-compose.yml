@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   nest:
-    image: nest:latest
+    image: meetmeet-container-registry.kr.ncr.ntruss.com/nest:latest
     container_name: nest
     restart: always
     ports:
