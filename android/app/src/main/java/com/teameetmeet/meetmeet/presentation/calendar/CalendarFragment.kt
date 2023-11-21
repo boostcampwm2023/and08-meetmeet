@@ -64,7 +64,8 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         }
 
         binding.calendarFlNotification.setOnClickListener {
-            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToNotificationActivity())
+//            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToNotificationActivity())
+            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToEventStoryActivity())
         }
     }
 

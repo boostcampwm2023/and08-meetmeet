@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_event_story"
+    app:startDestination="@id/event_story_fragment">
+
+    <fragment
+        android:id="@+id/event_story_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstory.EventStoryFragment"
+        tools:layout="@layout/fragment_event_story"
+        android:label="event_story_fragment" >
+        <action
+            android:id="@+id/action_event_story_fragment_to_event_story_detail_fragment"
+            app:destination="@id/event_story_detail_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/event_story_detail_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailFragment"
+        tools:layout="@layout/fragment_event_story_detail"
+        android:label="event_story_detail_fragment" />
+</navigation>

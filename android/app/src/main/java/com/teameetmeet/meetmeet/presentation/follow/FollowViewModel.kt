@@ -1,7 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.follow
 
 import androidx.lifecycle.ViewModel
-import com.teameetmeet.meetmeet.data.network.entity.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

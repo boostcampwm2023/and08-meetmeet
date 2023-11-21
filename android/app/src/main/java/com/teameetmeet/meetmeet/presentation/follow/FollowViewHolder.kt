@@ -3,7 +3,7 @@ package com.teameetmeet.meetmeet.presentation.follow
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.teameetmeet.meetmeet.data.network.entity.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.databinding.ItemFollowBinding
 
 class FollowViewHolder private constructor(private val binding: ItemFollowBinding) :

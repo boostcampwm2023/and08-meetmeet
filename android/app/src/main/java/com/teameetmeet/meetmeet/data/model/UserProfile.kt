@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.data.network.entity
+package com.teameetmeet.meetmeet.data.model
 
 import com.squareup.moshi.JsonClass
 

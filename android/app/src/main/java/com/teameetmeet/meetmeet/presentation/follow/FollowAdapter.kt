@@ -3,7 +3,8 @@ package com.teameetmeet.meetmeet.presentation.follow
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.teameetmeet.meetmeet.data.network.entity.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserProfile
+
 
 class FollowAdapter :
     ListAdapter<UserProfile, FollowViewHolder>(ItemDiffCallback) {

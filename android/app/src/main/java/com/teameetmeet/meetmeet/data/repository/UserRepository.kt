@@ -3,7 +3,7 @@ package com.teameetmeet.meetmeet.data.repository
 import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.UserApi
-import com.teameetmeet.meetmeet.data.network.entity.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -50,8 +50,6 @@ class UserRepository @Inject constructor(
     fun logout(): Flow<Unit> {
         return flowOf(true)
             .map {
-                val token = dataStore.getAppToken().first() ?: throw NoDataException()
-                userApi.logout(token)
                 dataStore.deleteUserProfile()
                 dataStore.deleteAppToken()
             }.catch {
