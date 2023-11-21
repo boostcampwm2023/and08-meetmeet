@@ -20,7 +20,7 @@ class SettingHomeViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _user: MutableStateFlow<UserProfile> = MutableStateFlow(UserProfile(null, ""))
+    private val _user: MutableStateFlow<UserProfile> = MutableStateFlow(UserProfile(null, "", ""))
     val user: StateFlow<UserProfile> = _user
 
     private val _event: MutableSharedFlow<SettingHomeEvent> = MutableSharedFlow()
