@@ -1,6 +1,8 @@
 package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.UserProfile
+import com.teameetmeet.meetmeet.data.network.entity.NickNameDuplicationCheckRequest
+import kotlin.random.Random
 
 class FakeUserApi : UserApi {
     override fun getUserProfile(accessToken: String): UserProfile {
@@ -9,5 +11,12 @@ class FakeUserApi : UserApi {
             "코딩 천재 김근범",
             "meetmeet@naver.com"
         )
+    }
+
+    override fun checkNickNameDuplication(nickNameDuplicationCheckRequest: NickNameDuplicationCheckRequest): Boolean {
+        if (Random.nextInt() % 2 == 0) {
+            throw Exception()
+        }
+        return true
     }
 }
