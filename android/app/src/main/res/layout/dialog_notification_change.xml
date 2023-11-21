@@ -46,6 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     tools:text="안녕하세요!!!"
+                    android:maxLines="3"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>

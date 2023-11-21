@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
@@ -37,8 +38,12 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
     private fun setClickListener() {
         with(binding) {
             eventStoryIvChangeNotification.setOnClickListener {
-                val dialog = NotificationChangeDialog(requireContext(),viewModel, viewModel.getNoti())
+                val dialog =
+                    NotificationChangeDialog(requireContext(), viewModel, viewModel.getNoti())
                 dialog.show()
+            }
+            eventStoryTvValueEventNotification.setOnClickListener {
+                showDialog(viewModel.getNoti())
             }
         }
     }
@@ -69,8 +74,11 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
-                    when(event) {
-                        is EventStoryEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
+                    when (event) {
+                        is EventStoryEvent.ShowMessage -> showMessage(
+                            event.messageId,
+                            event.extraMessage
+                        )
                     }
                 }
             }
@@ -80,5 +88,11 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     private fun navigateToEventDetailFragment() {
         findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment())
+    }
+
+    private fun showDialog(noti: String) {
+        AlertDialog.Builder(requireContext()).apply {
+            setMessage(noti).create().show()
+        }
     }
 }
