@@ -2,6 +2,8 @@ package com.teameetmeet.meetmeet.presentation.eventstory
 
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.databinding.DataBindingUtil
@@ -26,6 +28,7 @@ class NotificationChangeDialog(
         )
         setContentView(binding.root)
         context.dialogResize(this, 0.8f, 0.4f)
+        window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         setClickListener()
     }
