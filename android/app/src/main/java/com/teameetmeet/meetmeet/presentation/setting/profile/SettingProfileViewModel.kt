@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.setting.profile
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.data.repository.UserRepository
@@ -48,13 +49,22 @@ class SettingProfileViewModel @Inject constructor(
     }
 
     fun updateUserNickName(nickname: CharSequence?) {
+        val isChanged = _uiState.value.currentUserProfile.nickname != nickname.toString()
         _uiState.update {
             it.copy(
                 nickname = nickname.toString(),
-                duplicatedEnable = it.currentUserProfile.nickname != nickname.toString(),
-                nickNameState = NickNameState.None
+                duplicatedEnable = isChanged,
+                nickNameState = if (isChanged) {
+                    NickNameState.None
+                } else {
+                    NickNameState.Same
+                }
             )
         }
+    }
+
+    fun updateUserProfileImage(uri: Uri) {
+        _uiState.update { it.copy(profileImage = uri.toString()) }
     }
 
     fun checkDuplicate() {

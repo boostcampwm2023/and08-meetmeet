@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -38,6 +40,7 @@ class SettingProfileFragment :
 
         binding.vm = viewModel
         setTopAppBar(args.isFirstSignIn)
+        setPhotoPicker()
     }
 
     private fun setTopAppBar(isFirstSignIn: Boolean) {
@@ -48,6 +51,19 @@ class SettingProfileFragment :
             } else {
                 findNavController().popBackStack()
             }
+        }
+    }
+
+    private fun setPhotoPicker() {
+        val pickMedia =
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                if (uri != null) {
+                    viewModel.updateUserProfileImage(uri)
+                }
+            }
+
+        binding.settingProfileCvProfile.setOnClickListener {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
 
