@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.data.network.api
 import com.teameetmeet.meetmeet.data.model.EventMember
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.Feed
+import com.teameetmeet.meetmeet.data.network.entity.SingleStringRequest
 
 class FakeEventStoryApi : EventStoryApi {
     override fun getStory(id: String): EventStory {
@@ -44,5 +45,9 @@ class FakeEventStoryApi : EventStoryApi {
                 Feed(18, null, null)
             )
         )
+    }
+
+    override fun editNotification(singleStringRequest: SingleStringRequest) {
+
     }
 }

@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.eventstory
+package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
 import android.app.Dialog
 import android.content.Context
@@ -12,7 +12,9 @@ import com.teameetmeet.meetmeet.databinding.DialogNotificationChangeBinding
 import com.teameetmeet.meetmeet.util.dialogResize
 
 class NotificationChangeDialog(
-    context: Context
+    context: Context,
+    private val onNotiChangeListener: OnNotiChangeListener,
+    private val noti: String
 ): Dialog(context) {
 
     private lateinit var binding: DialogNotificationChangeBinding
@@ -29,6 +31,7 @@ class NotificationChangeDialog(
         setContentView(binding.root)
         context.dialogResize(this, 0.8f, 0.4f)
         window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        binding.dialogNotificationChangeEtBody.setText(noti)
 
         setClickListener()
     }
@@ -36,6 +39,10 @@ class NotificationChangeDialog(
     private fun setClickListener() {
         with(binding) {
             dialogNotificationChangeTvCancel.setOnClickListener {
+                dismiss()
+            }
+            dialogNotificationChangeTvSave.setOnClickListener {
+                onNotiChangeListener.onSaveButtonClick(binding.dialogNotificationChangeEtBody.text.toString())
                 dismiss()
             }
         }

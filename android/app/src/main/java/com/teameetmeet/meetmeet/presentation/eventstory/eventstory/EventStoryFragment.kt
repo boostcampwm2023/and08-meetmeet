@@ -1,22 +1,17 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
-import com.teameetmeet.meetmeet.presentation.eventstory.NotificationChangeDialog
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
-import com.teameetmeet.meetmeet.util.convertDpToPx
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -42,7 +37,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
     private fun setClickListener() {
         with(binding) {
             eventStoryIvChangeNotification.setOnClickListener {
-                val dialog = NotificationChangeDialog(requireContext())
+                val dialog = NotificationChangeDialog(requireContext(),viewModel, viewModel.getNoti())
                 dialog.show()
             }
         }

@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:ellipsize="marquee"
+                android:ellipsize="end"
                 android:maxLines="3"
                 android:text="@{vm.eventStoryUiState.eventStory.announcement ?? @string/common_none}"
                 app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_notification"

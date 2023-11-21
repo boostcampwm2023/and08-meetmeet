@@ -95,4 +95,5 @@
     <string name="notification_change_title">공지 작성</string>
     <string name="dialog_notification_change_cancel">취소</string>
     <string name="dialog_notification_change_save">저장</string>
+    <string name="event_story_message_edit_noti_fail">일정 공지 수정에 실패했습니다.\n%s</string>
 </resources>
