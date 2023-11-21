@@ -78,4 +78,8 @@
     <string name="sign_up_password_invalid">영문자, 숫자, 특수문자 !@#*를 포함한 9자 이상 14자 이하</string>
     <string name="sign_up_password_confirm_valid">비밀번호가 일치합니다</string>
     <string name="sign_up_password_confirm_invalid">비밀번호가 일치하지 않습니다</string>
+
+    <string name="follow_following">팔로잉 %d명</string>
+    <string name="follow_follower">팔로워 %d명</string>
+    <string name="follow_search_hint">닉네임을 입력하세요</string>
 </resources>
