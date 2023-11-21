@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/calendar_background_purple"
+        android:padding="16dp"
+        >
+
+        <TextView
+            android:id="@+id/dialog_notification_change_tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/notification_change_title"
+            style="@style/large.bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dialog_notification_change_til_body"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/dialog_notification_change_tv_title"
+            app:layout_constraintStart_toStartOf="@id/dialog_notification_change_tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginVertical="16dp"
+            app:boxBackgroundColor="@color/white"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialog_notification_change_et_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="안녕하세요!!!"
+                android:maxLines="4"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/dialog_notification_change_tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:text="@string/dialog_notification_change_cancel"
+            app:layout_constraintTop_toTopOf="@id/dialog_notification_change_tv_save"
+            app:layout_constraintEnd_toStartOf="@id/dialog_notification_change_tv_save"
+            android:layout_marginEnd="24dp"
+            style="@style/medium.bold"
+            />
+
+        <TextView
+            android:id="@+id/dialog_notification_change_tv_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:text="@string/dialog_notification_change_save"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.9"
+            app:layout_constraintTop_toBottomOf="@id/dialog_notification_change_til_body"
+            app:layout_constraintEnd_toEndOf="@id/dialog_notification_change_til_body"
+            style="@style/medium.bold"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

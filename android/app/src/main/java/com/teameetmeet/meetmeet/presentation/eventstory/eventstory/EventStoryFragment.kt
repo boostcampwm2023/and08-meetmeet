@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.eventstory.NotificationChangeDialog
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
 import com.teameetmeet.meetmeet.util.convertDpToPx
@@ -29,12 +30,22 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         super.onViewCreated(view, savedInstanceState)
         setBinding()
         setTopAppBar()
+        setClickListener()
         collectViewModelEvent()
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.getStory(1)
+    }
+
+    private fun setClickListener() {
+        with(binding) {
+            eventStoryIvChangeNotification.setOnClickListener {
+                val dialog = NotificationChangeDialog(requireContext())
+                dialog.show()
+            }
+        }
     }
 
     private fun setTopAppBar() {

@@ -92,4 +92,7 @@
 
     <string name="common_none"> </string>
     <string name="event_story_description_loading_image">loading_image</string>
+    <string name="notification_change_title">공지 작성</string>
+    <string name="dialog_notification_change_cancel">취소</string>
+    <string name="dialog_notification_change_save">저장</string>
 </resources>

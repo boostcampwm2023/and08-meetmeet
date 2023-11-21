@@ -110,6 +110,18 @@
                 app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
                 app:layout_constraintTop_toBottomOf="@id/event_story_rv_value_event_members" />
 
+            <ImageView
+                android:id="@+id/event_story_iv_change_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@id/event_story_tv_title_event_notification"
+                app:layout_constraintTop_toTopOf="@id/event_story_tv_title_event_notification"
+                app:layout_constraintBottom_toBottomOf="@id/event_story_tv_title_event_notification"
+                android:src="@drawable/ic_edit"
+                android:background="@null"
+                android:layout_marginStart="8dp"
+                />
+
             <TextView
                 android:id="@+id/event_story_tv_value_event_notification"
                 style="@style/small"
