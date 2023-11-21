@@ -47,6 +47,8 @@
     <string name="login_kakao_login_button_description">kakao login button</string>
     <string name="login_kakao_message_no_user_data">유저 정보를 불러올 수 없습니다.</string>
     <string name="login_kakao_message_kakao_login_fail">카카오 로그인 실패.\n%s</string>
+    <string name="login_message_self_login_fail">로그인 실패</string>
+    <string name="login_message_sign_up_fail">회원가입 실패</string>
     <string name="login_app_login">로그인</string>
     <string name="login_app_sign_up">회원가입</string>
     <string name="login_app_password">비밀번호</string>
@@ -76,6 +78,10 @@
     <string name="sign_up_password_invalid">영문자, 숫자, 특수문자 !@#*를 포함한 9자 이상 14자 이하</string>
     <string name="sign_up_password_confirm_valid">비밀번호가 일치합니다</string>
     <string name="sign_up_password_confirm_invalid">비밀번호가 일치하지 않습니다</string>
+
+    <string name="follow_following">팔로잉 %d명</string>
+    <string name="follow_follower">팔로워 %d명</string>
+    <string name="follow_search_hint">닉네임을 입력하세요</string>
 
     <string name="event_story_menu_title_see_more">더보기</string>
     <string name="event_story_title_event_time">일정 시간</string>

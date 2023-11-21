@@ -89,9 +89,6 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         }
     }
 
-    private fun showMessage(messageId: Int, extraMessage: String) {
-        Toast.makeText(requireContext(), String.format(getString(messageId), extraMessage), Toast.LENGTH_SHORT).show()
-    }
 
     private fun navigateToEventDetailFragment() {
         findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment())

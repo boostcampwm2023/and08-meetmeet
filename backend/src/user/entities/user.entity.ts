@@ -14,6 +14,9 @@ export class User extends commonEntity {
   @Column({ type: 'varchar', length: 64, unique: true })
   nickname: string;
 
+  @Column({ nullable: true })
+  profileId: number;
+
   @ManyToOne(() => Content)
   @JoinColumn()
   profile: Content;
