@@ -92,6 +92,8 @@
     <string name="event_story_message_event_story_fail">스토리를 불러올 수 없습니다.\n%s</string>
     <string name="event_story_event_date">%1s - %2s</string>
 
+    <string name="create_feed_text_hint">텍스트를 입력하세요</string>
+
     <string name="common_none"> </string>
     <string name="event_story_description_loading_image">loading_image</string>
     <string name="notification_change_title">공지 작성</string>
