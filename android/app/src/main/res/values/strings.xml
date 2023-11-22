@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">MeetMeetApp</string>
 
+    <string name="common_korea_date_format">yyyy년 MM월 dd일</string>
+    <string name="common_korea_time_format">%1s시 %2분</string>
+    <string name="common_none"> </string>
+
+
+
     <string name="menu_save">저장</string>
     <string name="menu_calendar">캘린더</string>
     <string name="menu_follow">팔로우</string>
@@ -94,7 +100,6 @@
 
     <string name="create_feed_text_hint">텍스트를 입력하세요</string>
 
-    <string name="common_none"> </string>
     <string name="event_story_description_loading_image">loading_image</string>
     <string name="notification_change_title">공지 작성</string>
     <string name="dialog_notification_change_cancel">취소</string>
@@ -112,5 +117,10 @@
     <string name="story_detail_title_start_date">시작 시간</string>
     <string name="story_detail_tv_title_end_date">종료 시간</string>
     <string name="story_detail_description_start_date">시작 날짜 지정</string>
-    <string name="common_korea_date_format">yyyy년 MM월 dd일</string>
+    <string name="story_detail_description_end_date">종료 날짜 지정</string>
+    <string name="story_deatil_description_start_time">시작 시간 지정</string>
+    <string name="story_detail_description_end_time">종료 시간 지정</string>
+    <string name="story_detail_message_time_pick_start_time_fail">시작 시간이 종료 시간 보다 뒤로 설정할 수 없습니다.</string>
+    <string name="story_detail_message_time_pick_end_time_fail">종료 시간이 시작 시간 보다 앞으로 설정할 수 없습니다.</string>
+
 </resources>

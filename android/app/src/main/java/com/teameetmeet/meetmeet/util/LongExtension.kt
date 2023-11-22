@@ -31,3 +31,13 @@ fun Long.toDateStringFormat(locale: Locale = Locale.KOREA) : String {
     val date = Date(this)
     return dateFormat.format(date)
 }
+
+fun String.toTimeStampLong(locale: Locale = Locale.KOREA) : Long {
+    val dateFormat = SimpleDateFormat(MeetMeetApp.instance.getString(R.string.common_korea_date_format), locale)
+    return try {
+        val date = dateFormat.parse(this)
+        date.time
+    } catch(e: Exception) {
+        0
+    }
+}

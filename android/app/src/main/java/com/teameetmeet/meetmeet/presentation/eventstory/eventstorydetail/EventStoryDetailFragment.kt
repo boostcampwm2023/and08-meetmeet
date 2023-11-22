@@ -1,15 +1,24 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.timepicker.MaterialTimePicker
+import com.google.android.material.timepicker.TimeFormat
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.launch
 
 class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R.layout.fragment_event_story_detail) {
 
@@ -21,6 +30,26 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
         setNotificationOptions()
         setRepeatOptions()
         setDateTimePicker()
+        collectViewModelEvent()
+        setTopAppBar()
+    }
+
+    private fun setTopAppBar() {
+        binding.storyDetailMtb.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun collectViewModelEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collect { event ->
+                    when(event) {
+                        is EventStoryDetailEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
+                    }
+                }
+            }
+        }
     }
 
     private fun setBinding() {
@@ -52,17 +81,35 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
             }
         }
         binding.storyDetailTvValueEndDate.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.story_detail_description_start_date)).build()
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.story_detail_description_end_date)).build()
             datePicker.show(requireActivity().supportFragmentManager, null)
             datePicker.addOnPositiveButtonClickListener {
                 viewModel.setEventEndDate(it)
             }
         }
         binding.storyDetailTvValueStartTime.setOnClickListener {
-
+            val picker = MaterialTimePicker.Builder()
+                    .setTimeFormat(TimeFormat.CLOCK_12H)
+                    .setHour(viewModel.uiState.value.startTime.hour)
+                    .setMinute(viewModel.uiState.value.startTime.minute)
+                    .setTitleText(getString(R.string.story_deatil_description_start_time))
+                    .build()
+            picker.show(requireActivity().supportFragmentManager, null)
+            picker.addOnPositiveButtonClickListener {
+                viewModel.setEventStartTime(picker.hour, picker.minute)
+            }
         }
         binding.storyDetailTvValueEndTime.setOnClickListener {
-
+            val picker = MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_12H)
+                .setHour(viewModel.uiState.value.endTime.hour)
+                .setMinute(viewModel.uiState.value.endTime.minute)
+                .setTitleText(getString(R.string.story_detail_description_end_time))
+                .build()
+            picker.show(requireActivity().supportFragmentManager, null)
+            picker.addOnPositiveButtonClickListener {
+                viewModel.setEventEndTime(picker.hour, picker.minute)
+            }
         }
     }
 }

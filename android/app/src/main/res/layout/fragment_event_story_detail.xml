@@ -113,7 +113,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="14시 05분"
+                app:event_time="@{vm.uiState.startTime}"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_start_date" />
@@ -135,7 +135,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="08시 30분"
+                app:event_time="@{vm.uiState.endTime}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_end_date" />
