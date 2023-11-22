@@ -42,7 +42,7 @@ class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
     ) {
         title?.let { title -> dao.updateTitle(id, title) }
         startDate?.toDateLong()?.let { startDateLong -> dao.updateStartDateTime(id, startDateLong) }
-        endDate?.toDateLong()?.let { endDateLong -> dao.updateStartDateTime(id, endDateLong) }
+        endDate?.toDateLong()?.let { endDateLong -> dao.updateEndDateTime(id, endDateLong) }
         color?.let { color -> dao.updateTitle(id, color) }
         notification?.let { notification -> dao.updateTitle(id, notification) }
     }
