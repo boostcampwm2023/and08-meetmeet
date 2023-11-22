@@ -36,16 +36,30 @@ class EventStoryDetailViewModel @Inject constructor(
     private val _event = MutableSharedFlow<EventStoryDetailEvent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val event : SharedFlow<EventStoryDetailEvent> = _event
 
+    fun fetchEventId(storyId: Int) {
+        _uiState.update {
+            it.copy(eventId = storyId)
+        }
+    }
 
-    fun fetchStoryDetail(storyId: Int) {
+    fun fetchStoryDetail() {
         viewModelScope.launch {
-            eventStoryRepository.getEventStoryDetail(storyId).catch {
+            eventStoryRepository.getEventStoryDetail(uiState.value.eventId).catch {
                 _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_story_detail_fetch_fail, it.message.orEmpty()))
             }.collect {
                 //TODO("event 세부 사항 정보 갱신")
             }
         }
+    }
 
+    fun deleteEvent() {
+        viewModelScope.launch {
+            eventStoryRepository.deleteEventStory(uiState.value.eventId).catch {
+                _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_event_story_delete_fail, it.message.orEmpty()))
+            }.collect {
+                _event.tryEmit(EventStoryDetailEvent.FinishEventStoryActivity)
+            }
+        }
     }
 
     fun setEventName(name: CharSequence) {

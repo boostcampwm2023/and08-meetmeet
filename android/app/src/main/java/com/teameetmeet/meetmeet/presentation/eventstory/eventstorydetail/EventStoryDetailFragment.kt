@@ -30,12 +30,17 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
-        viewModel.fetchStoryDetail(args.storyId)
+        fetchStoryDetail()
         setNotificationOptions()
         setRepeatOptions()
         setDateTimePicker()
         collectViewModelEvent()
         setTopAppBar()
+    }
+
+    private fun fetchStoryDetail() {
+        viewModel.fetchEventId(args.storyId)
+        viewModel.fetchStoryDetail()
     }
 
     private fun setTopAppBar() {
@@ -50,6 +55,7 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
                 viewModel.event.collect { event ->
                     when(event) {
                         is EventStoryDetailEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
+                        is EventStoryDetailEvent.FinishEventStoryActivity -> requireActivity().finish()
                     }
                 }
             }
