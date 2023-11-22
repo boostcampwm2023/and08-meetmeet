@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.data.network.di
 
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
+import com.teameetmeet.meetmeet.data.network.api.FakeCalendarApi
 import com.teameetmeet.meetmeet.data.network.api.FakeEventStoryApi
 import com.teameetmeet.meetmeet.data.network.api.FakeLoginApi
 import com.teameetmeet.meetmeet.data.network.api.FakeUserApi
@@ -31,9 +32,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideCalendarApi(@Named("serverRetrofit") retrofit: Retrofit): CalendarApi {
-        return retrofit.create(CalendarApi::class.java)
-    }
+    fun provideCalendarApi(): CalendarApi = FakeCalendarApi()
 
     @Singleton
     @Provides
