@@ -88,7 +88,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                             event.extraMessage
                         )
                         is EventStoryEvent.NavigateToFeedFragment -> {
-                            Log.d("test", "화면 전환")
+                            findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment())
                         }
                     }
                 }
