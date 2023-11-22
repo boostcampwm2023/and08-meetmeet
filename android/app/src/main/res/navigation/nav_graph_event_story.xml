@@ -18,5 +18,9 @@
         android:id="@+id/event_story_detail_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailFragment"
         tools:layout="@layout/fragment_event_story_detail"
-        android:label="event_story_detail_fragment" />
+        android:label="event_story_detail_fragment" >
+        <argument
+            android:name="storyId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

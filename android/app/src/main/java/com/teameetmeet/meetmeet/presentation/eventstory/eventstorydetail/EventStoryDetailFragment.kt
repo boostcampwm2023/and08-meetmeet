@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -17,16 +18,19 @@ import com.teameetmeet.meetmeet.databinding.FragmentEventStoryDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
-import kotlinx.coroutines.flow.collectIndexed
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R.layout.fragment_event_story_detail) {
 
     private val viewModel: EventStoryDetailViewModel by viewModels()
+    private val args: EventStoryDetailFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
+        viewModel.fetchStoryDetail(args.storyId)
         setNotificationOptions()
         setRepeatOptions()
         setDateTimePicker()

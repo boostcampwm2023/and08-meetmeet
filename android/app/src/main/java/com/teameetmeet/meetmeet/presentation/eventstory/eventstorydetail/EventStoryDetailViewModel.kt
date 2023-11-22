@@ -1,27 +1,48 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
 import com.teameetmeet.meetmeet.util.toDateStringFormat
 import com.teameetmeet.meetmeet.util.toTimeStampLong
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-class EventStoryDetailViewModel : ViewModel() {
+@HiltViewModel
+class EventStoryDetailViewModel @Inject constructor(
+    private val eventStoryRepository: EventStoryRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<EventStoryDetailUiState>(EventStoryDetailUiState())
     val uiState: StateFlow<EventStoryDetailUiState> = _uiState
 
     private val _event = MutableSharedFlow<EventStoryDetailEvent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val event : SharedFlow<EventStoryDetailEvent> = _event
+
+
+    fun fetchStoryDetail(storyId: Int) {
+        viewModelScope.launch {
+            eventStoryRepository.getEventStoryDetail(storyId).catch {
+                _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_story_detail_fetch_fail, it.message.orEmpty()))
+            }.collect {
+                //TODO("event 세부 사항 정보 갱신")
+            }
+        }
+
+    }
 
     fun setEventName(name: CharSequence) {
         _uiState.update {
