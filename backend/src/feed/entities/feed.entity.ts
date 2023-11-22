@@ -5,6 +5,9 @@ import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class Feed extends commonEntity {
+  @Column()
+  eventId: number;
+
   @ManyToOne(() => User, { nullable: false })
   author: User;
 
