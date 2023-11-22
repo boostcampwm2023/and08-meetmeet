@@ -21,6 +21,7 @@
     <color name="grey2">#828282</color>
     <color name="grey3">#E0E0E0</color>
     <color name="grey4">#F5F5F7</color>
+    <color name="grey5">#30828282</color>
 
     <color name="loading_background">#30000000</color>
 </resources>
