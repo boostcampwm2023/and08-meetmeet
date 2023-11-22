@@ -94,4 +94,17 @@
 
     <string name="common_none"> </string>
     <string name="event_story_description_loading_image">loading_image</string>
+    <string name="notification_change_title">공지 작성</string>
+    <string name="dialog_notification_change_cancel">취소</string>
+    <string name="dialog_notification_change_save">저장</string>
+    <string name="event_story_message_edit_noti_fail">일정 공지 수정에 실패했습니다.\n%s</string>
+    <string name="story_detail_event_name">일정 이름</string>
+    <string name="story_detail_event_time">일정 시간</string>
+    <string name="story_detail_event_alarm">일정 알림</string>
+    <string name="story_detail_event_color">일정 색</string>
+    <string name="story_detail_event_repeat">일정 반복</string>
+    <string name="story_detail_event_memo">일정 메모</string>
+    <string name="story_detail_public">공개 여부</string>
+    <string name="story_detail_joinable">참가 여부</string>
+    <string name="story_detail_remove_event">일정 삭제하기</string>
 </resources>
