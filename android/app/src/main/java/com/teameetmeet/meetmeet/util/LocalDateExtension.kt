@@ -11,11 +11,11 @@ fun LocalDate.toYearMonth(): String {
     return format(formatter)
 }
 
-fun LocalDate.toStartLong(zoneId: ZoneId): Long {
+fun LocalDate.toStartLong(zoneId: ZoneId= ZoneId.systemDefault()): Long {
     return atStartOfDay(zoneId).toInstant().toEpochMilli()
 }
 
-fun LocalDate.toEndLong(zoneId: ZoneId): Long {
+fun LocalDate.toEndLong(zoneId: ZoneId= ZoneId.systemDefault()): Long {
     return plusDays(1).toStartLong(zoneId) - 1
 }
 

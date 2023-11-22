@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -82,8 +81,8 @@ class CalendarViewModel @Inject constructor(
                 calendarItems.dropWhile { it.date == null }
                     .let {
                         calendarRepository.getEvents(
-                            it.first().date!!.toStartLong(ZoneId.systemDefault()),
-                            it.last().date!!.toEndLong(ZoneId.systemDefault())
+                            it.first().date!!.toStartLong(),
+                            it.last().date!!.toEndLong()
                         )
                     }
                     .collectLatest {
@@ -100,8 +99,8 @@ class CalendarViewModel @Inject constructor(
                 calendarItem.date ?: return@map calendarItem
                 calendarItem.copy(
                     events = _events.value.filter { event ->
-                        val todayStart = calendarItem.date.toStartLong(ZoneId.systemDefault())
-                        val todayEnd = calendarItem.date.toEndLong(ZoneId.systemDefault())
+                        val todayStart = calendarItem.date.toStartLong()
+                        val todayEnd = calendarItem.date.toEndLong()
                         event.startDateTime <= todayEnd && event.endDateTime >= todayStart
                     }
                 )
