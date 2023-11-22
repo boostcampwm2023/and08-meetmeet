@@ -11,16 +11,18 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:layout_height="match_parent"
+        android:background="@{item.isSelected?@color/calendar_background_purple:@color/transparent}">
 
         <TextView
             android:id="@+id/item_calendar_tv_date"
             style="@style/caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{item.getDay()}"
+            android:textColor="@{item.date.dayOfWeek.value==7?@color/red:item.date.dayOfWeek.value==6?@color/blue:@color/black}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="@{item.getDay()}"
             tools:text="1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

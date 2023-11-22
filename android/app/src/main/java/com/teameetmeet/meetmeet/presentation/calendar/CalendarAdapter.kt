@@ -2,11 +2,9 @@ package com.teameetmeet.meetmeet.presentation.calendar
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ItemCalendarBinding
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 
@@ -25,7 +23,7 @@ class CalendarAdapter(
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
-        holder.bind(getItem(position), position)
+        holder.bind(getItem(position))
     }
 
     class CalendarViewHolder(
@@ -47,28 +45,6 @@ class CalendarAdapter(
                 itemView.setBackgroundResource(R.color.calendar_background_purple)
             } else {
                 itemView.background = null
-            }
-            if ((position + 1) % 7 == 6) {
-                binding.itemCalendarTvDate.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        R.color.blue
-                    )
-                )
-            } else if ((position + 1) % 7 == 0) {
-                binding.itemCalendarTvDate.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        R.color.red
-                    )
-                )
-            } else {
-                binding.itemCalendarTvDate.setTextColor(
-                    ContextCompat.getColor(
-                        itemView.context,
-                        R.color.black
-                    )
-                )
             }
         }
     }
