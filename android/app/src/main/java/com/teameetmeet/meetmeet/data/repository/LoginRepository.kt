@@ -5,7 +5,7 @@ import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.EmailDuplicationCheckRequest
-import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
+import com.teameetmeet.meetmeet.data.network.entity.SingleStringRequest
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -21,7 +21,7 @@ class LoginRepository @Inject constructor(
         return flowOf(true)
             .map {
                 val response =
-                    loginApi.loginKakao(kakaoLoginRequest = KakaoLoginRequest(id.toString()))
+                    loginApi.loginKakao(singleStringRequest = SingleStringRequest(id.toString()))
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
                 when (it) {

@@ -13,10 +13,23 @@
         <action
             android:id="@+id/action_event_story_fragment_to_event_story_detail_fragment"
             app:destination="@id/event_story_detail_fragment" />
+        <action
+            android:id="@+id/action_event_story_fragment_to_feed_detail_fragment"
+            app:destination="@id/feed_detail_fragment" />
     </fragment>
     <fragment
         android:id="@+id/event_story_detail_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailFragment"
         tools:layout="@layout/fragment_event_story_detail"
-        android:label="event_story_detail_fragment" />
+        android:label="event_story_detail_fragment" >
+        <argument
+            android:name="storyId"
+            app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/feed_detail_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.story.feeddetail.FeedDetailFragment"
+        android:label="FeedDetailFragment"
+        tools:layout="@layout/fragment_feed_detail" />
 </navigation>

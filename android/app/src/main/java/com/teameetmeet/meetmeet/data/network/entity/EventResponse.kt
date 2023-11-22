@@ -9,7 +9,7 @@ data class EventResponse(
     val startDate: String,
     val endDate: String,
     val eventMembers: List<UserResponse>,
-    val authorityId: Int,
-    val repeatPolicyId: Int,
-    val isJoin: Boolean
+    val authority: String,
+    val repeatPolicyId: Int?,
+    val isJoinable: Boolean
 )

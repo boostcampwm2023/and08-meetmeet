@@ -1,21 +1,19 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
-import android.graphics.Rect
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
-import com.teameetmeet.meetmeet.util.convertDpToPx
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -29,12 +27,32 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         super.onViewCreated(view, savedInstanceState)
         setBinding()
         setTopAppBar()
+        setClickListener()
         collectViewModelEvent()
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.getStory(1)
+    }
+
+    private fun setClickListener() {
+        with(binding) {
+            eventStoryIvChangeNotification.setOnClickListener {
+                val dialog =
+                    NotificationChangeDialog(requireContext(), viewModel, viewModel.getNoti())
+                dialog.show()
+            }
+            eventStoryTvValueEventNotification.setOnClickListener {
+                showDialog(viewModel.getNoti())
+            }
+            eventStoryIbSeeMoreMember.setOnClickListener {
+                Log.d("test", "hi")
+            }
+            eventStoryCvInviteMember.setOnClickListener {
+                Log.d("test", "bye")
+            }
+        }
     }
 
     private fun setTopAppBar() {
@@ -53,26 +71,9 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     private fun setBinding() {
         with(binding) {
+            eventStoryRvValueEventMembers.itemAnimator = null
             eventStoryRvValueEventMembers.adapter = EventMemberListAdapter(viewModel)
-            eventStoryRvEventFeed.adapter = EventFeedListAdapter()
-            eventStoryRvEventFeed.addItemDecoration(object : RecyclerView.ItemDecoration(){
-                override fun getItemOffsets(
-                    outRect: Rect,
-                    view: View,
-                    parent: RecyclerView,
-                    state: RecyclerView.State
-                ) {
-                    val position = parent.getChildAdapterPosition(view)
-                    val column = position % 3 + 1
-
-                    if (position >= 3){
-                        outRect.top = 20
-                    }
-                    if (column != 1){
-                        outRect.left = 20
-                    }
-                }
-            })
+            eventStoryRvEventFeed.adapter = EventFeedListAdapter(viewModel)
             vm = viewModel
         }
     }
@@ -81,8 +82,14 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
-                    when(event) {
-                        is EventStoryEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
+                    when (event) {
+                        is EventStoryEvent.ShowMessage -> showMessage(
+                            event.messageId,
+                            event.extraMessage
+                        )
+                        is EventStoryEvent.NavigateToFeedFragment -> {
+                            findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment())
+                        }
                     }
                 }
             }
@@ -91,6 +98,12 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
 
     private fun navigateToEventDetailFragment() {
-        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment())
+        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment(viewModel.eventStoryUiState.value.eventStory?.id ?:0))
+    }
+
+    private fun showDialog(noti: String) {
+        AlertDialog.Builder(requireContext()).apply {
+            setMessage(noti).create().show()
+        }
     }
 }

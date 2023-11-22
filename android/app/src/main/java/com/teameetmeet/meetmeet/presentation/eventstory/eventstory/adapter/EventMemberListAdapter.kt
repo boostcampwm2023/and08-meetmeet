@@ -19,10 +19,11 @@ class EventMemberListAdapter(private val onItemClickListener: OnItemClickListene
                 parent,
                 false
             )
+        val viewHolder =  EventMemberViewHolder(binding)
         binding.root.setOnClickListener {
-            onItemClickListener.onItemClick()
+            onItemClickListener.onItemClick(viewHolder)
         }
-        return EventMemberViewHolder(binding)
+        return viewHolder
     }
 
     override fun onBindViewHolder(holder: EventMemberViewHolder, position: Int) {

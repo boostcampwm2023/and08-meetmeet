@@ -12,9 +12,8 @@ export class UpdateUserDto {
   @IsString()
   nickname: string;
 
-  // TODO: profile image update
   @ApiProperty({
-    name: 'profileImage',
+    name: 'profile',
     type: 'string',
     format: 'binary',
     required: false,
