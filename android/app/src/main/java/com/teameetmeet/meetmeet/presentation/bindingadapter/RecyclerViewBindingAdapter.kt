@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation
+package com.teameetmeet.meetmeet.presentation.bindingadapter
 
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.ListAdapter
