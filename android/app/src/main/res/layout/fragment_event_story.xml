@@ -52,6 +52,7 @@
                             android:background="@color/white"
                             android:minHeight="?attr/actionBarSize"
                             app:menu="@menu/menu_top_app_bar_event_story"
+                            app:menu_more_enable="@{vm.eventStoryUiState.authority}"
                             app:navigationIcon="@drawable/ic_nav_pre"
                             app:title="@{vm.eventStoryUiState.eventStory.title ?? @string/common_none}"
                             tools:title="밋밋 3차 오프라인 미팅" />

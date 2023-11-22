@@ -1,6 +1,5 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
-import android.util.Log
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.google.android.material.appbar.MaterialToolbar
@@ -15,6 +14,5 @@ fun TextView.bindEventTime(eventTime: EventTime) {
 
 @BindingAdapter("menu_enable")
 fun MaterialToolbar.bindMenuEnable(eventAuthority: EventAuthority){
-    Log.d("test" , eventAuthority.toString())
     menu.findItem(R.id.menu_save).isVisible = eventAuthority != EventAuthority.GUEST
 }
