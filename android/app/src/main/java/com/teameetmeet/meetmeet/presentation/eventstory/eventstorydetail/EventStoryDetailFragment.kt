@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryDetailBinding
@@ -19,6 +20,7 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
         setBinding()
         setNotificationOptions()
         setRepeatOptions()
+        setDateTimePicker()
     }
 
     private fun setBinding() {
@@ -38,6 +40,29 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
         (binding.storyDetailTilEventAlarm.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(items)
         binding.storyDetailEtEventAlarm.setOnItemClickListener { _, _, index, _ ->
             viewModel.setEventAlarm(index)
+        }
+    }
+
+    private fun setDateTimePicker() {
+        binding.storyDetailTvValueStartDate.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.story_detail_description_start_date)).build()
+            datePicker.show(requireActivity().supportFragmentManager, null)
+            datePicker.addOnPositiveButtonClickListener {
+                viewModel.setEventStartDate(it)
+            }
+        }
+        binding.storyDetailTvValueEndDate.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.story_detail_description_start_date)).build()
+            datePicker.show(requireActivity().supportFragmentManager, null)
+            datePicker.addOnPositiveButtonClickListener {
+                viewModel.setEventEndDate(it)
+            }
+        }
+        binding.storyDetailTvValueStartTime.setOnClickListener {
+
+        }
+        binding.storyDetailTvValueEndTime.setOnClickListener {
+
         }
     }
 }

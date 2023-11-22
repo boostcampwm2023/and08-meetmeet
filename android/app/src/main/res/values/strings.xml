@@ -111,4 +111,6 @@
     <string name="story_detail_remove_event">일정 삭제하기</string>
     <string name="story_detail_title_start_date">시작 시간</string>
     <string name="story_detail_tv_title_end_date">종료 시간</string>
+    <string name="story_detail_description_start_date">시작 날짜 지정</string>
+    <string name="common_korea_date_format">yyyy년 MM월 dd일</string>
 </resources>

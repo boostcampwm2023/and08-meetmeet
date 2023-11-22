@@ -1,12 +1,13 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
+import com.teameetmeet.meetmeet.util.toDateStringFormat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+
 
 class EventStoryDetailViewModel : ViewModel() {
 
@@ -41,13 +42,23 @@ class EventStoryDetailViewModel : ViewModel() {
         _uiState.update {
             it.copy(alarm = EventNotification.values()[index])
         }
-        Log.d("test", uiState.value.alarm.toString())
     }
 
     fun setEventRepeat(index: Int) {
         _uiState.update {
             it.copy(eventRepeat = EventRepeatTerm.values()[index])
         }
-        Log.d("test", uiState.value.toString())
+    }
+
+    fun setEventStartDate(time: Long) {
+        _uiState.update {
+            it.copy(startDate = time.toDateStringFormat())
+        }
+    }
+
+    fun setEventEndDate(time: Long) {
+        _uiState.update {
+            it.copy(endDate = time.toDateStringFormat())
+        }
     }
 }

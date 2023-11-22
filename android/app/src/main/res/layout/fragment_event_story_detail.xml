@@ -99,42 +99,47 @@
             <TextView
                 android:id="@+id/story_detail_tv_value_start_date"
                 style="@style/medium"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                tools:text="2023년 11월 3일"
+                android:text="@{vm.uiState.startDate}"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_title_start_date" />
 
             <TextView
                 android:id="@+id/story_detail_tv_value_start_time"
                 style="@style/medium"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                tools:text="14시 05분"
+                android:text="14시 05분"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_start_date" />
 
             <TextView
                 android:id="@+id/story_detail_tv_value_end_date"
                 style="@style/medium"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                tools:text="2023년 11월 6일"
+                android:text="@{vm.uiState.endDate}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_title_end_date" />
 
             <TextView
                 android:id="@+id/story_detail_tv_value_end_time"
                 style="@style/medium"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                tools:text="08시 30분"
+                android:text="08시 30분"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_end_date" />
+
 
 
 
@@ -147,7 +152,7 @@
                 android:hint="@string/story_detail_event_alarm"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_start_time">
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_end_time">
 
                 <AutoCompleteTextView
                     android:id="@+id/story_detail_et_event_alarm"
