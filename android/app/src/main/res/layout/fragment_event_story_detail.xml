@@ -155,6 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:hint="@string/story_detail_event_alarm"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_end_time">
@@ -187,6 +188,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:hint="@string/story_detail_event_repeat"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/event_story_tv_event_color">
