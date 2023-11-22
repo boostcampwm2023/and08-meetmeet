@@ -138,7 +138,7 @@ class CalendarViewModel @Inject constructor(
 
     override fun onItemClick(calendarItem: CalendarItem) {
         calendarItem.date ?: return
-        if (currentDate.value != calendarItem) {
+        if (currentDate.value.date != calendarItem.date) {
             _daysInMonth.update { list ->
                 list.map {
                     when (it.date) {
