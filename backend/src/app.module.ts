@@ -15,6 +15,7 @@ import { FollowModule } from './follow/follow.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ContentModule } from './content/content.module';
+import { FeedModule } from './feed/feed.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ContentModule } from './content/content.module';
     UserModule,
     AuthModule,
     ContentModule,
+    FeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
