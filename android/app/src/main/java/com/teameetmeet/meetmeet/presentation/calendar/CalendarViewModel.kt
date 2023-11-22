@@ -8,6 +8,8 @@ import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
+import com.teameetmeet.meetmeet.presentation.model.EventSimple
+import com.teameetmeet.meetmeet.presentation.model.toEventSimple
 import com.teameetmeet.meetmeet.util.getDayListInMonth
 import com.teameetmeet.meetmeet.util.toEndLong
 import com.teameetmeet.meetmeet.util.toStartLong
@@ -51,9 +53,8 @@ class CalendarViewModel @Inject constructor(
     private val _dayClickEvent = MutableSharedFlow<DayClickEvent>()
     val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
 
-    //todo: ui 모델로 매핑
-    private val _events = MutableStateFlow<List<Event>>(listOf())
-    val events: StateFlow<List<Event>> = _events
+    private val _events = MutableStateFlow<List<EventSimple>>(listOf())
+    val events: StateFlow<List<EventSimple>> = _events
 
     init {
         fetchUserProfile()
@@ -86,7 +87,7 @@ class CalendarViewModel @Inject constructor(
                         )
                     }
                     .collectLatest {
-                        _events.emit(it)
+                        _events.emit(it.map(Event::toEventSimple))
                         allocateEventsPerDay()
                     }
             }
@@ -152,7 +153,9 @@ class CalendarViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _dayClickEvent.emit(DayClickEvent(calendarItem.events))
+            if (calendarItem.events.isNotEmpty()) {
+                _dayClickEvent.emit(DayClickEvent(calendarItem.date, calendarItem.events))
+            }
         }
     }
 }
