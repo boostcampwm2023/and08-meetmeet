@@ -55,4 +55,15 @@ export class EventMemberService {
     console.log(eventMembers);
     await this.eventMemberRepository.save(eventMembers);
   }
+
+  async getAuthorityOfUserByEventId(eventId: number, userId: number) {
+    const result = await this.eventMemberRepository.findOne({
+      select: { authority: { displayName: true } },
+      relations: ['authority'],
+      where: { event: { id: eventId }, user: { id: userId } },
+      // where: { userId: userId, eventId: eventId },
+    });
+
+    return result?.authority?.displayName;
+  }
 }
