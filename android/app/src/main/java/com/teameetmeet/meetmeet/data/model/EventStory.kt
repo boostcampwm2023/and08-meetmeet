@@ -17,4 +17,4 @@ data class EventStory(
     val isVisible: Boolean,
     val memo: String?,
     val feeds: List<Feed>
-) : Serializable
+)

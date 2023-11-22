@@ -28,7 +28,7 @@ class FakeEventStoryApi : EventStoryApi {
 
             ),
             announcement = "다들 11시 반에 광명역에서 집합입니다~",
-            authority = "owner",
+            authority = "OWNER",
             repeatPolicyId = null,
             isJoin = true,
             isVisible = true,
