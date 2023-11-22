@@ -28,4 +28,15 @@ export class DetailService {
     }
     return await this.detailRepository.save(detailArray);
   }
+
+  async updateDetail(detail: Detail, createScheduleDto: CreateScheduleDto) {
+    return await this.detailRepository.save({
+      ...detail,
+      ...createScheduleDto,
+    });
+  }
+
+  async deleteDetail(detail: Detail) {
+    return await this.detailRepository.softDelete(detail.id);
+  }
 }

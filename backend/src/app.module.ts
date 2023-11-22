@@ -33,6 +33,7 @@ import { ContentModule } from './content/content.module';
         synchronize: false,
         logging: true,
         namingStrategy: new SnakeNamingStrategy(),
+        charset: 'utf8mb4',
       }),
     }),
     CalendarModule,

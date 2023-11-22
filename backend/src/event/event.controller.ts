@@ -1,11 +1,14 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -65,7 +68,29 @@ export class EventController {
     @GetUser() user: User,
     @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
     eventId: number,
+    @Query('isAll', new DefaultValuePipe(false), ParseBoolPipe) isAll: boolean,
   ) {
-    return await this.eventService.deleteEvent(user, eventId);
+    return await this.eventService.deleteEvent(user, eventId, isAll);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:eventId')
+  @ApiOperation({
+    summary: '일정 수정 API',
+    description: '',
+  })
+  async updateEvent(
+    @GetUser() user: User,
+    @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
+    eventId: number,
+    @Query('isAll', new DefaultValuePipe(false), ParseBoolPipe) isAll: boolean,
+    @Body() createScheduleDto: CreateScheduleDto,
+  ) {
+    return await this.eventService.updateEvent(
+      user,
+      eventId,
+      createScheduleDto,
+      isAll,
+    );
   }
 }
