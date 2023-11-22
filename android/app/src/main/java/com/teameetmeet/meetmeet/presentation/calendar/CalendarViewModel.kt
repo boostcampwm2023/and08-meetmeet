@@ -2,11 +2,15 @@ package com.teameetmeet.meetmeet.presentation.calendar
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.data.local.database.entity.Event
 import com.teameetmeet.meetmeet.data.model.UserProfile
+import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
 import com.teameetmeet.meetmeet.util.getDayListInMonth
+import com.teameetmeet.meetmeet.util.toEndLong
+import com.teameetmeet.meetmeet.util.toStartLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,19 +18,23 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val calendarRepository: CalendarRepository
 ) : ViewModel(), OnCalendarItemClickListener {
 
     private val _currentDate =
         MutableStateFlow<CalendarItem>(CalendarItem(date = LocalDate.now(), isSelected = true))
     val currentDate: StateFlow<CalendarItem> = _currentDate
+
     private val _daysInMonth =
         MutableStateFlow<List<CalendarItem>>(currentDate.value.date!!.getDayListInMonth(currentDate.value))
     val daysInMonth: StateFlow<List<CalendarItem>> = _daysInMonth
@@ -43,8 +51,13 @@ class CalendarViewModel @Inject constructor(
     private val _dayClickEvent = MutableSharedFlow<DayClickEvent>()
     val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
 
+    //todo: ui 모델로 매핑
+    private val _events = MutableStateFlow<List<Event>>(listOf())
+    val events: StateFlow<List<Event>> = _events
+
     init {
         fetchUserProfile()
+        fetchEvents()
     }
 
     private fun fetchUserProfile() {
@@ -62,6 +75,38 @@ class CalendarViewModel @Inject constructor(
         _userNickName.update { userProfile.nickname }
     }
 
+    private fun fetchEvents() {
+        viewModelScope.launch {
+            daysInMonth.collectLatest { calendarItems ->
+                calendarItems.dropWhile { it.date == null }
+                    .let {
+                        calendarRepository.getEvents(
+                            it.first().date!!.toStartLong(ZoneId.systemDefault()),
+                            it.last().date!!.toEndLong(ZoneId.systemDefault())
+                        )
+                    }
+                    .collectLatest {
+                        _events.emit(it)
+                        allocateEventsPerDay()
+                    }
+            }
+        }
+    }
+
+    private fun allocateEventsPerDay() {
+        _daysInMonth.update {
+            _daysInMonth.value.map { calendarItem ->
+                calendarItem.date ?: return@map calendarItem
+                calendarItem.copy(
+                    events = _events.value.filter { event ->
+                        val todayStart = calendarItem.date.toStartLong(ZoneId.systemDefault())
+                        val todayEnd = calendarItem.date.toEndLong(ZoneId.systemDefault())
+                        event.startDateTime <= todayEnd && event.endDateTime >= todayStart
+                    }
+                )
+            }
+        }
+    }
 
     fun forwardMonth() {
         _currentDate.update {
@@ -82,13 +127,13 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun changeViewMode(position: Int) {
-       _calendarViewMode.update {
-           when(position) {
-               0 -> CalendarViewMode.MONTH
-               1 -> CalendarViewMode.WEEK
-               else -> CalendarViewMode.MONTH
-           }
-       }
+        _calendarViewMode.update {
+            when (position) {
+                0 -> CalendarViewMode.MONTH
+                1 -> CalendarViewMode.WEEK
+                else -> CalendarViewMode.MONTH
+            }
+        }
     }
 
     override fun onItemClick(calendarItem: CalendarItem) {
@@ -96,24 +141,14 @@ class CalendarViewModel @Inject constructor(
         if (currentDate.value != calendarItem) {
             _daysInMonth.update { list ->
                 list.map {
-                    when (it) {
-                        currentDate.value -> {
-                            it.copy(isSelected = false)
-                        }
-
-                        calendarItem -> {
-                            it.copy(isSelected = true)
-                        }
-
-                        else -> {
-                            it
-                        }
+                    when (it.date) {
+                        currentDate.value.date -> it.copy(isSelected = false)
+                        calendarItem.date -> it.copy(isSelected = true)
+                        else -> it
                     }
                 }
             }
-            _currentDate.update {
-                it.copy(date = calendarItem.date)
-            }
+            _currentDate.update { it.copy(date = calendarItem.date) }
         }
 
         viewModelScope.launch {

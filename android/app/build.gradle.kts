@@ -76,7 +76,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.48")
 
     // Moshi JSON
-    implementation("com.squareup.moshi:moshi:1.14.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 
     // 코루틴
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")

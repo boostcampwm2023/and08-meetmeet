@@ -25,10 +25,17 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.vm = viewModel
+        setBinding()
         setClickListener()
         collectViewModelEvent()
         setBadge()
+    }
+
+    private fun setBinding() {
+        with(binding) {
+            vm = viewModel
+            calendarRvCalendar.adapter = CalendarAdapter(viewModel)
+        }
     }
 
     private fun setBadge() {
@@ -73,7 +80,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dayClickEvent.collect {
-                    findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToBottomSheet())
+                    findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToBottomSheetDialog())
                 }
             }
         }

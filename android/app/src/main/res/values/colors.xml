@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
 
     <color name="event_color_red">#FF6565</color>
     <color name="event_color_orange">#FFC165</color>

@@ -7,13 +7,13 @@
 
         <variable
             name="vm"
-            type="com.teameetmeet.meetmeet.presentation.story.createfeed.CreateFeedViewModel" />
+            type="com.teameetmeet.meetmeet.presentation.eventstory.createfeed.CreateFeedViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".presentation.story.createfeed.CreateFeedFragment">
+        tools:context=".presentation.eventstory.createfeed.CreateFeedFragment">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/layout_app_bar"
