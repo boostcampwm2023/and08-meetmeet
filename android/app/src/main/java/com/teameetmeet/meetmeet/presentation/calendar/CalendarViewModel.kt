@@ -29,7 +29,7 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val calendarRepository: CalendarRepository
-) : ViewModel(), OnCalendarItemClickListener {
+) : ViewModel(), CalendarItemClickListener {
 
     private val _currentDate =
         MutableStateFlow<CalendarItem>(CalendarItem(date = LocalDate.now(), isSelected = true))
