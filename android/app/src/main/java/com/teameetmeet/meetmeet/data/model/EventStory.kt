@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.data.model
 
 import com.squareup.moshi.JsonClass
+import java.io.Serializable
 
 @JsonClass(generateAdapter = true)
 data class EventStory(
@@ -16,4 +17,4 @@ data class EventStory(
     val isVisible: Boolean,
     val memo: String?,
     val feeds: List<Feed>
-)
+) : Serializable

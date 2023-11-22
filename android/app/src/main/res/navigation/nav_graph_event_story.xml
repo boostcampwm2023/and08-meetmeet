@@ -8,8 +8,8 @@
     <fragment
         android:id="@+id/event_story_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstory.EventStoryFragment"
-        android:label="event_story_fragment"
-        tools:layout="@layout/fragment_event_story">
+        tools:layout="@layout/fragment_event_story"
+        android:label="event_story_fragment" >
         <action
             android:id="@+id/action_event_story_fragment_to_event_story_detail_fragment"
             app:destination="@id/event_story_detail_fragment" />
@@ -20,8 +20,13 @@
     <fragment
         android:id="@+id/event_story_detail_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailFragment"
-        android:label="event_story_detail_fragment"
-        tools:layout="@layout/fragment_event_story_detail" />
+        tools:layout="@layout/fragment_event_story_detail"
+        android:label="event_story_detail_fragment" >
+        <argument
+            android:name="storyId"
+            app:argType="integer" />
+    </fragment>
+
     <fragment
         android:id="@+id/feed_detail_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.story.feeddetail.FeedDetailFragment"

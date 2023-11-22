@@ -8,6 +8,8 @@
         <variable
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailViewModel" />
+
+        <import type="com.teameetmeet.meetmeet.presentation.model.EventAuthority" />
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -28,6 +30,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:menu="@menu/top_app_bar_add_event"
+                app:menu_enable="@{vm.uiState.authority}"
                 app:navigationIcon="@drawable/ic_nav_pre"
                 app:title="일정 상세"
                 app:titleTextAppearance="@style/large" />
@@ -38,6 +41,13 @@
                 android:layout_height="0dp"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.07" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/story_detail_guideline_center"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/story_detail_guideline_right"
@@ -61,29 +71,82 @@
                     style="@style/medium"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
                     android:maxLength="64"
                     android:onTextChanged="@{(c, c1, c2, c3) -> vm.setEventName(c)}" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/story_detail_til_event_time"
-                android:layout_width="0dp"
+
+            <TextView
+                android:id="@+id/story_detail_tv_title_start_date"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:hint="@string/story_detail_event_time"
-                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                android:text="@string/story_detail_title_start_date"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_name">
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_name" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/story_detail_et_event_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+            <TextView
+                android:id="@+id/story_detail_tv_title_end_date"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/story_detail_tv_title_end_date"
+                app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_title_start_date"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
+                app:layout_constraintTop_toTopOf="@id/story_detail_tv_title_start_date" />
 
+            <TextView
+                android:id="@+id/story_detail_tv_value_start_date"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:text="@{vm.uiState.startDate}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_title_start_date" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/story_detail_tv_value_start_time"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                app:event_time="@{vm.uiState.startTime}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_start_date" />
+
+            <TextView
+                android:id="@+id/story_detail_tv_value_end_date"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:text="@{vm.uiState.endDate}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_title_end_date" />
+
+            <TextView
+                android:id="@+id/story_detail_tv_value_end_time"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                app:event_time="@{vm.uiState.endTime}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_end_date" />
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/story_detail_til_event_alarm"
@@ -94,13 +157,14 @@
                 android:hint="@string/story_detail_event_alarm"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_time">
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_end_time">
 
                 <AutoCompleteTextView
                     android:id="@+id/story_detail_et_event_alarm"
                     style="@style/medium"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                     android:inputType="none" />
 
 
@@ -131,6 +195,7 @@
                     android:id="@+id/story_detail_et_event_repeat"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
                     android:inputType="none" />
 
 
@@ -151,6 +216,7 @@
                     style="@style/medium"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                     android:onTextChanged="@{(c, c1, c2, c3) -> vm.setEventMemo(c)}" />
 
 
@@ -171,6 +237,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                 android:onCheckedChanged="@{(view, isChecked) -> vm.setEventOpen(isChecked)}"
                 app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_event_public"
                 app:layout_constraintStart_toEndOf="@id/story_detail_tv_event_public"
@@ -191,6 +258,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
                 android:onCheckedChanged="@{(view, isChecked) -> vm.setEventJoinable(isChecked)}"
                 app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_event_joinable"
                 app:layout_constraintStart_toEndOf="@id/story_detail_tv_event_joinable"
@@ -203,6 +271,7 @@
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@color/event_color_warning"
                 android:text="@string/story_detail_remove_event"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_event_joinable" />
