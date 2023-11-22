@@ -4,6 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="java.util.List" />
+
+        <import type="com.teameetmeet.meetmeet.presentation.model.EventBar" />
+
+        <variable
+            name="itemList"
+            type="List&lt;EventBar>" />
+
         <variable
             name="item"
             type="com.teameetmeet.meetmeet.presentation.model.CalendarItem" />
@@ -25,5 +34,28 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="1" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_calendar_rv_events"
+            sub_list="@{itemList}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_calendar_tv_date"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_event_bar" />
+
+        <View
+            android:id="@+id/item_calendar_view_touch"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
