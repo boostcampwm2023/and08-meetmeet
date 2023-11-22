@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Patch,
   UploadedFile,
   UseGuards,
@@ -41,28 +40,27 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('profile', multerOptions))
-  @Patch(':id/info')
+  @Patch('info')
   @ApiOperation({
     summary: '사용자 프로필, 계정 수정 API',
     description: 'parameter의 id와 access token의 user id가 같아야 합니다.',
   })
   @ApiConsumes('multipart/form-data')
   updateUserInfo(
-    @Param('id') id: number,
     @UploadedFile() profileImage: Express.Multer.File,
     @GetUser() user: User,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.userService.updateUser(id, user, updateUserDto, profileImage);
+    return this.userService.updateUser(user, updateUserDto, profileImage);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete(':id')
+  @Delete()
   @ApiOperation({
     summary: '사용자 탈퇴 API',
     description: 'parameter의 id와 access token의 user id가 같아야 합니다.',
   })
-  deleteUser(@Param('id') id: number, @GetUser() user: User) {
-    return this.userService.deleteUser(id, user);
+  deleteUser(@GetUser() user: User) {
+    return this.userService.deleteUser(user);
   }
 }
