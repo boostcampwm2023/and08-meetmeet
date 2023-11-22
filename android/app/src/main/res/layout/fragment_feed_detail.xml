@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
-        <variable
-            name="vm"
-            type="com.teameetmeet.meetmeet.presentation.story.createfeed.CreateFeedViewModel" />
+        
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
