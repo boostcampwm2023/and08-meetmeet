@@ -139,13 +139,12 @@ export class EventService {
     console.log(updatedEvent);
     if (updatedEvent.authority === 'OWNER') {
       await this.eventRepository.softRemove(event);
-      // todo : delete eventMember
+      await this.eventMemberService.deleteEventMemberByEventId(event);
     } else if (updatedEvent.authority === 'ADMIN') {
-      // 운영자는 어떻게 할지 고민
+      // todo 운영자는 어떻게 할지 고민
     } else if (updatedEvent.authority === 'MEMBER') {
-      // 멤버는 멤버만 삭제
+      await this.eventMemberService.deleteEventMemberByEventId(event);
     }
-    return { message: 'success' };
   }
 
   isReapeatPolicyValid(createScheduleDto: CreateScheduleDto) {

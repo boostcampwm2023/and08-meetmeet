@@ -10,7 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EventService } from './event.service';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../user/entities/user.entity';
@@ -25,6 +25,10 @@ export class EventController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
+  @ApiOperation({
+    summary: '일정 조회 API',
+    description: '입력된 startDate, endDate로 조회합니다.',
+  })
   async getEvents(
     @GetUser() user: User,
     @Query('startDate') startDate: string,
@@ -36,6 +40,13 @@ export class EventController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(201)
   @Post('')
+  @ApiOperation({
+    summary: '일정 생성 API',
+    description: '',
+  })
+  @ApiBody({
+    type: CreateScheduleDto,
+  })
   async createEvent(
     @GetUser() user: User,
     @Body() createScheduleDto: CreateScheduleDto,
@@ -44,13 +55,17 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
   @Delete('/:eventId')
+  @ApiOperation({
+    summary: '일정 삭제 API',
+    description: '',
+  })
   async deleteEvent(
     @GetUser() user: User,
     @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
     eventId: number,
   ) {
-    console.log(eventId);
     return await this.eventService.deleteEvent(user, eventId);
   }
 }

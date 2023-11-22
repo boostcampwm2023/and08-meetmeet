@@ -55,4 +55,14 @@ export class EventMemberService {
     console.log(eventMembers);
     await this.eventMemberRepository.save(eventMembers);
   }
+
+  async deleteEventMemberByEventId(event: Event) {
+    const EventMembers = await this.eventMemberRepository.find({
+      where: { event: { id: event.id } },
+    });
+
+    for (const eventMember of EventMembers) {
+      await this.eventMemberRepository.softDelete(eventMember.id);
+    }
+  }
 }
