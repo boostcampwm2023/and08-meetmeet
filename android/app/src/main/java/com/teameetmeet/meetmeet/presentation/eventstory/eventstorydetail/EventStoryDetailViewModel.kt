@@ -1,10 +1,13 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
+import android.util.Log
+import android.widget.RadioGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
+import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
@@ -27,7 +30,7 @@ class EventStoryDetailViewModel @Inject constructor(
     private val eventStoryRepository: EventStoryRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<EventStoryDetailUiState>(EventStoryDetailUiState())
+    private val _uiState = MutableStateFlow<EventStoryDetailUiState>(EventStoryDetailUiState(authority = EventAuthority.OWNER))
     val uiState: StateFlow<EventStoryDetailUiState> = _uiState
 
     private val _event = MutableSharedFlow<EventStoryDetailEvent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
@@ -123,5 +126,13 @@ class EventStoryDetailViewModel @Inject constructor(
         _uiState.update {
             it.copy(endTime = EventTime(hour, min))
         }
+    }
+
+    fun setEventColor(radioGroup: RadioGroup, id: Int) {
+        val index = radioGroup.indexOfChild(radioGroup.findViewById(id))
+        _uiState.update {
+            it.copy(color = EventColor.values()[index])
+        }
+        Log.d("test", uiState.value.toString())
     }
 }
