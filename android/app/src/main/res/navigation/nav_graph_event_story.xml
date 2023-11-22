@@ -29,7 +29,7 @@
 
     <fragment
         android:id="@+id/feed_detail_fragment"
-        android:name="com.teameetmeet.meetmeet.presentation.story.feeddetail.FeedDetailFragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.FeedDetailFragment"
         android:label="FeedDetailFragment"
         tools:layout="@layout/fragment_feed_detail" />
 </navigation>

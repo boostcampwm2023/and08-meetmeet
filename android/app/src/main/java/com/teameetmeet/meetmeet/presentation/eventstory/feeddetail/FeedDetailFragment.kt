@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.story.feeddetail
+package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 
 import android.os.Bundle
 import android.view.View
