@@ -7,7 +7,7 @@ import { CreateScheduleDto, RepeatTerm } from './dto/createSchedule.dto';
 import { CalendarService } from '../calendar/calendar.service';
 import { RepeatPolicy } from './entities/repeatPolicy.entity';
 import { DetailService } from '../detail/detail.service';
-import { EventMemberService } from '../event-member/event-memer.service';
+import { EventMemberService } from '../event-member/event-member.service';
 import { Calendar } from '../calendar/entities/calendar.entity';
 
 @Injectable()
