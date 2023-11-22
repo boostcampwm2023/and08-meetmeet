@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
 
     <color name="event_color_red">#FF6565</color>
     <color name="event_color_orange">#FFC165</color>
@@ -21,6 +22,7 @@
     <color name="grey2">#828282</color>
     <color name="grey3">#E0E0E0</color>
     <color name="grey4">#F5F5F7</color>
+    <color name="grey5">#30828282</color>
 
     <color name="loading_background">#30000000</color>
 </resources>

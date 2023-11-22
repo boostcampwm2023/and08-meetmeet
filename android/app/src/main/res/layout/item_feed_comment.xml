@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/feed_comment_cv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="100dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/feed_comment_iv_profile"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/ic_person" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/feed_comment_tv_user_name"
+            style="@style/small.bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toTopOf="@id/feed_comment_tv_content"
+            app:layout_constraintEnd_toStartOf="@id/feed_comment_btn_delete"
+            app:layout_constraintStart_toEndOf="@id/feed_comment_cv"
+            app:layout_constraintTop_toTopOf="@id/feed_comment_cv"
+            tools:text="이이리" />
+
+        <TextView
+            android:id="@+id/feed_comment_tv_content"
+            style="@style/small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="@id/feed_comment_tv_user_name"
+            app:layout_constraintStart_toEndOf="@id/feed_comment_cv"
+            app:layout_constraintTop_toBottomOf="@id/feed_comment_tv_user_name"
+            tools:text="너무 재밌었어!!!" />
+
+        <ImageButton
+            android:id="@+id/feed_comment_btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:padding="5dp"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="팔로우" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

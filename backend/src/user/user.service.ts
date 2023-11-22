@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -79,18 +78,13 @@ export class UserService {
   }
 
   async updateUser(
-    id: number,
     user: User,
     updateUserDto: UpdateUserDto,
     profileImage: Express.Multer.File,
   ) {
-    if (id !== user.id) {
-      throw new UnauthorizedException('잘못된 유저입니다.');
-    }
     if (updateUserDto.password) {
       updateUserDto.password = await hash(updateUserDto.password, SALTROUND);
     }
-
     if (profileImage) {
       const userProfile = await this.updateProfileImage(
         user.profileId,
@@ -100,11 +94,11 @@ export class UserService {
       user.profile = userProfile;
     }
 
-    await this.userRepository.update(id, {
+    await this.userRepository.update(user.id, {
       ...updateUserDto,
       profileId: user.profile?.id ?? null,
     });
-    return await this.userRepository.findOne({ where: { id: id } });
+    return await this.userRepository.findOne({ where: { id: user.id } });
   }
 
   async updateProfileImage(
@@ -126,12 +120,8 @@ export class UserService {
     return result;
   }
 
-  async deleteUser(id: number, user: User) {
-    if (id !== user.id) {
-      throw new UnauthorizedException('잘못된 유저입니다.');
-    }
-
-    await this.userRepository.softDelete(id);
+  async deleteUser(user: User) {
+    await this.userRepository.softDelete(user.id);
   }
 
   async findUserByOAuth(email: string, oauthProvider: string) {

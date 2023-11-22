@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.story.createfeed
+package com.teameetmeet.meetmeet.presentation.eventstory.createfeed
 
 import androidx.lifecycle.ViewModel
 import com.teameetmeet.meetmeet.presentation.model.MediaItem

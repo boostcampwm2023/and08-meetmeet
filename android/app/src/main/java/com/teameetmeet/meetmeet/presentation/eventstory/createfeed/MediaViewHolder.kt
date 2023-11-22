@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.story.createfeed
+package com.teameetmeet.meetmeet.presentation.eventstory.createfeed
 
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.databinding.ItemCreateFeedMediaBinding

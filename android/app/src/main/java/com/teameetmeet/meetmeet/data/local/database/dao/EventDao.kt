@@ -21,9 +21,9 @@ interface EventDao {
     suspend fun delete(event: Event)
 
     @Query("SELECT * FROM Event WHERE id = :id")
-    suspend fun get(id: Int): Event
+    fun get(id: Int): Flow<Event>
 
-    @Query("SELECT * FROM Event WHERE endDateTime > :startDateTime AND startDateTime < :endDateTime")
+    @Query("SELECT * FROM Event WHERE endDateTime >= :startDateTime AND startDateTime <= :endDateTime")
     fun getEvents(startDateTime: Long, endDateTime: Long): Flow<List<Event>>
 
     @Query("UPDATE Event SET title = :title WHERE id = :id ")
