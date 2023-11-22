@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.databinding.ItemCalendarBinding
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
+import com.teameetmeet.meetmeet.presentation.model.EventBar
 
 class CalendarAdapter(
     private val onCalendarItemClickListener: OnCalendarItemClickListener
-) :
-    ListAdapter<CalendarItem, CalendarAdapter.CalendarViewHolder>(diffCallback) {
+) : ListAdapter<CalendarItem, CalendarAdapter.CalendarViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val binding = ItemCalendarBinding.inflate(
@@ -19,6 +19,7 @@ class CalendarAdapter(
             parent,
             false
         )
+        binding.root.layoutParams.height = parent.measuredHeight / 6
         return CalendarViewHolder(binding, onCalendarItemClickListener)
     }
 
@@ -29,22 +30,23 @@ class CalendarAdapter(
     class CalendarViewHolder(
         private val binding: ItemCalendarBinding,
         private val onCalendarItemClickListener: OnCalendarItemClickListener
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
-
+    ) : RecyclerView.ViewHolder(binding.root) {
         private fun onClick(item: CalendarItem) {
             onCalendarItemClickListener.onItemClick(item)
         }
 
-        fun bind(item: CalendarItem, position: Int) {
-            binding.item = item
-            itemView.setOnClickListener {
-                onClick(item)
-            }
-            if (item.isSelected) {
-                itemView.setBackgroundResource(R.color.calendar_background_purple)
-            } else {
-                itemView.background = null
+        fun bind(item: CalendarItem) {
+            with(binding) {
+                this.item = item
+                //todo: 이벤트 바 배치 작업..
+                itemList = item.events.map {
+                    EventBar(it.id, it.color, isStart = true, isEnd = true)
+                }
+                itemCalendarViewTouch.setOnClickListener { onClick(item) }
+                itemCalendarRvEvents.itemAnimator = null
+                if (itemCalendarRvEvents.adapter == null) {
+                    itemCalendarRvEvents.adapter = EventBarAdapter()
+                }
             }
         }
     }
