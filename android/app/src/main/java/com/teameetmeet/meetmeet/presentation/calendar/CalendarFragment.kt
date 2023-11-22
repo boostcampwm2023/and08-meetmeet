@@ -73,7 +73,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dayClickEvent.collect {
-                    findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToBottomSheet())
+                    findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToBottomSheetDialog())
                 }
             }
         }
