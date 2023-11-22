@@ -225,14 +225,13 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
-            app:day_list="@{vm.daysInMonth}"
+            sub_list="@{vm.daysInMonth}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_tv_day_monday"
             app:spanCount="7"
-            app:vm="@{vm}"
             tools:itemCount="31" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
