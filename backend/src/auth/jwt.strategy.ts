@@ -12,27 +12,24 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private configService: ConfigService,
   ) {
     super({
-      // todo : ignoreExpiration true로 바꿀지 고민
-      ignoreExpiration: false,
+      ignoreExpiration: true,
       secretOrKey: configService.get('JWT_SECRET_KEY'),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }
 
-  async validate(payload: { nickname: string }): Promise<User> {
-    const { nickname } = payload;
+  async validate(payload: { email: string }): Promise<User> {
+    const { email } = payload;
 
-    if (!nickname) {
+    if (!email) {
       throw new UnauthorizedException();
     }
 
-    const user: User | null =
-      await this.userService.findUserByNickname(nickname);
+    const user: User | null = await this.userService.findUserByEmail(email);
 
     if (!user) {
       throw new UnauthorizedException();
     }
-
     return user;
   }
 }

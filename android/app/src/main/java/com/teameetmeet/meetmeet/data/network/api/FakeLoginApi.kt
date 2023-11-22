@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.data.network.api
 import android.util.Log
 import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
+import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
 import com.teameetmeet.meetmeet.data.network.entity.EmailDuplicationCheckRequest
 import com.teameetmeet.meetmeet.data.network.entity.SingleStringRequest
 import com.teameetmeet.meetmeet.data.network.entity.LoginResponse
@@ -27,11 +28,11 @@ class FakeLoginApi : LoginApi {
         return LoginResponse("accessToken", "refreshToken")
     }
 
-    override fun checkEmailDuplication(emailDuplicationCheckRequest: EmailDuplicationCheckRequest): Boolean {
+    override fun checkEmailDuplication(emailDuplicationCheckRequest: EmailDuplicationCheckRequest): AvailableResponse {
         if (Random.nextInt() % 2 == 0) {
             throw Exception()
         }
-        return true
+        return AvailableResponse(true)
     }
 
     override fun signUp(selfSignRequest: SelfSignRequest): LoginResponse {

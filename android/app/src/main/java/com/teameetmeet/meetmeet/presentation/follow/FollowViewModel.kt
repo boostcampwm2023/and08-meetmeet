@@ -17,11 +17,11 @@ class FollowViewModel @Inject constructor() : ViewModel() {
     fun getFollower() {
         // TODO 팔로워 목록 API 갱신
         val tmp = listOf(
-            UserProfile(null, "팔로워1"),
-            UserProfile(null, "팔로워2"),
-            UserProfile(null, "팔로워3"),
-            UserProfile(null, "팔로워4"),
-            UserProfile(null, "팔로워5"),
+            UserProfile(null, "팔로워1", "email@naver.com"),
+            UserProfile(null, "팔로워2", "email@naver.com"),
+            UserProfile(null, "팔로워3", "email@naver.com"),
+            UserProfile(null, "팔로워4", "email@naver.com"),
+            UserProfile(null, "팔로워5", "email@naver.com"),
         )
         _users.update { tmp }
     }
@@ -29,11 +29,11 @@ class FollowViewModel @Inject constructor() : ViewModel() {
     fun getFollowing() {
         // TODO 팔로윙 목록 API 갱신
         val tmp = listOf(
-            UserProfile(null, "팔로잉1"),
-            UserProfile(null, "팔로잉2"),
-            UserProfile(null, "팔로잉3"),
-            UserProfile(null, "팔로잉4"),
-            UserProfile(null, "팔로잉5"),
+            UserProfile(null, "팔로잉1", "email@naver.com"),
+            UserProfile(null, "팔로잉2", "email@naver.com"),
+            UserProfile(null, "팔로잉3", "email@naver.com"),
+            UserProfile(null, "팔로잉4", "email@naver.com"),
+            UserProfile(null, "팔로잉5", "email@naver.com"),
         )
         _users.update { tmp }
     }
