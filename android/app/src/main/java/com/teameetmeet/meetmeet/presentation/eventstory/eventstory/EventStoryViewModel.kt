@@ -58,6 +58,7 @@ class EventStoryViewModel @Inject constructor(
         return eventStoryUiState.value.eventStory?.announcement.orEmpty()
     }
 
+
     override fun onItemClick(viewHolder: RecyclerView.ViewHolder) {
         when(viewHolder) {
             is EventFeedListAdapter.EventFeedViewHolder -> {

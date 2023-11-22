@@ -8,7 +8,7 @@ data class EventStoryUiState(
     val isEventMemberUiExpanded: Boolean = false,
     val isLoading: Boolean = false,
     val authority: EventAuthority = EventAuthority.GUEST,
-    val maxMember: Int = SHRINK_MAX_MEMBER
+    val maxMember: Int = SHRINK_MAX_MEMBER,
 )
 
 const val EXPANDED_MAX_MEMBER = 5
