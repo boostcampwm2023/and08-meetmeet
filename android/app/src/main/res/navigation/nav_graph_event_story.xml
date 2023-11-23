@@ -44,5 +44,10 @@
             android:name="actionType"
             android:defaultValue="EVENT"
             app:argType="com.teameetmeet.meetmeet.presentation.follow.FollowActionType" />
+        <argument
+            android:name="id"
+            android:defaultValue="0"
+            app:argType="integer" />
+
     </fragment>
 </navigation>

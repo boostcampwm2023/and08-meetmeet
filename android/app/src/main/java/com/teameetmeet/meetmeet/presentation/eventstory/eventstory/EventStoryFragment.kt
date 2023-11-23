@@ -50,9 +50,12 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 Log.d("test", "hi")
             }
             eventStoryCvInviteMember.setOnClickListener {
-                findNavController().navigate(
-                    EventStoryFragmentDirections.actionEventStoryFragmentToFollowFragment()
-                )
+                viewModel.eventStoryUiState.value.eventStory?.let { story ->
+                    findNavController().navigate(
+                        EventStoryFragmentDirections.actionEventStoryFragmentToFollowFragment()
+                            .setId(story.id)
+                    )
+                }
             }
         }
     }
