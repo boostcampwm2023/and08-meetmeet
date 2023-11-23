@@ -2,16 +2,16 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import android.util.Log
 import com.teameetmeet.meetmeet.data.FirstSignIn
-import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
+import com.teameetmeet.meetmeet.data.network.entity.AccessTokenResult
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
 import com.teameetmeet.meetmeet.data.network.entity.EmailDuplicationCheckRequest
-import com.teameetmeet.meetmeet.data.network.entity.SingleStringRequest
+import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.LoginResponse
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
 import kotlin.random.Random
 
 class FakeLoginApi : LoginApi {
-    override fun loginKakao(singleStringRequest: SingleStringRequest): LoginResponse {
+    override suspend fun loginKakao(singleStringRequest: KakaoLoginRequest): LoginResponse {
         val case = Random.nextInt()
         Log.d("test", case.toString())
         if (case % 2 == 0) {
@@ -24,8 +24,8 @@ class FakeLoginApi : LoginApi {
         return LoginResponse("accessToken", "refreshToken")
     }
 
-    override fun autoLoginApp(autoLoginRequest: AutoLoginRequest): LoginResponse {
-        return LoginResponse("accessToken", "refreshToken")
+    override suspend fun autoLoginApp(accessToken: String): AccessTokenResult {
+        return AccessTokenResult(isVerified = true)
     }
 
     override fun checkEmailDuplication(emailDuplicationCheckRequest: EmailDuplicationCheckRequest): AvailableResponse {

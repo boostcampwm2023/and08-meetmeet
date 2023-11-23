@@ -1,7 +1,7 @@
 package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.EventStory
-import com.teameetmeet.meetmeet.data.network.entity.SingleStringRequest
+import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -14,7 +14,7 @@ interface EventStoryApi {
     suspend fun getStory(@Path("id") id: String): EventStory
 
     @POST()
-    suspend fun editNotification(@Body singleStringRequest: SingleStringRequest)
+    suspend fun editNotification(@Body singleStringRequest: KakaoLoginRequest)
 
     @DELETE("event/{id}")
     suspend fun deleteEventStory(@Path("id") id: Int)
