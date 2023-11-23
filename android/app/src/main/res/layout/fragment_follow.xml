@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.follow.FollowViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,6 +45,7 @@
                 android:background="@null"
                 android:maxLength="12"
                 android:maxLines="1"
+                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updateSearchKeyword(p0)}"
                 android:paddingVertical="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/follow_search_ib_search"
@@ -54,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
+                android:onClick="@{() -> vm.updateSearchedUser()}"
                 android:src="@drawable/ic_search"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -64,6 +69,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/follow_search_result_rv"
+            sub_list="@{vm.searchedUser}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingTop="10dp"
