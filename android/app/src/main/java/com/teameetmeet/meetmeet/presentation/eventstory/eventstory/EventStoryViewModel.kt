@@ -59,19 +59,12 @@ class EventStoryViewModel @Inject constructor(
     }
 
 
-    override fun onItemClick(viewHolder: RecyclerView.ViewHolder) {
-        when(viewHolder) {
-            is EventFeedListAdapter.EventFeedViewHolder -> {
-                _event.tryEmit(EventStoryEvent.NavigateToFeedFragment)
-            }
-            is EventMemberListAdapter.EventMemberViewHolder -> {
-                _eventStoryUiState.update {
-                    if(eventStoryUiState.value.isEventMemberUiExpanded) {
-                        it.copy(isEventMemberUiExpanded = false, maxMember = SHRINK_MAX_MEMBER)
-                    } else {
-                        it.copy(isEventMemberUiExpanded = true, maxMember = EXPANDED_MAX_MEMBER)
-                    }
-                }
+    override fun onItemClick() {
+        _eventStoryUiState.update {
+            if(eventStoryUiState.value.isEventMemberUiExpanded) {
+                it.copy(isEventMemberUiExpanded = false, maxMember = SHRINK_MAX_MEMBER)
+            } else {
+                it.copy(isEventMemberUiExpanded = true, maxMember = EXPANDED_MAX_MEMBER)
             }
         }
     }

@@ -11,7 +11,8 @@ import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
-import com.teameetmeet.meetmeet.util.toDateStringFormat
+import com.teameetmeet.meetmeet.util.DateTimeFormat
+import com.teameetmeet.meetmeet.util.toDateString
 import com.teameetmeet.meetmeet.util.toTimeStampLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -99,22 +100,22 @@ class EventStoryDetailViewModel @Inject constructor(
     }
 
     fun setEventStartDate(time: Long) {
-        if(time > uiState.value.endDate.toTimeStampLong()) {
+        if(time > uiState.value.endDate.toTimeStampLong(DateTimeFormat.ISO_DATE_TIME)) {
             _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_start_time_fail))
             return
         }
         _uiState.update {
-            it.copy(startDate = time.toDateStringFormat(), startTime = EventTime(0, 0))
+            it.copy(startDate = time.toDateString(DateTimeFormat.ISO_DATE_TIME), startTime = EventTime(0, 0))
         }
     }
 
     fun setEventEndDate(time: Long) {
-        if(time < uiState.value.startDate.toTimeStampLong()) {
+        if(time < uiState.value.startDate.toTimeStampLong(DateTimeFormat.ISO_DATE_TIME)) {
             _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_end_time_fail))
             return
         }
         _uiState.update {
-            it.copy(endDate = time.toDateStringFormat(), endTime = EventTime(0, 0))
+            it.copy(endDate = time.toDateString(DateTimeFormat.ISO_DATE_TIME), endTime = EventTime(0, 0))
         }
     }
 
