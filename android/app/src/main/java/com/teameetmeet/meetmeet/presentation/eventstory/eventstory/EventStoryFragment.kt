@@ -23,7 +23,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.fragment_event_story) {
+class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.fragment_event_story), OnFeedItemClickListener {
 
     private val viewModel: EventStoryViewModel by viewModels()
 
@@ -81,7 +81,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         with(binding) {
             eventStoryRvValueEventMembers.itemAnimator = null
             eventStoryRvValueEventMembers.adapter = EventMemberListAdapter(viewModel)
-            eventStoryRvEventFeed.adapter = EventFeedListAdapter(viewModel)
+            eventStoryRvEventFeed.adapter = EventFeedListAdapter(this@EventStoryFragment)
             vm = viewModel
         }
     }
@@ -95,9 +95,6 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                             event.messageId,
                             event.extraMessage
                         )
-                        is EventStoryEvent.NavigateToFeedFragment -> {
-                            findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment())
-                        }
                     }
                 }
             }
@@ -113,5 +110,9 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         AlertDialog.Builder(requireContext()).apply {
             setMessage(noti).create().show()
         }
+    }
+
+    override fun onItemClick() {
+        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment())
     }
 }

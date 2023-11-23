@@ -117,6 +117,7 @@
     <string name="story_detail_event_memo">일정 메모</string>
     <string name="story_detail_public">공개 여부</string>
     <string name="story_detail_joinable">참가 여부</string>
+    <string name="story_detail_date_not_decided">미정</string>
     <string name="story_detail_remove_event">일정 삭제하기</string>
     <string name="story_detail_title_start_date">시작 시간</string>
     <string name="story_detail_tv_title_end_date">종료 시간</string>
@@ -128,5 +129,9 @@
     <string name="story_detail_message_time_pick_end_time_fail">종료 시간이 시작 시간 보다 앞으로 설정할 수 없습니다.</string>
     <string name="story_detail_message_story_detail_fetch_fail">일정 세부 정보를 가져올 수 없습니다.\n%s</string>
     <string name="story_detail_message_event_story_delete_fail">일정 삭제에 실패했습니다.\n%s</string>
+    <string name="story_detail_event_repeat_fequency">반복 주기</string>
+    <string name="story_detail_title_event_repeat_end_date">반복 종료일</string>
+    <string name="story_detail_message_repeat_end_date_fail">반복 일정이 일정 종료 시간보다 늦게 설정될 수 없습니다.</string>
+    <string name="story_detail_description_event_repeat_end_date">일정 종료 날짜 지정</string>
 
 </resources>

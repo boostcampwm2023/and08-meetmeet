@@ -1,14 +1,12 @@
 package com.teameetmeet.meetmeet.util
 
-import com.teameetmeet.meetmeet.MeetMeetApp
-import com.teameetmeet.meetmeet.R
-import java.text.SimpleDateFormat
+import android.util.Log
+import java.text.DateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.Date
-import java.util.Locale
+import java.time.format.DateTimeParseException
 
 fun Long.toLocalDate(zoneId: ZoneId = ZoneId.systemDefault()): LocalDate {
     return Instant.ofEpochMilli(this).atZone(zoneId).toLocalDate()
@@ -31,23 +29,10 @@ fun Long.toDateString(format: DateTimeFormat, zoneId: ZoneId = ZoneId.systemDefa
 }
 
 fun String.toTimeStampLong(format: DateTimeFormat, zoneId: ZoneId = ZoneId.systemDefault()): Long {
-    return LocalDateTime.parse(this, format.formatter).toLong(zoneId)
-}
-
-fun Long.toDateStringFormat(locale: Locale = Locale.KOREA): String {
-    val dateFormat =
-        SimpleDateFormat(MeetMeetApp.instance.getString(R.string.common_korea_date_format), locale)
-    val date = Date(this)
-    return dateFormat.format(date)
-}
-
-fun String.toTimeStampLong(locale: Locale = Locale.KOREA): Long {
-    val dateFormat =
-        SimpleDateFormat(MeetMeetApp.instance.getString(R.string.common_korea_date_format), locale)
+    if(this.isEmpty()) return 0
     return try {
-        val date = dateFormat.parse(this)
-        date.time
-    } catch (e: Exception) {
-        0
+        LocalDateTime.parse(this, format.formatter).toLong(zoneId)
+    } catch (e: DateTimeParseException) {
+        LocalDate.parse(this, format.formatter).atStartOfDay().toLong(zoneId)
     }
 }
