@@ -104,6 +104,13 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
                 viewModel.setEventEndDate(it)
             }
         }
+        binding.eventStoryTvValueEventRepeatEndDate.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.story_detail_description_event_repeat_end_date)).build()
+            datePicker.show(requireActivity().supportFragmentManager, null)
+            datePicker.addOnPositiveButtonClickListener {
+                viewModel.setRepeatEndDate(it)
+            }
+        }
         binding.storyDetailTvValueStartTime.setOnClickListener {
             val picker = MaterialTimePicker.Builder()
                     .setTimeFormat(TimeFormat.CLOCK_12H)

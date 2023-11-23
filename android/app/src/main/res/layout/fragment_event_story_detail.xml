@@ -10,7 +10,8 @@
             type="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailViewModel" />
 
         <import type="com.teameetmeet.meetmeet.presentation.model.EventAuthority" />
-        <import type="com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm"/>
+        <import type="com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm" />
+        <import type="android.view.View"/>
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -107,7 +108,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
-                android:text="@{vm.uiState.startDate}"
+                android:text="@{vm.uiState.startDate.isEmpty() ? @string/story_detail_date_not_decided : vm.uiState.startDate}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_title_start_date" />
@@ -131,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
-                android:text="@{vm.uiState.endDate}"
+                android:text="@{vm.uiState.endDate.isEmpty() ? @string/story_detail_date_not_decided : vm.uiState.endDate}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_title_end_date" />
@@ -272,6 +273,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/story_detail_til_event_repeat_frequency"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -280,6 +282,7 @@
                 android:layout_marginTop="24dp"
                 android:enabled="@{(vm.uiState.authority == EventAuthority.OWNER &amp;&amp; vm.uiState.eventRepeat != EventRepeatTerm.NONE)? true : false}"
                 android:hint="@string/story_detail_event_repeat_fequency"
+                android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_repeat">
@@ -293,6 +296,29 @@
 
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/event_story_tv_title_event_repeat_end_date"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/story_detail_title_event_repeat_end_date"
+                android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
+                app:layout_constraintTop_toTopOf="@id/story_detail_til_event_repeat_frequency" />
+
+            <TextView
+                android:id="@+id/event_story_tv_value_event_repeat_end_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:text="@{vm.uiState.eventRepeatEndDate.isEmpty() ? @string/story_detail_date_not_decided : vm.uiState.eventRepeatEndDate}"
+                android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="@id/story_detail_til_event_repeat_frequency"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_repeat_end_date"
+                app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_repeat_end_date" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/story_detail_til_event_memo"
@@ -364,8 +390,8 @@
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@color/event_color_warning"
                 android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
-                android:text="@string/story_detail_remove_event"
                 android:onClick="@{() -> vm.deleteEvent()}"
+                android:text="@string/story_detail_remove_event"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_event_joinable" />
