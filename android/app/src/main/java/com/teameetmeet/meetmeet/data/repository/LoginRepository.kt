@@ -1,10 +1,10 @@
 package com.teameetmeet.meetmeet.data.repository
 
 import android.util.Log
+import com.teameetmeet.meetmeet.data.ExpiredTokenException
 import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
-import com.teameetmeet.meetmeet.data.network.entity.AutoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.EmailDuplicationCheckRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
@@ -52,8 +52,11 @@ class LoginRepository @Inject constructor(
     fun autoLoginApp(token: String): Flow<Unit> {
         return flowOf(true)
             .map {
-                val response = loginApi.autoLoginApp(AutoLoginRequest(token))
-                storeAppToken(response.accessToken, response.refreshToken)
+                val response = loginApi.autoLoginApp(accessToken = token)
+                Log.d("test", response.toString())
+                if(response.isVerified.not()) {
+                    throw ExpiredTokenException()
+                }
             }.catch {
                 throw it
                 //TODO("추가 예외처리 필요")
