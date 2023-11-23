@@ -1,4 +1,9 @@
-import {Injectable, UnauthorizedException} from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
@@ -123,6 +128,7 @@ export class EventService {
       .leftJoinAndSelect('event.eventMembers', 'eventMember')
       .leftJoinAndSelect('eventMember.user', 'user')
       .leftJoinAndSelect('eventMember.authority', 'authority')
+      .leftJoinAndSelect('eventMember.detail', 'detail')
       .where('user.id = :userId', { userId: user.id })
       .andWhere('event.id = :eventId', { eventId })
       .getOne();
@@ -148,36 +154,45 @@ export class EventService {
           updatedEvent.authority = eventMember.authority.displayName;
         }
       });
-
       // todo feed 삭제는 건들지도 않았음...
       if (updatedEvent.authority === 'OWNER') {
         await this.eventRepository.softRemove(event);
         await this.eventMemberService.deleteEventMemberByEventId(event);
-        await this.detailService.deleteDetail(event.eventMembers[0].detail);
+        for (const eventMember of event.eventMembers) {
+          if (eventMember.user.id === user.id) {
+            await this.detailService.deleteDetail(eventMember.detail);
+          }
+        }
       } else if (updatedEvent.authority === 'ADMIN') {
         // todo 운영자는 어떻게 할지 고민
       } else if (updatedEvent.authority === 'MEMBER') {
         await this.eventMemberService.deleteEventMemberByEventId(event);
-        await this.detailService.deleteDetail(event.eventMembers[0].detail);
+        for (const eventMember of event.eventMembers) {
+          if (eventMember.user.id === user.id) {
+            await this.detailService.deleteDetail(eventMember.detail);
+          }
+        }
       }
     } else {
+      // 전체 삭제를 가정(반복인걸 이미 가정되고 들어와야한다.)
+      // 주인인지 아닌지 판단하고 전체 삭제해야한다.
       const event = await this.eventRepository
-          .createQueryBuilder('event')
-          .leftJoinAndSelect('event.eventMembers', 'eventMember')
-          .leftJoinAndSelect('eventMember.user', 'user')
-          .leftJoinAndSelect('eventMember.authority', 'authority')
-          .leftJoinAndSelect('eventMember.detail', 'detail')
-          .leftJoinAndSelect('event.repeatPolicy', 'repeatPolicy')
-          .where('user.id = :userId', { userId: user.id })
-          .andWhere('event.id = :eventId', { eventId })
-          .getOne();
+        .createQueryBuilder('event')
+        .leftJoinAndSelect('event.eventMembers', 'eventMember')
+        .leftJoinAndSelect('eventMember.user', 'user')
+        .leftJoinAndSelect('eventMember.authority', 'authority')
+        .leftJoinAndSelect('eventMember.detail', 'detail')
+        .leftJoinAndSelect('event.repeatPolicy', 'repeatPolicy')
+        .where('user.id = :userId', { userId: user.id })
+        .andWhere('event.id = :eventId', { eventId })
+        .getOne();
 
       if (!event) {
         throw new Error('event is not valid');
       }
 
       const resultObject = event
-          ? {
+        ? {
             id: event.id,
             title: event.title,
             startDate: event.startDate,
@@ -190,9 +205,9 @@ export class EventService {
               authority: eventMember.authority.displayName,
             })),
             authority:
-                event.eventMembers.find(
-                    (eventMember) => eventMember.user.id === user.id,
-                )?.authority?.displayName || null,
+              event.eventMembers.find(
+                (eventMember) => eventMember.user.id === user.id,
+              )?.authority?.displayName || null,
             repeatPolicy: {
               repeatPolicyId: event.repeatPolicy?.id || null,
               repeatPolicyName: event.repeatPolicy,
@@ -201,10 +216,43 @@ export class EventService {
             isJoinable: event.isJoinable,
             detail: event.eventMembers[0].detail,
           }
-          : null;
+        : null;
 
+      if (!resultObject) {
+        throw new HttpException(
+          '반복되는 컨텐츠가 아닙니다.',
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
-      console.log(event);
+      const eventsWithRepeatPolicyAndNoFeed = await this.eventRepository
+        .createQueryBuilder('event')
+        .leftJoinAndSelect('event.eventMembers', 'eventMember')
+        .leftJoinAndSelect('event.repeatPolicy', 'repeatPolicy')
+        .leftJoinAndSelect('eventMember.detail', 'detail')
+        .leftJoinAndSelect('eventMember.user', 'user')
+        .leftJoin('Feed', 'feed', 'feed.event = event.id')
+        .where('event.repeatPolicy IS NOT NULL')
+        .andWhere('feed.event IS NULL')
+        .andWhere('repeatPolicy.id = :repeatPolicyId', {
+          repeatPolicyId: resultObject.repeatPolicy.repeatPolicyId,
+        })
+        .getMany();
+      for (const event1 of eventsWithRepeatPolicyAndNoFeed) {
+        // todo 일괄 처리되도록 수정해야한다.
+
+        for (const eventMember of event1.eventMembers) {
+          if (eventMember.user.id === user.id) {
+            await this.detailService.deleteDetail(eventMember.detail);
+          }
+        }
+        await this.eventRepository.softRemove(event1);
+        await this.eventMemberService.deleteEventMemberByEventId(event1);
+
+        await this.repeatPolicyRepository.softRemove(
+          resultObject.repeatPolicy.repeatPolicyName,
+        );
+      }
     }
   }
 
@@ -228,7 +276,7 @@ export class EventService {
       .getOne();
 
     if (!event) {
-      throw new Error('event is not valid');
+      throw new HttpException('컨텐츠가 없습니다.', HttpStatus.NOT_FOUND);
     }
     const resultObject = event
       ? {
@@ -253,18 +301,26 @@ export class EventService {
             // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
           },
           isJoinable: event.isJoinable,
-          detail: event.eventMembers[0].detail,
+          detail: event.eventMembers.find(
+            (eventMember) => eventMember.user.id === user.id,
+          )?.detail,
         }
       : null;
 
     if (!resultObject) {
-      throw new Error('event is not valid');
+      throw new HttpException('컨텐츠가 없습니다.', HttpStatus.NOT_FOUND);
     }
-    const detail = resultObject.eventMember[0].detail;
+    const detail = resultObject.detail;
+    if (!detail) {
+      throw new Error('detail is not valid');
+    }
+
     if (resultObject.authority === 'MEMBER') {
       await this.detailService.updateDetail(detail, createScheduleDto);
     } else if (resultObject.authority === 'OWNER') {
-      if (resultObject.repeatPolicy.repeatPolicyId === null) {
+      // if (resultObject.repeatPolicy.repeatPolicyId === null) {
+      // todo 이 부분에서 에러날 것 같습니다.
+      if (!isAll) {
         // 주인이고 반복일정이 아닌경우
         await this.detailService.updateDetail(detail, createScheduleDto);
         await this.eventRepository.save({
@@ -292,6 +348,7 @@ export class EventService {
             .leftJoinAndSelect('event.eventMembers', 'eventMember')
             .leftJoinAndSelect('event.repeatPolicy', 'repeatPolicy')
             .leftJoinAndSelect('eventMember.detail', 'detail')
+            .leftJoinAndSelect('eventMember.user', 'user')
             .leftJoin('Feed', 'feed', 'feed.event = event.id')
             .where('event.repeatPolicy IS NOT NULL')
             .andWhere('feed.event IS NULL')
@@ -310,9 +367,12 @@ export class EventService {
             //     // deleteEventMembers.push(event1.eventMembers[0]);
             await this.eventRepository.softRemove(event1);
             await this.eventMemberService.deleteEventMemberByEventId(event1);
-            await this.detailService.deleteDetail(
-              event1.eventMembers[0].detail,
-            );
+
+            for (const eventMember of event1.eventMembers) {
+              if (eventMember.user.id === user.id) {
+                await this.detailService.deleteDetail(eventMember.detail);
+              }
+            }
           }
 
           await this.repeatPolicyRepository.softRemove(

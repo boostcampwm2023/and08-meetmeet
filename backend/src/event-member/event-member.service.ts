@@ -67,13 +67,13 @@ export class EventMemberService {
     return result?.authority?.displayName;
   }
 
-    async deleteEventMemberByEventId(event: Event) {
-        const EventMembers = await this.eventMemberRepository.find({
-            where: { event: { id: event.id } },
-        });
+  async deleteEventMemberByEventId(event: Event) {
+    const EventMembers = await this.eventMemberRepository.find({
+      where: { event: { id: event.id } },
+    });
 
-        for (const eventMember of EventMembers) {
-            await this.eventMemberRepository.softDelete(eventMember.id);
-        }
+    for (const eventMember of EventMembers) {
+      await this.eventMemberRepository.softDelete(eventMember.id);
     }
+  }
 }
