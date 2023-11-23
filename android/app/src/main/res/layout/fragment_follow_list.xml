@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="state"
+            type="com.teameetmeet.meetmeet.presentation.follow.FollowState" />
+
+        <variable
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.follow.FollowViewModel" />
     </data>
@@ -16,7 +20,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/follow_list_rv"
-            sub_list="@{vm.users}"
+            sub_list="@{state.value ? vm.following:vm.follower}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

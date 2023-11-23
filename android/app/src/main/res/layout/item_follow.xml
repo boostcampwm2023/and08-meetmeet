@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="user"
+            type="com.teameetmeet.meetmeet.data.model.UserProfile" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,6 +28,7 @@
                 android:id="@+id/follow_iv_profile"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                image="@{user.profileImage}"
                 android:backgroundTint="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -37,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:text="@{user.nickname}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/follow_btn_action"
             app:layout_constraintStart_toEndOf="@id/follow_cv"

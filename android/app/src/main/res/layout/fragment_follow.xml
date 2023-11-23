@@ -5,56 +5,99 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.follow.FollowViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/follow_search_abl"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/follow_search_cl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:background="@drawable/background_search_layout"
+            app:layout_constraintBottom_toTopOf="@id/follow_search_result_rv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.search.SearchBar
-                android:id="@+id/follow_search_sb"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/follow_search_ib_nav_pre"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="@string/follow_search_hint"
-                app:navigationIcon="@drawable/ic_nav_pre" />
+                android:layout_marginStart="16dp"
+                android:background="@null"
+                android:src="@drawable/ic_nav_pre"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </com.google.android.material.appbar.AppBarLayout>
+            <EditText
+                android:id="@+id/follow_et_search"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:background="@null"
+                android:maxLength="12"
+                android:maxLines="1"
+                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updateSearchKeyword(p0)}"
+                android:paddingVertical="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/follow_search_ib_search"
+                app:layout_constraintStart_toEndOf="@id/follow_search_ib_nav_pre"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.search.SearchView
-            android:id="@+id/follow_search_sv"
+            <ImageButton
+                android:id="@+id/follow_search_ib_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:background="@null"
+                android:onClick="@{() -> vm.updateSearchedUser()}"
+                android:src="@drawable/ic_search"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/follow_et_search"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/follow_search_result_rv"
+            sub_list="@{vm.searchedUser}"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:hint="@string/follow_search_hint"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/follow_search_cl"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_follow" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/follow_search_tl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/follow_search_abl">
+            app:layout_constraintTop_toBottomOf="@id/follow_search_result_rv">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="팔로잉 24명" />
+                android:text="@string/follow_following" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="팔로워 32명" />
+                android:text="@string/follow_follower" />
 
         </com.google.android.material.tabs.TabLayout>
 

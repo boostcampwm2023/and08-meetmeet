@@ -23,7 +23,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.fragment_event_story), OnFeedItemClickListener {
+class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.fragment_event_story),
+    OnFeedItemClickListener {
 
     private val viewModel: EventStoryViewModel by viewModels()
 
@@ -54,9 +55,18 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 //TODO("더보기")
             }
             eventStoryCvInviteMember.setOnClickListener {
-                when(viewModel.eventStoryUiState.value.authority) {
+                when (viewModel.eventStoryUiState.value.authority) {
                     EventAuthority.GUEST -> {}//TODO("참여 신청")
-                    EventAuthority.OWNER -> {}//TODO("초대 페이지로 이동")
+                    EventAuthority.OWNER -> {
+                        //TODO("초대 페이지로 이동")
+                        viewModel.eventStoryUiState.value.eventStory?.let { story ->
+                            findNavController().navigate(
+                                EventStoryFragmentDirections.actionEventStoryFragmentToFollowFragment()
+                                    .setId(story.id)
+                            )
+                        }
+                    }
+
                     else -> return@setOnClickListener
                 }
             }
@@ -92,8 +102,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 viewModel.event.collectLatest { event ->
                     when (event) {
                         is EventStoryEvent.ShowMessage -> showMessage(
-                            event.messageId,
-                            event.extraMessage
+                            event.messageId, event.extraMessage
                         )
                     }
                 }
@@ -103,7 +112,11 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
 
     private fun navigateToEventDetailFragment() {
-        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment(viewModel.eventStoryUiState.value.eventStory?.id ?:0))
+        findNavController().navigate(
+            EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment(
+                viewModel.eventStoryUiState.value.eventStory?.id ?: 0
+            )
+        )
     }
 
     private fun showDialog(noti: String) {
