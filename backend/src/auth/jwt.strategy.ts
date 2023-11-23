@@ -4,7 +4,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
-import { TokenExpiredError } from '@nestjs/jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,21 +12,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private configService: ConfigService,
   ) {
     super({
-      ignoreExpiration: true,
+      // todo : ignoreExpiration true로 바꿀지 고민
+      ignoreExpiration: false,
       secretOrKey: configService.get('JWT_SECRET_KEY'),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }
 
-  async validate(payload: unknown): Promise<User> {
-    const { email, exp } = payload as any;
+  async validate(payload: { email: string }): Promise<User> {
+    const { email } = payload;
 
     if (!email) {
       throw new UnauthorizedException();
-    }
-
-    if (exp < new Date().getTime() / 1000) {
-      throw new TokenExpiredError('토큰이 만료되었습니다.', exp);
     }
 
     const user: User | null = await this.userService.findUserByEmail(email);
