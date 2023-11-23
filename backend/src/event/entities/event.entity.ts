@@ -3,6 +3,7 @@ import { commonEntity } from 'src/common/common.entity';
 import { Calendar } from 'src/calendar/entities/calendar.entity';
 import { EventMember } from 'src/event-member/entities/eventMember.entity';
 import { RepeatPolicy } from './repeatPolicy.entity';
+import { Feed } from '../../feed/entities/feed.entity';
 
 @Entity()
 export class Event extends commonEntity {
@@ -32,4 +33,7 @@ export class Event extends commonEntity {
 
   @OneToMany(() => EventMember, (eventMember) => eventMember.event)
   eventMembers: EventMember[];
+
+  @OneToMany(() => Feed, (feed) => feed.event)
+  feeds: Feed[];
 }
