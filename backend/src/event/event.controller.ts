@@ -43,6 +43,34 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/:eventId')
+  @ApiOperation({
+    summary: '일정 상세 조회 API',
+    description: '',
+  })
+  async getEvent(
+    @GetUser() user: User,
+    @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
+    eventId: number,
+  ) {
+    return await this.eventService.getEvent(user, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/:event_id/feeds')
+  @ApiOperation({
+    summary: '일정 피드 조회 API',
+    description: '',
+  })
+  async getEventFeeds(
+    @GetUser() user: User,
+    @Param('event_id', new ParseIntPipe({ errorHttpStatusCode: 400 }))
+    eventId: number,
+  ) {
+    return await this.eventService.getEventFeeds(user, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @HttpCode(201)
   @Post('')
   @ApiOperation({

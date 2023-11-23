@@ -3,7 +3,6 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -68,6 +67,74 @@ export class EventService {
       return { events: [] };
     }
     return { events: result };
+  }
+
+  async getEvent(user: User, eventId: number) {
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+      relations: [
+        'repeatPolicy',
+        'eventMembers',
+        'eventMembers.user',
+        'eventMembers.authority',
+        'eventMembers.detail',
+      ],
+    });
+    if (!event) {
+      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+    const detail = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === user.id,
+    )?.detail;
+    console.log(event);
+    const repeatPolicy = event.repeatPolicy;
+
+    let repeatTerm;
+    let repeatFrequency;
+    if (repeatPolicy.repeatDay !== null) {
+      repeatTerm = 'DAY';
+      repeatFrequency = repeatPolicy.repeatDay;
+    } else if (repeatPolicy.repeatWeek !== null) {
+      repeatTerm = 'WEEK';
+      repeatFrequency = repeatPolicy.repeatWeek;
+    } else if (repeatPolicy.repeatMonth !== null) {
+      repeatTerm = 'MONTH';
+      repeatFrequency = repeatPolicy.repeatMonth;
+    } else if (repeatPolicy.repeatYear !== null) {
+      repeatTerm = 'YEAR';
+      repeatFrequency = repeatPolicy.repeatYear;
+    } else {
+      repeatTerm = null;
+      repeatFrequency = null;
+    }
+
+    return {
+      result: {
+        id: event.id,
+        title: event.title,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        eventMembers: event.eventMembers.map((eventMember) => ({
+          id: eventMember.id,
+          nickname: eventMember.user.nickname,
+          profile: `/user/profile/${eventMember.user.id}`,
+          authority: eventMember.authority.displayName,
+        })),
+        authority:
+          event.eventMembers.find(
+            (eventMember) => eventMember.user.id === user.id,
+          )?.authority?.displayName || null,
+        isJoinable: event.isJoinable,
+        isVisible: detail?.isVisible,
+        memo: detail?.memo,
+        repeatTerm: repeatTerm,
+        repeatFrequency: repeatFrequency,
+      },
+    };
+  }
+
+  async getEventFeeds(user: User, eventId: number) {
+
   }
 
   async createEvent(user: User, createScheduleDto: CreateScheduleDto) {
