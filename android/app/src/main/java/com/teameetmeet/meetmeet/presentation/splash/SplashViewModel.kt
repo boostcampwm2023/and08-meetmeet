@@ -57,7 +57,6 @@ class SplashViewModel @Inject constructor(
             if (token.isNullOrEmpty()) {
                 _event.tryEmit(SplashEvent.NavigateToLoginActivity)
             } else {
-                Log.d("test", "$token")
                 autoLoginApp(token)
             }
         }

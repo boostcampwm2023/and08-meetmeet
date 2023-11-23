@@ -10,6 +10,6 @@ fun ImageView.bindUserProfileImage(
     profileImage: String?
 ) {
     Glide.with(context).load(profileImage)
-        .centerCrop().fallback(R.drawable.ic_plus).error(R.drawable.ic_follow)
+        .centerCrop()
         .placeholder(R.drawable.ic_person).into(this)
 }

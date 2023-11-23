@@ -15,6 +15,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -52,7 +53,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideUserApi(): UserApi = FakeUserApi()
+    fun provideUserApi(@Named("serverRetrofit") retrofit: Retrofit): UserApi = retrofit.create(UserApi::class.java)
 
     @Singleton
     @Provides

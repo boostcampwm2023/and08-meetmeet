@@ -6,7 +6,7 @@ import com.teameetmeet.meetmeet.data.network.entity.NickNameDuplicationCheckRequ
 import kotlin.random.Random
 
 class FakeUserApi : UserApi {
-    override fun getUserProfile(accessToken: String): UserProfile {
+    override suspend fun getUserProfile(accessToken: String): UserProfile {
         return UserProfile(
             "https://i.ibb.co/024nfzT/rabbit.jpg",
             "코딩 천재 김근범",

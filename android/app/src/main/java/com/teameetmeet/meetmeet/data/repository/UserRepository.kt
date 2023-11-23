@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
+import android.util.Log
 import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.UserApi
@@ -23,7 +24,8 @@ class UserRepository @Inject constructor(
         return flowOf(true)
             .map {
                 val token = dataStore.getAppToken().first() ?: throw NoDataException()
-                userApi.getUserProfile(token)
+                val result = userApi.getUserProfile("Bearer $token")
+                result
             }.onEach {
                 fetchUserProfile(it)
             }.catch {
