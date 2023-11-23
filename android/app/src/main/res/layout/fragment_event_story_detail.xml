@@ -154,6 +154,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                 android:hint="@string/story_detail_event_alarm"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
@@ -180,12 +181,81 @@
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_alarm" />
 
+            <RadioGroup
+                android:id="@+id/radio_group_event_color"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:checkedButton="@id/radio_red"
+                android:onCheckedChanged="@{(group, id) -> vm.setEventColor(group, id)}"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/event_story_tv_event_color"
+                app:layout_constraintStart_toEndOf="@id/event_story_tv_event_color"
+                app:layout_constraintTop_toTopOf="@id/event_story_tv_event_color">
+
+                <RadioButton
+                    android:id="@+id/radio_red"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_red"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+
+                <RadioButton
+                    android:id="@+id/radio_orange"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_orange"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+
+                <RadioButton
+                    android:id="@+id/radio_green"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_green"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+
+                <RadioButton
+                    android:id="@+id/radio_blue"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_blue"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+
+                <RadioButton
+                    android:id="@+id/radio_purple"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_purple"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+            </RadioGroup>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/story_detail_til_event_repeat"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                 android:hint="@string/story_detail_event_repeat"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
@@ -270,8 +340,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@color/event_color_warning"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                 android:text="@string/story_detail_remove_event"
-                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:onClick="@{() -> vm.deleteEvent()}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_event_joinable" />

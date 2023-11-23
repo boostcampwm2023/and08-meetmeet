@@ -7,6 +7,7 @@ import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
 
 data class EventStoryDetailUiState(
+    val eventId: Int = 0,
     val eventName: String ="",
     val startDate: String = "미정",
     val endDate: String = "미정",

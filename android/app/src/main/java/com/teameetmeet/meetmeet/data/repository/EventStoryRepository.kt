@@ -31,6 +31,16 @@ class EventStoryRepository @Inject constructor(
         //TODO("이벤트 세부 정보 가져오고 로컬에 이벤트가 있으면 색과 알림 가져오기 아니면 DEFAULT 색 일정으로 파싱해서 내리기")
     }
 
+    fun deleteEventStory(id: Int) : Flow<Unit> {
+        return flowOf(true)
+            .map {
+                eventStoryApi.deleteEventStory(id)
+            }.catch {
+                throw it
+                //TODO(예외 처리 필요)
+            }
+    }
+
     fun editNotification(message: String) : Flow<Unit> {
         return flowOf(true)
             .map {

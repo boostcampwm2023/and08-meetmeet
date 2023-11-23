@@ -14,8 +14,12 @@ import com.teameetmeet.meetmeet.databinding.FragmentEventStoryBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
+import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -47,10 +51,14 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 showDialog(viewModel.getNoti())
             }
             eventStoryIbSeeMoreMember.setOnClickListener {
-                Log.d("test", "hi")
+                //TODO("더보기")
             }
             eventStoryCvInviteMember.setOnClickListener {
-                Log.d("test", "bye")
+                when(viewModel.eventStoryUiState.value.authority) {
+                    EventAuthority.GUEST -> {}//TODO("참여 신청")
+                    EventAuthority.OWNER -> {}//TODO("초대 페이지로 이동")
+                    else -> return@setOnClickListener
+                }
             }
         }
     }
