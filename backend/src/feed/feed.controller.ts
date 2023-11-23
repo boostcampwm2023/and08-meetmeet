@@ -1,6 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
+  Param,
   Post,
   UploadedFiles,
   UseGuards,
@@ -40,5 +43,27 @@ export class FeedController {
     @Body() createFeedDto: CreateFeedDto,
   ) {
     return this.feedService.createFeed(user, contents, createFeedDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  @ApiOperation({
+    summary: '피드 조회 API',
+    description: '피드를 조회한다.',
+  })
+  @ApiBearerAuth()
+  getFeed(@Param('id') id: number) {
+    return this.feedService.getFeed(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  @ApiOperation({
+    summary: '피드 삭제 API',
+    description: '일정 주인 또는 피드 작성자는 피드를 삭제할 수 있다.',
+  })
+  @ApiBearerAuth()
+  deleteFeed(@GetUser() user: User, @Param('id') id: number) {
+    return this.feedService.deleteFeed(user, id);
   }
 }
