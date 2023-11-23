@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.data.network.api
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.network.entity.Events
 import java.io.InputStreamReader
@@ -31,5 +32,8 @@ class FakeCalendarApi() : CalendarApi {
         endDate: String
     ): List<EventResponse> {
         return moshi.adapter<List<EventResponse>>(type).fromJson(jsonString) ?: emptyList()
+    }
+
+    override suspend fun addEvent(addEventRequest: AddEventRequest) {
     }
 }

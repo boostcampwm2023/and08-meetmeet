@@ -8,6 +8,7 @@
     <string name="common_iso_time_format">HH:mm</string>
     <string name="common_iso_date_time_format">yyyy-MM-dd HH:mm:ss</string>
     <string name="server_date_format">yyyyMMdd</string>
+    <string name="server_date_time_format">yyyy-MM-ddTHH:mm:ss.SSSX</string>
     <string name="common_none"> </string>
 
     <string name="menu_save">저장</string>
@@ -31,6 +32,7 @@
     <string name="add_event_err_start_time">시작 시간을 지정해 주세요.</string>
     <string name="add_event_err_end_time">종료 시간을 지정해 주세요.</string>
     <string name="add_event_err_event_name">일정 이름을 입력해 주세요.</string>
+    <string name="add_event_err_fail">일정 추가를 실패하였습니다.</string>
 
     <string name="notification_none">알림 없음</string>
     <string name="notification_ten_minutes_before">10분 전</string>
