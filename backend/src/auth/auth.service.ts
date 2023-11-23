@@ -67,13 +67,15 @@ export class AuthService {
     };
   }
 
-  async refresh(user: User, refreshToken: string) {
+  async refresh(refreshToken: string) {
     const payload = this.jwtService.verify(refreshToken, {
       secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
     });
 
     // TODO: refresh token db 검증
-    if (user.id !== payload.id) {
+    const user = await this.userService.findUserByEmail(payload.email);
+
+    if (!user) {
       throw new UnauthorizedException('Invalid User');
     }
 
@@ -91,7 +93,7 @@ export class AuthService {
 
   async generateRefreshToken(user: User): Promise<string> {
     return await this.jwtService.signAsync(
-      { id: user.id },
+      { id: user.id, email: user.email },
       {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
         expiresIn: this.configService.get<string>(
