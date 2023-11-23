@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -9,7 +10,7 @@
 
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingVertical="0.5dp"
@@ -17,10 +18,27 @@
         android:paddingEnd="@{item.isEnd?1f:0f}">
 
         <FrameLayout
-            android:id="@+id/item_event_bar_tv_events"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/item_event_bar_fl_events"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:foreground="@{item.isStart?(item.isEnd?@drawable/event_bar_one_day:@drawable/event_bar_start):(item.isEnd?@drawable/event_bar_end:@drawable/event_bar_middle)}"
-            android:foregroundTint="@{item.color}" />
-    </LinearLayout>
+            android:foregroundTint="@{item.color}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_event_bar_tv_hidden"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
