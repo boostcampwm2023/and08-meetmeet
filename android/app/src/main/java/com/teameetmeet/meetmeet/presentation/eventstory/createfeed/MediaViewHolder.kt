@@ -11,7 +11,7 @@ class MediaViewHolder(
     fun bind(item: MediaItem) {
         binding.mediaItem = item
         binding.itemCreateFeedIbCancel.setOnClickListener {
-            listener.onClick(item)
+            listener.onItemClick(item)
         }
     }
 }
