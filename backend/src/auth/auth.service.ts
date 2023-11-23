@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ImATeapotException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -68,21 +69,26 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
-    const payload = this.jwtService.verify(refreshToken, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-    });
+    try {
+      const payload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      });
+      // TODO: refresh token db 검증
+      const user = await this.userService.findUserByEmail(payload.email);
 
-    // TODO: refresh token db 검증
-    const user = await this.userService.findUserByEmail(payload.email);
+      if (!user) {
+        throw new UnauthorizedException('Invalid User');
+      }
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid User');
+      return {
+        accessToken: await this.generateAccessToken(user),
+        refreshToken: await this.generateRefreshToken(user),
+      };
+    } catch (err) {
+      if (err instanceof Error && err.name === 'TokenExpiredError') {
+        throw new ImATeapotException('Refresh token is expired.');
+      }
     }
-
-    return {
-      accessToken: await this.generateAccessToken(user),
-      refreshToken: await this.generateRefreshToken(user),
-    };
   }
 
   async generateAccessToken(user: User): Promise<string> {
