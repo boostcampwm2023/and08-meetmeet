@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -14,6 +15,8 @@ import { RepeatPolicy } from './entities/repeatPolicy.entity';
 import { DetailService } from '../detail/detail.service';
 import { EventMemberService } from '../event-member/event-member.service';
 import { Calendar } from '../calendar/entities/calendar.entity';
+import { SearchEventDto } from './dto/searchEvent.dto';
+import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 
 @Injectable()
 export class EventService {
@@ -122,6 +125,7 @@ export class EventService {
   }
 
   async deleteEvent(user: User, eventId: number, isAll: boolean) {
+    // 일정 중간부터면 생각 다시해야한다....
     // 단건 삭제
     const event = await this.eventRepository
       .createQueryBuilder('event')
@@ -133,15 +137,15 @@ export class EventService {
       .andWhere('event.id = :eventId', { eventId })
       .getOne();
 
-    if (
-      event?.eventMembers.some(
-        (eventMember) =>
-          eventMember.user.id === user.id &&
-          eventMember.authority.displayName !== 'OWNER',
-      )
-    ) {
-      throw UnauthorizedException;
-    }
+    // if (
+    //   event?.eventMembers.some(
+    //     (eventMember) =>
+    //       eventMember.user.id === user.id &&
+    //       eventMember.authority.displayName !== 'OWNER',
+    //   )
+    // ) {
+    //   throw UnauthorizedException;
+    // }
 
     if (!isAll) {
       const updatedEvent: any = { ...event, authority: undefined };
@@ -166,6 +170,8 @@ export class EventService {
       } else if (updatedEvent.authority === 'ADMIN') {
         // todo 운영자는 어떻게 할지 고민
       } else if (updatedEvent.authority === 'MEMBER') {
+        // 어차피 onwer가 아니라서 삭제안되지 않나..?
+        // 일정을 삭제하는 요청이니까
         await this.eventMemberService.deleteEventMemberByEventId(event);
         for (const eventMember of event.eventMembers) {
           if (eventMember.user.id === user.id) {
@@ -175,6 +181,7 @@ export class EventService {
       }
     } else {
       // 전체 삭제를 가정(반복인걸 이미 가정되고 들어와야한다.)
+      // 반복일정인지 체크는 해야하지 않나...
       // 주인인지 아닌지 판단하고 전체 삭제해야한다.
       const event = await this.eventRepository
         .createQueryBuilder('event')
@@ -188,7 +195,7 @@ export class EventService {
         .getOne();
 
       if (!event) {
-        throw new Error('event is not valid');
+        throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
       }
 
       const resultObject = event
@@ -238,6 +245,7 @@ export class EventService {
           repeatPolicyId: resultObject.repeatPolicy.repeatPolicyId,
         })
         .getMany();
+      // 삭제하려는게 전체 반복의 중간일 경우(?)
       for (const event1 of eventsWithRepeatPolicyAndNoFeed) {
         // todo 일괄 처리되도록 수정해야한다.
 
@@ -259,7 +267,7 @@ export class EventService {
   async updateEvent(
     user: User,
     eventId: number,
-    createScheduleDto: CreateScheduleDto,
+    updateScheduleDto: UpdateScheduleDto,
     isAll: boolean,
   ) {
     // reapeatPolicy가 변경되면 -> 찾아서 삭제하고 새로 생성 -> 삭제할때 피드가 있으면 삭제하면 안된다.
@@ -316,30 +324,30 @@ export class EventService {
     }
 
     if (resultObject.authority === 'MEMBER') {
-      await this.detailService.updateDetail(detail, createScheduleDto);
+      await this.detailService.updateDetail(detail, updateScheduleDto);
     } else if (resultObject.authority === 'OWNER') {
       // if (resultObject.repeatPolicy.repeatPolicyId === null) {
       // todo 이 부분에서 에러날 것 같습니다.
       if (!isAll) {
         // 주인이고 반복일정이 아닌경우
-        await this.detailService.updateDetail(detail, createScheduleDto);
+        await this.detailService.updateDetail(detail, updateScheduleDto);
         await this.eventRepository.save({
           ...event,
-          ...createScheduleDto,
+          ...updateScheduleDto,
         });
       } else {
         // 주인이고 반복일정인 경우
         if (
           this.isEqualRepeatPolicy(
             resultObject.repeatPolicy.repeatPolicyName,
-            createScheduleDto,
+            updateScheduleDto,
           )
         ) {
           // 반복일정이 이전과 같은경우
-          await this.detailService.updateDetail(detail, createScheduleDto);
+          await this.detailService.updateDetail(detail, updateScheduleDto);
           await this.eventRepository.save({
             ...event,
-            ...createScheduleDto,
+            ...updateScheduleDto,
           });
         } else {
           // 반복일정이 같지 않은 경우 -> 반복일정을 삭제하고 새로 생성(피드가 없는경우)
@@ -378,7 +386,7 @@ export class EventService {
           await this.repeatPolicyRepository.softRemove(
             resultObject.repeatPolicy.repeatPolicyName,
           );
-          const repeatPolicy = await this.createRepeatPolicy(createScheduleDto);
+          const repeatPolicy = await this.createRepeatPolicy(updateScheduleDto);
           if (!repeatPolicy) {
             throw new Error('repeat policy is not valid');
           }
@@ -388,12 +396,12 @@ export class EventService {
 
           const events = await this.createRepeatEvent(
             user,
-            createScheduleDto,
+            updateScheduleDto,
             calendar,
             repeatPolicy,
           );
           const details = await this.detailService.createDetailBulk(
-            createScheduleDto,
+            updateScheduleDto,
             events.length,
           );
 
@@ -411,6 +419,62 @@ export class EventService {
         }
       }
     }
+  }
+
+  async searchEvent(user: User, searchEventDto: SearchEventDto) {
+    const startDate = new Date(this.formatDateString(searchEventDto.startDate));
+    const endDate = new Date(this.formatDateString(searchEventDto.endDate));
+
+    const sixMonthsInMillis = 6 * 30 * 24 * 60 * 60 * 1000;
+
+    if (endDate.getTime() - startDate.getTime() > sixMonthsInMillis) {
+      throw new BadRequestException('일정 검색 기간은 6개월 이내여야 합니다.');
+    }
+
+    const query = this.eventRepository
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.eventMembers', 'eventMember')
+      .leftJoinAndSelect('eventMember.user', 'user')
+      .leftJoinAndSelect('eventMember.authority', 'authority')
+      .where('user.id = :userId', { userId: user.id })
+      .andWhere('event.startDate BETWEEN :startDate AND :endDate', {
+        startDate: searchEventDto.startDate,
+        endDate: searchEventDto.endDate,
+      });
+
+    if (searchEventDto.keyword) {
+      query.andWhere('event.title LIKE :title', {
+        title: `%${searchEventDto.keyword}%`,
+      });
+    }
+
+    const eventsWithMembersAndAuthority = await query.getMany();
+
+    const result = eventsWithMembersAndAuthority.map((event) => {
+      return {
+        id: event.id,
+        title: event.title,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        eventMembers: event.eventMembers.map((eventMember) => ({
+          id: eventMember.id,
+          nickname: eventMember.user.nickname,
+          profile: `/user/profile/${eventMember.user.id}`,
+          authority: eventMember.authority.displayName,
+        })),
+        authority:
+          event.eventMembers.find(
+            (eventMember) => eventMember.user.id === user.id,
+          )?.authority?.displayName || null,
+        repeatPolicyId: event.repeatPolicyId,
+        isJoinable: event.isJoinable,
+      };
+    });
+
+    if (!result) {
+      return { events: [] };
+    }
+    return { events: result };
   }
 
   isReapeatPolicyValid(createScheduleDto: CreateScheduleDto) {

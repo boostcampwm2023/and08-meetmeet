@@ -19,6 +19,8 @@ import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateScheduleDto } from './dto/createSchedule.dto';
+import { SearchEventDto } from './dto/searchEvent.dto';
+import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 
 @ApiBearerAuth()
 @ApiTags('event')
@@ -84,13 +86,26 @@ export class EventController {
     @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
     eventId: number,
     @Query('isAll', new DefaultValuePipe(false), ParseBoolPipe) isAll: boolean,
-    @Body() createScheduleDto: CreateScheduleDto,
+    @Body() updateScheduleDto: UpdateScheduleDto,
   ) {
     return await this.eventService.updateEvent(
       user,
       eventId,
-      createScheduleDto,
+      updateScheduleDto,
       isAll,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/search')
+  @ApiOperation({
+    summary: '일정 검색 API',
+    description: '',
+  })
+  async searchEvent(
+    @GetUser() user: User,
+    @Query() searchEventDto: SearchEventDto,
+  ) {
+    return await this.eventService.searchEvent(user, searchEventDto);
   }
 }
