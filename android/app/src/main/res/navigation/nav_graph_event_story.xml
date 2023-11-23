@@ -8,20 +8,23 @@
     <fragment
         android:id="@+id/event_story_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstory.EventStoryFragment"
-        tools:layout="@layout/fragment_event_story"
-        android:label="event_story_fragment" >
+        android:label="event_story_fragment"
+        tools:layout="@layout/fragment_event_story">
         <action
             android:id="@+id/action_event_story_fragment_to_event_story_detail_fragment"
             app:destination="@id/event_story_detail_fragment" />
         <action
             android:id="@+id/action_event_story_fragment_to_feed_detail_fragment"
             app:destination="@id/feed_detail_fragment" />
+        <action
+            android:id="@+id/action_event_story_fragment_to_follow_fragment"
+            app:destination="@id/follow_fragment" />
     </fragment>
     <fragment
         android:id="@+id/event_story_detail_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailFragment"
-        tools:layout="@layout/fragment_event_story_detail"
-        android:label="event_story_detail_fragment" >
+        android:label="event_story_detail_fragment"
+        tools:layout="@layout/fragment_event_story_detail">
         <argument
             android:name="storyId"
             app:argType="integer" />
@@ -32,4 +35,14 @@
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.FeedDetailFragment"
         android:label="FeedDetailFragment"
         tools:layout="@layout/fragment_feed_detail" />
+    <fragment
+        android:id="@+id/follow_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.follow.FollowFragment"
+        android:label="follow_fragment"
+        tools:layout="@layout/fragment_follow">
+        <argument
+            android:name="actionType"
+            android:defaultValue="EVENT"
+            app:argType="com.teameetmeet.meetmeet.presentation.follow.FollowActionType" />
+    </fragment>
 </navigation>

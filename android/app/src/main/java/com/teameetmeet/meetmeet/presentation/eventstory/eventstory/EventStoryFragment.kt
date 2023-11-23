@@ -50,7 +50,9 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 Log.d("test", "hi")
             }
             eventStoryCvInviteMember.setOnClickListener {
-                Log.d("test", "bye")
+                findNavController().navigate(
+                    EventStoryFragmentDirections.actionEventStoryFragmentToFollowFragment()
+                )
             }
         }
     }
@@ -87,6 +89,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                             event.messageId,
                             event.extraMessage
                         )
+
                         is EventStoryEvent.NavigateToFeedFragment -> {
                             findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment())
                         }
@@ -98,7 +101,11 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
 
     private fun navigateToEventDetailFragment() {
-        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment(viewModel.eventStoryUiState.value.eventStory?.id ?:0))
+        findNavController().navigate(
+            EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment(
+                viewModel.eventStoryUiState.value.eventStory?.id ?: 0
+            )
+        )
     }
 
     private fun showDialog(noti: String) {

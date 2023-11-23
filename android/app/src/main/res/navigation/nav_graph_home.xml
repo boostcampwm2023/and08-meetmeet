@@ -28,13 +28,21 @@
         <action
             android:id="@+id/action_calendar_fragment_to_eventStoryActivity"
             app:destination="@id/event_story_activity" />
+        <action
+            android:id="@+id/action_calendar_fragment_to_follow_fragment"
+            app:destination="@id/follow_fragment" />
     </fragment>
 
     <fragment
         android:id="@+id/follow_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.follow.FollowFragment"
         android:label="follow_fragment"
-        tools:layout="@layout/fragment_follow" />
+        tools:layout="@layout/fragment_follow">
+        <argument
+            android:name="actionType"
+            android:defaultValue="FOLLOW"
+            app:argType="com.teameetmeet.meetmeet.presentation.follow.FollowActionType" />
+    </fragment>
 
     <fragment
         android:id="@+id/group_fragment"
