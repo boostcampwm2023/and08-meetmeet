@@ -57,7 +57,7 @@ export class AuthService {
       'kakao',
     );
 
-    return this.login(createdUser);
+    return { ...(await this.login(createdUser)), isNewUser: true };
   }
 
   async login(user: User) {

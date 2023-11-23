@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToOne, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { commonEntity } from 'src/common/common.entity';
 import { Event } from 'src/event/entities/event.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 import { FeedContent } from './feedContent.entity';
-import { Comment } from '../../comment/entities/comment.entity';
 
 @Entity()
 export class Feed extends commonEntity {

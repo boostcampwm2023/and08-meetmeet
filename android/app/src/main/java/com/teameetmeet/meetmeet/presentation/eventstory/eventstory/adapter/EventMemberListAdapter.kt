@@ -19,19 +19,24 @@ class EventMemberListAdapter(private val onItemClickListener: OnItemClickListene
                 parent,
                 false
             )
-        val viewHolder =  EventMemberViewHolder(binding)
-        binding.root.setOnClickListener {
-            onItemClickListener.onItemClick(viewHolder)
-        }
-        return viewHolder
+        return EventMemberViewHolder(binding, onItemClickListener)
     }
 
     override fun onBindViewHolder(holder: EventMemberViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class EventMemberViewHolder(private val binding: ItemEventMemberBinding) :
+    class EventMemberViewHolder(
+        private val binding: ItemEventMemberBinding,
+        private val onItemClickListener: OnItemClickListener) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                onItemClickListener.onItemClick()
+            }
+        }
+
         fun bind(item: EventMember) {
             binding.item = item
         }

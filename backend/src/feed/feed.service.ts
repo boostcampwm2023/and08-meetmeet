@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContentService } from 'src/content/content.service';
 import { EventMemberService } from 'src/event-member/event-member.service';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateFeedDto } from './dto/create-feed.dto';
+import { FeedResponseDto } from './dto/feed-response.dto';
 import { Feed } from './entities/feed.entity';
 import { FeedContent } from './entities/feedContent.entity';
 
@@ -46,4 +51,31 @@ export class FeedService {
 
     await this.feedContentRepository.insert(feedContents);
   }
+
+  async getFeed(id: number) {
+    const feed = await this.feedRepository
+      .createQueryBuilder('feed')
+      .select([
+        'feed.id',
+        'feed.memo',
+        'feed.author',
+        'fc.contentId',
+        'fc.content',
+        // 'feed.comments',
+      ])
+      .leftJoin('feed.feedContents', 'fc')
+      // .leftJoinAndSelect('feed.comments', 'comment')
+      .leftJoinAndSelect('feed.author', 'author')
+      .leftJoinAndSelect('fc.content', 'content')
+      .where('feed.id = :id', { id })
+      .getOne();
+
+    if (!feed) {
+      throw new NotFoundException();
+    }
+
+    return FeedResponseDto.of(feed);
+  }
+
+  async deleteFeed(user: User, id: number) {}
 }

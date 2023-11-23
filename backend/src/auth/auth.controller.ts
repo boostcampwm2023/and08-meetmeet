@@ -30,7 +30,7 @@ export class AuthController {
       properties: {
         kakaoId: {
           type: 'string',
-          description: '카카오 API를 통해 받은 유저 정보 (닉네임)',
+          description: '카카오 API를 통해 받은 유저 정보',
         },
       },
     },
