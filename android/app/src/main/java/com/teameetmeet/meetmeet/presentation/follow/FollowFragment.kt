@@ -2,7 +2,6 @@ package com.teameetmeet.meetmeet.presentation.follow
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -36,12 +35,16 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
     }
 
     private fun setRecyclerViewAdapter() {
-        followAdapter = FollowAdapter()
+        followAdapter = FollowAdapter(
+            actionType = args.actionType,
+            userClickListener = viewModel,
+            id = args.id
+        )
         binding.followSearchResultRv.adapter = followAdapter
     }
 
     private fun setPagerAdapter() {
-        pageAdapter = FollowPagerAdapter(this)
+        pageAdapter = FollowPagerAdapter(this, args.actionType, args.id)
         binding.followSearchVp.adapter = pageAdapter
         TabLayoutMediator(binding.followSearchTl, binding.followSearchVp) { tab, position ->
             when (position) {

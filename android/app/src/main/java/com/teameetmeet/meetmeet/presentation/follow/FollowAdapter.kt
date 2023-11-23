@@ -6,14 +6,18 @@ import androidx.recyclerview.widget.ListAdapter
 import com.teameetmeet.meetmeet.data.model.UserProfile
 
 
-class FollowAdapter :
+class FollowAdapter(
+    private val actionType: FollowActionType,
+    private val userClickListener: OnUserClickListener,
+    private val id: Int
+) :
     ListAdapter<UserProfile, FollowViewHolder>(ItemDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowViewHolder {
         return FollowViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: FollowViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), actionType, userClickListener, id)
     }
 
     object ItemDiffCallback : DiffUtil.ItemCallback<UserProfile>() {
