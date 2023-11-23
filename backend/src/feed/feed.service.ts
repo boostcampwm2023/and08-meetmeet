@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContentService } from 'src/content/content.service';
-import { EventMemberService } from 'src/event-member/event-memer.service';
+import { EventMemberService } from 'src/event-member/event-member.service';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateFeedDto } from './dto/create-feed.dto';

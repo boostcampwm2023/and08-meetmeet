@@ -34,6 +34,7 @@ import { FeedModule } from './feed/feed.module';
         synchronize: false,
         logging: true,
         namingStrategy: new SnakeNamingStrategy(),
+        charset: 'utf8mb4',
       }),
     }),
     CalendarModule,

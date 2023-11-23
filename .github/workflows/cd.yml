@@ -4,8 +4,8 @@ on:
   pull_request:
     branches:
       - dev-be
-    types:
-      - closed
+#    types:
+#      - closed
 
 jobs:
   push_to_registry:

@@ -1,21 +1,26 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   HttpCode,
   Param,
+  ParseBoolPipe,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EventService } from './event.service';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateScheduleDto } from './dto/createSchedule.dto';
+import { SearchEventDto } from './dto/searchEvent.dto';
+import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 
 @ApiBearerAuth()
 @ApiTags('event')
@@ -25,6 +30,10 @@ export class EventController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
+  @ApiOperation({
+    summary: '일정 조회 API',
+    description: '입력된 startDate, endDate로 조회합니다.',
+  })
   async getEvents(
     @GetUser() user: User,
     @Query('startDate') startDate: string,
@@ -36,6 +45,13 @@ export class EventController {
   @UseGuards(JwtAuthGuard)
   @HttpCode(201)
   @Post('')
+  @ApiOperation({
+    summary: '일정 생성 API',
+    description: '',
+  })
+  @ApiBody({
+    type: CreateScheduleDto,
+  })
   async createEvent(
     @GetUser() user: User,
     @Body() createScheduleDto: CreateScheduleDto,
@@ -44,13 +60,52 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @HttpCode(204)
   @Delete('/:eventId')
+  @ApiOperation({
+    summary: '일정 삭제 API',
+    description: '',
+  })
   async deleteEvent(
     @GetUser() user: User,
     @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
     eventId: number,
+    @Query('isAll', new DefaultValuePipe(false), ParseBoolPipe) isAll: boolean,
   ) {
-    console.log(eventId);
-    return await this.eventService.deleteEvent(user, eventId);
+    return await this.eventService.deleteEvent(user, eventId, isAll);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('/:eventId')
+  @ApiOperation({
+    summary: '일정 수정 API',
+    description: '',
+  })
+  async updateEvent(
+    @GetUser() user: User,
+    @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
+    eventId: number,
+    @Query('isAll', new DefaultValuePipe(false), ParseBoolPipe) isAll: boolean,
+    @Body() updateScheduleDto: UpdateScheduleDto,
+  ) {
+    return await this.eventService.updateEvent(
+      user,
+      eventId,
+      updateScheduleDto,
+      isAll,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/search')
+  @ApiOperation({
+    summary: '일정 검색 API',
+    description: '',
+  })
+  async searchEvent(
+    @GetUser() user: User,
+    @Query() searchEventDto: SearchEventDto,
+  ) {
+    return await this.eventService.searchEvent(user, searchEventDto);
   }
 }
