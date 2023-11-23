@@ -85,7 +85,7 @@ class NetworkModule {
                     .build()
                 val response = chain.proceed(tokenAddedRequest)
 
-                if (response.code == 401) {
+                if (response.code == 418) {
                     val accessToken = runBlocking {
                         tokenRepository.refreshAccessToken()
                     }
