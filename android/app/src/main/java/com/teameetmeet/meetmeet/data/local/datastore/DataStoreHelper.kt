@@ -25,6 +25,8 @@ class DataStoreHelper @Inject constructor(
 
     fun getAppToken(): Flow<String?> = dataStore.data.map { it[ACCESS_TOKEN] }
 
+    fun getRefreshToken(): Flow<String?> = dataStore.data.map {it[REFRESH_TOKEN]}
+
     suspend fun fetchUserProfile(userProfile: UserProfile) {
         dataStore.edit {
             it[USER_PROFILE_IMAGE] = userProfile.profileImage.orEmpty()

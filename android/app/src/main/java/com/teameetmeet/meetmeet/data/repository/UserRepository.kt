@@ -21,7 +21,7 @@ class UserRepository @Inject constructor(
         return flowOf(true)
             .map {
                 val token = dataStore.getAppToken().first() ?: throw NoDataException()
-                val result = userApi.getUserProfile("Bearer $token")
+                val result = userApi.getUserProfile()
                 result
             }.onEach {
                 fetchUserProfile(it)
