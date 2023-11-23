@@ -21,7 +21,7 @@ class CreateFeedViewModel : ViewModel(), MediaItemCancelClickListener {
         _mediaList.update { (it + uris).distinct() }
     }
 
-    override fun onClick(mediaItem: MediaItem) {
+    override fun onItemClick(mediaItem: MediaItem) {
         _mediaList.update { it.filter { item -> item != mediaItem } }
     }
 }
