@@ -99,6 +99,12 @@ class EventStoryDetailViewModel @Inject constructor(
         }
     }
 
+    fun setEventRepeatFrequency(frequency: String) {
+        _uiState.update {
+            it.copy(eventRepeatFrequency = frequency.toInt())
+        }
+    }
+
     fun setEventStartDate(time: Long) {
         if(time > uiState.value.endDate.toTimeStampLong(DateTimeFormat.ISO_DATE_TIME)) {
             _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_start_time_fail))

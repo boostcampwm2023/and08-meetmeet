@@ -10,6 +10,7 @@
             type="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailViewModel" />
 
         <import type="com.teameetmeet.meetmeet.presentation.model.EventAuthority" />
+        <import type="com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm"/>
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -255,7 +256,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
                 android:hint="@string/story_detail_event_repeat"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
@@ -272,6 +273,28 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_repeat_frequency"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:enabled="@{(vm.uiState.authority == EventAuthority.OWNER &amp;&amp; vm.uiState.eventRepeat != EventRepeatTerm.NONE)? true : false}"
+                android:hint="@string/story_detail_event_repeat_fequency"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_repeat">
+
+                <AutoCompleteTextView
+                    android:id="@+id/story_detail_et_event_repeat_frequency"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="@{(vm.uiState.authority == EventAuthority.OWNER &amp;&amp; vm.uiState.eventRepeat != EventRepeatTerm.NONE)? true : false}"
+                    android:inputType="number" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/story_detail_til_event_memo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -279,7 +302,7 @@
                 android:hint="@string/story_detail_event_memo"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
-                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_repeat">
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_repeat_frequency">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/story_detail_et_event_memo"

@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -71,6 +72,12 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
         (binding.storyDetailTilEventRepeat.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(items)
         binding.storyDetailEtEventRepeat.setOnItemClickListener { _, _, index, _ ->
             viewModel.setEventRepeat(index)
+        }
+
+        val frequencyItems = arrayOf("1", "2", "3", "4", "5", "6")
+        (binding.storyDetailTilEventRepeatFrequency.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(frequencyItems)
+        binding.storyDetailEtEventRepeatFrequency.doAfterTextChanged {
+            viewModel.setEventRepeatFrequency(it.toString())
         }
     }
 

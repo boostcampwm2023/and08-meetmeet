@@ -16,6 +16,7 @@ data class EventStoryDetailUiState(
     val alarm: EventNotification = EventNotification.NONE,
     val color: EventColor = EventColor.RED,
     val eventRepeat: EventRepeatTerm = EventRepeatTerm.NONE,
+    val eventRepeatFrequency: Int = 0,
     val memo: String = "",
     val isOpen: Boolean = false,
     val isJoinable: Boolean = false,

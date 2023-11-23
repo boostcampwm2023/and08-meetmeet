@@ -128,5 +128,6 @@
     <string name="story_detail_message_time_pick_end_time_fail">종료 시간이 시작 시간 보다 앞으로 설정할 수 없습니다.</string>
     <string name="story_detail_message_story_detail_fetch_fail">일정 세부 정보를 가져올 수 없습니다.\n%s</string>
     <string name="story_detail_message_event_story_delete_fail">일정 삭제에 실패했습니다.\n%s</string>
+    <string name="story_detail_event_repeat_fequency">반복 주기</string>
 
 </resources>
