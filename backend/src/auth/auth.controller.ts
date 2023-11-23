@@ -1,11 +1,10 @@
 import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
 import { AuthService } from './auth.service';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { GetUser } from './get-user.decorator';
-import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -30,7 +29,7 @@ export class AuthController {
       properties: {
         kakaoId: {
           type: 'string',
-          description: '카카오 API를 통해 받은 유저 정보 (닉네임)',
+          description: '카카오 API를 통해 받은 유저 정보',
         },
       },
     },
@@ -51,9 +50,7 @@ export class AuthController {
     return this.authService.login(user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('refresh')
-  @ApiBearerAuth()
   @ApiOperation({
     summary: 'access token 갱신 API',
   })
@@ -68,11 +65,8 @@ export class AuthController {
       },
     },
   })
-  async refresh(
-    @GetUser() user: User,
-    @Body('refreshToken') refreshToken: string,
-  ) {
-    return this.authService.refresh(user, refreshToken);
+  async refresh(@Body('refreshToken') refreshToken: string) {
+    return this.authService.refresh(refreshToken);
   }
 
   @Get('check/token')

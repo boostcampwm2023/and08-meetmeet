@@ -3,10 +3,10 @@ package com.teameetmeet.meetmeet.data.network.api
 import com.teameetmeet.meetmeet.data.model.EventMember
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.Feed
-import com.teameetmeet.meetmeet.data.network.entity.SingleStringRequest
+import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 
 class FakeEventStoryApi : EventStoryApi {
-    override fun getStory(id: String): EventStory {
+    override suspend fun getStory(id: String): EventStory {
         return EventStory(
             id = 11,
             title = "밋밋 3차 오프라인 미팅",
@@ -28,7 +28,7 @@ class FakeEventStoryApi : EventStoryApi {
 
             ),
             announcement = "다들 11시 반에 광명역에서 집합입니다~",
-            authority = "owner",
+            authority = "OWNER",
             repeatPolicyId = null,
             isJoin = true,
             isVisible = true,
@@ -56,7 +56,11 @@ class FakeEventStoryApi : EventStoryApi {
         )
     }
 
-    override fun editNotification(singleStringRequest: SingleStringRequest) {
+    override suspend fun editNotification(singleStringRequest: KakaoLoginRequest) {
+
+    }
+
+    override suspend fun deleteEventStory(id: Int) {
 
     }
 }

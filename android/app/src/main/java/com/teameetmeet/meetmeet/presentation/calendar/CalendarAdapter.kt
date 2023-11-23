@@ -10,7 +10,7 @@ import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.EventBar
 
 class CalendarAdapter(
-    private val onCalendarItemClickListener: OnCalendarItemClickListener
+    private val calendarItemClickListener: CalendarItemClickListener
 ) : ListAdapter<CalendarItem, CalendarAdapter.CalendarViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
@@ -20,7 +20,7 @@ class CalendarAdapter(
             false
         )
         binding.root.layoutParams.height = parent.measuredHeight / 6
-        return CalendarViewHolder(binding, onCalendarItemClickListener)
+        return CalendarViewHolder(binding, calendarItemClickListener)
     }
 
     override fun onBindViewHolder(holder: CalendarViewHolder, position: Int) {
@@ -29,10 +29,10 @@ class CalendarAdapter(
 
     class CalendarViewHolder(
         private val binding: ItemCalendarBinding,
-        private val onCalendarItemClickListener: OnCalendarItemClickListener
+        private val calendarItemClickListener: CalendarItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
         private fun onClick(item: CalendarItem) {
-            onCalendarItemClickListener.onItemClick(item)
+            calendarItemClickListener.onItemClick(item)
         }
 
         fun bind(item: CalendarItem) {

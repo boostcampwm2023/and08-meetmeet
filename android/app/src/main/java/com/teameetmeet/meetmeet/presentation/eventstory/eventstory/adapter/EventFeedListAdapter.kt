@@ -7,10 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.data.model.Feed
 import com.teameetmeet.meetmeet.databinding.ItemEventFeedBinding
+import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnFeedItemClickListener
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnItemClickListener
 
 class EventFeedListAdapter(
-    private val onItemClickListener: OnItemClickListener
+    private val onItemClickListener: OnFeedItemClickListener
 ) : ListAdapter<Feed, EventFeedListAdapter.EventFeedViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventFeedViewHolder {
@@ -19,18 +20,23 @@ class EventFeedListAdapter(
             parent,
             false
         )
-        val viewHolder = EventFeedViewHolder(binding)
-        binding.root.setOnClickListener {
-            onItemClickListener.onItemClick(viewHolder)
-        }
-        return viewHolder
+        return EventFeedViewHolder(binding, onItemClickListener)
     }
 
     override fun onBindViewHolder(holder: EventFeedViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class EventFeedViewHolder(private val binding: ItemEventFeedBinding) : RecyclerView.ViewHolder(binding.root) {
+    class EventFeedViewHolder(
+        private val binding: ItemEventFeedBinding,
+        onItemClickListener: OnFeedItemClickListener
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                onItemClickListener.onItemClick()
+            }
+        }
         fun bind(item: Feed) {
             binding.item = item
         }

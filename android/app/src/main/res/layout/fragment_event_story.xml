@@ -9,203 +9,228 @@
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.eventstory.eventstory.EventStoryViewModel" />
 
+        <import type="com.teameetmeet.meetmeet.presentation.model.EventAuthority"/>
+
         <import type="android.view.View" />
     </data>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:layout_height="match_parent"
+            >
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/event_story_abl"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fitsSystemWindows="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                android:background="@color/white">
 
-                <com.google.android.material.appbar.CollapsingToolbarLayout
-                    style="?attr/collapsingToolbarLayoutMediumStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
-                    app:expandedTitleTextAppearance="@style/large.bold"
-                    app:maxLines="1">
+                <com.google.android.material.appbar.AppBarLayout
+                    android:id="@+id/event_story_abl"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <com.google.android.material.appbar.MaterialToolbar
-                        android:id="@+id/event_story_tbl"
+                    <com.google.android.material.appbar.CollapsingToolbarLayout
+                        style="?attr/collapsingToolbarLayoutMediumStyle"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/white"
-                        android:minHeight="?attr/actionBarSize"
-                        app:menu="@menu/menu_top_app_bar_event_story"
-                        app:navigationIcon="@drawable/ic_nav_pre"
-                        app:title="@{vm.eventStoryUiState.eventStory.title ?? @string/common_none}"
-                        tools:title="밋밋 3차 오프라인 미팅" />
+                        android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
+                        app:expandedTitleTextAppearance="@style/large.bold"
+                        app:maxLines="1">
 
-                </com.google.android.material.appbar.CollapsingToolbarLayout>
+                        <com.google.android.material.appbar.MaterialToolbar
+                            android:id="@+id/event_story_tbl"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:minHeight="?attr/actionBarSize"
+                            app:menu="@menu/menu_top_app_bar_event_story"
+                            app:menu_more_enable="@{vm.eventStoryUiState.authority}"
+                            app:navigationIcon="@drawable/ic_nav_pre"
+                            app:title="@{vm.eventStoryUiState.eventStory.title ?? @string/common_none}"
+                            tools:title="밋밋 3차 오프라인 미팅" />
 
-            </com.google.android.material.appbar.AppBarLayout>
+                    </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-            <TextView
-                android:id="@+id/event_story_tv_title_event_time"
-                style="@style/medium.bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="@string/event_story_title_event_time"
-                android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/event_story_abl" />
+                </com.google.android.material.appbar.AppBarLayout>
 
-            <TextView
-                android:id="@+id/event_story_tv_value_event_time"
-                style="@style/small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                app:event_story="@{vm.eventStoryUiState.eventStory}"
-                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
-                app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_time"
-                tools:text="2023.11.06 11:30 - 2023.11.06 21:30" />
-
-            <TextView
-                android:id="@+id/event_story_tv_title_event_members"
-                style="@style/medium.bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/event_story_title_event_members"
-                android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
-                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
-                app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_time" />
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/event_story_rv_value_event_members"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:is_expanded="@{vm.eventStoryUiState.eventMemberUiExpanded}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:sub_list="@{vm.eventStoryUiState.eventStory.eventMembers}"
-                app:limit="@{vm.eventStoryUiState.maxMember}"
-                tools:itemCount="30"
-                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
-                app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_members"
-                tools:listitem="@layout/item_event_member" />
-
-            <ImageButton
-                android:id="@+id/event_story_ib_see_more_member"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="8dp"
-                android:background="@null"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_more_hoz"
-                android:visibility="@{vm.eventStoryUiState.eventMemberUiExpanded == true ? View.VISIBLE : View.GONE}"
-                app:layout_constraintStart_toEndOf="@id/event_story_rv_value_event_members"
-                app:layout_constraintTop_toTopOf="@id/event_story_rv_value_event_members"
-                app:layout_constraintBottom_toBottomOf="@id/event_story_rv_value_event_members"
-                />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/event_story_cv_invite_member"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:visibility="@{vm.eventStoryUiState.eventMemberUiExpanded == true ? View.VISIBLE : View.GONE}"
-                app:cardCornerRadius="100dp"
-                android:layout_marginStart="12dp"
-                app:layout_constraintStart_toEndOf="@id/event_story_ib_see_more_member"
-                app:layout_constraintTop_toTopOf="@id/event_story_rv_value_event_members"
-                app:layout_constraintBottom_toBottomOf="@id/event_story_rv_value_event_members"
-                app:contentPadding="6dp">
-
-                <ImageView
+                <TextView
+                    android:id="@+id/event_story_tv_title_event_time"
+                    style="@style/medium.bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/black"
-                    android:src="@drawable/ic_plus" />
+                    android:layout_margin="16dp"
+                    android:text="@string/event_story_title_event_time"
+                    android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_abl" />
 
-            </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/event_story_tv_value_event_time"
+                    style="@style/small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:event_story="@{vm.eventStoryUiState.eventStory}"
+                    app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_time"
+                    tools:text="2023.11.06 11:30 - 2023.11.06 21:30" />
 
-
-            <TextView
-                android:id="@+id/event_story_tv_title_event_notification"
-                style="@style/medium.bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/event_story_title_event_notification"
-                android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
-                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
-                app:layout_constraintTop_toBottomOf="@id/event_story_rv_value_event_members" />
-
-            <ImageView
-                android:id="@+id/event_story_iv_change_notification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@null"
-                android:src="@drawable/ic_edit"
-                app:layout_constraintBottom_toBottomOf="@id/event_story_tv_title_event_notification"
-                app:layout_constraintStart_toEndOf="@id/event_story_tv_title_event_notification"
-                app:layout_constraintTop_toTopOf="@id/event_story_tv_title_event_notification" />
-
-            <TextView
-                android:id="@+id/event_story_tv_value_event_notification"
-                style="@style/small"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="16dp"
-                android:ellipsize="end"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:maxLines="3"
-                android:text="@{vm.eventStoryUiState.eventStory.announcement ?? @string/common_none}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_notification"
-                app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_notification"
-                tools:text="다들 11시 반까지 광명역 앞으로 집합해주세요~" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/event_story_rv_event_feed"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                app:count_of_span="@{3}"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
-                app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_notification"
-                app:spanCount="3"
-                app:sub_list="@{vm.eventStoryUiState.eventStory.feeds}" />
-
-            <ImageView
-                android:id="@+id/event_story_iv_loading"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:contentDescription="@string/event_story_description_loading_image"
-                android:src="@drawable/loading_animation"
-                android:visibility="@{vm.eventStoryUiState.loading == true ? View.VISIBLE : View.GONE}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/event_story_tv_title_event_members"
+                    style="@style/medium.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/event_story_title_event_members"
+                    android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_time" />
 
 
-    </androidx.core.widget.NestedScrollView>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/event_story_rv_value_event_members"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:is_expanded="@{vm.eventStoryUiState.eventMemberUiExpanded}"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:sub_list="@{vm.eventStoryUiState.eventStory.eventMembers}"
+                    app:limit="@{vm.eventStoryUiState.maxMember}"
+                    tools:itemCount="30"
+                    app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_members"
+                    tools:listitem="@layout/item_event_member" />
+
+                <ImageButton
+                    android:id="@+id/event_story_ib_see_more_member"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@null"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_more_hoz"
+                    android:visibility="@{vm.eventStoryUiState.eventMemberUiExpanded == true ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintStart_toEndOf="@id/event_story_rv_value_event_members"
+                    app:layout_constraintTop_toTopOf="@id/event_story_rv_value_event_members"
+                    app:layout_constraintBottom_toBottomOf="@id/event_story_rv_value_event_members"
+                    />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/event_story_cv_invite_member"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:visibility="@{(vm.eventStoryUiState.eventMemberUiExpanded == true &amp;&amp; vm.eventStoryUiState.authority != EventAuthority.PARTICIPANT) ? View.VISIBLE : View.GONE}"
+                    app:cardCornerRadius="100dp"
+                    android:layout_marginStart="12dp"
+                    app:layout_constraintStart_toEndOf="@id/event_story_ib_see_more_member"
+                    app:layout_constraintTop_toTopOf="@id/event_story_rv_value_event_members"
+                    app:layout_constraintBottom_toBottomOf="@id/event_story_rv_value_event_members"
+                    app:contentPadding="6dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/black"
+                        android:src="@drawable/ic_plus" />
+
+                </androidx.cardview.widget.CardView>
+
+
+                <TextView
+                    android:id="@+id/event_story_tv_title_event_notification"
+                    style="@style/medium.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/event_story_title_event_notification"
+                    android:visibility="@{vm.eventStoryUiState.loading == true ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_rv_value_event_members" />
+
+                <ImageView
+                    android:id="@+id/event_story_iv_change_notification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@null"
+                    android:src="@drawable/ic_edit"
+                    android:visibility="@{vm.eventStoryUiState.authority == EventAuthority.OWNER ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="@id/event_story_tv_title_event_notification"
+                    app:layout_constraintStart_toEndOf="@id/event_story_tv_title_event_notification"
+                    app:layout_constraintTop_toTopOf="@id/event_story_tv_title_event_notification" />
+
+                <TextView
+                    android:id="@+id/event_story_tv_value_event_notification"
+                    style="@style/small"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="16dp"
+                    android:ellipsize="end"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:maxLines="3"
+                    android:text="@{vm.eventStoryUiState.eventStory.announcement ?? @string/common_none}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_notification"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_notification"
+                    tools:text="다들 11시 반까지 광명역 앞으로 집합해주세요~" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/event_story_rv_event_feed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    app:count_of_span="@{3}"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_time"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_tv_value_event_notification"
+                    app:spanCount="3"
+                    app:sub_list="@{vm.eventStoryUiState.eventStory.feeds}" />
+
+                <ImageView
+                    android:id="@+id/event_story_iv_loading"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:contentDescription="@string/event_story_description_loading_image"
+                    android:src="@drawable/loading_animation"
+                    android:visibility="@{vm.eventStoryUiState.loading == true ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/event_story_fab_make_feed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_margin="24dp"
+            android:src="@drawable/ic_plus"
+            android:visibility="@{vm.eventStoryUiState.authority == EventAuthority.GUEST ? View.GONE : View.VISIBLE}"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </layout>

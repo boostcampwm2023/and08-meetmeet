@@ -14,12 +14,17 @@ import com.teameetmeet.meetmeet.databinding.FragmentEventStoryBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
+import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.fragment_event_story) {
+class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.fragment_event_story),
+    OnFeedItemClickListener {
 
     private val viewModel: EventStoryViewModel by viewModels()
 
@@ -47,14 +52,22 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 showDialog(viewModel.getNoti())
             }
             eventStoryIbSeeMoreMember.setOnClickListener {
-                Log.d("test", "hi")
+                //TODO("더보기")
             }
             eventStoryCvInviteMember.setOnClickListener {
-                viewModel.eventStoryUiState.value.eventStory?.let { story ->
-                    findNavController().navigate(
-                        EventStoryFragmentDirections.actionEventStoryFragmentToFollowFragment()
-                            .setId(story.id)
-                    )
+                when (viewModel.eventStoryUiState.value.authority) {
+                    EventAuthority.GUEST -> {}//TODO("참여 신청")
+                    EventAuthority.OWNER -> {
+                        //TODO("초대 페이지로 이동")
+                        viewModel.eventStoryUiState.value.eventStory?.let { story ->
+                            findNavController().navigate(
+                                EventStoryFragmentDirections.actionEventStoryFragmentToFollowFragment()
+                                    .setId(story.id)
+                            )
+                        }
+                    }
+
+                    else -> return@setOnClickListener
                 }
             }
         }
@@ -78,7 +91,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         with(binding) {
             eventStoryRvValueEventMembers.itemAnimator = null
             eventStoryRvValueEventMembers.adapter = EventMemberListAdapter(viewModel)
-            eventStoryRvEventFeed.adapter = EventFeedListAdapter(viewModel)
+            eventStoryRvEventFeed.adapter = EventFeedListAdapter(this@EventStoryFragment)
             vm = viewModel
         }
     }
@@ -89,13 +102,8 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 viewModel.event.collectLatest { event ->
                     when (event) {
                         is EventStoryEvent.ShowMessage -> showMessage(
-                            event.messageId,
-                            event.extraMessage
+                            event.messageId, event.extraMessage
                         )
-
-                        is EventStoryEvent.NavigateToFeedFragment -> {
-                            findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment())
-                        }
                     }
                 }
             }
@@ -115,5 +123,9 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         AlertDialog.Builder(requireContext()).apply {
             setMessage(noti).create().show()
         }
+    }
+
+    override fun onItemClick() {
+        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment())
     }
 }

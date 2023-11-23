@@ -71,8 +71,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         }
 
         binding.calendarFlNotification.setOnClickListener {
-//            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToNotificationActivity())
-            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToEventStoryActivity())
+            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToNotificationActivity())
         }
     }
 
@@ -80,7 +79,10 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dayClickEvent.collect {
-                    findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToBottomSheetDialog())
+                    findNavController().navigate(
+                        CalendarFragmentDirections
+                            .actionCalendarFragmentToBottomSheetDialog(it)
+                    )
                 }
             }
         }

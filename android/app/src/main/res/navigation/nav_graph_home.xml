@@ -42,6 +42,10 @@
             android:name="actionType"
             android:defaultValue="FOLLOW"
             app:argType="com.teameetmeet.meetmeet.presentation.follow.FollowActionType" />
+        <argument
+            android:name="id"
+            android:defaultValue="0"
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -69,12 +73,23 @@
         android:name="com.teameetmeet.meetmeet.presentation.notification.NotificationActivity"
         android:label="Notification_activity" />
 
-    <dialog
-        android:id="@+id/bottom_sheet_dialog"
-        android:name="com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment"
-        tools:layout="@layout/fragment_bottom_sheet_events_per_day" />
     <activity
         android:id="@+id/event_story_activity"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.EventStoryActivity"
         android:label="event_story_activity" />
+
+    <dialog
+        android:id="@+id/bottom_sheet_dialog"
+        android:name="com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment"
+        tools:layout="@layout/fragment_events_per_day_bottom_sheet">
+        <argument
+            android:name="eventsPerDay"
+            app:argType="com.teameetmeet.meetmeet.presentation.calendar.DayClickEvent" />
+        <action
+            android:id="@+id/action_bottom_sheet_dialog_to_add_event_activity"
+            app:destination="@id/add_event_activity" />
+        <action
+            android:id="@+id/action_bottom_sheet_dialog_to_event_story_activity"
+            app:destination="@id/event_story_activity" />
+    </dialog>
 </navigation>

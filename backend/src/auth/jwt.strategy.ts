@@ -12,7 +12,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private configService: ConfigService,
   ) {
     super({
-      ignoreExpiration: true,
+      // todo : ignoreExpiration true로 바꿀지 고민
+      ignoreExpiration: false,
       secretOrKey: configService.get('JWT_SECRET_KEY'),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });

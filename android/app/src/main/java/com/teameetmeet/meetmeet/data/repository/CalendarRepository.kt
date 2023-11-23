@@ -4,10 +4,13 @@ import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
 import com.teameetmeet.meetmeet.data.datasource.RemoteCalendarDataSource
 import com.teameetmeet.meetmeet.data.local.database.entity.Event
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
-import com.teameetmeet.meetmeet.data.toDateString
 import com.teameetmeet.meetmeet.data.toEvent
+import com.teameetmeet.meetmeet.util.DateTimeFormat
+import com.teameetmeet.meetmeet.util.toDateString
+import com.teameetmeet.meetmeet.util.toTimeStampLong
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import java.time.ZoneId
 import javax.inject.Inject
 
 class CalendarRepository @Inject constructor(
@@ -30,13 +33,16 @@ class CalendarRepository @Inject constructor(
         return remoteCalendarDataSource.searchEvents(keyword, startDate, endDate)
     }
 
-    private suspend fun syncEvents(startDate: Long, endDate: Long) {
+    private suspend fun syncEvents(startDateTime: Long, endDateTime: Long) {
         //todo: edit distance 적용
         val local = localCalendarDataSource
-            .getEvents(startDate, endDate)
+            .getEvents(startDateTime, endDateTime)
             .first()
         val remote = remoteCalendarDataSource
-            .getEvents(startDate.toDateString(), endDate.toDateString())
+            .getEvents(
+                startDateTime.toDateString(DateTimeFormat.ISO_DATE, ZoneId.of("UTC")),
+                endDateTime.toDateString(DateTimeFormat.ISO_DATE, ZoneId.of("UTC"))
+            )
             .first()
 
         syncDeletes(local, remote)
@@ -71,8 +77,14 @@ class CalendarRepository @Inject constructor(
                 localCalendarDataSource.updateEventAttr(
                     id = remoteEvent.id,
                     title = remoteEvent.title,
-                    startDate = remoteEvent.startDate,
-                    endDate = remoteEvent.endDate,
+                    startDateTime = remoteEvent.startDate.toTimeStampLong(
+                        DateTimeFormat.ISO_DATE_TIME,
+                        ZoneId.of("UTC")
+                    ),
+                    endDateTime = remoteEvent.endDate.toTimeStampLong(
+                        DateTimeFormat.ISO_DATE_TIME,
+                        ZoneId.of("UTC")
+                    ),
                 )
             }
     }

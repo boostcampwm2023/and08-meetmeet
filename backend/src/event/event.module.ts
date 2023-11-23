@@ -10,7 +10,7 @@ import { Calendar } from '../calendar/entities/calendar.entity';
 import { DetailService } from '../detail/detail.service';
 import { Detail } from '../detail/entities/detail.entity';
 import { Authority } from '../event-member/entities/authority.entity';
-import { EventMemberService } from '../event-member/event-memer.service';
+import { EventMemberService } from '../event-member/event-member.service';
 import { EventMember } from '../event-member/entities/eventMember.entity';
 
 @Module({
