@@ -7,6 +7,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
+import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.BufferOverflow
@@ -41,7 +42,13 @@ class EventStoryViewModel @Inject constructor(
                 _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_event_story_fail, it.message.orEmpty()))
             }.collect { eventStory ->
                 _eventStoryUiState.update {
-                    it.copy(eventStory = eventStory, isLoading = false)
+                    it.copy(eventStory = eventStory, isLoading = false, authority =
+                        when(eventStory.authority) {
+                            "OWNER" -> EventAuthority.OWNER
+                            "MEMBER" -> EventAuthority.PARTICIPANT
+                            else -> EventAuthority.GUEST
+                        }
+                    )
                 }
             }
         }
@@ -50,6 +57,7 @@ class EventStoryViewModel @Inject constructor(
     fun getNoti(): String {
         return eventStoryUiState.value.eventStory?.announcement.orEmpty()
     }
+
 
     override fun onItemClick(viewHolder: RecyclerView.ViewHolder) {
         when(viewHolder) {

@@ -8,6 +8,8 @@ import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
+import com.teameetmeet.meetmeet.presentation.model.EventSimple
+import com.teameetmeet.meetmeet.presentation.model.toEventSimple
 import com.teameetmeet.meetmeet.util.getDayListInMonth
 import com.teameetmeet.meetmeet.util.toEndLong
 import com.teameetmeet.meetmeet.util.toStartLong
@@ -22,14 +24,13 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val calendarRepository: CalendarRepository
-) : ViewModel(), OnCalendarItemClickListener {
+) : ViewModel(), CalendarItemClickListener {
 
     private val _currentDate =
         MutableStateFlow<CalendarItem>(CalendarItem(date = LocalDate.now(), isSelected = true))
@@ -51,9 +52,8 @@ class CalendarViewModel @Inject constructor(
     private val _dayClickEvent = MutableSharedFlow<DayClickEvent>()
     val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
 
-    //todo: ui 모델로 매핑
-    private val _events = MutableStateFlow<List<Event>>(listOf())
-    val events: StateFlow<List<Event>> = _events
+    private val _events = MutableStateFlow<List<EventSimple>>(listOf())
+    val events: StateFlow<List<EventSimple>> = _events
 
     init {
         fetchUserProfile()
@@ -81,12 +81,12 @@ class CalendarViewModel @Inject constructor(
                 calendarItems.dropWhile { it.date == null }
                     .let {
                         calendarRepository.getEvents(
-                            it.first().date!!.toStartLong(ZoneId.systemDefault()),
-                            it.last().date!!.toEndLong(ZoneId.systemDefault())
+                            it.first().date!!.toStartLong(),
+                            it.last().date!!.toEndLong()
                         )
                     }
                     .collectLatest {
-                        _events.emit(it)
+                        _events.emit(it.map(Event::toEventSimple))
                         allocateEventsPerDay()
                     }
             }
@@ -99,8 +99,8 @@ class CalendarViewModel @Inject constructor(
                 calendarItem.date ?: return@map calendarItem
                 calendarItem.copy(
                     events = _events.value.filter { event ->
-                        val todayStart = calendarItem.date.toStartLong(ZoneId.systemDefault())
-                        val todayEnd = calendarItem.date.toEndLong(ZoneId.systemDefault())
+                        val todayStart = calendarItem.date.toStartLong()
+                        val todayEnd = calendarItem.date.toEndLong()
                         event.startDateTime <= todayEnd && event.endDateTime >= todayStart
                     }
                 )
@@ -138,7 +138,7 @@ class CalendarViewModel @Inject constructor(
 
     override fun onItemClick(calendarItem: CalendarItem) {
         calendarItem.date ?: return
-        if (currentDate.value != calendarItem) {
+        if (currentDate.value.date != calendarItem.date) {
             _daysInMonth.update { list ->
                 list.map {
                     when (it.date) {
@@ -152,7 +152,9 @@ class CalendarViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            _dayClickEvent.emit(DayClickEvent(calendarItem.events))
+            if (calendarItem.events.isNotEmpty()) {
+                _dayClickEvent.emit(DayClickEvent(calendarItem.date, calendarItem.events))
+            }
         }
     }
 }

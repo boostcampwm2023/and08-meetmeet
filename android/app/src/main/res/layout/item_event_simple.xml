@@ -5,72 +5,59 @@
 
     <data>
 
+        <variable
+            name="item"
+            type="com.teameetmeet.meetmeet.presentation.model.EventSimple" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="10dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/item_event_bs_cv_color"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:cardCornerRadius="100dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:cardBackgroundColor="@{item.color}" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/item_event_bs_gl_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="40dp" />
 
         <TextView
-            android:id="@+id/item_event_tv_title"
-            style="@style/medium.bold"
+            android:id="@+id/item_event_bs_tv_title"
+            style="@style/medium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="2"
-            app:layout_constraintEnd_toStartOf="@id/item_event_ll_date"
-            app:layout_constraintStart_toStartOf="parent"
+            android:maxLines="1"
+            app:layout_constraintBottom_toTopOf="@id/item_event_bs_tv_description"
+            app:layout_constraintStart_toStartOf="@id/item_event_bs_gl_start"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Title" />
+            android:text="@{item.title}"
+            tools:text="title" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/item_event_rv_profiles"
+        <TextView
+            android:id="@+id/item_event_bs_tv_description"
+            style="@style/caption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/item_event_ll_date"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/item_event_tv_title"
-            tools:listitem="@layout/item_profile_pic" />
-
-        <LinearLayout
-            android:id="@+id/item_event_ll_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                style="@style/small.bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="2023" />
-
-            <TextView
-                style="@style/large.bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="10.18" />
-
-            <TextView
-                style="@style/small.bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="금요일" />
-
-            <TextView
-                style="@style/caption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                tools:text="~ 2023.11.25" />
-        </LinearLayout>
+            app:layout_constraintStart_toStartOf="@id/item_event_bs_gl_start"
+            app:layout_constraintTop_toBottomOf="@id/item_event_bs_tv_title"
+            tools:text="description" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
