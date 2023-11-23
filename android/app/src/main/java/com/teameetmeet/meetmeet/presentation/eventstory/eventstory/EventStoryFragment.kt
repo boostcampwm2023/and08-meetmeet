@@ -2,7 +2,6 @@ package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -16,10 +15,7 @@ import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.Event
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -69,6 +65,11 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
                     else -> return@setOnClickListener
                 }
+            }
+            eventStoryFabMakeFeed.setOnClickListener {
+                findNavController().navigate(
+                    EventStoryFragmentDirections.actionEventStoryFragmentToCreateFeedFragment()
+                )
             }
         }
     }

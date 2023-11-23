@@ -15,7 +15,7 @@ import com.teameetmeet.meetmeet.util.DateTimeFormat
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment() {
+class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemClickListener {
     private var _binding: FragmentEventsPerDayBottomSheetBinding? = null
     private val binding get() = requireNotNull(_binding)
 
@@ -40,9 +40,9 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment() {
     private fun setBinding() {
         with(binding) {
             lifecycleOwner = viewLifecycleOwner
-            binding.eventsPerDayTvDate.text =
+            eventsPerDayTvDate.text =
                 args.eventsPerDay.date.format(DateTimeFormat.ISO_DATE.formatter)
-            binding.eventsPerDayBsBtnAddEvent.setOnClickListener {
+            eventsPerDayBsBtnAddEvent.setOnClickListener {
                 findNavController().navigate(
                     EventsPerDayBottomSheetFragmentDirections
                         .actionBottomSheetDialogToAddEventActivity()
@@ -52,15 +52,7 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     private fun setRecyclerView() {
-        binding.eventsPerDayBsRv.adapter = EventsPerDayAdapter(
-            object : EventItemClickListener {
-                override fun onClick(eventSimple: EventSimple) {
-                    findNavController().navigate(
-                        EventsPerDayBottomSheetFragmentDirections
-                            .actionBottomSheetDialogToEventStoryActivity()
-                    )
-                }
-            })
+        binding.eventsPerDayBsRv.adapter = EventsPerDayAdapter(this)
         (binding.eventsPerDayBsRv.adapter as EventsPerDayAdapter)
             .submitList(args.eventsPerDay.events)
     }
@@ -68,5 +60,11 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onItemClick(eventSimple: EventSimple) {
+        findNavController().navigate(
+            EventsPerDayBottomSheetFragmentDirections.actionBottomSheetDialogToEventStoryActivity()
+        )
     }
 }

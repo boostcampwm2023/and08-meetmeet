@@ -33,11 +33,12 @@ class EventsPerDayAdapter(
         fun bind(item: EventSimple) {
             binding.item = item
             itemView.setOnClickListener {
-                listener.onClick(item)
+                listener.onItemClick(item)
             }
             binding.itemEventBsTvDescription.text =
                 "${item.startDateTime.toDateString(DateTimeFormat.LOCAL_DATE_TIME)} ~ ${
-                    item.endDateTime.toDateString(DateTimeFormat.LOCAL_DATE_TIME)}"
+                    item.endDateTime.toDateString(DateTimeFormat.LOCAL_DATE_TIME)
+                }"
         }
     }
 

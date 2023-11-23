@@ -49,7 +49,10 @@ class CalendarViewModel @Inject constructor(
     private val _calendarViewMode = MutableStateFlow<CalendarViewMode>(CalendarViewMode.MONTH)
     val calendarViewMode: StateFlow<CalendarViewMode> = _calendarViewMode
 
-    private val _dayClickEvent = MutableSharedFlow<DayClickEvent>()
+    private val _dayClickEvent = MutableSharedFlow<DayClickEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
 
     private val _events = MutableStateFlow<List<EventSimple>>(listOf())
