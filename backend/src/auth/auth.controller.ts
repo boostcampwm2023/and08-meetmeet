@@ -73,6 +73,17 @@ export class AuthController {
   @ApiOperation({
     summary: 'access token 검증 API',
   })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: {
+          type: 'string',
+          description: 'access token이 유효한지 검증한다.',
+        },
+      },
+    },
+  })
   checkAccessToken(@Body('token') token: string) {
     return this.authService.verifyToken(token);
   }
