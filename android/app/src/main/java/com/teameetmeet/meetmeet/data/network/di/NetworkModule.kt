@@ -1,10 +1,11 @@
 package com.teameetmeet.meetmeet.data.network.di
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
 import com.teameetmeet.meetmeet.data.network.api.FakeCalendarApi
 import com.teameetmeet.meetmeet.data.network.api.FakeEventStoryApi
-import com.teameetmeet.meetmeet.data.network.api.FakeLoginApi
 import com.teameetmeet.meetmeet.data.network.api.FakeUserApi
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.api.UserApi
@@ -20,13 +21,24 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
+
+    @Singleton
+    @Provides
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
+    }
+
     @Singleton
     @Provides
     @Named("serverRetrofit")
-    fun providesServerRetrofit(): Retrofit {
+    fun providesServerRetrofit(
+        moshi: Moshi
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl("http://meetmeet.chani.pro/")
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 
@@ -36,7 +48,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideLoginApi(): LoginApi = FakeLoginApi()
+    fun provideLoginApi(@Named("serverRetrofit")retrofit: Retrofit): LoginApi = retrofit.create(LoginApi::class.java)
 
     @Singleton
     @Provides

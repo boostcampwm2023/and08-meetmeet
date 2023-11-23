@@ -3,8 +3,7 @@ package com.teameetmeet.meetmeet.data.repository
 import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
-import com.teameetmeet.meetmeet.data.network.entity.SingleStringRequest
-import kotlinx.coroutines.delay
+import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
@@ -44,7 +43,7 @@ class EventStoryRepository @Inject constructor(
     fun editNotification(message: String) : Flow<Unit> {
         return flowOf(true)
             .map {
-                eventStoryApi.editNotification(SingleStringRequest(message))
+                eventStoryApi.editNotification(KakaoLoginRequest(message))
             }.catch {
                 throw it
             }
