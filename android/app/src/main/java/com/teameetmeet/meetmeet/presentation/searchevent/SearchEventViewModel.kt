@@ -35,8 +35,8 @@ class SearchEventViewModel @Inject constructor(
     fun setSearchDateRange(pair: Pair<Long, Long>) {
         _searchDateRange.update { pair }
         _searchDateRangeText.update {
-            "${pair.first.toLocalDate(ZoneId.systemDefault())} ~ " +
-                    "${pair.second.toLocalDate(ZoneId.systemDefault())}"
+            "${pair.first.toLocalDate()} ~ " +
+                    "${pair.second.toLocalDate()}"
         }
     }
 
@@ -44,8 +44,8 @@ class SearchEventViewModel @Inject constructor(
         LocalDateTime.now()
         setSearchDateRange(
             Pair(
-                getLocalDate().minusWeeks(1).toStartLong(ZoneId.systemDefault()),
-                getLocalDate().plusWeeks(1).toEndLong(ZoneId.systemDefault()),
+                getLocalDate().minusWeeks(1).toStartLong(),
+                getLocalDate().plusWeeks(1).toEndLong(),
             )
         )
     }
@@ -53,8 +53,8 @@ class SearchEventViewModel @Inject constructor(
     private fun setSearchDateRangeTwoMonths() {
         setSearchDateRange(
             Pair(
-                getLocalDate().minusMonths(1).toStartLong(ZoneId.systemDefault()),
-                getLocalDate().plusMonths(1).toEndLong(ZoneId.systemDefault()),
+                getLocalDate().minusMonths(1).toStartLong(),
+                getLocalDate().plusMonths(1).toEndLong(),
             )
         )
     }
@@ -62,8 +62,8 @@ class SearchEventViewModel @Inject constructor(
     private fun setSearchDateRangeSixMonths() {
         setSearchDateRange(
             Pair(
-                getLocalDate().minusMonths(3).toStartLong(ZoneId.systemDefault()),
-                getLocalDate().plusMonths(3).toEndLong(ZoneId.systemDefault()),
+                getLocalDate().minusMonths(3).toStartLong(),
+                getLocalDate().plusMonths(3).toEndLong(),
             )
         )
     }
