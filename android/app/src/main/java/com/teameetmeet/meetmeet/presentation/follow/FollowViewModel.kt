@@ -31,7 +31,7 @@ class FollowViewModel @Inject constructor() : ViewModel(), OnUserClickListener {
     fun updateSearchedUser() {
         // TODO 유저 검색 API 갱신
         val tmp = listOf(
-            UserProfile(null, _searchKeyword.value, "email@naver.com")
+            UserProfile("https://github.com/LeeHaiLim.png", _searchKeyword.value, "email@naver.com")
         )
         _searchedUser.update { tmp }
     }
@@ -39,11 +39,11 @@ class FollowViewModel @Inject constructor() : ViewModel(), OnUserClickListener {
     fun updateFollower() {
         // TODO 팔로워 목록 API 갱신
         val tmp = listOf(
-            UserProfile(null, "팔로워1", "email@naver.com"),
-            UserProfile(null, "팔로워2", "email@naver.com"),
-            UserProfile(null, "팔로워3", "email@naver.com"),
-            UserProfile(null, "팔로워4", "email@naver.com"),
-            UserProfile(null, "팔로워5", "email@naver.com"),
+            UserProfile("https://github.com/chani1209.png", "차세찬", "email@naver.com"),
+            UserProfile("https://github.com/cdj2073.png", "최다정", "email@naver.com"),
+            UserProfile("https://github.com/agfalcon.png", "김근범", "email@naver.com"),
+            UserProfile("https://github.com/LeeHaiLim.png", "이해림", "email@naver.com"),
+            UserProfile("https://github.com/p-chanmin.png", "박찬민", "email@naver.com"),
         )
         _follower.update { tmp }
     }
@@ -51,11 +51,11 @@ class FollowViewModel @Inject constructor() : ViewModel(), OnUserClickListener {
     fun updateFollowing() {
         // TODO 팔로윙 목록 API 갱신
         val tmp = listOf(
-            UserProfile(null, "팔로잉1", "email@naver.com"),
-            UserProfile(null, "팔로잉2", "email@naver.com"),
-            UserProfile(null, "팔로잉3", "email@naver.com"),
-            UserProfile(null, "팔로잉4", "email@naver.com"),
-            UserProfile(null, "팔로잉5", "email@naver.com"),
+            UserProfile("https://github.com/cdj2073.png", "최다정", "email@naver.com"),
+            UserProfile("https://github.com/chani1209.png", "차세찬", "email@naver.com"),
+            UserProfile("https://github.com/LeeHaiLim.png", "이해림", "email@naver.com"),
+            UserProfile("https://github.com/p-chanmin.png", "박찬민", "email@naver.com"),
+            UserProfile("https://github.com/agfalcon.png", "김근범", "email@naver.com"),
         )
         _following.update { tmp }
     }
