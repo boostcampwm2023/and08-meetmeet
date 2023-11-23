@@ -6,7 +6,6 @@
     <string name="common_none"> </string>
 
 
-
     <string name="menu_save">저장</string>
     <string name="menu_calendar">캘린더</string>
     <string name="menu_follow">팔로우</string>
@@ -87,8 +86,8 @@
     <string name="sign_up_password_confirm_valid">비밀번호가 일치합니다</string>
     <string name="sign_up_password_confirm_invalid">비밀번호가 일치하지 않습니다</string>
 
-    <string name="follow_following">팔로잉 %d명</string>
-    <string name="follow_follower">팔로워 %d명</string>
+    <string name="follow_following">팔로잉</string>
+    <string name="follow_follower">팔로워</string>
     <string name="follow_search_hint">닉네임을 입력하세요</string>
 
     <string name="event_story_menu_title_see_more">더보기</string>
