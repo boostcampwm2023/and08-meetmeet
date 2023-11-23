@@ -106,7 +106,8 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideCalendarApi(): CalendarApi = FakeCalendarApi()
+    fun provideCalendarApi(@Named("retrofitWithAuth") retrofit: Retrofit): CalendarApi =
+        retrofit.create(CalendarApi::class.java)
 
     //AccessToken 필요한 api
     @Singleton

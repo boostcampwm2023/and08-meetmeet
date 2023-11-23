@@ -12,19 +12,22 @@ import javax.inject.Inject
 class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi) {
     fun getEvents(startDate: String, endDate: String): Flow<List<EventResponse>> {
         return flowOf(true)
-            .map { api.getEvents(startDate, endDate) }
+            .map {
+                val result = api.getEvents(startDate, endDate).events
+                result
+            }
             .catch {
                 //todo: 예외 처리
             }
     }
 
     fun searchEvents(
-        keyword: String?,
+        keyword: String? = null,
         startDate: String,
         endDate: String
     ): Flow<List<EventResponse>> {
         return flowOf(true)
-            .map { api.getEvents(startDate, endDate) }
+            .map { api.searchEvents(keyword, startDate, endDate) }
             .catch {
                 //todo: 예외 처리
             }

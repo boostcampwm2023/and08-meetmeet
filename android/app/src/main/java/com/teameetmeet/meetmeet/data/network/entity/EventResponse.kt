@@ -11,5 +11,10 @@ data class EventResponse(
     val eventMembers: List<UserResponse>,
     val authority: String,
     val repeatPolicyId: Int?,
-    val isJoinable: Boolean
+    val isJoinable: Int
+)
+
+@JsonClass(generateAdapter = true)
+data class Events(
+    val events: List<EventResponse>
 )

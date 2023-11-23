@@ -1,213 +1,215 @@
-[
-  {
-    "id": 1,
-    "title": "이벤트 1",
-    "startDate": "2023-11-01 09:00:00",
-    "endDate": "2023-11-01 09:00:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      },
-      {
-        "id": 102,
-        "nickname": "유저2",
-        "profile": "https://example.com/profile2"
-      }
-    ],
-    "authority": "OWNER",
-    "repeatPolicyId": null,
-    "isJoinable": true
-  },
-  {
-    "id": 2,
-    "title": "이벤트 2",
-    "startDate": "2023-11-02 10:30:00",
-    "endDate": "2023-11-03 11:45:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      }
-    ],
-    "authority": "MEMBER",
-    "repeatPolicyId": null,
-    "isJoinable": false
-  },
-  {
-    "id": 3,
-    "title": "이벤트 3",
-    "startDate": "2023-11-03 14:15:00",
-    "endDate": "2023-11-06 16:30:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      },
-      {
-        "id": 105,
-        "nickname": "유저5",
-        "profile": "https://example.com/profile5"
-      },
-      {
-        "id": 106,
-        "nickname": "유저6",
-        "profile": "https://example.com/profile6"
-      }
-    ],
-    "authority": "OWNER",
-    "repeatPolicyId": 1,
-    "isJoinable": true
-  },
-  {
-    "id": 4,
-    "title": "이벤트 4",
-    "startDate": "2023-11-04 12:00:00",
-    "endDate": "2023-11-04 14:30:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      },
-      {
-        "id": 108,
-        "nickname": "유저8",
-        "profile": "https://example.com/profile8"
-      }
-    ],
-    "authority": "MEMBER",
-    "repeatPolicyId": null,
-    "isJoinable": true
-  },
-  {
-    "id": 5,
-    "title": "이벤트 5",
-    "startDate": "2023-11-11 13:45:00",
-    "endDate": "2023-11-11 14:30:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      }
-    ],
-    "authority": "OWNER",
-    "repeatPolicyId": 2,
-    "isJoinable": false
-  },
-  {
-    "id": 6,
-    "title": "이벤트 6",
-    "startDate": "2023-11-12 15:00:00",
-    "endDate": "2023-11-13 15:45:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      },
-      {
-        "id": 111,
-        "nickname": "유저11",
-        "profile": "https://example.com/profile11"
-      },
-      {
-        "id": 112,
-        "nickname": "유저12",
-        "profile": "https://example.com/profile12"
-      }
-    ],
-    "authority": "MEMBER",
-    "repeatPolicyId": null,
-    "isJoinable": true
-  },
-  {
-    "id": 7,
-    "title": "이벤트 7",
-    "startDate": "2023-11-16 16:30:00",
-    "endDate": "2023-11-18 17:15:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      }
-    ],
-    "authority": "OWNER",
-    "repeatPolicyId": 3,
-    "isJoinable": true
-  },
-  {
-    "id": 8,
-    "title": "이벤트 8",
-    "startDate": "2023-11-19 18:00:00",
-    "endDate": "2023-11-20 18:45:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      },
-      {
-        "id": 115,
-        "nickname": "유저15",
-        "profile": "https://example.com/profile15"
-      }
-    ],
-    "authority": "MEMBER",
-    "repeatPolicyId": 1,
-    "isJoinable": false
-  },
-  {
-    "id": 9,
-    "title": "이벤트 9",
-    "startDate": "2023-11-24 19:30:00",
-    "endDate": "2023-11-27 20:15:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      },
-      {
-        "id": 117,
-        "nickname": "유저17",
-        "profile": "https://example.com/profile17"
-      }
-    ],
-    "authority": "OWNER",
-    "repeatPolicyId": null,
-    "isJoinable": true
-  },
-  {
-    "id": 10,
-    "title": "이벤트 10",
-    "startDate": "2023-11-30 21:00:00",
-    "endDate": "2023-11-30 21:30:00",
-    "eventMembers": [
-      {
-        "id": 101,
-        "nickname": "유저1",
-        "profile": "https://example.com/profile1"
-      },
-      {
-        "id": 119,
-        "nickname": "유저19",
-        "profile": "https://example.com/profile19"
-      },
-      {
-        "id": 120,
-        "nickname": "유저20",
-        "profile": "https://example.com/profile20"
-      }
-    ],
-    "authority": "MEMBER",
-    "repeatPolicyId": 2,
-    "isJoinable": true
-  }
-]
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "이벤트 1",
+      "startDate": "2023-11-01 09:00:00",
+      "endDate": "2023-11-01 09:00:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        },
+        {
+          "id": 102,
+          "nickname": "유저2",
+          "profile": "https://example.com/profile2"
+        }
+      ],
+      "authority": "OWNER",
+      "repeatPolicyId": null,
+      "isJoinable": true
+    },
+    {
+      "id": 2,
+      "title": "이벤트 2",
+      "startDate": "2023-11-02 10:30:00",
+      "endDate": "2023-11-03 11:45:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        }
+      ],
+      "authority": "MEMBER",
+      "repeatPolicyId": null,
+      "isJoinable": false
+    },
+    {
+      "id": 3,
+      "title": "이벤트 3",
+      "startDate": "2023-11-03 14:15:00",
+      "endDate": "2023-11-06 16:30:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        },
+        {
+          "id": 105,
+          "nickname": "유저5",
+          "profile": "https://example.com/profile5"
+        },
+        {
+          "id": 106,
+          "nickname": "유저6",
+          "profile": "https://example.com/profile6"
+        }
+      ],
+      "authority": "OWNER",
+      "repeatPolicyId": 1,
+      "isJoinable": true
+    },
+    {
+      "id": 4,
+      "title": "이벤트 4",
+      "startDate": "2023-11-04 12:00:00",
+      "endDate": "2023-11-04 14:30:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        },
+        {
+          "id": 108,
+          "nickname": "유저8",
+          "profile": "https://example.com/profile8"
+        }
+      ],
+      "authority": "MEMBER",
+      "repeatPolicyId": null,
+      "isJoinable": true
+    },
+    {
+      "id": 5,
+      "title": "이벤트 5",
+      "startDate": "2023-11-11 13:45:00",
+      "endDate": "2023-11-11 14:30:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        }
+      ],
+      "authority": "OWNER",
+      "repeatPolicyId": 2,
+      "isJoinable": false
+    },
+    {
+      "id": 6,
+      "title": "이벤트 6",
+      "startDate": "2023-11-12 15:00:00",
+      "endDate": "2023-11-13 15:45:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        },
+        {
+          "id": 111,
+          "nickname": "유저11",
+          "profile": "https://example.com/profile11"
+        },
+        {
+          "id": 112,
+          "nickname": "유저12",
+          "profile": "https://example.com/profile12"
+        }
+      ],
+      "authority": "MEMBER",
+      "repeatPolicyId": null,
+      "isJoinable": true
+    },
+    {
+      "id": 7,
+      "title": "이벤트 7",
+      "startDate": "2023-11-16 16:30:00",
+      "endDate": "2023-11-18 17:15:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        }
+      ],
+      "authority": "OWNER",
+      "repeatPolicyId": 3,
+      "isJoinable": true
+    },
+    {
+      "id": 8,
+      "title": "이벤트 8",
+      "startDate": "2023-11-19 18:00:00",
+      "endDate": "2023-11-20 18:45:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        },
+        {
+          "id": 115,
+          "nickname": "유저15",
+          "profile": "https://example.com/profile15"
+        }
+      ],
+      "authority": "MEMBER",
+      "repeatPolicyId": 1,
+      "isJoinable": false
+    },
+    {
+      "id": 9,
+      "title": "이벤트 9",
+      "startDate": "2023-11-24 19:30:00",
+      "endDate": "2023-11-27 20:15:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        },
+        {
+          "id": 117,
+          "nickname": "유저17",
+          "profile": "https://example.com/profile17"
+        }
+      ],
+      "authority": "OWNER",
+      "repeatPolicyId": null,
+      "isJoinable": true
+    },
+    {
+      "id": 10,
+      "title": "이벤트 10",
+      "startDate": "2023-11-30 21:00:00",
+      "endDate": "2023-11-30 21:30:00",
+      "eventMembers": [
+        {
+          "id": 101,
+          "nickname": "유저1",
+          "profile": "https://example.com/profile1"
+        },
+        {
+          "id": 119,
+          "nickname": "유저19",
+          "profile": "https://example.com/profile19"
+        },
+        {
+          "id": 120,
+          "nickname": "유저20",
+          "profile": "https://example.com/profile20"
+        }
+      ],
+      "authority": "MEMBER",
+      "repeatPolicyId": 2,
+      "isJoinable": true
+    }
+  ]
+}
 

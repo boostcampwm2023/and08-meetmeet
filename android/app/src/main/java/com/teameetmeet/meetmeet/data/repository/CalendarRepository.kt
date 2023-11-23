@@ -55,7 +55,6 @@ class CalendarRepository @Inject constructor(
         )
         return remoteCalendarDataSource.addEvent(request)
             .catch {
-                //todo: 예외 처리
             }
     }
 
@@ -74,8 +73,8 @@ class CalendarRepository @Inject constructor(
             .first()
         val remote = remoteCalendarDataSource
             .getEvents(
-                startDateTime.toDateString(DateTimeFormat.ISO_DATE, ZoneId.of("UTC")),
-                endDateTime.toDateString(DateTimeFormat.ISO_DATE, ZoneId.of("UTC"))
+                startDateTime.toDateString(DateTimeFormat.SERVER_DATE, ZoneId.of("UTC")),
+                endDateTime.toDateString(DateTimeFormat.SERVER_DATE, ZoneId.of("UTC"))
             )
             .first()
 

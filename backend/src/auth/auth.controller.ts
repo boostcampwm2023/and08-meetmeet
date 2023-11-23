@@ -69,11 +69,22 @@ export class AuthController {
     return this.authService.refresh(refreshToken);
   }
 
-  @Get('check/token')
+  @Post('check/token')
   @ApiOperation({
     summary: 'access token 검증 API',
   })
-  checkAccessToken(@Query('token') token: string) {
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        accessToken: {
+          type: 'string',
+          description: 'access token이 유효한지 검증한다.',
+        },
+      },
+    },
+  })
+  checkAccessToken(@Body('token') token: string) {
     return this.authService.verifyToken(token);
   }
 

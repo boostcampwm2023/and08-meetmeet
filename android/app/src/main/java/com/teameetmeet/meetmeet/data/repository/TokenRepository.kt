@@ -19,6 +19,7 @@ class TokenRepository @Inject constructor(
             dataStoreHelper.storeAppToken(response.accessToken, response.refreshToken)
             return response.accessToken
         } catch (e: Exception) {
+            println(e)
             throw ExpiredRefreshTokenException()
         }
     }

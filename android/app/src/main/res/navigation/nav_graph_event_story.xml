@@ -19,7 +19,11 @@
         <action
             android:id="@+id/action_event_story_fragment_to_follow_fragment"
             app:destination="@id/follow_fragment" />
+        <action
+            android:id="@+id/action_event_story_fragment_to_create_feed_fragment"
+            app:destination="@id/create_feed_fragment" />
     </fragment>
+
     <fragment
         android:id="@+id/event_story_detail_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailFragment"
@@ -48,6 +52,10 @@
             android:name="id"
             android:defaultValue="0"
             app:argType="integer" />
-
     </fragment>
+
+    <fragment
+        android:id="@+id/create_feed_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.createfeed.CreateFeedFragment"
+        android:label="CreateFeedFragment" />
 </navigation>

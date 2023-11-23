@@ -10,7 +10,7 @@ data class AddEventRequest(
     val isJoinable: Boolean,
     val isVisible: Boolean,
     val memo: String,
-    val repeatTerm: String?,
+    val RepeatTerm: String?,
     val repeatFrequency: Int,
     val repeatEndDate: String
 )

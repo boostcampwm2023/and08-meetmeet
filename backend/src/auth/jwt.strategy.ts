@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ImATeapotException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
@@ -12,22 +16,24 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private configService: ConfigService,
   ) {
     super({
-      // todo : ignoreExpiration true로 바꿀지 고민
-      ignoreExpiration: false,
+      ignoreExpiration: true,
       secretOrKey: configService.get('JWT_SECRET_KEY'),
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     });
   }
 
-  async validate(payload: { email: string }): Promise<User> {
-    const { email } = payload;
+  async validate(payload: { email: string; exp: number }): Promise<User> {
+    const { email, exp } = payload;
 
     if (!email) {
       throw new UnauthorizedException();
     }
 
-    const user: User | null = await this.userService.findUserByEmail(email);
+    if (exp < new Date().getTime() / 1000) {
+      throw new ImATeapotException('Access token is expired.');
+    }
 
+    const user: User | null = await this.userService.findUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException();
     }

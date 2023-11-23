@@ -15,6 +15,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentCalendarBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @ExperimentalBadgeUtils
@@ -83,6 +84,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
                         CalendarFragmentDirections
                             .actionCalendarFragmentToBottomSheetDialog(it)
                     )
+                    delay(1000)
                 }
             }
         }

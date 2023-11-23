@@ -14,6 +14,7 @@ import com.teameetmeet.meetmeet.util.getDayListInMonth
 import com.teameetmeet.meetmeet.util.toEndLong
 import com.teameetmeet.meetmeet.util.toStartLong
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -49,7 +50,10 @@ class CalendarViewModel @Inject constructor(
     private val _calendarViewMode = MutableStateFlow<CalendarViewMode>(CalendarViewMode.MONTH)
     val calendarViewMode: StateFlow<CalendarViewMode> = _calendarViewMode
 
-    private val _dayClickEvent = MutableSharedFlow<DayClickEvent>()
+    private val _dayClickEvent = MutableSharedFlow<DayClickEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
 
     private val _events = MutableStateFlow<List<EventSimple>>(listOf())
