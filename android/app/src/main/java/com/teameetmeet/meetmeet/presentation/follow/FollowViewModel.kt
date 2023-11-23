@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class FollowViewModel @Inject constructor() : ViewModel() {
+class FollowViewModel @Inject constructor() : ViewModel(), OnUserClickListener {
 
     private val _follower: MutableStateFlow<List<UserProfile>> = MutableStateFlow(listOf())
     val follower: StateFlow<List<UserProfile>> = _follower
@@ -62,5 +62,21 @@ class FollowViewModel @Inject constructor() : ViewModel() {
 
     fun updateSearchKeyword(keyword: CharSequence?) {
         _searchKeyword.update { keyword.toString() }
+    }
+
+    override fun onFollowClick(userProfile: UserProfile) {
+        println("${userProfile.nickname}님을 팔로우")
+    }
+
+    override fun onUnfollowClick(userProfile: UserProfile) {
+        println("${userProfile.nickname}님을 언팔로우")
+    }
+
+    override fun onInviteEventClick(userProfile: UserProfile, id: Int) {
+        println("${userProfile.nickname}님을 이벤트 $id 에 초대")
+    }
+
+    override fun onInviteGroupClick(userProfile: UserProfile, id: Int) {
+        println("${userProfile.nickname}님을 그룹 $id 에 초대")
     }
 }
