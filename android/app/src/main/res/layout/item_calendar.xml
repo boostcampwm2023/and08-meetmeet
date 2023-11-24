@@ -5,14 +5,6 @@
 
     <data>
 
-        <import type="java.util.List" />
-
-        <import type="com.teameetmeet.meetmeet.presentation.model.EventBar" />
-
-        <variable
-            name="itemList"
-            type="List&lt;EventBar>" />
-
         <variable
             name="item"
             type="com.teameetmeet.meetmeet.presentation.model.CalendarItem" />
@@ -36,7 +28,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/item_calendar_rv_events"
-            sub_list="@{itemList}"
+            sub_list="@{item.eventBars}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

@@ -8,12 +8,15 @@ import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
+import com.teameetmeet.meetmeet.presentation.model.EventBar
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
 import com.teameetmeet.meetmeet.presentation.model.toEventSimple
 import com.teameetmeet.meetmeet.util.getDayListInMonth
 import com.teameetmeet.meetmeet.util.toEndLong
+import com.teameetmeet.meetmeet.util.toLocalDate
 import com.teameetmeet.meetmeet.util.toStartLong
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -91,25 +94,84 @@ class CalendarViewModel @Inject constructor(
                     }
                     .collectLatest {
                         _events.emit(it.map(Event::toEventSimple))
-                        allocateEventsPerDay()
+                        setDaysInMonth()
                     }
             }
         }
     }
 
-    private fun allocateEventsPerDay() {
+    private fun setDaysInMonth() {
         _daysInMonth.update {
-            _daysInMonth.value.map { calendarItem ->
-                calendarItem.date ?: return@map calendarItem
-                calendarItem.copy(
-                    events = _events.value.filter { event ->
-                        val todayStart = calendarItem.date.toStartLong()
-                        val todayEnd = calendarItem.date.toEndLong()
-                        event.startDateTime <= todayEnd && event.endDateTime >= todayStart
-                    }
+            allocateEventsPerDay(it)
+        }
+    }
+
+    val comparator: (LocalDate) -> Comparator<EventSimple> = { today ->
+        Comparator { event1, event2 ->
+            val endToday1 = event1.endDateTime.toLocalDate() == today
+            val endToday2 = event2.endDateTime.toLocalDate() == today
+
+            if (!endToday1 && endToday2) -1
+            else if (endToday1 && !endToday2) 1
+            else if (event1.startDateTime - event2.startDateTime <= 0) -1
+            else 1
+        }
+    }
+
+    private fun allocateEventsPerDay(calendarItems: List<CalendarItem>): List<CalendarItem> {
+        val temp = mutableListOf<CalendarItem>()
+
+        for (i in calendarItems.indices) {
+            temp.add(calendarItems[i])
+            val today = temp[i].date
+            today ?: continue
+
+            val events = _events.value
+                .filter {
+                    it.startDateTime <= today.toEndLong() && it.endDateTime >= today.toStartLong()
+                }.sortedBy { it.startDateTime }
+
+            if(events.isEmpty()) continue
+
+            val continuity = events
+                .sortedWith(comparator(today))
+                .groupBy { event ->
+                    i % 7 != 0 && today.dayOfMonth != 1 &&
+                            temp[i - 1].eventBars.any { it?.id == event.id }
+                }
+
+            var eventBars: MutableList<EventBar?> = (0..<5).map { null }.toMutableList()
+
+            continuity[true]?.map { event ->
+                val index = temp[i - 1].eventBars.indexOfFirst { it?.id == event.id }
+                eventBars[index] = EventBar(
+                    id = event.id,
+                    event.color,
+                    isStart = false,
+                    isEnd = event.endDateTime.toLocalDate() == today || i % 7 == 6
                 )
             }
+
+            continuity[false]?.map { event ->
+                val index = eventBars.indexOf(null)
+                val eventBar = EventBar(
+                    id = event.id,
+                    event.color,
+                    isStart = true,
+                    isEnd = event.endDateTime.toLocalDate() == today || i % 7 == 6
+                )
+                if (index != -1) eventBars[index] = eventBar else eventBars.add(eventBar)
+            }
+
+            if (eventBars.size > 5) {
+                eventBars[4] = EventBar(
+                    id = -1, isStart = true, isEnd = true, hiddenCount = eventBars.size - 4
+                )
+            }
+
+            temp[i] = temp[i].copy(events = events, eventBars = eventBars.take(5))
         }
+        return temp
     }
 
     fun forwardMonth() {

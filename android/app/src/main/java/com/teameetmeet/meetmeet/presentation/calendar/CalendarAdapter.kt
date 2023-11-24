@@ -38,10 +38,6 @@ class CalendarAdapter(
         fun bind(item: CalendarItem) {
             with(binding) {
                 this.item = item
-                //todo: 이벤트 바 배치 작업..
-                itemList = item.events.map {
-                    EventBar(it.id, it.color, isStart = true, isEnd = true)
-                }
                 itemCalendarViewTouch.setOnClickListener { onClick(item) }
                 itemCalendarRvEvents.itemAnimator = null
                 if (itemCalendarRvEvents.adapter == null) {
