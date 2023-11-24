@@ -16,7 +16,6 @@ import com.teameetmeet.meetmeet.util.toEndLong
 import com.teameetmeet.meetmeet.util.toLocalDate
 import com.teameetmeet.meetmeet.util.toStartLong
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,7 +63,6 @@ class CalendarViewModel @Inject constructor(
 
     init {
         fetchUserProfile()
-        fetchEvents()
     }
 
     private fun fetchUserProfile() {
@@ -82,7 +80,7 @@ class CalendarViewModel @Inject constructor(
         _userNickName.update { userProfile.nickname }
     }
 
-    private fun fetchEvents() {
+    fun fetchEvents() {
         viewModelScope.launch {
             daysInMonth.collectLatest { calendarItems ->
                 calendarItems.dropWhile { it.date == null }
@@ -131,7 +129,7 @@ class CalendarViewModel @Inject constructor(
                     it.startDateTime <= today.toEndLong() && it.endDateTime >= today.toStartLong()
                 }.sortedBy { it.startDateTime }
 
-            if(events.isEmpty()) continue
+            if (events.isEmpty()) continue
 
             val continuity = events
                 .sortedWith(comparator(today))
