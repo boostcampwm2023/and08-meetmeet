@@ -48,7 +48,7 @@ class CalendarRepository @Inject constructor(
             endDate,
             isJoinable,
             isVisible,
-            memo,
+            memo.ifEmpty { null },
             repeatTerm,
             repeatFrequency,
             repeatEndDate
