@@ -5,7 +5,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.teameetmeet.meetmeet.data.network.api.AuthApi
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
-import com.teameetmeet.meetmeet.data.network.api.FakeCalendarApi
 import com.teameetmeet.meetmeet.data.network.api.FakeEventStoryApi
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.api.UserApi
@@ -86,6 +85,7 @@ class NetworkModule {
                 val response = chain.proceed(tokenAddedRequest)
 
                 if (response.code == 418) {
+                    response.close()
                     val accessToken = runBlocking {
                         tokenRepository.refreshAccessToken()
                     }
@@ -100,7 +100,6 @@ class NetworkModule {
                     .addHeader("Authorization", "Bearer $accessToken")
                     .build()
             }
-
         }
     }
 
