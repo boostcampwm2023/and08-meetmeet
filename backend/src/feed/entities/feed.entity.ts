@@ -10,6 +10,9 @@ export class Feed extends commonEntity {
   @Column()
   eventId: number;
 
+  @Column()
+  authorId: number;
+
   @ManyToOne(() => User, { nullable: false })
   author: User;
 
@@ -22,6 +25,8 @@ export class Feed extends commonEntity {
   @OneToMany(() => FeedContent, (feedContent) => feedContent.feed)
   feedContents: FeedContent[];
 
-  @OneToMany(() => Comment, (comment) => comment.feed)
+  @OneToMany(() => Comment, (comment) => comment.feed, {
+    cascade: ['soft-remove'],
+  })
   comments: Comment[];
 }
