@@ -32,10 +32,16 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         setBadge()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchEvents()
+    }
+
     private fun setBinding() {
         with(binding) {
             vm = viewModel
             calendarRvCalendar.adapter = CalendarAdapter(viewModel)
+            calendarRvCalendar.itemAnimator = null
         }
     }
 
