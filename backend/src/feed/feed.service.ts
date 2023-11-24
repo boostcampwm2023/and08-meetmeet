@@ -99,7 +99,7 @@ export class FeedService {
       throw new NotFoundException();
     }
 
-    if (feed.author.id !== user.id) {
+    if (feed.authorId !== user.id) {
       const authority =
         await this.eventMemberSercive.getAuthorityOfUserByEventId(
           feed.eventId,
@@ -117,6 +117,6 @@ export class FeedService {
       );
     }
 
-    this.feedRepository.softRemove(feed);
+    await this.feedRepository.softRemove(feed);
   }
 }
