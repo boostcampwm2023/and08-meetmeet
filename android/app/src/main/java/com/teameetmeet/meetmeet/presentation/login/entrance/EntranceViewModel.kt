@@ -1,8 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.login.entrance
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
@@ -19,9 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EntranceViewModel @Inject constructor(
-    private val application: Application,
     private val loginRepository: LoginRepository
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _kakaoLoginEvent = MutableSharedFlow<KakaoLoginEvent>(
         extraBufferCapacity = 1,
