@@ -93,7 +93,7 @@ class SignUpViewModel @Inject constructor(
                     _showPlaceholder.update { false }
                 }
                 .collectLatest {
-                    _event.emit(SignUpEvent.SignUpSuccess)
+                    _event.emit(SignUpEvent.NavigateToProfileSettingFragment)
                     _showPlaceholder.update { false }
                 }
         }

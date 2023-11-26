@@ -4,7 +4,6 @@ import android.util.Log
 import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.network.entity.AccessTokenResult
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
-import com.teameetmeet.meetmeet.data.network.entity.EmailDuplicationCheckRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.LoginResponse
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
@@ -35,7 +34,5 @@ class FakeLoginApi : LoginApi {
         return AvailableResponse(true)
     }
 
-    override suspend fun signUp(selfSignRequest: SelfSignRequest): LoginResponse {
-        return LoginResponse("accessToken", "refreshToken")
-    }
+    override suspend fun signUp(selfSignRequest: SelfSignRequest) {}
 }

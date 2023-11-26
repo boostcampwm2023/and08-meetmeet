@@ -39,7 +39,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
                     when (event) {
-                        is SignUpEvent.SignUpSuccess -> {
+                        is SignUpEvent.NavigateToProfileSettingFragment -> {
                             findNavController().navigate(
                                 SignUpFragmentDirections.actionSignUpFragmentToSettingProfileFragment()
                                     .setIsFirstSignIn(true)
