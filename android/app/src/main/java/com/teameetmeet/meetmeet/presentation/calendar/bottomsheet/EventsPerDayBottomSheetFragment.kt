@@ -45,7 +45,7 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemCl
             eventsPerDayBsBtnAddEvent.setOnClickListener {
                 findNavController().navigate(
                     EventsPerDayBottomSheetFragmentDirections
-                        .actionBottomSheetDialogToAddEventActivity()
+                        .actionBottomSheetDialogToAddEventActivity(args.eventsPerDay.date)
                 )
             }
         }
