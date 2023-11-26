@@ -43,7 +43,6 @@ class LoginRepository @Inject constructor(
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
                 throw it
-                // Todo 예외처리 추가
             }
     }
 
