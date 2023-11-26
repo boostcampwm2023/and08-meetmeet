@@ -76,6 +76,11 @@
     <string name="setting_logout">로그아웃</string>
     <string name="setting_password_change">비밀번호 변경</string>
     <string name="setting_account_delete">계정 탈퇴</string>
+    <string name="setting_account_delete_approve">탈퇴</string>
+    <string name="setting_account_delete_cancel">취소</string>
+    <string name="setting_account_delete_title">정말로 탈퇴하시겠습니까?</string>
+    <string name="setting_account_delete_description">회원 탈퇴를 하신 후에 일주일간 회원님의 정보를 유지합니다.\n회원 탈퇴를 하시면 쌓아오신 추억들이 모두 사라집니다.\n탈퇴하시겠습니까?</string>
+    <string name="setting_account_delete_fail">계정 탈퇴 실패</string>
     <string name="setting_duplicate_check">중복확인</string>
     <string name="setting_complete">완료</string>
     <string name="setting_nickname">닉네임</string>
