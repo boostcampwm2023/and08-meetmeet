@@ -26,6 +26,30 @@ class SettingAccountFragment :
         setTopAppBar()
         setNavigation()
         setDialog()
+        collectViewModelEvent()
+    }
+
+    private fun collectViewModelEvent() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collect { event ->
+                    when (event) {
+                        is SettingAccountUiEvent.NavigateToLoginActivity -> {
+                            findNavController().navigate(
+                                SettingAccountFragmentDirections.actionSettingAccountFragmentToLoginActivity()
+                            )
+                            requireActivity().finishAffinity()
+                        }
+
+                        is SettingAccountUiEvent.ShowMessage -> showMessage(
+                            event.message,
+                            event.extraMessage
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     private fun setDialog() {
         binding.settingAccountBtnAccountDelete.setOnClickListener {
