@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:background="@null"
-            android:onClick="@{() -> vm.forwardMonth()}"
+            android:onClick="@{() -> vm.moveMonth(-1l)}"
             android:src="@drawable/ic_nav_pre"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_date"
             app:layout_constraintEnd_toStartOf="@id/calendar_tv_date"
@@ -123,7 +123,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_cl_profile"
-            app:local_date="@{vm.currentDate.date}"
+            app:local_date="@{vm.currentDate}"
             tools:text="2023년 11월" />
 
         <ImageButton
@@ -132,7 +132,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:background="@null"
-            android:onClick="@{() -> vm.backwardMonth()}"
+            android:onClick="@{() -> vm.moveMonth(1l)}"
             android:src="@drawable/ic_nav_next"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_date"
             app:layout_constraintStart_toEndOf="@id/calendar_tv_date"
