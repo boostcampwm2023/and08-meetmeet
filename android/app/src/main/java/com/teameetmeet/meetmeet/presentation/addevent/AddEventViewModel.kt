@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,43 +43,64 @@ class AddEventViewModel @Inject constructor(
 
     fun eventSave() {
         viewModelScope.launch {
-            _uiState.value.startTime.hour
-            val startDateTime =
-                _uiState.value.startDate
-                    .plusHours(_uiState.value.startTime.hour.toLong())
-                    .plusMinutes(_uiState.value.startTime.minute.toLong())
-                    .toLong(ZoneId.systemDefault())
-                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
-            val endDateTime =
-                _uiState.value.endDate
-                    .plusHours(_uiState.value.endTime.hour.toLong())
-                    .plusMinutes(_uiState.value.endTime.minute.toLong())
-                    .toLong(ZoneId.systemDefault())
+            if (checkEvent()) {
+                val startDateTime =
+                    _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
+                        .plusMinutes(_uiState.value.startTime.minute.toLong())
+                        .toLong(ZoneId.systemDefault())
+                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+                val endDateTime =
+                    _uiState.value.endDate.plusHours(_uiState.value.endTime.hour.toLong())
+                        .plusMinutes(_uiState.value.endTime.minute.toLong())
+                        .toLong(ZoneId.systemDefault())
+                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+
+                val repeatEndDate = _uiState.value.eventRepeatEndDate.toLong(ZoneId.systemDefault())
                     .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
-            val repeatEndDate = _uiState.value.endDate.toLong(ZoneId.systemDefault())
-                .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
-
-            with(_uiState.value) {
-                calendarRepository.addEvent(
-                    title = eventName,
-                    startDate = startDateTime,
-                    endDate = endDateTime,
-                    isJoinable = isJoinable,
-                    isVisible = isOpen,
-                    memo = memo,
-                    repeatTerm = eventRepeat.value,
-                    repeatFrequency = eventRepeatFrequency,
-                    repeatEndDate = repeatEndDate,
-                    color = color,
-                    alarm = alarm,
-                ).catch {
-                    _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
-                }.collectLatest {
-                    _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                with(_uiState.value) {
+                    calendarRepository.addEvent(
+                        title = eventName,
+                        startDate = startDateTime,
+                        endDate = endDateTime,
+                        isJoinable = isJoinable,
+                        isVisible = isOpen,
+                        memo = memo,
+                        repeatTerm = eventRepeat.value,
+                        repeatFrequency = eventRepeatFrequency,
+                        repeatEndDate = repeatEndDate,
+                        color = color,
+                        alarm = alarm,
+                    ).catch {
+                        _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                    }.collectLatest {
+                        _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                    }
                 }
             }
         }
+    }
+
+    private suspend fun checkEvent(): Boolean {
+        val startDateTime =
+            _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
+                .plusMinutes(_uiState.value.startTime.minute.toLong())
+        val endDateTime = _uiState.value.endDate.plusHours(_uiState.value.endTime.hour.toLong())
+            .plusMinutes(_uiState.value.endTime.minute.toLong())
+        if (_uiState.value.eventName.isEmpty()) {
+            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_no_title))
+            return false
+        } else if (startDateTime.isAfter(endDateTime)) {
+            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_date_time))
+            return false
+        } else if (_uiState.value.eventRepeat != EventRepeatTerm.NONE && _uiState.value.eventRepeat.days * _uiState.value.eventRepeatFrequency < ChronoUnit.DAYS.between(
+                startDateTime, endDateTime
+            ) + 1
+        ) {
+            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_repeat_term))
+            return false
+        }
+        return true
     }
 
     fun setEventName(name: CharSequence) {
@@ -91,7 +113,9 @@ class AddEventViewModel @Inject constructor(
         if (!endDate.isBefore(_uiState.value.eventRepeatEndDate)) {
             _uiState.update {
                 it.copy(
-                    startDate = startDate, endDate = endDate, eventRepeatEndDate = endDate
+                    startDate = startDate,
+                    endDate = endDate,
+                    eventRepeatEndDate = endDate.plusYears(1)
                 )
             }
         } else {

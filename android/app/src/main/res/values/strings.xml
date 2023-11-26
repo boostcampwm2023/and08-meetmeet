@@ -33,6 +33,9 @@
     <string name="add_event_err_end_time">종료 시간을 지정해 주세요.</string>
     <string name="add_event_err_event_name">일정 이름을 입력해 주세요.</string>
     <string name="add_event_err_fail">일정 추가를 실패하였습니다.</string>
+    <string name="add_event_err_no_title">일정 이름을 정해주세요.</string>
+    <string name="add_event_err_date_time">시작 시간과 종료 시간을 다시 정해주세요.</string>
+    <string name="add_event_err_repeat_term">반복 주기는 일정 기간보다 길어야 합니다.</string>
 
     <string name="notification_none">알림 없음</string>
     <string name="notification_ten_minutes_before">10분 전</string>
