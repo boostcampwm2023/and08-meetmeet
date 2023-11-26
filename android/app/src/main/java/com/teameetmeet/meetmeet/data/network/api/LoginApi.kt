@@ -17,14 +17,14 @@ interface LoginApi {
     suspend fun loginKakao(@Body kakaoLoginRequest: KakaoLoginRequest): LoginResponse
 
     @POST("/auth/login")
-    fun loginSelf(@Body selfSignRequest: SelfSignRequest): LoginResponse
+    suspend fun loginSelf(@Body selfSignRequest: SelfSignRequest): LoginResponse
 
     @GET("auth/check/token")
     suspend fun autoLoginApp(@Query("token") accessToken: String): AccessTokenResult
 
     @POST()
-    fun checkEmailDuplication(@Body emailDuplicationCheckRequest: EmailDuplicationCheckRequest): AvailableResponse
+    suspend fun checkEmailDuplication(@Body emailDuplicationCheckRequest: EmailDuplicationCheckRequest): AvailableResponse
 
     @POST("/auth/register")
-    fun signUp(@Body selfSignRequest: SelfSignRequest): LoginResponse
+    suspend fun signUp(@Body selfSignRequest: SelfSignRequest): LoginResponse
 }
