@@ -14,6 +14,8 @@ class FakeUserApi : UserApi {
         )
     }
 
+    override suspend fun deleteUser() {}
+
     override fun checkNickNameDuplication(nickNameDuplicationCheckRequest: NickNameDuplicationCheckRequest): AvailableResponse {
         if (Random.nextInt() % 2 == 0) {
             throw Exception()

@@ -56,9 +56,19 @@ class UserRepository @Inject constructor(
                 dataStore.deleteAppToken()
             }.catch {
                 throw it
-                //TODO("예외 처리 필요")
             }
 
+    }
+
+    fun deleteUser(): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.deleteUser()
+                dataStore.deleteUserProfile()
+                dataStore.deleteAppToken()
+            }.catch {
+                throw it
+            }
     }
 
     fun checkNickNameDuplication(nickname: String): Flow<Unit> {
