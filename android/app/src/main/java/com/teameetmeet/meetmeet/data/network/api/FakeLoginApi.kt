@@ -28,7 +28,7 @@ class FakeLoginApi : LoginApi {
         return AccessTokenResult(isVerified = true)
     }
 
-    override suspend fun checkEmailDuplication(emailDuplicationCheckRequest: EmailDuplicationCheckRequest): AvailableResponse {
+    override suspend fun checkEmailDuplication(email: String): AvailableResponse {
         if (Random.nextInt() % 2 == 0) {
             throw Exception()
         }

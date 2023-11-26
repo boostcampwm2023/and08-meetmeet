@@ -69,10 +69,16 @@ class SignUpViewModel @Inject constructor(
             _showPlaceholder.update { true }
             loginRepository.checkEmailDuplication(_uiState.value.email)
                 .catch {
-                    _uiState.update { it.copy(emailState = EmailState.Invalid) }
+                    _event.emit(SignUpEvent.ShowMessage(R.string.login_app_duplicate_check_fail))
                     _showPlaceholder.update { false }
-                }.collectLatest {
-                    _uiState.update { it.copy(emailState = EmailState.Valid) }
+                }.collectLatest { isAvailable ->
+                    _uiState.update {
+                        if (isAvailable) {
+                            it.copy(emailState = EmailState.Valid)
+                        } else {
+                            it.copy(emailState = EmailState.Invalid)
+                        }
+                    }
                     _showPlaceholder.update { false }
                 }
         }

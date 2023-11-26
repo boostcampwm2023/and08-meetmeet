@@ -63,14 +63,13 @@ class LoginRepository @Inject constructor(
             }
     }
 
-    fun checkEmailDuplication(email: String): Flow<Unit> {
+    fun checkEmailDuplication(email: String): Flow<Boolean> {
         return flowOf(true)
             .map {
-                val request = EmailDuplicationCheckRequest(email)
-                val response = loginApi.checkEmailDuplication(request)
+                val response = loginApi.checkEmailDuplication(email)
+                response.isAvailable
             }.catch {
                 throw it
-                //Todo 추가 예외 처리 필요
             }
     }
 

@@ -22,8 +22,8 @@ interface LoginApi {
     @GET("auth/check/token")
     suspend fun autoLoginApp(@Query("token") accessToken: String): AccessTokenResult
 
-    @POST()
-    suspend fun checkEmailDuplication(@Body emailDuplicationCheckRequest: EmailDuplicationCheckRequest): AvailableResponse
+    @GET("auth/check/email")
+    suspend fun checkEmailDuplication(@Query("email") email: String): AvailableResponse
 
     @POST("/auth/register")
     suspend fun signUp(@Body selfSignRequest: SelfSignRequest): LoginResponse
