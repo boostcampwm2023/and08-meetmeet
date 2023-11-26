@@ -11,24 +11,24 @@ fun LocalDate.toYearMonth(): String {
     return format(formatter)
 }
 
-fun LocalDate.toStartLong(zoneId: ZoneId= ZoneId.systemDefault()): Long {
+fun LocalDate.toStartLong(zoneId: ZoneId = ZoneId.systemDefault()): Long {
     return atStartOfDay(zoneId).toInstant().toEpochMilli()
 }
 
-fun LocalDate.toEndLong(zoneId: ZoneId= ZoneId.systemDefault()): Long {
+fun LocalDate.toEndLong(zoneId: ZoneId = ZoneId.systemDefault()): Long {
     return plusDays(1).toStartLong(zoneId) - 1
 }
 
-fun LocalDate.getDayListInMonth(calendarItem: CalendarItem? = null): List<CalendarItem> {
+fun LocalDate.getDayListInMonth(date: LocalDate): List<CalendarItem> {
     val dayList = mutableListOf<CalendarItem>()
     val lastDay = YearMonth.from(this).lengthOfMonth()
     val firstDayOfWeek = withDayOfMonth(1).dayOfWeek.value
     repeat(firstDayOfWeek - 1) {
         dayList.add(CalendarItem())
     }
-    for (day in 1..lastDay) {
-        if (calendarItem != null && calendarItem.date?.dayOfMonth == day) {
-            dayList.add(calendarItem)
+    (1..lastDay).forEach { day ->
+        if (date.dayOfMonth == day) {
+            dayList.add(CalendarItem(date = date, isSelected = true))
         } else {
             dayList.add(CalendarItem(date = LocalDate.of(year, month, day)))
         }
