@@ -69,7 +69,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/setting_profile_tf_nickname"
-            invalid_text="@{@string/setting_nickname_duplicate_check_fail}"
+            invalid_text="@{@string/setting_nickname_duplicate_check_invalid}"
             setting_profile_nickname_state="@{vm.uiState.nickNameState}"
             valid_text="@{@string/setting_nickname_duplicate_check_complete}"
             android:layout_width="0dp"

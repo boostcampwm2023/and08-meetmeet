@@ -55,7 +55,7 @@ class SelfLoginViewModel @Inject constructor(
                     _event.emit(SelfLoginEvent.ShowMessage(R.string.login_message_self_login_fail))
                     _showPlaceholder.update { false }
                 }.collectLatest {
-                    _event.emit(SelfLoginEvent.SelfLoginSuccess)
+                    _event.emit(SelfLoginEvent.NavigateToHomeActivity)
                     _showPlaceholder.update { false }
                 }
         }

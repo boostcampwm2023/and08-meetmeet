@@ -3,9 +3,12 @@ package com.teameetmeet.meetmeet.presentation.setting.profile
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -21,6 +24,9 @@ class SettingProfileViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<SettingProfileUiState> =
         MutableStateFlow(SettingProfileUiState())
     val uiState: StateFlow<SettingProfileUiState> = _uiState
+
+    private val _event: MutableSharedFlow<SettingProfileUiEvent> = MutableSharedFlow()
+    val event: SharedFlow<SettingProfileUiEvent> = _event
 
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
@@ -72,19 +78,20 @@ class SettingProfileViewModel @Inject constructor(
             _showPlaceholder.update { true }
             userRepository.checkNickNameDuplication(_uiState.value.nickname)
                 .catch {
+                    _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_nickname_duplicate_check_invalid))
+                }.collectLatest { isAvailable ->
                     _uiState.update {
-                        it.copy(
-                            duplicatedEnable = false,
-                            nickNameState = NickNameState.Invalid
-                        )
-                    }
-
-                }.collectLatest {
-                    _uiState.update {
-                        it.copy(
-                            duplicatedEnable = false,
-                            nickNameState = NickNameState.Valid
-                        )
+                        if (isAvailable) {
+                            it.copy(
+                                duplicatedEnable = false,
+                                nickNameState = NickNameState.Valid
+                            )
+                        } else {
+                            it.copy(
+                                duplicatedEnable = false,
+                                nickNameState = NickNameState.Invalid
+                            )
+                        }
                     }
                 }
             _showPlaceholder.update { false }

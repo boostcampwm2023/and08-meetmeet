@@ -57,5 +57,6 @@
     <fragment
         android:id="@+id/create_feed_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.createfeed.CreateFeedFragment"
-        android:label="CreateFeedFragment" />
+        android:label="CreateFeedFragment"
+        tools:layout="@layout/fragment_create_feed" />
 </navigation>

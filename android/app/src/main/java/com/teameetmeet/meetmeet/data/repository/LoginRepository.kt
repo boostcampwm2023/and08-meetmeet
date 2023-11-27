@@ -5,7 +5,6 @@ import com.teameetmeet.meetmeet.data.ExpiredTokenException
 import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
-import com.teameetmeet.meetmeet.data.network.entity.EmailDuplicationCheckRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +43,6 @@ class LoginRepository @Inject constructor(
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
                 throw it
-                // Todo 예외처리 추가
             }
     }
 
@@ -54,7 +52,7 @@ class LoginRepository @Inject constructor(
             .map {
                 val response = loginApi.autoLoginApp(accessToken = token)
                 Log.d("test", response.toString())
-                if(response.isVerified.not()) {
+                if (response.isVerified.not()) {
                     throw ExpiredTokenException()
                 }
             }.catch {
@@ -63,14 +61,13 @@ class LoginRepository @Inject constructor(
             }
     }
 
-    fun checkEmailDuplication(email: String): Flow<Unit> {
+    fun checkEmailDuplication(email: String): Flow<Boolean> {
         return flowOf(true)
             .map {
-                val request = EmailDuplicationCheckRequest(email)
-                val response = loginApi.checkEmailDuplication(request)
+                val response = loginApi.checkEmailDuplication(email)
+                response.isAvailable
             }.catch {
                 throw it
-                //Todo 추가 예외 처리 필요
             }
     }
 
@@ -78,11 +75,11 @@ class LoginRepository @Inject constructor(
         return flowOf(true)
             .map {
                 val request = SelfSignRequest(email, password)
-                val response = loginApi.signUp(request)
+                loginApi.signUp(request)
+                val response = loginApi.loginSelf(request)
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
                 throw it
-                //Todo 추가 예외 처리 필요
             }
     }
 

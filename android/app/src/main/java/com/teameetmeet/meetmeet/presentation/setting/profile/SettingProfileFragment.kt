@@ -7,12 +7,17 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentSettingProfileBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingProfileFragment :
@@ -41,6 +46,25 @@ class SettingProfileFragment :
         binding.vm = viewModel
         setTopAppBar(args.isFirstSignIn)
         setPhotoPicker()
+        collectViewModelEvent()
+    }
+
+    private fun collectViewModelEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collectLatest { event ->
+                    when (event) {
+                        is SettingProfileUiEvent.NavigateToSettingHomeFragment -> {
+                            findNavController().popBackStack()
+                        }
+
+                        is SettingProfileUiEvent.ShowMessage -> {
+                            showMessage(event.message, event.extraMessage)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setTopAppBar(isFirstSignIn: Boolean) {
