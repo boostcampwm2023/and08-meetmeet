@@ -16,7 +16,7 @@ export class FeedResponseDto {
       memo: feed.memo ?? null,
       author: feed.author,
       contents: feed.feedContents.map((feedContent) => feedContent.content),
-      comments: [], // TODO: comment 추가
+      comments: feed.comments, // TODO: comment 추가
     };
   }
 }
