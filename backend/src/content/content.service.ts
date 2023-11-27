@@ -45,4 +45,8 @@ export class ContentService {
     await this.contentRepository.update(id, updatedContent);
     return await this.contentRepository.findOne({ where: { id } });
   }
+
+  async softDeleteContent(idList: number[]) {
+    await this.contentRepository.softDelete(idList);
+  }
 }

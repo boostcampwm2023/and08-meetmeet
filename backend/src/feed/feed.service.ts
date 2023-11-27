@@ -2,9 +2,11 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContentService } from 'src/content/content.service';
+import { AuthorityEnum } from 'src/event-member/entities/authority.enum';
 import { EventMemberService } from 'src/event-member/event-member.service';
 import { User } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -61,10 +63,10 @@ export class FeedService {
         'feed.author',
         'fc.contentId',
         'fc.content',
-        // 'feed.comments',
+        'comment',
       ])
       .leftJoin('feed.feedContents', 'fc')
-      // .leftJoinAndSelect('feed.comments', 'comment')
+      .leftJoin('feed.comments', 'comment')
       .leftJoinAndSelect('feed.author', 'author')
       .leftJoinAndSelect('fc.content', 'content')
       .where('feed.id = :id', { id })
@@ -77,5 +79,44 @@ export class FeedService {
     return FeedResponseDto.of(feed);
   }
 
-  async deleteFeed(user: User, id: number) {}
+  async deleteFeed(user: User, id: number) {
+    const feed = await this.feedRepository
+      .createQueryBuilder('feed')
+      .select([
+        'feed.id',
+        'feed.authorId',
+        'feed.memo',
+        'fc.contentId',
+        'comment',
+      ])
+      .leftJoin('feed.feedContents', 'fc')
+      .leftJoin('feed.comments', 'comment')
+      .leftJoin('fc.content', 'content')
+      .where('feed.id = :id', { id })
+      .getOne();
+
+    if (!feed) {
+      throw new NotFoundException();
+    }
+
+    if (feed.authorId !== user.id) {
+      const authority =
+        await this.eventMemberSercive.getAuthorityOfUserByEventId(
+          feed.eventId,
+          user.id,
+        );
+
+      if (authority !== AuthorityEnum.OWNER) {
+        throw new UnauthorizedException('피드 삭제 권한이 없습니다.');
+      }
+    }
+
+    if (feed.feedContents.length) {
+      this.contentService.softDeleteContent(
+        feed.feedContents.map((feedContent) => feedContent.contentId),
+      );
+    }
+
+    await this.feedRepository.softRemove(feed);
+  }
 }

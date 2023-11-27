@@ -88,6 +88,7 @@ export class AuthService {
       if (err instanceof Error && err.name === 'TokenExpiredError') {
         throw new ImATeapotException('Refresh token is expired.');
       }
+      throw new ImATeapotException('Invalid token');
     }
   }
 
