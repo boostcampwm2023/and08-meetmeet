@@ -5,9 +5,9 @@ import java.time.LocalDate
 
 data class CalendarItem(
     val date: LocalDate? = null,
-    var events: List<EventSimple> = emptyList(),
-    var eventBars:List<EventBar?> = emptyList(),
-    var isSelected: Boolean = false
+    val events: List<EventSimple> = emptyList(),
+    val eventBars: List<EventBar?> = emptyList(),
+    val isSelected: Boolean = false
 ) {
     fun getDay(): String {
         return date?.dayOfMonth?.toString() ?: ""

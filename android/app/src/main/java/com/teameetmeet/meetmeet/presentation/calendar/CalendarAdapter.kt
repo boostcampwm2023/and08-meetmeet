@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.databinding.ItemCalendarBinding
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
-import com.teameetmeet.meetmeet.presentation.model.EventBar
 
 class CalendarAdapter(
     private val calendarItemClickListener: CalendarItemClickListener
@@ -31,18 +30,16 @@ class CalendarAdapter(
         private val binding: ItemCalendarBinding,
         private val calendarItemClickListener: CalendarItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
-        private fun onClick(item: CalendarItem) {
-            calendarItemClickListener.onItemClick(item)
-        }
-
         fun bind(item: CalendarItem) {
             with(binding) {
                 this.item = item
-                itemCalendarViewTouch.setOnClickListener { onClick(item) }
-                itemCalendarRvEvents.itemAnimator = null
+                itemCalendarViewTouch.setOnClickListener {
+                    calendarItemClickListener.onItemClick(item)
+                }
                 if (itemCalendarRvEvents.adapter == null) {
                     itemCalendarRvEvents.adapter = EventBarAdapter()
                 }
+                itemCalendarRvEvents.itemAnimator = null
             }
         }
     }

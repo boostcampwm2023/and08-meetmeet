@@ -41,7 +41,6 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         with(binding) {
             vm = viewModel
             calendarRvCalendar.adapter = CalendarAdapter(viewModel)
-            calendarRvCalendar.itemAnimator = null
         }
     }
 
