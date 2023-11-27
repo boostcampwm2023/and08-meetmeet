@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.presentation.calendar
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.Dimension
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,9 @@ class EventBarAdapter : ListAdapter<EventBar?, EventBarAdapter.EventBarViewHolde
             false
         )
         binding.root.layoutParams.height = (parent.measuredHeight / 5)
+        binding.itemEventBarTvHidden.setTextSize(
+            Dimension.PX, parent.measuredHeight.toFloat() / 20
+        )
         return EventBarViewHolder(binding)
     }
 
@@ -30,8 +34,11 @@ class EventBarAdapter : ListAdapter<EventBar?, EventBarAdapter.EventBarViewHolde
         private val binding: ItemEventBarBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: EventBar?) {
-            item?.let {
-                binding.item = item
+            item ?: return
+            binding.item = item
+            if (item.hiddenCount > 0) {
+                binding.itemEventBarTvHidden.text = "+${item.hiddenCount}"
+
             }
         }
     }

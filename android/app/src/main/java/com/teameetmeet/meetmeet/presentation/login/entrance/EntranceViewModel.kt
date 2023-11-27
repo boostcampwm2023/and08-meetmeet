@@ -1,12 +1,8 @@
 package com.teameetmeet.meetmeet.presentation.login.entrance
 
-import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.FirstSignIn
@@ -22,9 +18,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EntranceViewModel @Inject constructor(
-    private val application: Application,
     private val loginRepository: LoginRepository
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val _kakaoLoginEvent = MutableSharedFlow<KakaoLoginEvent>(
         extraBufferCapacity = 1,
@@ -32,51 +27,8 @@ class EntranceViewModel @Inject constructor(
     )
     val kakaoLoginEvent: SharedFlow<KakaoLoginEvent> = _kakaoLoginEvent.asSharedFlow()
 
-    private val kakaoLoginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            _kakaoLoginEvent.tryEmit(
-                KakaoLoginEvent.ShowMessage(
-                    R.string.login_kakao_message_kakao_login_fail,
-                    error.message.orEmpty()
-                )
-            )
-        } else if (token != null) {
-            loginApp()
-        }
-    }
 
-    fun loginKakao() {
-        viewModelScope.launch {
-            if (UserApiClient.instance.isKakaoTalkLoginAvailable(application)) {
-                UserApiClient.instance.loginWithKakaoTalk(application) { token, error ->
-                    if (error != null) {
-                        _kakaoLoginEvent.tryEmit(
-                            KakaoLoginEvent.ShowMessage(
-                                R.string.login_kakao_message_kakao_login_fail,
-                                error.message.orEmpty()
-                            )
-                        )
-                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                            return@loginWithKakaoTalk
-                        }
-                        UserApiClient.instance.loginWithKakaoAccount(
-                            application,
-                            callback = kakaoLoginCallback
-                        )
-                    } else if (token != null) {
-                        loginApp()
-                    }
-                }
-            } else {
-                UserApiClient.instance.loginWithKakaoAccount(
-                    application,
-                    callback = kakaoLoginCallback
-                )
-            }
-        }
-    }
-
-    private fun loginApp() {
+    fun loginApp() {
         UserApiClient.instance.me { user, error ->
             viewModelScope.launch {
                 if (error != null) {
