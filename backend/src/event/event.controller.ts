@@ -29,6 +29,20 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @UseGuards(JwtAuthGuard)
+  @Get('/search')
+  @ApiOperation({
+    summary: '일정 검색 API',
+    description: '',
+  })
+  async searchEvent(
+    @GetUser() user: User,
+    @Query() searchEventDto: SearchEventDto,
+  ) {
+    console.log(searchEventDto);
+    return await this.eventService.searchEvent(user, searchEventDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({
     summary: '일정 조회 API',
@@ -122,18 +136,5 @@ export class EventController {
       updateScheduleDto,
       isAll,
     );
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('/search')
-  @ApiOperation({
-    summary: '일정 검색 API',
-    description: '',
-  })
-  async searchEvent(
-    @GetUser() user: User,
-    @Query() searchEventDto: SearchEventDto,
-  ) {
-    return await this.eventService.searchEvent(user, searchEventDto);
   }
 }
