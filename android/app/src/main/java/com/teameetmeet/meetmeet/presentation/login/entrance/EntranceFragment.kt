@@ -105,6 +105,7 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
 
     private fun navigateToHomeActivity() {
         findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToHomeActivity())
+        requireActivity().finishAffinity()
     }
 
     private fun navigateToProfileSettingFragment() {
