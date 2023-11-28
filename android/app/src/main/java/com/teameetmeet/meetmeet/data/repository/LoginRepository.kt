@@ -1,7 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
 import android.util.Log
-import com.teameetmeet.meetmeet.data.ExpiredTokenException
 import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
@@ -23,15 +22,11 @@ class LoginRepository @Inject constructor(
                 val response =
                     loginApi.loginKakao(kakaoLoginRequest = KakaoLoginRequest(id.toString()))
                 storeAppToken(response.accessToken, response.refreshToken)
-            }.catch {
-                Log.d("test", "$it")
-                when (it) {
-                    is FirstSignIn -> {
-                        storeAppToken(it.accessToken, it.responseToken)
-                    }
+                if(response.isNewUser) {
+                    throw FirstSignIn()
                 }
+            }.catch {
                 throw it
-                //TODO("추가 예외처리 필요")
             }
     }
 
@@ -43,21 +38,6 @@ class LoginRepository @Inject constructor(
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
                 throw it
-            }
-    }
-
-
-    fun autoLoginApp(token: String): Flow<Unit> {
-        return flowOf(true)
-            .map {
-                val response = loginApi.autoLoginApp(accessToken = token)
-                Log.d("test", response.toString())
-                if (response.isVerified.not()) {
-                    throw ExpiredTokenException()
-                }
-            }.catch {
-                throw it
-                //TODO("추가 예외처리 필요")
             }
     }
 

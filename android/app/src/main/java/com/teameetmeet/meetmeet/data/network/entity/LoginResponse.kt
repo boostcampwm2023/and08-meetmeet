@@ -8,5 +8,7 @@ data class LoginResponse(
     @Json(name = "accessToken")
     val accessToken: String,
     @Json(name = "refreshToken")
-    val refreshToken: String
+    val refreshToken: String,
+    @Json(name = "isNewUser")
+    val isNewUser: Boolean = false
 )

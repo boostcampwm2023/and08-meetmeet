@@ -1,6 +1,6 @@
 package com.teameetmeet.meetmeet.data.network.api
 
-import com.teameetmeet.meetmeet.data.network.entity.AccessTokenResult
+import com.teameetmeet.meetmeet.data.network.entity.AccessTokenRequest
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.LoginResponse
@@ -18,8 +18,6 @@ interface LoginApi {
     @POST("/auth/login")
     suspend fun loginSelf(@Body selfSignRequest: SelfSignRequest): LoginResponse
 
-    @GET("auth/check/token")
-    suspend fun autoLoginApp(@Query("token") accessToken: String): AccessTokenResult
 
     @GET("auth/check/email")
     suspend fun checkEmailDuplication(@Query("email") email: String): AvailableResponse
