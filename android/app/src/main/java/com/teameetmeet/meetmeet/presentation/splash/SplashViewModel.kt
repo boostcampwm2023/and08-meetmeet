@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,7 +65,10 @@ class SplashViewModel @Inject constructor(
     private fun autoLoginApp(token: String) {
         viewModelScope.launch {
             tokenRepository.autoLoginApp(token).catch {
-                _event.tryEmit(SplashEvent.NavigateToLoginActivity)
+                when(it) {
+                    is UnknownHostException -> _event.tryEmit(SplashEvent.NavigateToHomeActivity)
+                    else -> _event.tryEmit(SplashEvent.NavigateToLoginActivity)
+                }
             }.collect {
                 _event.tryEmit(SplashEvent.NavigateToHomeActivity)
             }
