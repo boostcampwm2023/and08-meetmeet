@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
+import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import kotlin.random.Random
 
 class FakeUserApi : UserApi {
@@ -20,5 +21,9 @@ class FakeUserApi : UserApi {
             throw Exception()
         }
         return AvailableResponse(true)
+    }
+
+    override suspend fun patchPassword(passwordChangeRequest: PasswordChangeRequest): UserProfile {
+        TODO("Not yet implemented")
     }
 }
