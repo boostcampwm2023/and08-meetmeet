@@ -45,7 +45,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
             searchEventRv.adapter =
                 SearchResultEventAdapter(this@SearchEventFragment, this@SearchEventFragment)
             searchEventIbNavPre.setOnClickListener {
-                findNavController().popBackStack()
+                requireActivity().finish()
             }
         }
     }
