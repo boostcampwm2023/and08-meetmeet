@@ -2,6 +2,8 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import kotlin.random.Random
 
 class FakeUserApi : UserApi {
@@ -20,5 +22,12 @@ class FakeUserApi : UserApi {
             throw Exception()
         }
         return AvailableResponse(true)
+    }
+
+    override suspend fun updateUserProfile(
+        nickname: RequestBody,
+        profile: MultipartBody.Part?
+    ): UserProfile {
+        TODO("Not yet implemented")
     }
 }
