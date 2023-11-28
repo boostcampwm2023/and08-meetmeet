@@ -10,8 +10,8 @@ import retrofit2.http.Path
 
 interface EventStoryApi {
 
-    @GET("/{id}/feeds")
-    suspend fun getStory(@Path("id") id: String): EventStory
+    @GET("/event/{event_id}/feeds")
+    suspend fun getStory(@Path("event_id") id: String): EventStory
 
     @POST()
     suspend fun editNotification(@Body singleStringRequest: KakaoLoginRequest)

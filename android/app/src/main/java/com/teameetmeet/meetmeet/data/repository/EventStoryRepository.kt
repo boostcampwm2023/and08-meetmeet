@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
@@ -8,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class EventStoryRepository @Inject constructor(
@@ -20,8 +22,16 @@ class EventStoryRepository @Inject constructor(
             .map {
                eventStoryApi.getStory(id.toString())
             }.catch {
-                throw it
-                //TODO("예외 처리 필요")
+                when(it) {
+                    is HttpException -> {
+                        if(it.code() == 418) {
+                            throw ExpiredRefreshTokenException()
+                        } else {
+                            throw it
+                        }
+                    }
+                    else -> throw it
+                }
             }
     }
 

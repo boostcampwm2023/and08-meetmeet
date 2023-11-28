@@ -144,5 +144,6 @@
     <string name="story_detail_title_event_repeat_end_date">반복 종료일</string>
     <string name="story_detail_message_repeat_end_date_fail">반복 일정이 일정 종료 시간보다 늦게 설정될 수 없습니다.</string>
     <string name="story_detail_description_event_repeat_end_date">일정 종료 날짜 지정</string>
+    <string name="common_message_no_internet">인터넷을 연결하고 다시 시도해주세요.</string>
 
 </resources>

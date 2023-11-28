@@ -30,9 +30,7 @@ class FakeEventStoryApi : EventStoryApi {
             announcement = "다들 11시 반에 광명역에서 집합입니다~",
             authority = "OWNER",
             repeatPolicyId = null,
-            isJoin = true,
-            isVisible = true,
-            memo = "9시 반 기차로 서대구역에서 출발해야함.",
+            isJoin = 1,
             feeds = listOf(
                 Feed(1, "https://github.com/agfalcon.png", "this is memo"),
                 Feed(2, null, "this is memo"),

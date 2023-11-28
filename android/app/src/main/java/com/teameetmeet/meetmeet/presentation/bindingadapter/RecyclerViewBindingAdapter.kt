@@ -15,15 +15,17 @@ import com.teameetmeet.meetmeet.util.convertDpToPx
 
 
 @BindingAdapter("sub_list")
-fun <T, VH : RecyclerView.ViewHolder> RecyclerView.bindAdapter(listData: List<T>) {
+fun <T, VH : RecyclerView.ViewHolder> RecyclerView.bindAdapter(listData: List<T>?) {
+    listData?: return
     (this.adapter as ListAdapter<T, VH>).submitList(listData)
 }
 
 @BindingAdapter("sub_list", "limit")
 fun <T, VH : RecyclerView.ViewHolder> RecyclerView.bindAdapterWithLimit(
-    listData: List<T>,
+    listData: List<T>?,
     limit: Int = 0
 ) {
+    listData ?: return
     val newLimit = if (limit > listData.size) listData.size else limit
     val list = if (newLimit == 0) listData else listData.subList(0, newLimit)
     (this.adapter as ListAdapter<T, VH>).submitList(list)

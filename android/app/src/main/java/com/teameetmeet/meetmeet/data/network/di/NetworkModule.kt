@@ -129,5 +129,7 @@ class NetworkModule {
 
     @Singleton
     @Provides
-    fun provideEventStoryApi(): EventStoryApi = FakeEventStoryApi()
+    fun provideEventStoryApi(@Named("retrofitWithAuth") retrofit: Retrofit): EventStoryApi
+    = retrofit.create(EventStoryApi::class.java)
+
 }
