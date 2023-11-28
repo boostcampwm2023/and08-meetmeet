@@ -1,7 +1,5 @@
 package com.teameetmeet.meetmeet.util
 
-import android.util.Log
-import java.text.DateFormat
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime

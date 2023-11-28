@@ -19,17 +19,22 @@ import javax.inject.Inject
 class SearchEventViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository
 ) : ViewModel() {
-    private val _searchKeyword: MutableStateFlow<String> = MutableStateFlow("")
+    private val _searchKeyword = MutableStateFlow<String>("")
     val searchKeyword: StateFlow<String> = _searchKeyword
 
-    private val _searchDateRange: MutableStateFlow<Pair<Long, Long>> = MutableStateFlow(Pair(0, 0))
+    private val _searchDateRange = MutableStateFlow<Pair<Long, Long>>(Pair(0, 0))
     val searchDateRange: StateFlow<Pair<Long, Long>> = _searchDateRange
 
-    private val _searchDateRangeText: MutableStateFlow<String> = MutableStateFlow("")
+    private val _searchDateRangeText = MutableStateFlow<String>("")
     val searchDateRangeText: StateFlow<String> = _searchDateRangeText
 
-    val setSearchKeyword: (String) -> Unit = { keyword ->
-        _searchKeyword.update { keyword }
+    private val _searchResultEvents = MutableStateFlow<List<EventResponse>>(emptyList())
+    val searchResultEvents: StateFlow<List<EventResponse>> = _searchResultEvents
+
+    fun setSearchKeyword(charSequence: CharSequence) {
+        _searchKeyword.update {
+            charSequence.toString()
+        }
     }
 
     fun setSearchDateRange(pair: Pair<Long, Long>) {

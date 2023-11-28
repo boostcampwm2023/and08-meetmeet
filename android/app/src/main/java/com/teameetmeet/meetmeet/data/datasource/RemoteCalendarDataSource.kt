@@ -17,6 +17,7 @@ class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi)
                 result
             }
             .catch {
+                throw it
                 //todo: 예외 처리
             }
     }
@@ -29,6 +30,7 @@ class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi)
         return flowOf(true)
             .map { api.searchEvents(keyword, startDate, endDate).events }
             .catch {
+                throw it
                 //todo: 예외 처리
             }
     }
