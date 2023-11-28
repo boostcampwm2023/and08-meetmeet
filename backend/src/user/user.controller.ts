@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Patch,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -85,5 +86,15 @@ export class UserController {
   })
   deleteUser(@GetUser() user: User) {
     return this.userService.deleteUser(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('search')
+  @ApiOperation({
+    summary: '사용자 검색 API',
+    description: 'parameter의 nickname으로 검색합니다.',
+  })
+  searchUser(@GetUser() user: User, @Query('nickname') nickname: string) {
+    return this.userService.searchUser(user, nickname);
   }
 }

@@ -139,6 +139,20 @@ export class UserService {
     return result;
   }
 
+  async searchUser(user: User, nickname: string) {
+    const searchResult = await this.userRepository.findOne({
+      where: { nickname: nickname },
+    });
+    if (!searchResult) {
+      throw new BadRequestException('존재하지 않는 유저입니다.');
+    }
+    return {
+      id: searchResult.id,
+      nickname: searchResult.nickname,
+      profile: searchResult.profileId,
+    };
+  }
+
   async findUserWithPasswordByEmail(email: string) {
     return await this.userRepository.findOne({
       where: { email: email },
