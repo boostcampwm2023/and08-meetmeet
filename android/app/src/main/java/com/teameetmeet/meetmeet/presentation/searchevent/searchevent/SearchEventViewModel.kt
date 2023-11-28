@@ -1,16 +1,22 @@
-package com.teameetmeet.meetmeet.presentation.searchevent
+package com.teameetmeet.meetmeet.presentation.searchevent.searchevent
 
 import androidx.core.util.Pair
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
+import com.teameetmeet.meetmeet.util.DateTimeFormat
 import com.teameetmeet.meetmeet.util.getLocalDate
+import com.teameetmeet.meetmeet.util.toDateString
 import com.teameetmeet.meetmeet.util.toEndLong
 import com.teameetmeet.meetmeet.util.toLocalDate
 import com.teameetmeet.meetmeet.util.toStartLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneId
 import javax.inject.Inject
@@ -43,6 +49,28 @@ class SearchEventViewModel @Inject constructor(
             "${pair.first.toLocalDate()} ~ " +
                     "${pair.second.toLocalDate()}"
         }
+        searchEvents()
+    }
+
+    fun searchEvents() {
+        val startDate = _searchDateRange.value.first.toDateString(
+            DateTimeFormat.SERVER_DATE,
+            ZoneId.of("UTC")
+        )
+        val endDate = _searchDateRange.value.second.toDateString(
+            DateTimeFormat.SERVER_DATE,
+            ZoneId.of("UTC")
+        )
+
+        viewModelScope.launch {
+            calendarRepository.searchEvents(
+                searchKeyword.value.ifBlank { null },
+                startDate,
+                endDate
+            ).collectLatest { events ->
+                _searchResultEvents.update { events }
+            }
+        }
     }
 
     private fun setSearchDateRangeTwoWeeks() {
@@ -67,8 +95,8 @@ class SearchEventViewModel @Inject constructor(
     private fun setSearchDateRangeSixMonths() {
         setSearchDateRange(
             Pair(
-                getLocalDate().minusMonths(3).toStartLong(),
-                getLocalDate().plusMonths(3).toEndLong(),
+                getLocalDate().minusDays(89).toStartLong(),
+                getLocalDate().plusDays(90).toStartLong(),
             )
         )
     }
