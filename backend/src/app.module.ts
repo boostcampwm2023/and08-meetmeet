@@ -1,23 +1,23 @@
-import {Module} from '@nestjs/common';
-import {ConfigModule, ConfigService} from '@nestjs/config';
-import {TypeOrmModule} from '@nestjs/typeorm';
-import {SnakeNamingStrategy} from 'typeorm-naming-strategies';
-import {AppController} from './app.controller';
-import {AppService} from './app.service';
-import {CalendarModule} from './calendar/calendar.module';
-import {EventModule} from './event/event.module';
-import {DetailModule} from './detail/detail.module';
-import {EventMemberModule} from './event-member/event-member.module';
-import {InviteModule} from './invite/invite.module';
-import {CommentModule} from './comment/comment.module';
-import {GroupModule} from './group/group.module';
-import {FollowModule} from './follow/follow.module';
-import {AuthModule} from './auth/auth.module';
-import {UserModule} from './user/user.module';
-import {ContentModule} from './content/content.module';
-import {FeedModule} from './feed/feed.module';
-import {SlackInterceptor} from './log/slack.interceptor';
-import {APP_INTERCEPTOR} from '@nestjs/core';
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { CalendarModule } from './calendar/calendar.module';
+import { EventModule } from './event/event.module';
+import { DetailModule } from './detail/detail.module';
+import { EventMemberModule } from './event-member/event-member.module';
+import { InviteModule } from './invite/invite.module';
+import { CommentModule } from './comment/comment.module';
+import { GroupModule } from './group/group.module';
+import { FollowModule } from './follow/follow.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { ContentModule } from './content/content.module';
+import { FeedModule } from './feed/feed.module';
+import { SlackInterceptor } from './log/slack.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [

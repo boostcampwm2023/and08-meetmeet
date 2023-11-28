@@ -21,7 +21,10 @@ export class SlackInterceptor implements NestInterceptor {
 
     return next.handle().pipe(
       catchError((error) => {
-        const statusCode = error?.response?.statusCode || 500;
+        let statusCode = error?.response?.statusCode || 500;
+        if (error?.status !== undefined) {
+          statusCode = error.status;
+        }
         if (statusCode !== 418 && statusCode >= 500) {
           this.sendSlackNotification(error, method, url);
         }

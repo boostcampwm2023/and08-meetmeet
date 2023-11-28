@@ -1,16 +1,21 @@
-import {BadRequestException, HttpException, HttpStatus, Injectable,} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
-import {Event} from './entities/event.entity';
-import {User} from '../user/entities/user.entity';
-import {CreateScheduleDto, RepeatTerm} from './dto/createSchedule.dto';
-import {CalendarService} from '../calendar/calendar.service';
-import {RepeatPolicy} from './entities/repeatPolicy.entity';
-import {DetailService} from '../detail/detail.service';
-import {EventMemberService} from '../event-member/event-member.service';
-import {Calendar} from '../calendar/entities/calendar.entity';
-import {SearchEventDto} from './dto/searchEvent.dto';
-import {UpdateScheduleDto} from './dto/updateSchedule.dto';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Event } from './entities/event.entity';
+import { User } from '../user/entities/user.entity';
+import { CreateScheduleDto, RepeatTerm } from './dto/createSchedule.dto';
+import { CalendarService } from '../calendar/calendar.service';
+import { RepeatPolicy } from './entities/repeatPolicy.entity';
+import { DetailService } from '../detail/detail.service';
+import { EventMemberService } from '../event-member/event-member.service';
+import { Calendar } from '../calendar/entities/calendar.entity';
+import { SearchEventDto } from './dto/searchEvent.dto';
+import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 
 @Injectable()
 export class EventService {

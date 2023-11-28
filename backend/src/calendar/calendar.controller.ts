@@ -1,5 +1,5 @@
-import {Controller} from '@nestjs/common';
-import {CalendarService} from './calendar.service';
+import { Controller } from '@nestjs/common';
+import { CalendarService } from './calendar.service';
 
 @Controller('calendar')
 export class CalendarController {

@@ -1,11 +1,19 @@
-import {Body, Controller, Get, Post, Query, UseGuards, UseInterceptors,} from '@nestjs/common';
-import {AuthGuard} from '@nestjs/passport';
-import {ApiBody, ApiOperation, ApiTags} from '@nestjs/swagger';
-import {User} from 'src/user/entities/user.entity';
-import {AuthService} from './auth.service';
-import {AuthUserDto} from './dto/auth-user.dto';
-import {GetUser} from './get-user.decorator';
-import {SlackInterceptor} from '../log/slack.interceptor';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { User } from 'src/user/entities/user.entity';
+import { AuthService } from './auth.service';
+import { AuthUserDto } from './dto/auth-user.dto';
+import { GetUser } from './get-user.decorator';
+import { SlackInterceptor } from '../log/slack.interceptor';
 
 @ApiTags('auth')
 @Controller('auth')

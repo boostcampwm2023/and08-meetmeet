@@ -1,5 +1,11 @@
-import {IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength,} from 'class-validator';
-import {ApiProperty} from '@nestjs/swagger';
+import {
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class SearchEventDto {
   @ApiProperty({ name: 'keyword', example: 'keyword', required: false })
