@@ -28,6 +28,11 @@ class SettingHomeFragment :
         collectViewModelEvent()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchUserProfile()
+    }
+
     private fun setBinding() {
         binding.vm = viewModel
     }
