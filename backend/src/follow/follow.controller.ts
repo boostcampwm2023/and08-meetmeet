@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {ApiBearerAuth, ApiBody, ApiOperation, ApiTags} from '@nestjs/swagger';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { FollowService } from './follow.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -33,6 +33,16 @@ export class FollowController {
   @Post('')
   @ApiOperation({
     summary: '팔로우 API',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: {
+          type: 'number',
+        },
+      },
+    },
   })
   async follow(@GetUser() user: User, @Body() userId: number) {
     return await this.followService.follow(user, userId);
