@@ -23,10 +23,6 @@ class FakeLoginApi : LoginApi {
         return LoginResponse("accessToken", "refreshToken")
     }
 
-    override suspend fun checkValidAccessToken(accessTokenRequest: AccessTokenRequest) {
-        Unit
-    }
-
     override suspend fun checkEmailDuplication(email: String): AvailableResponse {
         if (Random.nextInt() % 2 == 0) {
             throw Exception()

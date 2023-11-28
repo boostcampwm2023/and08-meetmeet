@@ -18,8 +18,6 @@ interface LoginApi {
     @POST("/auth/login")
     suspend fun loginSelf(@Body selfSignRequest: SelfSignRequest): LoginResponse
 
-    @POST("auth/check/token")
-    suspend fun checkValidAccessToken(@Body accessTokenRequest: AccessTokenRequest)
 
     @GET("auth/check/email")
     suspend fun checkEmailDuplication(@Query("email") email: String): AvailableResponse

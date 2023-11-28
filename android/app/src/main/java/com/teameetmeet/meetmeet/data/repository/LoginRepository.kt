@@ -1,18 +1,15 @@
 package com.teameetmeet.meetmeet.data.repository
 
 import android.util.Log
-import com.teameetmeet.meetmeet.data.ExpiredTokenException
 import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
-import com.teameetmeet.meetmeet.data.network.entity.AccessTokenRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(
@@ -45,21 +42,6 @@ class LoginRepository @Inject constructor(
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
                 throw it
-            }
-    }
-
-
-    fun autoLoginApp(token: String): Flow<Unit> {
-        return flowOf(true)
-            .map {
-                loginApi.checkValidAccessToken(AccessTokenRequest(token))
-            }.catch {
-                when {
-                    this is HttpException && code() == 418 -> {
-
-                    }
-                    else -> throw it
-                }
             }
     }
 
