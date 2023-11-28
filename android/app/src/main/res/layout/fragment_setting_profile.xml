@@ -71,14 +71,14 @@
             style="@style/caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginTop="12dp"
             android:onClick="@{() -> vm.updateEmptyUserProfileImage()}"
-            android:text="@string/setting_profile_delete"
+            android:text="@string/setting_profile_set_default"
             android:textColor="@color/grey2"
             android:visibility="@{vm.uiState.profileImage != null? View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toBottomOf="@id/setting_profile_tv_profile_title"
-            app:layout_constraintStart_toEndOf="@id/setting_profile_tv_profile_title"
-            app:layout_constraintTop_toTopOf="@id/setting_profile_tv_profile_title" />
+            app:layout_constraintEnd_toEndOf="@id/setting_profile_tv_profile_title"
+            app:layout_constraintStart_toStartOf="@id/setting_profile_tv_profile_title"
+            app:layout_constraintTop_toBottomOf="@id/setting_profile_tv_profile_title" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/setting_profile_tf_nickname"
