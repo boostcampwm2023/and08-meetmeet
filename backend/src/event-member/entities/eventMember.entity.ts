@@ -10,10 +10,14 @@ export class EventMember extends commonEntity {
   @ManyToOne(() => Event, (event) => event.eventMembers, { nullable: false })
   event: Event;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false, eager: true })
   user: User;
 
-  @OneToOne(() => Detail, { nullable: false })
+  @OneToOne(() => Detail, {
+    nullable: false,
+    cascade: ['soft-remove'],
+    eager: true,
+  })
   @JoinColumn()
   detail: Detail;
 

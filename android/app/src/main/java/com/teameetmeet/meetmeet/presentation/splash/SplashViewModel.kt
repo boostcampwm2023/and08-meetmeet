@@ -1,11 +1,10 @@
 package com.teameetmeet.meetmeet.presentation.splash
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.user.UserApiClient
-import com.teameetmeet.meetmeet.data.repository.LoginRepository
+import com.teameetmeet.meetmeet.data.repository.TokenRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -19,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val loginRepository: LoginRepository
+    private val tokenRepository: TokenRepository
 ) : ViewModel() {
 
     private val _event = MutableSharedFlow<SplashEvent>(
@@ -64,7 +63,7 @@ class SplashViewModel @Inject constructor(
 
     private fun autoLoginApp(token: String) {
         viewModelScope.launch {
-            loginRepository.autoLoginApp(token).catch {
+            tokenRepository.autoLoginApp(token).catch {
                 _event.tryEmit(SplashEvent.NavigateToLoginActivity)
             }.collect {
                 _event.tryEmit(SplashEvent.NavigateToHomeActivity)

@@ -16,6 +16,8 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { ContentModule } from './content/content.module';
 import { FeedModule } from './feed/feed.module';
+import { SlackInterceptor } from './log/slack.interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -51,6 +53,12 @@ import { FeedModule } from './feed/feed.module';
     FeedModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SlackInterceptor,
+    },
+  ],
 })
 export class AppModule {}
