@@ -1,7 +1,6 @@
 package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
-import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.network.entity.Events
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -20,7 +19,7 @@ interface CalendarApi {
         @Query("keyword") keyword: String?,
         @Query("startDate") startDate: String,
         @Query("endDate") endDate: String,
-    ): List<EventResponse>
+    ): Events
 
     @POST("event")
     suspend fun addEvent(
