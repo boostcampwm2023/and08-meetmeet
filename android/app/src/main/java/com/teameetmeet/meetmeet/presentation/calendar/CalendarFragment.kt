@@ -41,7 +41,6 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         with(binding) {
             vm = viewModel
             calendarRvCalendar.adapter = CalendarAdapter(viewModel)
-            calendarRvCalendar.itemAnimator = null
         }
     }
 
@@ -66,7 +65,11 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
 
     private fun setClickListener() {
         binding.fabAddEvent.setOnClickListener {
-            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToAddEventActivity())
+            viewModel.currentDate.value.let {
+                findNavController().navigate(
+                    CalendarFragmentDirections.actionCalendarFragmentToAddEventActivity(it)
+                )
+            }
         }
 
         binding.calendarClProfile.setOnClickListener {

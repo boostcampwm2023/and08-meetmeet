@@ -4,7 +4,6 @@ import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.network.api.UserApi
-import com.teameetmeet.meetmeet.data.network.entity.NickNameDuplicationCheckRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -56,19 +55,28 @@ class UserRepository @Inject constructor(
                 dataStore.deleteAppToken()
             }.catch {
                 throw it
-                //TODO("예외 처리 필요")
             }
 
     }
 
-    fun checkNickNameDuplication(nickname: String): Flow<Unit> {
+    fun deleteUser(): Flow<Unit> {
         return flowOf(true)
             .map {
-                val request = NickNameDuplicationCheckRequest(nickname)
-                val response = userApi.checkNickNameDuplication(request)
+                userApi.deleteUser()
+                dataStore.deleteUserProfile()
+                dataStore.deleteAppToken()
             }.catch {
                 throw it
-                //Todo 추가 예외 처리 필요
+            }
+    }
+
+    fun checkNickNameDuplication(nickname: String): Flow<Boolean> {
+        return flowOf(true)
+            .map {
+                val response = userApi.checkNickNameDuplication(nickname)
+                response.isAvailable
+            }.catch {
+                throw it
             }
     }
 }

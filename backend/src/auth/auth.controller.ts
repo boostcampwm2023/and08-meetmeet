@@ -86,8 +86,8 @@ export class AuthController {
       },
     },
   })
-  checkAccessToken(@Body('token') token: string) {
-    return this.authService.verifyToken(token);
+  checkAccessToken(@Body('accessToken') token: string) {
+    return this.authService.verifyAccessToken(token);
   }
 
   @Get('check/email')

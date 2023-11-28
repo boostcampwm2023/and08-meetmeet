@@ -31,6 +31,9 @@
         <action
             android:id="@+id/action_setting_account_fragment_to_setting_password_change_fragment"
             app:destination="@id/setting_password_change_fragment" />
+        <action
+            android:id="@+id/action_setting_account_fragment_to_login_activity"
+            app:destination="@id/login_activity" />
     </fragment>
     <fragment
         android:id="@+id/setting_profile_fragment"
@@ -50,5 +53,6 @@
     <activity
         android:id="@+id/login_activity"
         android:name="com.teameetmeet.meetmeet.presentation.login.LoginActivity"
-        android:label="login_activity" />
+        android:label="login_activity"
+        tools:layout="@layout/activity_login" />
 </navigation>

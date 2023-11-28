@@ -1,8 +1,7 @@
 package com.teameetmeet.meetmeet.data.network.api
 
-import com.teameetmeet.meetmeet.data.network.entity.AccessTokenResult
+import com.teameetmeet.meetmeet.data.network.entity.AccessTokenRequest
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
-import com.teameetmeet.meetmeet.data.network.entity.EmailDuplicationCheckRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.LoginResponse
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
@@ -17,14 +16,12 @@ interface LoginApi {
     suspend fun loginKakao(@Body kakaoLoginRequest: KakaoLoginRequest): LoginResponse
 
     @POST("/auth/login")
-    fun loginSelf(@Body selfSignRequest: SelfSignRequest): LoginResponse
+    suspend fun loginSelf(@Body selfSignRequest: SelfSignRequest): LoginResponse
 
-    @GET("auth/check/token")
-    suspend fun autoLoginApp(@Query("token") accessToken: String): AccessTokenResult
 
-    @POST()
-    fun checkEmailDuplication(@Body emailDuplicationCheckRequest: EmailDuplicationCheckRequest): AvailableResponse
+    @GET("auth/check/email")
+    suspend fun checkEmailDuplication(@Query("email") email: String): AvailableResponse
 
     @POST("/auth/register")
-    fun signUp(@Body selfSignRequest: SelfSignRequest): LoginResponse
+    suspend fun signUp(@Body selfSignRequest: SelfSignRequest)
 }

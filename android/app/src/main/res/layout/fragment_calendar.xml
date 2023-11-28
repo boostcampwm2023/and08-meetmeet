@@ -17,9 +17,11 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/calendar_cl_profile"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:padding="16dp"
+            app:layout_constraintEnd_toStartOf="@id/calendar_sp_view_mode"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -42,15 +44,18 @@
 
             <TextView
                 android:id="@+id/calendar_tv_nickname"
-                style="@style/caption"
-                android:layout_width="wrap_content"
+                style="@style/small"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@{vm.userNickName}"
                 app:layout_constraintBottom_toBottomOf="@id/calendar_cv_profile"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/calendar_cv_profile"
                 app:layout_constraintTop_toTopOf="@id/calendar_cv_profile"
-                tools:text="밋밋최고" />
+                tools:text="밋밋최고밋밋최고밋밋최고" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -71,7 +76,6 @@
             android:id="@+id/calendar_fl_notification"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
             app:layout_constraintEnd_toStartOf="@id/calendar_ib_search"
@@ -84,6 +88,7 @@
                 android:layout_height="20dp"
                 android:background="@null"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_notification" />
 
         </FrameLayout>
@@ -109,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:background="@null"
-            android:onClick="@{() -> vm.forwardMonth()}"
+            android:onClick="@{() -> vm.moveMonth(-1l)}"
             android:src="@drawable/ic_nav_pre"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_date"
             app:layout_constraintEnd_toStartOf="@id/calendar_tv_date"
@@ -123,7 +128,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_cl_profile"
-            app:local_date="@{vm.currentDate.date}"
+            app:local_date="@{vm.currentDate}"
             tools:text="2023년 11월" />
 
         <ImageButton
@@ -132,7 +137,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:background="@null"
-            android:onClick="@{() -> vm.backwardMonth()}"
+            android:onClick="@{() -> vm.moveMonth(1l)}"
             android:src="@drawable/ic_nav_next"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_date"
             app:layout_constraintStart_toEndOf="@id/calendar_tv_date"
@@ -221,10 +226,10 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/calendar_rv_calendar"
+            sub_list="@{vm.daysInMonth}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
-            sub_list="@{vm.daysInMonth}"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

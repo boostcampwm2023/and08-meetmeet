@@ -7,6 +7,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.navArgs
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -20,6 +21,7 @@ import com.teameetmeet.meetmeet.util.toLocalDateTime
 import com.teameetmeet.meetmeet.util.toLong
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.ZoneId
 
 @AndroidEntryPoint
@@ -27,16 +29,24 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
 
     private val viewModel: AddEventViewModel by viewModels()
 
+    private val args: AddEventActivityArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding.vm = viewModel
 
+        initDateTime(args.date)
         setTopAppBar()
         setDateTimePicker()
         setNotificationOptions()
         setRepeatOptions()
         collectViewModelEvent()
+    }
+
+    private fun initDateTime(date: LocalDate) {
+        viewModel.setEventDate(date.atStartOfDay(), date.atStartOfDay())
+        viewModel.setRepeatEndDate(date.atStartOfDay().plusYears(1))
     }
 
     private fun setTopAppBar() {

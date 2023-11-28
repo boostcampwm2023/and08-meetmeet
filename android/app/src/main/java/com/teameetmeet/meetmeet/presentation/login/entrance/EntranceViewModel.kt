@@ -39,7 +39,6 @@ class EntranceViewModel @Inject constructor(
                         )
                     )
                 } else if (user?.id != null) {
-                    Log.i("KAKAO", "사용자 정보 요청 성공\n회원번호: ${user.id}")
                     loginRepository.loginKakao(user.id!!).catch { exception ->
                         when(exception) {
                             is FirstSignIn -> _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToProfileSettingFragment)

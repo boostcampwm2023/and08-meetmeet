@@ -34,12 +34,12 @@ class EventBarAdapter : ListAdapter<EventBar?, EventBarAdapter.EventBarViewHolde
         private val binding: ItemEventBarBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: EventBar?) {
-            item ?: return
             binding.item = item
-            if (item.hiddenCount > 0) {
-                binding.itemEventBarTvHidden.text = "+${item.hiddenCount}"
-
-            }
+            binding.itemEventBarTvHidden.text =
+                with(item) {
+                    if (this != null && hiddenCount > 0) "+$hiddenCount"
+                    else ""
+                }
         }
     }
 

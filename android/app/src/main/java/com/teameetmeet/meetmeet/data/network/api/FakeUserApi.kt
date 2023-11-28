@@ -2,7 +2,6 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
-import com.teameetmeet.meetmeet.data.network.entity.NickNameDuplicationCheckRequest
 import kotlin.random.Random
 
 class FakeUserApi : UserApi {
@@ -14,7 +13,9 @@ class FakeUserApi : UserApi {
         )
     }
 
-    override fun checkNickNameDuplication(nickNameDuplicationCheckRequest: NickNameDuplicationCheckRequest): AvailableResponse {
+    override suspend fun deleteUser() {}
+
+    override suspend fun checkNickNameDuplication(nickname: String): AvailableResponse {
         if (Random.nextInt() % 2 == 0) {
             throw Exception()
         }
