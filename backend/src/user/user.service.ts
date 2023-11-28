@@ -89,6 +89,12 @@ export class UserService {
     updateUserDto: UpdateUserInfoDto,
     profileImage: Express.Multer.File,
   ) {
+    if (
+      updateUserDto.nickname &&
+      (await this.findUserByNickname(updateUserDto.nickname))
+    ) {
+      throw new BadRequestException('중복된 닉네임입니다.');
+    }
     if (profileImage) {
       const userProfile = await this.updateProfileImage(
         user.profileId,
@@ -96,13 +102,10 @@ export class UserService {
       );
 
       user.profile = userProfile;
+      user.profileId = userProfile.id;
     }
 
-    await this.userRepository.update(user.id, {
-      ...updateUserDto,
-      profileId: user.profile?.id ?? null,
-    });
-    return await this.userRepository.findOne({ where: { id: user.id } });
+    await this.userRepository.update(user.id, updateUserDto);
   }
 
   async updateProfileImage(
@@ -110,7 +113,7 @@ export class UserService {
     profileImage: Express.Multer.File,
   ) {
     if (!profileId) {
-      return await this.contentService.createContent(profileImage);
+      return await this.contentService.createContent(profileImage, 'user');
     }
 
     const result = await this.contentService.updateContent(
