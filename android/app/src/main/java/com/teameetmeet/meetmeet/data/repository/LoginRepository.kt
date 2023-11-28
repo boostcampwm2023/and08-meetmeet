@@ -1,7 +1,5 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import android.util.Log
-import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
@@ -16,15 +14,13 @@ class LoginRepository @Inject constructor(
     private val loginApi: LoginApi,
     private val dataStore: DataStoreHelper
 ) {
-    fun loginKakao(id: Long): Flow<Unit> {
+    fun loginKakao(id: Long): Flow<Boolean> {
         return flowOf(true)
             .map {
                 val response =
                     loginApi.loginKakao(kakaoLoginRequest = KakaoLoginRequest(id.toString()))
                 storeAppToken(response.accessToken, response.refreshToken)
-                if(response.isNewUser) {
-                    throw FirstSignIn()
-                }
+                response.isNewUser
             }.catch {
                 throw it
             }

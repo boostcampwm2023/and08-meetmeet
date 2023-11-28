@@ -1,11 +1,9 @@
 package com.teameetmeet.meetmeet.presentation.login.entrance
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
-import com.teameetmeet.meetmeet.data.FirstSignIn
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -41,7 +39,6 @@ class EntranceViewModel @Inject constructor(
                 } else if (user?.id != null) {
                     loginRepository.loginKakao(user.id!!).catch { exception ->
                         when(exception) {
-                            is FirstSignIn -> _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToProfileSettingFragment)
                             else -> _kakaoLoginEvent.tryEmit(
                                 KakaoLoginEvent.ShowMessage(
                                     R.string.login_kakao_message_kakao_login_fail,
@@ -50,7 +47,11 @@ class EntranceViewModel @Inject constructor(
                             )
                         }
                     }.collect {
-                        _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToHomeActivity(user.id!!))
+                        if(it) {
+                            _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToProfileSettingFragment)
+                        } else {
+                            _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToHomeActivity(user.id!!))
+                        }
                     }
 
                 } else {
