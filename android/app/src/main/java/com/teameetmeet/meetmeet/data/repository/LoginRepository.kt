@@ -22,15 +22,11 @@ class LoginRepository @Inject constructor(
                 val response =
                     loginApi.loginKakao(kakaoLoginRequest = KakaoLoginRequest(id.toString()))
                 storeAppToken(response.accessToken, response.refreshToken)
-            }.catch {
-                Log.d("test", "$it")
-                when (it) {
-                    is FirstSignIn -> {
-                        storeAppToken(it.accessToken, it.responseToken)
-                    }
+                if(response.isNewUser) {
+                    throw FirstSignIn()
                 }
+            }.catch {
                 throw it
-                //TODO("추가 예외처리 필요")
             }
     }
 

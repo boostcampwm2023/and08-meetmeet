@@ -14,7 +14,7 @@ class FakeLoginApi : LoginApi {
         val case = Random.nextInt()
         Log.d("test", case.toString())
         if (case % 2 == 0) {
-            throw FirstSignIn("accessToken", "refreshToken")
+            throw FirstSignIn()
         }
         return LoginResponse("accessToken", "refreshToken")
     }
