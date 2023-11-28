@@ -71,28 +71,33 @@ export class FollowService {
   }
 
   async follow(user: User, userId: number) {
-    try {
-      const followingUser = await this.userRepository.findOne({
-        where: {
-          id: userId,
-        },
-      });
+    const followingUser = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      },
+    });
 
-      if (!followingUser) {
-        throw new Error('존재하지 않는 유저입니다.');
-      }
-
-      const follow = this.followRepository.create({
-        user: user,
-        follower: followingUser,
-      });
-
-      await this.followRepository.save(follow);
-      return { message: '팔로우 성공' };
-    } catch (error) {
-      if (error.code === 'ER_BAD_FIELD_ERROR') {
-        return { message: '팔로우 실패' };
-      }
+    if (!followingUser) {
+      throw new Error('존재하지 않는 유저입니다.');
     }
+
+    const existingFollow = await this.followRepository.findOne({
+      where: {
+        user: Equal(user.id),
+        follower: Equal(followingUser.id),
+      },
+    });
+
+    if (existingFollow) {
+      throw new Error('이미 팔로우한 유저입니다.');
+    }
+
+    const follow = this.followRepository.create({
+      user: user,
+      follower: followingUser,
+    });
+
+    await this.followRepository.save(follow);
+    return { message: '팔로우 성공' };
   }
 }
