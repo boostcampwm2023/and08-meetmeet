@@ -114,21 +114,27 @@ export class EventService {
 
     let repeatTerm;
     let repeatFrequency;
+    let repeatEndDate;
     if (repeatPolicy.repeatDay !== null) {
       repeatTerm = 'DAY';
       repeatFrequency = repeatPolicy.repeatDay;
+      repeatEndDate = repeatPolicy.repeatDay;
     } else if (repeatPolicy.repeatWeek !== null) {
       repeatTerm = 'WEEK';
       repeatFrequency = repeatPolicy.repeatWeek;
+      repeatEndDate = repeatPolicy.repeatDay;
     } else if (repeatPolicy.repeatMonth !== null) {
       repeatTerm = 'MONTH';
       repeatFrequency = repeatPolicy.repeatMonth;
+      repeatEndDate = repeatPolicy.repeatDay;
     } else if (repeatPolicy.repeatYear !== null) {
       repeatTerm = 'YEAR';
       repeatFrequency = repeatPolicy.repeatYear;
+      repeatEndDate = repeatPolicy.repeatDay;
     } else {
       repeatTerm = null;
       repeatFrequency = null;
+      repeatEndDate = null;
     }
 
     return {
@@ -152,6 +158,7 @@ export class EventService {
         memo: detail?.memo,
         repeatTerm: repeatTerm,
         repeatFrequency: repeatFrequency,
+        repeatEndDate: repeatEndDate,
       },
     };
   }
