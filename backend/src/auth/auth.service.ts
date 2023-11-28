@@ -110,7 +110,7 @@ export class AuthService {
     );
   }
 
-  async verifyToken(token: string) {
+  async verifyAccessToken(token: string) {
     try {
       const payload = this.jwtService.verify(token, {
         secret: this.configService.get<string>('JWT_SECRET_KEY'),

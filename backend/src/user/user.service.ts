@@ -8,7 +8,7 @@ import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { User } from './entities/user.entity';
 import { OauthProvider } from './entities/oauthProvider.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 import { ContentService } from 'src/content/content.service';
 
 const SALTROUND = 10;
@@ -77,14 +77,18 @@ export class UserService {
     return userInfo;
   }
 
-  async updateUser(
+  async updateUserPassword(user: User, password: string) {
+    const hashedPassword = await hash(password, SALTROUND);
+
+    await this.userRepository.update(user.id, { password: hashedPassword });
+    return await this.userRepository.findOne({ where: { id: user.id } });
+  }
+
+  async updateUserInfo(
     user: User,
-    updateUserDto: UpdateUserDto,
+    updateUserDto: UpdateUserInfoDto,
     profileImage: Express.Multer.File,
   ) {
-    if (updateUserDto.password) {
-      updateUserDto.password = await hash(updateUserDto.password, SALTROUND);
-    }
     if (profileImage) {
       const userProfile = await this.updateProfileImage(
         user.profileId,
