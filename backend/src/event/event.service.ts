@@ -179,6 +179,7 @@ export class EventService {
       title: event.title,
       startDate: event.startDate,
       endDate: event.endDate,
+      announcement: event.announcement,
       eventMembers: event.eventMembers.map((eventMember) => ({
         id: eventMember.id,
         nickname: eventMember.user.nickname,
