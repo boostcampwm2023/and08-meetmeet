@@ -61,6 +61,12 @@ class DataStoreHelper @Inject constructor(
         }
     }
 
+    suspend fun resetAlarmState() {
+        dataStore.edit {
+            it[IS_PUSH_ALARM_ON] = false
+        }
+    }
+
     suspend fun deleteAppToken() {
         dataStore.edit {
             it[ACCESS_TOKEN] = ""

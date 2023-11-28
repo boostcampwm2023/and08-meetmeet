@@ -4,19 +4,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
+import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EntranceViewModel @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository,
+    private val calendarRepository: CalendarRepository
 ) : ViewModel() {
 
     private val _kakaoLoginEvent = MutableSharedFlow<KakaoLoginEvent>(
@@ -25,6 +30,21 @@ class EntranceViewModel @Inject constructor(
     )
     val kakaoLoginEvent: SharedFlow<KakaoLoginEvent> = _kakaoLoginEvent.asSharedFlow()
 
+
+    init {
+        deleteLocalData()
+    }
+
+    private fun deleteLocalData() {
+        viewModelScope.launch {
+            try {
+                userRepository.resetDataStore().first()
+                calendarRepository.deleteEvents()
+            } catch (_: Exception) {
+
+            }
+        }
+    }
 
     fun loginApp() {
         UserApiClient.instance.me { user, error ->
