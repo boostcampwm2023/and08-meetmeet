@@ -1,9 +1,9 @@
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { commonEntity } from 'src/common/common.entity';
-import { Calendar } from 'src/calendar/entities/calendar.entity';
-import { EventMember } from 'src/event-member/entities/eventMember.entity';
-import { RepeatPolicy } from './repeatPolicy.entity';
-import { Feed } from '../../feed/entities/feed.entity';
+import {Column, Entity, ManyToOne, OneToMany} from 'typeorm';
+import {commonEntity} from 'src/common/common.entity';
+import {Calendar} from 'src/calendar/entities/calendar.entity';
+import {EventMember} from 'src/event-member/entities/eventMember.entity';
+import {RepeatPolicy} from './repeatPolicy.entity';
+import {Feed} from '../../feed/entities/feed.entity';
 
 @Entity()
 export class Event extends commonEntity {
@@ -31,7 +31,9 @@ export class Event extends commonEntity {
   @ManyToOne(() => RepeatPolicy, (repeatPolicy) => repeatPolicy.events)
   repeatPolicy: RepeatPolicy;
 
-  @OneToMany(() => EventMember, (eventMember) => eventMember.event)
+  @OneToMany(() => EventMember, (eventMember) => eventMember.event, {
+    cascade: ['soft-remove'],
+  })
   eventMembers: EventMember[];
 
   @OneToMany(() => Feed, (feed) => feed.event)

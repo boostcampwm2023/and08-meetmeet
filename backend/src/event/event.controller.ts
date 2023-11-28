@@ -12,19 +12,22 @@ import {
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { EventService } from './event.service';
-import { GetUser } from '../auth/get-user.decorator';
-import { User } from '../user/entities/user.entity';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CreateScheduleDto } from './dto/createSchedule.dto';
-import { SearchEventDto } from './dto/searchEvent.dto';
-import { UpdateScheduleDto } from './dto/updateSchedule.dto';
+import {ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags,} from '@nestjs/swagger';
+import {EventService} from './event.service';
+import {GetUser} from '../auth/get-user.decorator';
+import {User} from '../user/entities/user.entity';
+import {JwtAuthGuard} from '../auth/jwt-auth.guard';
+import {CreateScheduleDto} from './dto/createSchedule.dto';
+import {SearchEventDto} from './dto/searchEvent.dto';
+import {UpdateScheduleDto} from './dto/updateSchedule.dto';
+import {SlackInterceptor} from '../log/slack.interceptor';
 
 @ApiBearerAuth()
 @ApiTags('event')
 @Controller('event')
+@UseInterceptors(SlackInterceptor)
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
@@ -38,7 +41,6 @@ export class EventController {
     @GetUser() user: User,
     @Query() searchEventDto: SearchEventDto,
   ) {
-    console.log(searchEventDto);
     return await this.eventService.searchEvent(user, searchEventDto);
   }
 
@@ -47,6 +49,16 @@ export class EventController {
   @ApiOperation({
     summary: '일정 조회 API',
     description: '입력된 startDate, endDate로 조회합니다.',
+  })
+  @ApiQuery({
+    name: 'startDate',
+    required: true,
+    example: '2021-01-01',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: true,
+    example: '2021-01-31',
   })
   async getEvents(
     @GetUser() user: User,
@@ -62,6 +74,11 @@ export class EventController {
     summary: '일정 상세 조회 API',
     description: '',
   })
+  @ApiParam({
+    name: 'eventId',
+    required: true,
+    example: 123,
+  })
   async getEvent(
     @GetUser() user: User,
     @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
@@ -75,6 +92,11 @@ export class EventController {
   @ApiOperation({
     summary: '일정 피드 조회 API',
     description: '',
+  })
+  @ApiParam({
+    name: 'event_id',
+    required: true,
+    example: 123,
   })
   async getEventFeeds(
     @GetUser() user: User,
@@ -108,6 +130,16 @@ export class EventController {
     summary: '일정 삭제 API',
     description: '',
   })
+  @ApiParam({
+    name: 'eventId',
+    required: true,
+    example: 123,
+  })
+  @ApiQuery({
+    name: 'isAll',
+    required: false,
+    description: 'true를 제외한 모든건 false로 처리됩니다.',
+  })
   async deleteEvent(
     @GetUser() user: User,
     @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
@@ -122,6 +154,11 @@ export class EventController {
   @ApiOperation({
     summary: '일정 수정 API',
     description: '',
+  })
+  @ApiQuery({
+    name: 'isAll',
+    required: false,
+    description: 'true를 제외한 모든건 false로 처리됩니다.',
   })
   async updateEvent(
     @GetUser() user: User,

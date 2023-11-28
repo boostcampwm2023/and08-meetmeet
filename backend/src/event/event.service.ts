@@ -1,21 +1,16 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Event } from './entities/event.entity';
-import { User } from '../user/entities/user.entity';
-import { CreateScheduleDto, RepeatTerm } from './dto/createSchedule.dto';
-import { CalendarService } from '../calendar/calendar.service';
-import { RepeatPolicy } from './entities/repeatPolicy.entity';
-import { DetailService } from '../detail/detail.service';
-import { EventMemberService } from '../event-member/event-member.service';
-import { Calendar } from '../calendar/entities/calendar.entity';
-import { SearchEventDto } from './dto/searchEvent.dto';
-import { UpdateScheduleDto } from './dto/updateSchedule.dto';
+import {BadRequestException, HttpException, HttpStatus, Injectable,} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {Event} from './entities/event.entity';
+import {User} from '../user/entities/user.entity';
+import {CreateScheduleDto, RepeatTerm} from './dto/createSchedule.dto';
+import {CalendarService} from '../calendar/calendar.service';
+import {RepeatPolicy} from './entities/repeatPolicy.entity';
+import {DetailService} from '../detail/detail.service';
+import {EventMemberService} from '../event-member/event-member.service';
+import {Calendar} from '../calendar/entities/calendar.entity';
+import {SearchEventDto} from './dto/searchEvent.dto';
+import {UpdateScheduleDto} from './dto/updateSchedule.dto';
 
 @Injectable()
 export class EventService {
@@ -36,10 +31,18 @@ export class EventService {
       .leftJoinAndSelect('eventMember.user', 'user')
       .leftJoinAndSelect('eventMember.authority', 'authority')
       .where('user.id = :userId', { userId: user.id })
-      .andWhere('event.startDate BETWEEN :startDate AND :endDate', {
-        startDate,
-        endDate,
-      })
+      // todo 제대로 된 쿼리인 것 같은데 실제로 구현하면 이상하게 동작합니다.
+      // .andWhere(
+      //   '(:startDate BETWEEN event.startDate AND event.endDate) OR (:endDate BETWEEN event.startDate AND event.endDate) OR (event.startDate < :startDate AND event.endDate > :endDate)',
+      //   { startDate, endDate },
+      // )
+      .andWhere(
+        '(event.startDate <= :endDate AND event.endDate >= :startDate)',
+        {
+          startDate,
+          endDate,
+        },
+      )
       .getMany();
 
     const result = eventsWithMembersAndAuthority.map((event) => {
@@ -59,7 +62,7 @@ export class EventService {
             (eventMember) => eventMember.user.id === user.id,
           )?.authority?.displayName || null,
         repeatPolicyId: event.repeatPolicyId,
-        isJoinable: event.isJoinable,
+        isJoinable: event.isJoinable ? true : false,
       };
     });
 
@@ -83,10 +86,25 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
+
+    if (
+      event.eventMembers.find((eventMember) => eventMember.user.id === user.id)
+        ?.authority?.displayName !== 'OWNER' &&
+      event.eventMembers.find((eventMember) => eventMember.user.id === user.id)
+        ?.authority?.displayName !== 'ADMIN' &&
+      event.eventMembers.find((eventMember) => eventMember.user.id === user.id)
+        ?.authority?.displayName !== 'MEMBER'
+    ) {
+      throw new HttpException(
+        '이벤트에 참여하지 않았습니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const detail = event.eventMembers.find(
       (eventMember) => eventMember.user.id === user.id,
     )?.detail;
-    console.log(event);
+
     const repeatPolicy = event.repeatPolicy;
 
     let repeatTerm;
@@ -124,7 +142,7 @@ export class EventService {
           event.eventMembers.find(
             (eventMember) => eventMember.user.id === user.id,
           )?.authority?.displayName || null,
-        isJoinable: event.isJoinable,
+        isJoinable: event.isJoinable ? true : false,
         isVisible: detail?.isVisible,
         memo: detail?.memo,
         repeatTerm: repeatTerm,
@@ -167,7 +185,7 @@ export class EventService {
           (eventMember) => eventMember.user.id === user.id,
         )?.authority?.displayName || null,
       repeatPolicyId: event.repeatPolicyId,
-      isJoinable: event.isJoinable,
+      isJoinable: event.isJoinable ? true : false,
       isVisible: event.eventMembers.find(
         (eventMember) => eventMember.user.id === user.id,
       )?.detail?.isVisible,
@@ -332,7 +350,7 @@ export class EventService {
               repeatPolicyName: event.repeatPolicy,
               // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
             },
-            isJoinable: event.isJoinable,
+            isJoinable: event.isJoinable ? true : false,
             detail: event.eventMembers[0].detail,
           }
         : null;
@@ -420,7 +438,7 @@ export class EventService {
             repeatPolicyName: event.repeatPolicy,
             // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
           },
-          isJoinable: event.isJoinable,
+          isJoinable: event.isJoinable ? true : false,
           detail: event.eventMembers.find(
             (eventMember) => eventMember.user.id === user.id,
           )?.detail,
@@ -534,8 +552,8 @@ export class EventService {
   }
 
   async searchEvent(user: User, searchEventDto: SearchEventDto) {
-    const startDate = new Date(this.formatDateString(searchEventDto.startDate));
-    const endDate = new Date(this.formatDateString(searchEventDto.endDate));
+    const startDate = new Date(searchEventDto.startDate);
+    const endDate = new Date(searchEventDto.endDate);
 
     const sixMonthsInMillis = 6 * 30 * 24 * 60 * 60 * 1000;
 
@@ -579,7 +597,7 @@ export class EventService {
             (eventMember) => eventMember.user.id === user.id,
           )?.authority?.displayName || null,
         repeatPolicyId: event.repeatPolicyId,
-        isJoinable: event.isJoinable,
+        isJoinable: event.isJoinable ? true : false,
       };
     });
 
