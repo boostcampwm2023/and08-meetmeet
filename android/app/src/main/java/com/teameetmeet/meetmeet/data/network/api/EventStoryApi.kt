@@ -8,6 +8,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface EventStoryApi {
 
@@ -20,6 +21,6 @@ interface EventStoryApi {
     @POST()
     suspend fun editNotification(@Body singleStringRequest: KakaoLoginRequest)
 
-    @DELETE("event/{id}")
-    suspend fun deleteEventStory(@Path("id") id: Int)
+    @DELETE("event/{eventId}")
+    suspend fun deleteEventStory(@Path("eventId") id: String, @Query("isAll") isAll: Boolean = false)
 }

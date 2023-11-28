@@ -89,23 +89,32 @@ class EventStoryDetailViewModel @Inject constructor(
                             startTime = EventTime(startLocalDateTime.hour, startLocalDateTime.minute),
                             endTime = EventTime(endLocalDateTime.hour, endLocalDateTime.minute),
                             eventRepeatFrequency = repeatFrequency?:0,
+                            eventRepeat = when(repeatTerm) {
+                                "DAY" -> EventRepeatTerm.DAY
+                                "WEEK" -> EventRepeatTerm.WEEK
+                                "MONTH" -> EventRepeatTerm.MONTH
+                                "YEAR" -> EventRepeatTerm.YEAR
+                                else -> EventRepeatTerm.NONE
+                            },
                             isJoinable = isJoin,
                             isOpen = isVisible==1,
                             authority = when (authority) {
                                 "OWNER" -> EventAuthority.OWNER
                                 "MEMBER" -> EventAuthority.PARTICIPANT
                                 else -> EventAuthority.GUEST
-                            }
+                            },
+                            isRepeatEvent = repeatTerm!=null
                         )
+
                     }
                 }
             }
         }
     }
 
-    fun deleteEvent() {
+    fun deleteEvent(isAll: Boolean = false) {
         viewModelScope.launch {
-            eventStoryRepository.deleteEventStory(uiState.value.eventId).catch {
+            eventStoryRepository.deleteEventStory(uiState.value.eventId, isAll).catch {
                 when(it) {
                     is ExpiredRefreshTokenException -> {
                         _event.tryEmit(EventStoryDetailEvent.NavigateToLoginActivity)

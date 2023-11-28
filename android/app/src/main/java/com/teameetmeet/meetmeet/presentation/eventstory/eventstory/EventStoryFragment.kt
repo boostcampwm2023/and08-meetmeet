@@ -2,7 +2,6 @@ package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -42,7 +41,6 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     private fun setEventId() {
         val eventId = arguments?.getInt(EventStoryActivity.EVENT_ID)
-        Log.d("test", eventId.toString())
         viewModel.setEventId(eventId)
     }
 
