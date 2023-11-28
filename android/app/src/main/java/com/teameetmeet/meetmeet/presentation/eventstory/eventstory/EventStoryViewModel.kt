@@ -1,17 +1,12 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstory
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
-import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
-import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,6 +43,9 @@ class EventStoryViewModel @Inject constructor(
                     it.copy(isLoading = true)
                 }
             }.catch {
+                _eventStoryUiState.update { uiState ->
+                    uiState.copy(isLoading = false)
+                }
                 when(it) {
                     is ExpiredRefreshTokenException -> {
                         _event.emit(EventStoryEvent.NavigateToLoginActivity)

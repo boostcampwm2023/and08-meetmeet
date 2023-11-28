@@ -2,7 +2,6 @@ package com.teameetmeet.meetmeet.data.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import java.io.Serializable
 
 @JsonClass(generateAdapter = true)
 data class EventStory(
@@ -17,13 +16,13 @@ data class EventStory(
     @Json(name = "eventMembers")
     val eventMembers: List<EventMember>,
     @Json(name = "announcement")
-    val announcement: String = "",
+    val announcement: String? = "",
     @Json(name = "authority")
     val authority: String?,
     @Json(name = "repeatPolicyId")
     val repeatPolicyId: Int?,
     @Json(name = "isJoinable")
-    val isJoin: Int,
+    val isJoin: Boolean,
     @Json(name = "feeds")
     val feeds: List<Feed>
 )

@@ -134,7 +134,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:visibility="@{(vm.eventStoryUiState.eventMemberUiExpanded == true &amp;&amp;(vm.eventStoryUiState.authority == EventAuthority.OWNER ||(vm.eventStoryUiState.authority == EventAuthority.GUEST &amp;&amp; vm.eventStoryUiState.eventStory.isJoin == 1))) ? View.VISIBLE : View.GONE}"
+                    android:visibility="@{(vm.eventStoryUiState.eventMemberUiExpanded == true &amp;&amp;(vm.eventStoryUiState.authority == EventAuthority.OWNER ||(vm.eventStoryUiState.authority == EventAuthority.GUEST &amp;&amp; vm.eventStoryUiState.eventStory.isJoin == true))) ? View.VISIBLE : View.GONE}"
                     app:cardCornerRadius="100dp"
                     android:layout_marginStart="12dp"
                     app:layout_constraintStart_toEndOf="@id/event_story_ib_see_more_member"
@@ -214,7 +214,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@id/event_story_abl" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
