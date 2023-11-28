@@ -1,5 +1,19 @@
-import {ApiBearerAuth, ApiBody, ApiOperation, ApiTags} from '@nestjs/swagger';
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { FollowService } from './follow.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../user/entities/user.entity';
@@ -44,7 +58,20 @@ export class FollowController {
       },
     },
   })
-  async follow(@GetUser() user: User, @Body() userId: number) {
+  async follow(@GetUser() user: User, @Body('userId') userId: number) {
     return await this.followService.follow(user, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('follow')
+  @ApiOperation({
+    summary: '언팔로우 API',
+  })
+  @ApiQuery({
+    name: 'userId',
+    type: 'number',
+  })
+  async unfollow(@GetUser() user: User, @Query('userId') userId: number) {
+    return await this.followService.unfollow(user, userId);
   }
 }
