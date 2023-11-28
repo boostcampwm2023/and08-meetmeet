@@ -5,6 +5,7 @@ import android.widget.RadioGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import com.teameetmeet.meetmeet.presentation.model.EventColor
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -53,12 +55,27 @@ class EventStoryDetailViewModel @Inject constructor(
     fun fetchStoryDetail() {
         viewModelScope.launch {
             eventStoryRepository.getEventStoryDetail(uiState.value.eventId).catch {
-                _event.tryEmit(
-                    EventStoryDetailEvent.ShowMessage(
-                        R.string.story_detail_message_story_detail_fetch_fail,
-                        it.message.orEmpty()
-                    )
-                )
+                when(it) {
+                    is ExpiredRefreshTokenException -> {
+                        _event.tryEmit(EventStoryDetailEvent.NavigateToLoginActivity)
+                    }
+                    is UnknownHostException -> {
+                        _event.tryEmit(
+                            EventStoryDetailEvent.ShowMessage(
+                                R.string.common_message_no_internet
+                            )
+                        )
+                    }
+                    else -> {
+                        _event.tryEmit(
+                            EventStoryDetailEvent.ShowMessage(
+                                R.string.story_detail_message_story_detail_fetch_fail,
+                                it.message.orEmpty()
+                            )
+                        )
+                    }
+                }
+
             }.collect {eventDetail ->
                 _uiState.update {
                     with(eventDetail) {
@@ -72,8 +89,8 @@ class EventStoryDetailViewModel @Inject constructor(
                             startTime = EventTime(startLocalDateTime.hour, startLocalDateTime.minute),
                             endTime = EventTime(endLocalDateTime.hour, endLocalDateTime.minute),
                             eventRepeatFrequency = repeatFrequency?:0,
-                            isJoinable = isJoin==1,
-                            isOpen = isVisible,
+                            isJoinable = isJoin,
+                            isOpen = isVisible==1,
                             authority = when (authority) {
                                 "OWNER" -> EventAuthority.OWNER
                                 "MEMBER" -> EventAuthority.PARTICIPANT
@@ -89,12 +106,27 @@ class EventStoryDetailViewModel @Inject constructor(
     fun deleteEvent() {
         viewModelScope.launch {
             eventStoryRepository.deleteEventStory(uiState.value.eventId).catch {
-                _event.tryEmit(
-                    EventStoryDetailEvent.ShowMessage(
-                        R.string.story_detail_message_event_story_delete_fail,
-                        it.message.orEmpty()
-                    )
-                )
+                when(it) {
+                    is ExpiredRefreshTokenException -> {
+                        _event.tryEmit(EventStoryDetailEvent.NavigateToLoginActivity)
+                    }
+
+                    is UnknownHostException -> {
+                        _event.tryEmit(
+                            EventStoryDetailEvent.ShowMessage(
+                                R.string.common_message_no_internet
+                            )
+                        )
+                    }
+                    else -> {
+                        _event.tryEmit(
+                            EventStoryDetailEvent.ShowMessage(
+                                R.string.story_detail_message_event_story_delete_fail,
+                                it.message.orEmpty()
+                            )
+                        )
+                    }
+                }
             }.collect {
                 _event.tryEmit(EventStoryDetailEvent.FinishEventStoryActivity)
             }

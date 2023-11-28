@@ -1,7 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
@@ -57,6 +56,7 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
                     when(event) {
                         is EventStoryDetailEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
                         is EventStoryDetailEvent.FinishEventStoryActivity -> requireActivity().finish()
+                        is EventStoryDetailEvent.NavigateToLoginActivity -> navigateToLoginActivity()
                     }
                 }
             }
@@ -65,6 +65,11 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
 
     private fun setBinding() {
         binding.vm = viewModel
+    }
+
+    private fun navigateToLoginActivity() {
+        findNavController().navigate(EventStoryDetailFragmentDirections.actionEventStoryDetailFragmentToLoginActivity())
+        requireActivity().finishAffinity()
     }
 
     private fun setRepeatOptions() {

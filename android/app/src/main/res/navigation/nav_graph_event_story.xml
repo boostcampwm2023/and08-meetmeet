@@ -35,6 +35,9 @@
         <argument
             android:name="storyId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_event_story_detail_fragment_to_login_activity"
+            app:destination="@id/login_activity" />
     </fragment>
 
     <fragment

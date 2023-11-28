@@ -18,9 +18,9 @@ data class EventDetail(
     @Json(name = "repeatPolicyId")
     val repeatPolicyId: Int?,
     @Json(name = "isJoinable")
-    val isJoin: Int,
+    val isJoin: Boolean,
     @Json(name = "isVisible")
-    val isVisible: Boolean = false,
+    val isVisible: Int = 0,
     @Json(name = "repeatTerm")
     val repeatTerm: String?,
     @Json(name = "repeatFrequency")

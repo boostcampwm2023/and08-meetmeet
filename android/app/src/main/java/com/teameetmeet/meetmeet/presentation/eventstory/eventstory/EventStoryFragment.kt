@@ -42,6 +42,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     private fun setEventId() {
         val eventId = arguments?.getInt(EventStoryActivity.EVENT_ID)
+        Log.d("test", eventId.toString())
         viewModel.setEventId(eventId)
     }
 
