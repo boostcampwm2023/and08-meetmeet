@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.network.api
 
+import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventMember
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.Feed
@@ -52,6 +53,10 @@ class FakeEventStoryApi : EventStoryApi {
                 Feed(18, null, null)
             )
         )
+    }
+
+    override suspend fun getStoryDetail(id: String): EventDetail {
+        TODO("Not yet implemented")
     }
 
     override suspend fun editNotification(singleStringRequest: KakaoLoginRequest) {

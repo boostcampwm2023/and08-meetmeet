@@ -13,6 +13,8 @@ import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
 import com.teameetmeet.meetmeet.util.DateTimeFormat
 import com.teameetmeet.meetmeet.util.toDateString
+import com.teameetmeet.meetmeet.util.toLocalDateTime
+import com.teameetmeet.meetmeet.util.toLong
 import com.teameetmeet.meetmeet.util.toTimeStampLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.ZoneId
 import javax.inject.Inject
 
 
@@ -56,8 +59,29 @@ class EventStoryDetailViewModel @Inject constructor(
                         it.message.orEmpty()
                     )
                 )
-            }.collect {
-                //TODO("event 세부 사항 정보 갱신")
+            }.collect {eventDetail ->
+                _uiState.update {
+                    with(eventDetail) {
+                        val startLocalDateTime = startDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toLocalDateTime()
+                        val endLocalDateTime = endDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toLocalDateTime()
+                        it.copy(
+                            eventId = id,
+                            eventName = title,
+                            startDate = startLocalDateTime.toLong().toDateString(DateTimeFormat.LOCAL_DATE),
+                            endDate = endLocalDateTime.toLong().toDateString(DateTimeFormat.LOCAL_DATE),
+                            startTime = EventTime(startLocalDateTime.hour, startLocalDateTime.minute),
+                            endTime = EventTime(endLocalDateTime.hour, endLocalDateTime.minute),
+                            eventRepeatFrequency = repeatFrequency?:0,
+                            isJoinable = isJoin==1,
+                            isOpen = isVisible,
+                            authority = when (authority) {
+                                "OWNER" -> EventAuthority.OWNER
+                                "MEMBER" -> EventAuthority.PARTICIPANT
+                                else -> EventAuthority.GUEST
+                            }
+                        )
+                    }
+                }
             }
         }
     }
@@ -103,7 +127,7 @@ class EventStoryDetailViewModel @Inject constructor(
 
     fun setEventAlarm(index: Int) {
         _uiState.update {
-            it.copy(alarm = EventNotification.values()[index])
+             it.copy(alarm = EventNotification.values()[index])
         }
     }
 

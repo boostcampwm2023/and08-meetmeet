@@ -131,7 +131,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
     private fun navigateToEventDetailFragment() {
         findNavController().navigate(
             EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment(
-                viewModel.eventStoryUiState.value.eventStory?.id ?: 0
+                viewModel.eventStoryUiState.value.eventId
             )
         )
     }
