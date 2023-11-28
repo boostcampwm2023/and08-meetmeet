@@ -31,7 +31,9 @@ export class Event extends commonEntity {
   @ManyToOne(() => RepeatPolicy, (repeatPolicy) => repeatPolicy.events)
   repeatPolicy: RepeatPolicy;
 
-  @OneToMany(() => EventMember, (eventMember) => eventMember.event)
+  @OneToMany(() => EventMember, (eventMember) => eventMember.event, {
+    cascade: ['soft-remove'],
+  })
   eventMembers: EventMember[];
 
   @OneToMany(() => Feed, (feed) => feed.event)
