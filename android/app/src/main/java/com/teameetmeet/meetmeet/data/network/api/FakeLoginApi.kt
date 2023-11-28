@@ -2,7 +2,7 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import android.util.Log
 import com.teameetmeet.meetmeet.data.FirstSignIn
-import com.teameetmeet.meetmeet.data.network.entity.AccessTokenResult
+import com.teameetmeet.meetmeet.data.network.entity.AccessTokenRequest
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.LoginResponse
@@ -23,8 +23,8 @@ class FakeLoginApi : LoginApi {
         return LoginResponse("accessToken", "refreshToken")
     }
 
-    override suspend fun autoLoginApp(accessToken: String): AccessTokenResult {
-        return AccessTokenResult(isVerified = true)
+    override suspend fun checkValidAccessToken(accessTokenRequest: AccessTokenRequest) {
+        Unit
     }
 
     override suspend fun checkEmailDuplication(email: String): AvailableResponse {

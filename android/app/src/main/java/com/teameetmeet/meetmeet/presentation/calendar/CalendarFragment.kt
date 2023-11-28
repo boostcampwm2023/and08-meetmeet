@@ -65,7 +65,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
 
     private fun setClickListener() {
         binding.fabAddEvent.setOnClickListener {
-            viewModel.currentDate.value.date?.let {
+            viewModel.currentDate.value.let {
                 findNavController().navigate(
                     CalendarFragmentDirections.actionCalendarFragmentToAddEventActivity(it)
                 )
