@@ -22,5 +22,5 @@ data class EventStoryDetailUiState(
     val isOpen: Boolean = false,
     val isJoinable: Boolean = false,
     val authority: EventAuthority = EventAuthority.GUEST,
-    val isRepeatEvent: Boolean = false
+    val isRepeatEvent: Boolean = true
 )

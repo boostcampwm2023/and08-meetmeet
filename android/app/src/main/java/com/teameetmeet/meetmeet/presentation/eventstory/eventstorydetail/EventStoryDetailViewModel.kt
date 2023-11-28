@@ -142,6 +142,49 @@ class EventStoryDetailViewModel @Inject constructor(
         }
     }
 
+    fun editEvent(isAll: Boolean = false) {
+        viewModelScope.launch {
+            val startDateTime =
+                _uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE).toLocalDateTime()
+                    .plusHours(_uiState.value.startTime.hour.toLong())
+                    .plusMinutes(_uiState.value.startTime.minute.toLong())
+                    .toLong(ZoneId.systemDefault())
+                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+            val endDateTime =
+                _uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE).toLocalDateTime()
+                    .plusHours(_uiState.value.endTime.hour.toLong())
+                    .plusMinutes(_uiState.value.endTime.minute.toLong())
+                    .toLong(ZoneId.systemDefault())
+                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+
+            val repeatEndDate = _uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+
+            with(_uiState.value) {
+                eventStoryRepository.editEventStory(
+                    eventId = eventId,
+                    isAll = isAll,
+                    title = eventName,
+                    startDate = startDateTime,
+                    endDate = endDateTime,
+                    isJoinable = isJoinable,
+                    isVisible = isOpen,
+                    memo = memo,
+                    repeatTerm = eventRepeat.value,
+                    repeatFrequency = eventRepeatFrequency,
+                    repeatEndDate = repeatEndDate,
+                    color = color,
+                    alarm = alarm,
+                ).catch {
+                    _event.emit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_edit_message_fail, extraMessage = it.message.orEmpty()))
+                }.collect {
+                    _event.emit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_success_edit_event))
+                    _event.emit(EventStoryDetailEvent.FinishEventStoryDetail)
+                }
+            }
+        }
+    }
+
     fun setEventName(name: CharSequence) {
         _uiState.update {
             it.copy(eventName = name.toString())
@@ -198,10 +241,12 @@ class EventStoryDetailViewModel @Inject constructor(
     }
 
     fun setEventEndDate(time: Long) {
-        if (time < uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE) ||
-            time > uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
-        ) {
+        if (time < uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
             _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_end_time_fail))
+            return
+        }
+        if(time > uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
+            _event.tryEmit(EventStoryDetailEvent.ShowMessage((R.string.story_detail_message_time_pick_end_time_fail_after_repeat_end)))
             return
         }
         _uiState.update {

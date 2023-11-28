@@ -50,6 +50,29 @@ class EventStoryDetailFragment :
         binding.storyDetailMtb.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+        binding.storyDetailMtb.setOnMenuItemClickListener { menu ->
+            when (menu.itemId) {
+                R.id.menu_save -> {
+                    if (viewModel.uiState.value.isRepeatEvent) {
+                        AlertDialog.Builder(requireContext())
+                            .setTitle(R.string.story_detail_edit_event_dialog_title)
+                            .setMessage(R.string.story_detail_edit_event_dialog_message)
+                            .setPositiveButton(R.string.story_detail_edit_event_dialog_description_delete_all) { _, _ ->
+                                viewModel.editEvent(isAll = true)
+                            }
+                            .setNegativeButton(R.string.story_detail_delete_event_dialog_description_delete_cancel) { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .setNeutralButton(R.string.story_detail_edit_event_dialog_description_delete_one) { _, _ ->
+                                viewModel.editEvent(isAll = false)
+                            }.show()
+                    } else {
+                        viewModel.editEvent(isAll = false)
+                    }
+                }
+            }
+            true
+        }
     }
 
     private fun setClickListener() {
@@ -93,6 +116,7 @@ class EventStoryDetailFragment :
 
                         is EventStoryDetailEvent.FinishEventStoryActivity -> requireActivity().finish()
                         is EventStoryDetailEvent.NavigateToLoginActivity -> navigateToLoginActivity()
+                        is EventStoryDetailEvent.FinishEventStoryDetail -> findNavController().popBackStack()
                     }
                 }
             }
