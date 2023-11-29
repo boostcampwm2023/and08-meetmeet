@@ -38,6 +38,7 @@
     <string name="add_event_err_repeat_term">반복 주기는 일정 기간보다 길어야 합니다.</string>
 
     <string name="notification_none">알림 없음</string>
+    <string name="notification_on_time">정각</string>
     <string name="notification_ten_minutes_before">10분 전</string>
     <string name="notification_one_hour_before">1시간 전</string>
     <string name="notification_one_day_before">1일 전</string>

@@ -47,15 +47,17 @@ class CalendarRepository @Inject constructor(
         alarm: EventNotification
     ): Flow<Unit> {
         val request = AddEventRequest(
-            title,
-            startDate,
-            endDate,
-            isJoinable,
-            isVisible,
-            memo.ifEmpty { null },
-            repeatTerm,
-            repeatFrequency,
-            repeatEndDate
+            title = title,
+            startDate = startDate,
+            endDate = endDate,
+            isJoinable = isJoinable,
+            isVisible = isVisible,
+            alarmMinutes = alarm.minutes,
+            memo = memo.ifEmpty { null },
+            color = color.value,
+            repeatTerm = repeatTerm,
+            repeatFrequency = repeatFrequency,
+            repeatEndDate = repeatEndDate
         )
         return remoteCalendarDataSource.addEvent(request)
             .catch {
