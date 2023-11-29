@@ -5,6 +5,7 @@ import android.widget.RadioGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import com.teameetmeet.meetmeet.presentation.model.EventColor
@@ -13,6 +14,8 @@ import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
 import com.teameetmeet.meetmeet.util.DateTimeFormat
 import com.teameetmeet.meetmeet.util.toDateString
+import com.teameetmeet.meetmeet.util.toLocalDateTime
+import com.teameetmeet.meetmeet.util.toLong
 import com.teameetmeet.meetmeet.util.toTimeStampLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
@@ -23,6 +26,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
+import java.time.ZoneId
 import javax.inject.Inject
 
 
@@ -50,29 +55,132 @@ class EventStoryDetailViewModel @Inject constructor(
     fun fetchStoryDetail() {
         viewModelScope.launch {
             eventStoryRepository.getEventStoryDetail(uiState.value.eventId).catch {
-                _event.tryEmit(
-                    EventStoryDetailEvent.ShowMessage(
-                        R.string.story_detail_message_story_detail_fetch_fail,
-                        it.message.orEmpty()
-                    )
-                )
-            }.collect {
-                //TODO("event 세부 사항 정보 갱신")
+                when(it) {
+                    is ExpiredRefreshTokenException -> {
+                        _event.tryEmit(EventStoryDetailEvent.NavigateToLoginActivity)
+                    }
+                    is UnknownHostException -> {
+                        _event.tryEmit(
+                            EventStoryDetailEvent.ShowMessage(
+                                R.string.common_message_no_internet
+                            )
+                        )
+                    }
+                    else -> {
+                        _event.tryEmit(
+                            EventStoryDetailEvent.ShowMessage(
+                                R.string.story_detail_message_story_detail_fetch_fail,
+                                it.message.orEmpty()
+                            )
+                        )
+                    }
+                }
+
+            }.collect {eventDetail ->
+                _uiState.update {
+                    with(eventDetail) {
+                        val startLocalDateTime = startDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toLocalDateTime()
+                        val endLocalDateTime = endDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toLocalDateTime()
+                        it.copy(
+                            eventId = id,
+                            eventName = title,
+                            startDate = startLocalDateTime.toLong().toDateString(DateTimeFormat.LOCAL_DATE),
+                            endDate = endLocalDateTime.toLong().toDateString(DateTimeFormat.LOCAL_DATE),
+                            startTime = EventTime(startLocalDateTime.hour, startLocalDateTime.minute),
+                            endTime = EventTime(endLocalDateTime.hour, endLocalDateTime.minute),
+                            eventRepeatFrequency = repeatFrequency?:0,
+                            eventRepeat = when(repeatTerm) {
+                                "DAY" -> EventRepeatTerm.DAY
+                                "WEEK" -> EventRepeatTerm.WEEK
+                                "MONTH" -> EventRepeatTerm.MONTH
+                                "YEAR" -> EventRepeatTerm.YEAR
+                                else -> EventRepeatTerm.NONE
+                            },
+                            isJoinable = isJoin,
+                            isOpen = isVisible==1,
+                            authority = when (authority) {
+                                "OWNER" -> EventAuthority.OWNER
+                                "MEMBER" -> EventAuthority.PARTICIPANT
+                                else -> EventAuthority.GUEST
+                            },
+                            isRepeatEvent = repeatTerm!=null
+                        )
+
+                    }
+                }
             }
         }
     }
 
-    fun deleteEvent() {
+    fun deleteEvent(isAll: Boolean = false) {
         viewModelScope.launch {
-            eventStoryRepository.deleteEventStory(uiState.value.eventId).catch {
-                _event.tryEmit(
-                    EventStoryDetailEvent.ShowMessage(
-                        R.string.story_detail_message_event_story_delete_fail,
-                        it.message.orEmpty()
-                    )
-                )
+            eventStoryRepository.deleteEventStory(uiState.value.eventId, isAll).catch {
+                when(it) {
+                    is ExpiredRefreshTokenException -> {
+                        _event.tryEmit(EventStoryDetailEvent.NavigateToLoginActivity)
+                    }
+
+                    is UnknownHostException -> {
+                        _event.tryEmit(
+                            EventStoryDetailEvent.ShowMessage(
+                                R.string.common_message_no_internet
+                            )
+                        )
+                    }
+                    else -> {
+                        _event.tryEmit(
+                            EventStoryDetailEvent.ShowMessage(
+                                R.string.story_detail_message_event_story_delete_fail,
+                                it.message.orEmpty()
+                            )
+                        )
+                    }
+                }
             }.collect {
                 _event.tryEmit(EventStoryDetailEvent.FinishEventStoryActivity)
+            }
+        }
+    }
+
+    fun editEvent(isAll: Boolean = false) {
+        viewModelScope.launch {
+            val startDateTime =
+                _uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE).toLocalDateTime()
+                    .plusHours(_uiState.value.startTime.hour.toLong())
+                    .plusMinutes(_uiState.value.startTime.minute.toLong())
+                    .toLong(ZoneId.systemDefault())
+                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+            val endDateTime =
+                _uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE).toLocalDateTime()
+                    .plusHours(_uiState.value.endTime.hour.toLong())
+                    .plusMinutes(_uiState.value.endTime.minute.toLong())
+                    .toLong(ZoneId.systemDefault())
+                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+
+            val repeatEndDate = _uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+
+            with(_uiState.value) {
+                eventStoryRepository.editEventStory(
+                    eventId = eventId,
+                    isAll = isAll,
+                    title = eventName,
+                    startDate = startDateTime,
+                    endDate = endDateTime,
+                    isJoinable = isJoinable,
+                    isVisible = isOpen,
+                    memo = memo,
+                    repeatTerm = eventRepeat.value,
+                    repeatFrequency = eventRepeatFrequency,
+                    repeatEndDate = repeatEndDate,
+                    color = color,
+                    alarm = alarm,
+                ).catch {
+                    _event.emit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_edit_message_fail, extraMessage = it.message.orEmpty()))
+                }.collect {
+                    _event.emit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_success_edit_event))
+                    _event.emit(EventStoryDetailEvent.FinishEventStoryDetail)
+                }
             }
         }
     }
@@ -103,7 +211,7 @@ class EventStoryDetailViewModel @Inject constructor(
 
     fun setEventAlarm(index: Int) {
         _uiState.update {
-            it.copy(alarm = EventNotification.values()[index])
+             it.copy(alarm = EventNotification.values()[index])
         }
     }
 
@@ -133,10 +241,12 @@ class EventStoryDetailViewModel @Inject constructor(
     }
 
     fun setEventEndDate(time: Long) {
-        if (time < uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE) ||
-            time > uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
-        ) {
+        if (time < uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
             _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_end_time_fail))
+            return
+        }
+        if(time > uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
+            _event.tryEmit(EventStoryDetailEvent.ShowMessage((R.string.story_detail_message_time_pick_end_time_fail_after_repeat_end)))
             return
         }
         _uiState.update {

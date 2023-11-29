@@ -1,7 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
+import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
@@ -23,7 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R.layout.fragment_event_story_detail) {
+class EventStoryDetailFragment :
+    BaseFragment<FragmentEventStoryDetailBinding>(R.layout.fragment_event_story_detail) {
 
     private val viewModel: EventStoryDetailViewModel by viewModels()
     private val args: EventStoryDetailFragmentArgs by navArgs()
@@ -37,6 +38,7 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
         setDateTimePicker()
         collectViewModelEvent()
         setTopAppBar()
+        setClickListener()
     }
 
     private fun fetchStoryDetail() {
@@ -48,15 +50,73 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
         binding.storyDetailMtb.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+        binding.storyDetailMtb.setOnMenuItemClickListener { menu ->
+            when (menu.itemId) {
+                R.id.menu_save -> {
+                    if (viewModel.uiState.value.isRepeatEvent) {
+                        AlertDialog.Builder(requireContext())
+                            .setTitle(R.string.story_detail_edit_event_dialog_title)
+                            .setMessage(R.string.story_detail_edit_event_dialog_message)
+                            .setPositiveButton(R.string.story_detail_edit_event_dialog_description_delete_all) { _, _ ->
+                                viewModel.editEvent(isAll = true)
+                            }
+                            .setNegativeButton(R.string.story_detail_delete_event_dialog_description_delete_cancel) { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .setNeutralButton(R.string.story_detail_edit_event_dialog_description_delete_one) { _, _ ->
+                                viewModel.editEvent(isAll = false)
+                            }.show()
+                    } else {
+                        viewModel.editEvent(isAll = false)
+                    }
+                }
+            }
+            true
+        }
+    }
+
+    private fun setClickListener() {
+        binding.storyDetailBtnRemoveEvent.setOnClickListener {
+            if (viewModel.uiState.value.isRepeatEvent) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.story_detail_delete_event_dialog_title)
+                    .setMessage(R.string.story_detail_delete_event_dialog_message)
+                    .setPositiveButton(R.string.story_detail_delete_event_dialog_description_delete_all) { _, _ ->
+                        viewModel.deleteEvent(isAll = true)
+                    }
+                    .setNegativeButton(R.string.story_detail_delete_event_dialog_description_delete_cancel) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setNeutralButton(R.string.story_detail_delete_event_dialog_description_delete_one) { _, _ ->
+                        viewModel.deleteEvent(isAll = false)
+                    }.show()
+            } else {
+                AlertDialog.Builder(requireContext())
+                    .setTitle(R.string.story_detail_delete_event_confirm_dialog_title)
+                    .setMessage(R.string.story_detail_delete_event_confirm_dialog_message)
+                    .setPositiveButton(R.string.story_detail_delete_event_confirm_dialog_description_delete) { _, _ ->
+                        viewModel.deleteEvent(isAll = false)
+                    }
+                    .setNegativeButton(R.string.story_detail_delete_event_dialog_description_delete_cancel) { dialog, _ ->
+                        dialog.dismiss()
+                    }.show()
+            }
+        }
     }
 
     private fun collectViewModelEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { event ->
-                    when(event) {
-                        is EventStoryDetailEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
+                    when (event) {
+                        is EventStoryDetailEvent.ShowMessage -> showMessage(
+                            event.messageId,
+                            event.extraMessage
+                        )
+
                         is EventStoryDetailEvent.FinishEventStoryActivity -> requireActivity().finish()
+                        is EventStoryDetailEvent.NavigateToLoginActivity -> navigateToLoginActivity()
+                        is EventStoryDetailEvent.FinishEventStoryDetail -> findNavController().popBackStack()
                     }
                 }
             }
@@ -67,23 +127,34 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
         binding.vm = viewModel
     }
 
+    private fun navigateToLoginActivity() {
+        findNavController().navigate(EventStoryDetailFragmentDirections.actionEventStoryDetailFragmentToLoginActivity())
+        requireActivity().finishAffinity()
+    }
+
     private fun setRepeatOptions() {
-        val items = EventRepeatTerm.entries.map{getString(it.stringResId)}.toTypedArray()
-        (binding.storyDetailTilEventRepeat.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(items)
+        val items = EventRepeatTerm.entries.map { getString(it.stringResId) }.toTypedArray()
+        (binding.storyDetailTilEventRepeat.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(
+            items
+        )
         binding.storyDetailEtEventRepeat.setOnItemClickListener { _, _, index, _ ->
             viewModel.setEventRepeat(index)
         }
 
         val frequencyItems = arrayOf("1", "2", "3", "4", "5", "6")
-        (binding.storyDetailTilEventRepeatFrequency.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(frequencyItems)
+        (binding.storyDetailTilEventRepeatFrequency.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(
+            frequencyItems
+        )
         binding.storyDetailEtEventRepeatFrequency.doAfterTextChanged {
             viewModel.setEventRepeatFrequency(it.toString())
         }
     }
 
     private fun setNotificationOptions() {
-        val items = EventNotification.entries.map{getString(it.stringResId)}.toTypedArray()
-        (binding.storyDetailTilEventAlarm.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(items)
+        val items = EventNotification.entries.map { getString(it.stringResId) }.toTypedArray()
+        (binding.storyDetailTilEventAlarm.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(
+            items
+        )
         binding.storyDetailEtEventAlarm.setOnItemClickListener { _, _, index, _ ->
             viewModel.setEventAlarm(index)
         }
@@ -91,21 +162,25 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
 
     private fun setDateTimePicker() {
         binding.storyDetailTvValueStartDate.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.story_detail_description_start_date)).build()
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(getString(R.string.story_detail_description_start_date)).build()
             datePicker.show(requireActivity().supportFragmentManager, null)
             datePicker.addOnPositiveButtonClickListener {
                 viewModel.setEventStartDate(it)
             }
         }
         binding.storyDetailTvValueEndDate.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.story_detail_description_end_date)).build()
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(getString(R.string.story_detail_description_end_date)).build()
             datePicker.show(requireActivity().supportFragmentManager, null)
             datePicker.addOnPositiveButtonClickListener {
                 viewModel.setEventEndDate(it)
             }
         }
         binding.eventStoryTvValueEventRepeatEndDate.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker().setTitleText(getString(R.string.story_detail_description_event_repeat_end_date)).build()
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(getString(R.string.story_detail_description_event_repeat_end_date))
+                .build()
             datePicker.show(requireActivity().supportFragmentManager, null)
             datePicker.addOnPositiveButtonClickListener {
                 viewModel.setRepeatEndDate(it)
@@ -113,11 +188,11 @@ class EventStoryDetailFragment : BaseFragment<FragmentEventStoryDetailBinding>(R
         }
         binding.storyDetailTvValueStartTime.setOnClickListener {
             val picker = MaterialTimePicker.Builder()
-                    .setTimeFormat(TimeFormat.CLOCK_12H)
-                    .setHour(viewModel.uiState.value.startTime.hour)
-                    .setMinute(viewModel.uiState.value.startTime.minute)
-                    .setTitleText(getString(R.string.story_deatil_description_start_time))
-                    .build()
+                .setTimeFormat(TimeFormat.CLOCK_12H)
+                .setHour(viewModel.uiState.value.startTime.hour)
+                .setMinute(viewModel.uiState.value.startTime.minute)
+                .setTitleText(getString(R.string.story_deatil_description_start_time))
+                .build()
             picker.show(requireActivity().supportFragmentManager, null)
             picker.addOnPositiveButtonClickListener {
                 viewModel.setEventStartTime(picker.hour, picker.minute)

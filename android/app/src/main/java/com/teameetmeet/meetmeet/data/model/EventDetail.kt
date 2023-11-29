@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class EventStory(
+data class EventDetail(
     @Json(name = "id")
     val id: Int,
     @Json(name = "title")
@@ -13,10 +13,6 @@ data class EventStory(
     val startDate: String,
     @Json(name = "endDate")
     val endDate: String,
-    @Json(name = "eventMembers")
-    val eventMembers: List<EventMember>,
-    @Json(name = "announcement")
-    val announcement: String? = "",
     @Json(name = "authority")
     val authority: String?,
     @Json(name = "repeatPolicyId")
@@ -24,7 +20,9 @@ data class EventStory(
     @Json(name = "isJoinable")
     val isJoin: Boolean,
     @Json(name = "isVisible")
-    val isiVisible: Int,
-    @Json(name = "feeds")
-    val feeds: List<Feed>
+    val isVisible: Int = 0,
+    @Json(name = "repeatTerm")
+    val repeatTerm: String?,
+    @Json(name = "repeatFrequency")
+    val repeatFrequency: Int?
 )

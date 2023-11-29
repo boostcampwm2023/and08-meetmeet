@@ -18,7 +18,6 @@ import {
 } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { multerOptions } from 'src/common/config/multer.config';
 import { User } from 'src/user/entities/user.entity';
 import { CreateFeedDto } from './dto/create-feed.dto';
 import { FeedService } from './feed.service';
@@ -29,7 +28,7 @@ export class FeedController {
   constructor(private readonly feedService: FeedService) {}
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('contents', 10, multerOptions))
+  @UseInterceptors(FilesInterceptor('contents', 10))
   @Post()
   @ApiOperation({
     summary: '피드 생성 API',

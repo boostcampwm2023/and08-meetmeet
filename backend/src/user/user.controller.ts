@@ -19,7 +19,6 @@ import {
 } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { multerOptions } from 'src/common/config/multer.config';
 import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -41,7 +40,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('profile', multerOptions))
+  @UseInterceptors(FileInterceptor('profile'))
   @Patch('info')
   @ApiOperation({
     summary: '사용자 닉네임, 프로필 사진 수정 API',
@@ -52,6 +51,7 @@ export class UserController {
     @GetUser() user: User,
     @Body() updateUserDto: UpdateUserInfoDto,
   ) {
+    console.log(profileImage);
     return this.userService.updateUserInfo(user, updateUserDto, profileImage);
   }
 

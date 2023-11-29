@@ -29,6 +29,10 @@ class CalendarRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteEvents() {
+        localCalendarDataSource.deleteAll()
+    }
+
     fun addEvent(
         title: String,
         startDate: String,
@@ -59,7 +63,7 @@ class CalendarRepository @Inject constructor(
     }
 
     fun searchEvents(
-        keyword: String? = null,
+        keyword: String?,
         startDate: String,
         endDate: String
     ): Flow<List<EventResponse>> {

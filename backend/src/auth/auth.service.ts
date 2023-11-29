@@ -29,7 +29,9 @@ export class AuthService {
     }
 
     const nickname = uuidv4().split('-').at(0)!;
-    // TODO: nickname 중복 확인
+    if (await this.userService.findUserByNickname(nickname)) {
+      throw new BadRequestException('중복된 닉네임입니다.');
+    }
 
     await this.userService.localCreateUser(email, password, nickname);
   }

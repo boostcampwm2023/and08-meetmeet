@@ -21,5 +21,6 @@ data class EventStoryDetailUiState(
     val memo: String = "",
     val isOpen: Boolean = false,
     val isJoinable: Boolean = false,
-    val authority: EventAuthority = EventAuthority.GUEST
+    val authority: EventAuthority = EventAuthority.GUEST,
+    val isRepeatEvent: Boolean = true
 )

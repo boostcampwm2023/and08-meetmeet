@@ -26,11 +26,7 @@ class SettingHomeViewModel @Inject constructor(
     private val _event: MutableSharedFlow<SettingHomeEvent> = MutableSharedFlow()
     val event: SharedFlow<SettingHomeEvent> = _event
 
-    init {
-        fetchUserProfile()
-    }
-
-    private fun fetchUserProfile() {
+    fun fetchUserProfile() {
         viewModelScope.launch {
             userRepository.getUserProfile()
                 .catch {
@@ -44,11 +40,7 @@ class SettingHomeViewModel @Inject constructor(
     fun logout() {
         UserApiClient.instance.logout {
             viewModelScope.launch {
-                userRepository.logout().catch {
-                    _event.emit(SettingHomeEvent.ShowMessage(it.message.orEmpty()))
-                }.collect {
-                    _event.emit(SettingHomeEvent.NavigateToLoginActivity)
-                }
+                _event.emit(SettingHomeEvent.NavigateToLoginActivity)
             }
         }
     }
