@@ -10,9 +10,10 @@ import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
-import com.teameetmeet.meetmeet.util.DateTimeFormat
-import com.teameetmeet.meetmeet.util.toDateString
-import com.teameetmeet.meetmeet.util.toLong
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toDateString
+import com.teameetmeet.meetmeet.util.date.toLocalDateTime
+import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -74,7 +75,9 @@ class AddEventViewModel @Inject constructor(
                     ).catch {
                         _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
                     }.collectLatest {
-                        _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                        startDateTime.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)?.let { startDateTime ->
+                            _event.emit(AddEventUiEvent.AlarmSetting(1, startDateTime, eventName, alarm))
+                        }
                     }
                 }
             }
