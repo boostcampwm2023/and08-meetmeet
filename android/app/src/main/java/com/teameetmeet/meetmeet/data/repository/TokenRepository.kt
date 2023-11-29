@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class TokenRepository @Inject constructor(

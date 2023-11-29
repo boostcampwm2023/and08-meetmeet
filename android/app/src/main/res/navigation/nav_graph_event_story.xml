@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_event_story_fragment_to_create_feed_fragment"
             app:destination="@id/create_feed_fragment" />
+        <action
+            android:id="@+id/action_event_story_fragment_to_login_activity"
+            app:destination="@id/login_activity" />
     </fragment>
 
     <fragment
@@ -32,6 +35,9 @@
         <argument
             android:name="storyId"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_event_story_detail_fragment_to_login_activity"
+            app:destination="@id/login_activity" />
     </fragment>
 
     <fragment
@@ -59,4 +65,8 @@
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.createfeed.CreateFeedFragment"
         android:label="CreateFeedFragment"
         tools:layout="@layout/fragment_create_feed" />
+    <activity
+        android:id="@+id/login_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.login.LoginActivity"
+        android:label="login_activity" />
 </navigation>

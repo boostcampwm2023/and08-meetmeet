@@ -20,6 +20,9 @@ interface EventDao {
     @Delete
     suspend fun delete(event: Event)
 
+    @Query("DELETE FROM Event")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM Event WHERE id = :id")
     fun get(id: Int): Flow<Event>
 

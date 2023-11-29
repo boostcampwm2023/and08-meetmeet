@@ -64,7 +64,7 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemCl
 
     override fun onItemClick(eventSimple: EventSimple) {
         findNavController().navigate(
-            EventsPerDayBottomSheetFragmentDirections.actionBottomSheetDialogToEventStoryActivity()
+            EventsPerDayBottomSheetFragmentDirections.actionBottomSheetDialogToEventStoryActivity(eventSimple.id)
         )
     }
 }

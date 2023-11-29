@@ -390,7 +390,6 @@
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@color/event_color_warning"
                 android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
-                android:onClick="@{() -> vm.deleteEvent()}"
                 android:text="@string/story_detail_remove_event"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"

@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.eventstory.EventStoryActivity
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
@@ -26,6 +27,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setEventId()
         setBinding()
         setTopAppBar()
         setClickListener()
@@ -34,7 +36,12 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     override fun onStart() {
         super.onStart()
-        viewModel.getStory(1)
+        viewModel.getStory()
+    }
+
+    private fun setEventId() {
+        val eventId = arguments?.getInt(EventStoryActivity.EVENT_ID)
+        viewModel.setEventId(eventId)
     }
 
     private fun setClickListener() {
@@ -105,17 +112,25 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                         is EventStoryEvent.ShowMessage -> showMessage(
                             event.messageId, event.extraMessage
                         )
+                        is EventStoryEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
+                        }
                     }
                 }
             }
         }
     }
 
+    private fun navigateToLoginActivity() {
+        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToLoginActivity())
+        requireActivity().finishAffinity()
+    }
+
 
     private fun navigateToEventDetailFragment() {
         findNavController().navigate(
             EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment(
-                viewModel.eventStoryUiState.value.eventStory?.id ?: 0
+                viewModel.eventStoryUiState.value.eventId
             )
         )
     }
