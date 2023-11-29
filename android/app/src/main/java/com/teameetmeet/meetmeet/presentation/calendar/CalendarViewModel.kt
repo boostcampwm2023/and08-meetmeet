@@ -36,11 +36,12 @@ class CalendarViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository
 ) : ViewModel(), CalendarItemClickListener {
 
-    private val _currentDate = MutableStateFlow<LocalDate>(getLocalDate())
-    val currentDate: StateFlow<LocalDate> = _currentDate
+    private val _currentDate = MutableStateFlow<CalendarItem>(CalendarItem(getLocalDate()))
+    val currentDate: StateFlow<CalendarItem> = _currentDate
 
-    private val _daysInMonth =
-        MutableStateFlow<List<CalendarItem>>(currentDate.value.getDayListInMonth(currentDate.value))
+    private val _daysInMonth = MutableStateFlow<List<CalendarItem>>(
+        currentDate.value.date?.getDayListInMonth() ?: emptyList()
+    )
     val daysInMonth: StateFlow<List<CalendarItem>> = _daysInMonth
 
     private val _userProfileImage = MutableStateFlow<String>("")
@@ -76,7 +77,7 @@ class CalendarViewModel @Inject constructor(
 
     fun fetchEvents() {
         viewModelScope.launch {
-            val date = currentDate.value
+            val date = currentDate.value.date ?: return@launch
             val startDateTime = date.withDayOfMonth(1).toStartLong()
             val endDateTime = date.withDayOfMonth(date.lengthOfMonth()).toEndLong()
             calendarRepository
@@ -90,6 +91,9 @@ class CalendarViewModel @Inject constructor(
     private fun setDaysInMonth(monthlyEvents: List<EventSimple>) {
         _daysInMonth.update {
             allocateEventsPerDay(it, monthlyEvents)
+        }
+        _currentDate.update { prev ->
+            _daysInMonth.value.find { it.date == prev.date } ?: prev
         }
     }
 
@@ -168,10 +172,10 @@ class CalendarViewModel @Inject constructor(
 
     fun moveMonth(offset: Long) {
         _currentDate.update {
-            it.plusMonths(offset)
+            CalendarItem(it.date?.plusMonths(offset))
         }
         _daysInMonth.update {
-            currentDate.value.getDayListInMonth(currentDate.value)
+            currentDate.value.date?.getDayListInMonth() ?: emptyList()
         }
         fetchEvents()
     }
@@ -191,7 +195,7 @@ class CalendarViewModel @Inject constructor(
         if (calendarItem.events.isNotEmpty()) {
             _dayClickEvent.tryEmit(DayClickEvent(calendarItem.date, calendarItem.events))
         }
-        if (currentDate.value == calendarItem.date) return
+        if (currentDate.value.date == calendarItem.date) return
         _daysInMonth.update { list ->
             list.map {
                 when (it.date) {
@@ -200,6 +204,6 @@ class CalendarViewModel @Inject constructor(
                 }
             }
         }
-        _currentDate.update { calendarItem.date }
+        _currentDate.update { calendarItem }
     }
 }
