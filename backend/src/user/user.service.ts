@@ -10,6 +10,7 @@ import { User } from './entities/user.entity';
 import { OauthProvider } from './entities/oauthProvider.entity';
 import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 import { ContentService } from 'src/content/content.service';
+import { FollowService } from '../follow/follow.service';
 
 const SALTROUND = 10;
 
@@ -20,6 +21,7 @@ export class UserService {
     @InjectRepository(OauthProvider)
     private oauthProviderRepository: Repository<OauthProvider>,
     private readonly contentService: ContentService,
+    private readonly followService: FollowService,
   ) {}
 
   async localCreateUser(email: string, password: string, nickname: string) {
@@ -146,10 +148,13 @@ export class UserService {
     if (!searchResult) {
       throw new BadRequestException('존재하지 않는 유저입니다.');
     }
+    // const followers = await this.fo
+
     return {
       id: searchResult.id,
       nickname: searchResult.nickname,
       profile: searchResult.profileId,
+      isFollowed: await this.followService.isFollowed(user, searchResult.id),
     };
   }
 

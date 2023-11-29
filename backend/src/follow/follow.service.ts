@@ -129,4 +129,14 @@ export class FollowService {
     await this.followRepository.softRemove(existingFollow);
     return { message: '언팔로우 성공' };
   }
+
+  async isFollowed(user: User, userId: number) {
+    const isFollowed = await this.followRepository.findOne({
+      where: {
+        user: Equal(userId),
+        follower: Equal(user.id),
+      },
+    });
+    return isFollowed ? true : false;
+  }
 }
