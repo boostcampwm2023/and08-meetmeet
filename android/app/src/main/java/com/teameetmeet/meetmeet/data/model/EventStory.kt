@@ -24,7 +24,7 @@ data class EventStory(
     @Json(name = "isJoinable")
     val isJoin: Boolean,
     @Json(name = "isVisible")
-    val isiVisible: Int,
+    val isiVisible: Boolean,
     @Json(name = "feeds")
     val feeds: List<Feed>
 )
