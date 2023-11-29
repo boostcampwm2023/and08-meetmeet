@@ -10,6 +10,8 @@ import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
+import com.teameetmeet.meetmeet.service.AlarmHelper
+import com.teameetmeet.meetmeet.service.model.EventAlarm
 import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.toDateString
 import com.teameetmeet.meetmeet.util.date.toLocalDateTime
@@ -31,7 +33,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEventViewModel @Inject constructor(
-    private val calendarRepository: CalendarRepository
+    private val calendarRepository: CalendarRepository,
+    private val alarmHelper: AlarmHelper
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddEventUiState())
@@ -75,9 +78,21 @@ class AddEventViewModel @Inject constructor(
                     ).catch {
                         _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
                     }.collectLatest {
-                        startDateTime.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)?.let { startDateTime ->
-                            _event.emit(AddEventUiEvent.AlarmSetting(1, startDateTime, eventName, alarm))
-                        }
+                        startDateTime.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
+                            ?.let { startDateTime ->
+                                // todo API 되면 이벤트 아이디 받아서 넘기기
+                                // todo 알림 없음일 경우 알림 생성 x
+                                alarmHelper.registerEventAlarm(
+                                    EventAlarm(
+                                        1,
+                                        startDateTime.minusMinutes(alarm.minutes.toLong()).toLong(
+                                            ZoneId.of("UTC")
+                                        ),
+                                        eventName
+                                    )
+                                )
+                                _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                            }
                     }
                 }
             }
@@ -178,7 +193,7 @@ class AddEventViewModel @Inject constructor(
 
     fun setEventStartTime(hour: Int, min: Int) {
         _uiState.update {
-            it.copy(startTime = EventTime(hour, min))
+            it.copy(startTime = EventTime(hour, min), endTime = EventTime(hour, min))
         }
     }
 
