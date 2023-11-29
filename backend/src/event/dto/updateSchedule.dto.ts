@@ -51,7 +51,7 @@ export class UpdateScheduleDto {
   @IsInt()
   alarmMinutes: number;
 
-  @ApiProperty({ name: 'RepeatTerm', example: 'DAY' })
+  @ApiProperty({ name: 'repeatTerm', example: 'DAY' })
   @IsOptional()
   @IsEnum(RepeatTerm)
   repeatTerm?: RepeatTerm;
