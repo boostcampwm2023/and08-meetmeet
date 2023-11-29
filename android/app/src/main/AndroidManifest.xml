@@ -53,7 +53,7 @@
             android:exported="true"
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".presentation.addevent.AddEventActivity" />
-        <activity android:name=".presentation.searchevent.SearchActivity" />
+        <activity android:name=".presentation.searchevent.SearchEventActivity" />
         <activity android:name=".presentation.setting.SettingActivity" />
 
         <service

@@ -70,7 +70,7 @@
         tools:layout="@layout/activity_setting" />
     <activity
         android:id="@+id/search_activity"
-        android:name="com.teameetmeet.meetmeet.presentation.searchevent.SearchActivity"
+        android:name="com.teameetmeet.meetmeet.presentation.searchevent.SearchEventActivity"
         android:label="search_activity"
         tools:layout="@layout/activity_search_event" />
     <activity
