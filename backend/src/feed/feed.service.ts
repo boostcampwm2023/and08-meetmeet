@@ -44,7 +44,7 @@ export class FeedService {
     }
 
     const feed = this.feedRepository.create({ ...createFeedDto, author: user });
-    const contents = await this.contentService.createContentBulk(files);
+    const contents = await this.contentService.createContentBulk(files, 'feed');
     await this.feedRepository.save(feed);
 
     const feedContents = contents.reduce((acc, content) => {
