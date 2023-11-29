@@ -13,6 +13,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class EventStoryRepository @Inject constructor(
@@ -94,6 +97,18 @@ class EventStoryRepository @Inject constructor(
             }.catch {
                 throw it
             }
+    }
+
+    fun createFeed(eventId: Int, memo: String, media: List<File>): Flow<Unit> {
+        return flowOf(true).map {
+            val contents = media.map {
+                MultipartBody.Part.createFormData("contents", it.name, it.asRequestBody())
+            }
+            eventStoryApi.createFeed(eventId, memo, contents)
+        }.catch {
+            //todo: 예외처리
+            throw it
+        }
     }
 
 }

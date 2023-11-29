@@ -75,7 +75,9 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
             }
             eventStoryFabMakeFeed.setOnClickListener {
                 findNavController().navigate(
-                    EventStoryFragmentDirections.actionEventStoryFragmentToCreateFeedFragment()
+                    EventStoryFragmentDirections.actionEventStoryFragmentToCreateFeedFragment(
+                        viewModel.eventStoryUiState.value.eventId
+                    )
                 )
             }
         }
@@ -112,6 +114,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                         is EventStoryEvent.ShowMessage -> showMessage(
                             event.messageId, event.extraMessage
                         )
+
                         is EventStoryEvent.NavigateToLoginActivity -> {
                             navigateToLoginActivity()
                         }
