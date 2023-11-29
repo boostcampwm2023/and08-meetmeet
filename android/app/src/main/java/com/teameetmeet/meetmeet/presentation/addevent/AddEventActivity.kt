@@ -1,5 +1,9 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.util.Pair
@@ -17,8 +21,8 @@ import com.teameetmeet.meetmeet.databinding.ActivityAddEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
-import com.teameetmeet.meetmeet.util.toLocalDateTime
-import com.teameetmeet.meetmeet.util.toLong
+import com.teameetmeet.meetmeet.util.date.toLocalDateTime
+import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -77,10 +81,39 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
                             event.extraMessage
                         )
 
-                        is AddEventUiEvent.FinishAddEventActivity -> finish()
+                        is AddEventUiEvent.AlarmSetting -> {
+                            registerAlarm(event)
+                            finish()
+                        }
                     }
                 }
             }
+        }
+    }
+
+    private fun registerAlarm(event: AddEventUiEvent.AlarmSetting) {
+        val alarmMgr = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        val alarmIntent = Intent(this, AlarmReceiver::class.java).apply {
+            putExtra("title", event.title)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            this,
+            event.eventId,
+            alarmIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+        )
+
+        try {
+            println("이벤트 등록")
+            alarmMgr.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                event.start.minusMinutes(event.alarm.minutes.toLong()).toLong(ZoneId.of("UTC")),
+                pendingIntent
+            )
+            println("이벤트 등록 완료")
+        } catch (_: SecurityException) {
+
         }
     }
 
