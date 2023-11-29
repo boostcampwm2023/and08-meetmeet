@@ -16,9 +16,9 @@ import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.databinding.FragmentSearchEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnItemClickListener
-import com.teameetmeet.meetmeet.util.addUtcTimeOffset
-import com.teameetmeet.meetmeet.util.toLocalDate
-import com.teameetmeet.meetmeet.util.toStartLong
+import com.teameetmeet.meetmeet.util.date.addUtcTimeOffset
+import com.teameetmeet.meetmeet.util.date.toLocalDate
+import com.teameetmeet.meetmeet.util.date.toStartLong
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

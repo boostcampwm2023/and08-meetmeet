@@ -11,11 +11,11 @@ import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
 import com.teameetmeet.meetmeet.presentation.model.EventBar
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
 import com.teameetmeet.meetmeet.presentation.model.toEventSimple
-import com.teameetmeet.meetmeet.util.getDayListInMonth
-import com.teameetmeet.meetmeet.util.getLocalDate
-import com.teameetmeet.meetmeet.util.toEndLong
-import com.teameetmeet.meetmeet.util.toLocalDate
-import com.teameetmeet.meetmeet.util.toStartLong
+import com.teameetmeet.meetmeet.util.date.getDayListInMonth
+import com.teameetmeet.meetmeet.util.date.getLocalDate
+import com.teameetmeet.meetmeet.util.date.toEndLong
+import com.teameetmeet.meetmeet.util.date.toLocalDate
+import com.teameetmeet.meetmeet.util.date.toStartLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow

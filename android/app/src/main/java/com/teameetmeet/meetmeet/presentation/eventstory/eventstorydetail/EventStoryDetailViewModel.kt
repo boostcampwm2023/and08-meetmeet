@@ -12,11 +12,11 @@ import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
-import com.teameetmeet.meetmeet.util.DateTimeFormat
-import com.teameetmeet.meetmeet.util.toDateString
-import com.teameetmeet.meetmeet.util.toLocalDateTime
-import com.teameetmeet.meetmeet.util.toLong
-import com.teameetmeet.meetmeet.util.toTimeStampLong
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toDateString
+import com.teameetmeet.meetmeet.util.date.toLocalDateTime
+import com.teameetmeet.meetmeet.util.date.toLong
+import com.teameetmeet.meetmeet.util.date.toTimeStampLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow

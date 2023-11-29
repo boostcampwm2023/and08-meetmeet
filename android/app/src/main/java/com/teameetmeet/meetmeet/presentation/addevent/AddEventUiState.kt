@@ -4,7 +4,7 @@ import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
-import com.teameetmeet.meetmeet.util.getLocalDateTime
+import com.teameetmeet.meetmeet.util.date.getLocalDateTime
 import java.time.LocalDateTime
 
 data class AddEventUiState(

@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.util
+package com.teameetmeet.meetmeet.util.date
 
 import java.time.LocalDate
 import java.time.LocalDateTime

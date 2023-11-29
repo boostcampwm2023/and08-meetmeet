@@ -8,8 +8,8 @@ import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.toEvent
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
-import com.teameetmeet.meetmeet.util.DateTimeFormat
-import com.teameetmeet.meetmeet.util.toDateString
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toDateString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import java.time.ZoneId
