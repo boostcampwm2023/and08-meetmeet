@@ -2,8 +2,10 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
+import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
@@ -21,6 +23,9 @@ interface UserApi {
 
     @GET("auth/check/nickname")
     suspend fun checkNickNameDuplication(@Query("nickname") nickname: String): AvailableResponse
+
+    @PATCH("user/account")
+    suspend fun patchPassword(@Body passwordChangeRequest: PasswordChangeRequest): UserProfile
 
     @Multipart
     @PATCH("user/info")

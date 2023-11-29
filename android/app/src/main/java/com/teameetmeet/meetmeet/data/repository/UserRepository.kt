@@ -4,6 +4,7 @@ import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.network.api.UserApi
+import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -81,6 +82,15 @@ class UserRepository @Inject constructor(
             .map {
                 val response = userApi.checkNickNameDuplication(nickname)
                 response.isAvailable
+            }.catch {
+                throw it
+            }
+    }
+
+    fun patchPassword(password: String): Flow<UserProfile> {
+        return flowOf(true)
+            .map {
+                userApi.patchPassword(PasswordChangeRequest(password))
             }.catch {
                 throw it
             }
