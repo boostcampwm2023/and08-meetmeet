@@ -2,8 +2,8 @@ package com.teameetmeet.meetmeet.data
 
 import com.teameetmeet.meetmeet.data.local.database.entity.Event
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
-import com.teameetmeet.meetmeet.util.DateTimeFormat
-import com.teameetmeet.meetmeet.util.toTimeStampLong
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toTimeStampLong
 import java.time.ZoneId
 
 fun EventResponse.toEvent(): Event {

@@ -1,10 +1,9 @@
-package com.teameetmeet.meetmeet.util
+package com.teameetmeet.meetmeet.util.date
 
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.format.DateTimeParseException
 
 fun Long.toLocalDate(zoneId: ZoneId = ZoneId.systemDefault()): LocalDate {
     return Instant.ofEpochMilli(this).atZone(zoneId).toLocalDate()
@@ -24,13 +23,4 @@ fun Long.removeUtcTimeOffset(): Long {
 
 fun Long.toDateString(format: DateTimeFormat, zoneId: ZoneId = ZoneId.systemDefault()): String {
     return toLocalDateTime(zoneId).format(format.formatter)
-}
-
-fun String.toTimeStampLong(format: DateTimeFormat, zoneId: ZoneId = ZoneId.systemDefault()): Long {
-    if (this.isEmpty()) return 0
-    return try {
-        LocalDateTime.parse(this, format.formatter).toLong(zoneId)
-    } catch (e: DateTimeParseException) {
-        LocalDate.parse(this, format.formatter).toStartLong(zoneId)
-    }
 }

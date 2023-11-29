@@ -6,9 +6,9 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
-import com.teameetmeet.meetmeet.util.DateTimeFormat
-import com.teameetmeet.meetmeet.util.toDateString
-import com.teameetmeet.meetmeet.util.toTimeStampLong
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toDateString
+import com.teameetmeet.meetmeet.util.date.toTimeStampLong
 import java.time.ZoneId
 
 @BindingAdapter("event_story")

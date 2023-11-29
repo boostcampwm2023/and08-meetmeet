@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.util
+package com.teameetmeet.meetmeet.util.date
 
 import com.teameetmeet.meetmeet.MeetMeetApp
 import com.teameetmeet.meetmeet.R
