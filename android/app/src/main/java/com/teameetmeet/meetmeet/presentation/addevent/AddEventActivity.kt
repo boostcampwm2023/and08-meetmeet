@@ -81,8 +81,7 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
                             event.extraMessage
                         )
 
-                        is AddEventUiEvent.AlarmSetting -> {
-                            registerAlarm(event)
+                        is AddEventUiEvent.FinishAddEventActivity -> {
                             finish()
                         }
                     }
