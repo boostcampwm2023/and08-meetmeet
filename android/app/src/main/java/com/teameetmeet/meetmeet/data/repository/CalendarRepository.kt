@@ -13,7 +13,11 @@ import com.teameetmeet.meetmeet.util.toDateString
 import com.teameetmeet.meetmeet.util.toTimeStampLong
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import java.lang.Exception
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -24,6 +28,7 @@ class CalendarRepository @Inject constructor(
     suspend fun getEvents(startDate: Long, endDate: Long): Flow<List<Event>> {
         try {
             syncEvents(startDate, endDate)
+            println("get Events")
         } finally {
             return localCalendarDataSource.getEvents(startDate, endDate)
         }
@@ -74,19 +79,17 @@ class CalendarRepository @Inject constructor(
 
     private suspend fun syncEvents(startDateTime: Long, endDateTime: Long) {
         //todo: edit distance 적용
-        val local = localCalendarDataSource
-            .getEvents(startDateTime, endDateTime)
-            .first()
-        val remote = remoteCalendarDataSource
+        println("sync events")
+        val remotes = remoteCalendarDataSource
             .getEvents(
                 startDateTime.toDateString(DateTimeFormat.SERVER_DATE, ZoneId.of("UTC")),
                 endDateTime.toDateString(DateTimeFormat.SERVER_DATE, ZoneId.of("UTC"))
-            )
-            .first()
+            ).first()
 
-        syncDeletes(local, remote)
-        syncInserts(local, remote)
-        syncUpdates(local, remote)
+
+        localCalendarDataSource.deleteEvents(startDateTime, endDateTime)
+        println(remotes)
+//        localCalendarDataSource.insertEvents(remotes.map(EventResponse::toEvent))
     }
 
     private suspend fun syncInserts(localEvents: List<Event>, remoteEvents: List<EventResponse>) {

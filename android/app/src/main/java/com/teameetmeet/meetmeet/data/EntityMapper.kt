@@ -9,5 +9,5 @@ import java.time.ZoneId
 fun EventResponse.toEvent(): Event {
     val startDateLong = startDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC"))
     val endDateLong = endDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC"))
-    return Event(id, title, startDateLong, endDateLong, repeatPolicyId != null)
+    return Event(id, title, startDateLong, endDateLong, repeatPolicyId != null, alarmMinutes, color)
 }
