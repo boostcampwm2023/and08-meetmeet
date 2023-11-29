@@ -52,7 +52,7 @@ class DataStoreHelper @Inject constructor(
 
     fun getAlarmState(): Flow<Boolean> {
         return dataStore.data
-            .map { it[IS_PUSH_ALARM_ON] ?: false }
+            .map { it[IS_PUSH_ALARM_ON] ?: true }
     }
 
     suspend fun storeAlarmState(isOn: Boolean) {
