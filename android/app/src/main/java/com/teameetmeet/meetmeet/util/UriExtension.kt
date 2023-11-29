@@ -18,9 +18,9 @@ fun Uri.toAbsolutePath(): String? {
     }
 
     val file = fileName?.let {
-        val medias = File(context.filesDir, "medias")
-        medias.mkdirs()
-        File(medias, it)
+        val media = File(context.filesDir, "media")
+        media.mkdirs()
+        File(media, it)
     }
 
     contentResolver.openInputStream(this).use { input ->
