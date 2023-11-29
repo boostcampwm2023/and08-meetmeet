@@ -1,10 +1,12 @@
 package com.teameetmeet.meetmeet.presentation.setting.profile
 
 import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.util.toAbsolutePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,7 +48,7 @@ class SettingProfileViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             currentUserProfile = userProfile,
-                            profileImage = userProfile.profileImage,
+                            profileImage = userProfile.profileImage?.toUri(),
                             nickname = userProfile.nickname
                         )
                     }
@@ -70,7 +73,11 @@ class SettingProfileViewModel @Inject constructor(
     }
 
     fun updateUserProfileImage(uri: Uri) {
-        _uiState.update { it.copy(profileImage = uri.toString()) }
+        _uiState.update { it.copy(profileImage = uri) }
+    }
+
+    fun updateEmptyUserProfileImage() {
+        _uiState.update { it.copy(profileImage = null) }
     }
 
     fun checkDuplicate() {
@@ -94,6 +101,27 @@ class SettingProfileViewModel @Inject constructor(
                         }
                     }
                 }
+            _showPlaceholder.update { false }
+        }
+    }
+
+    fun patchUserProfile() {
+        viewModelScope.launch {
+            _showPlaceholder.update { true }
+            val imageFile =
+                if (_uiState.value.currentUserProfile.profileImage == _uiState.value.profileImage.toString()) {
+                    null
+                } else {
+                    _uiState.value.profileImage?.toAbsolutePath()?.let { File(it) }
+                }
+            userRepository.patchUserProfile(imageFile, _uiState.value.nickname)
+                .catch {
+                    _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_fail))
+                }
+                .collectLatest {
+                    _event.emit(SettingProfileUiEvent.NavigateToSettingHomeFragment)
+                }
+            imageFile?.delete()
             _showPlaceholder.update { false }
         }
     }

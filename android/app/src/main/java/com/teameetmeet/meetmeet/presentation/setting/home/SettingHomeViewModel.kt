@@ -26,11 +26,7 @@ class SettingHomeViewModel @Inject constructor(
     private val _event: MutableSharedFlow<SettingHomeEvent> = MutableSharedFlow()
     val event: SharedFlow<SettingHomeEvent> = _event
 
-    init {
-        fetchUserProfile()
-    }
-
-    private fun fetchUserProfile() {
+    fun fetchUserProfile() {
         viewModelScope.launch {
             userRepository.getUserProfile()
                 .catch {
