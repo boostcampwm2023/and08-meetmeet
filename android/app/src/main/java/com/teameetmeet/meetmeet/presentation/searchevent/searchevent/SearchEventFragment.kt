@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.util.Pair
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -121,11 +120,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
         val std = start.plusDays(179)
 
         return if (end.isAfter(std)) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.search_event_range_constraint_message),
-                Toast.LENGTH_SHORT
-            ).show()
+            showMessage(R.string.search_event_range_constraint_message, "")
             Pair(start.toStartLong(), std.toStartLong())
         } else {
             Pair(start.toStartLong(), end.toStartLong())
@@ -138,7 +133,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
 
     override fun onClick(event: EventResponse) {
         findNavController().navigate(
-            SearchEventFragmentDirections.actionSearchEventFragmentToEventStoryActivity()
+            SearchEventFragmentDirections.actionSearchEventFragmentToEventStoryActivity(event.id)
         )
     }
 }

@@ -64,7 +64,11 @@
         android:id="@+id/create_feed_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.createfeed.CreateFeedFragment"
         android:label="CreateFeedFragment"
-        tools:layout="@layout/fragment_create_feed" />
+        tools:layout="@layout/fragment_create_feed">
+        <argument
+            android:name="storyId"
+            app:argType="integer" />
+    </fragment>
     <activity
         android:id="@+id/login_activity"
         android:name="com.teameetmeet.meetmeet.presentation.login.LoginActivity"

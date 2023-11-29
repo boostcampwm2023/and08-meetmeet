@@ -23,8 +23,8 @@
             android:id="@+id/action_calendar_fragment_to_notification_activity"
             app:destination="@id/notification_activity" />
         <action
-            android:id="@+id/action_calendar_fragment_to_bottom_sheet_dialog"
-            app:destination="@id/bottom_sheet_dialog" />
+            android:id="@+id/action_calendar_fragment_to_eventStoryActivity"
+            app:destination="@id/event_story_activity" />
         <action
             android:id="@+id/action_calendar_fragment_to_follow_fragment"
             app:destination="@id/follow_fragment" />
@@ -60,16 +60,19 @@
             android:name="date"
             app:argType="java.time.LocalDate" />
     </activity>
+
     <activity
         android:id="@+id/setting_activity"
         android:name="com.teameetmeet.meetmeet.presentation.setting.SettingActivity"
         android:label="setting_activity"
         tools:layout="@layout/activity_setting" />
+
     <activity
         android:id="@+id/search_activity"
         android:name="com.teameetmeet.meetmeet.presentation.searchevent.SearchEventActivity"
         android:label="search_activity"
         tools:layout="@layout/activity_search_event" />
+
     <activity
         android:id="@+id/notification_activity"
         android:name="com.teameetmeet.meetmeet.presentation.notification.NotificationActivity"
@@ -85,19 +88,4 @@
             android:name="eventId"
             app:argType="integer" />
     </activity>
-
-    <dialog
-        android:id="@+id/bottom_sheet_dialog"
-        android:name="com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment"
-        tools:layout="@layout/fragment_events_per_day_bottom_sheet">
-        <argument
-            android:name="eventsPerDay"
-            app:argType="com.teameetmeet.meetmeet.presentation.calendar.DayClickEvent" />
-        <action
-            android:id="@+id/action_bottom_sheet_dialog_to_add_event_activity"
-            app:destination="@id/add_event_activity" />
-        <action
-            android:id="@+id/action_bottom_sheet_dialog_to_event_story_activity"
-            app:destination="@id/event_story_activity" />
-    </dialog>
 </navigation>
