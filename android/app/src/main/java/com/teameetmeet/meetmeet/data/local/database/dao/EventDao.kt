@@ -27,7 +27,7 @@ interface EventDao {
     suspend fun deleteAll()
 
     @Query("DELETE FROM Event WHERE endDateTime >= :startDateTime AND startDateTime <= :endDateTime")
-    fun deleteEvents(startDateTime: Long, endDateTime: Long)
+    suspend fun deleteEvents(startDateTime: Long, endDateTime: Long)
 
     @Query("SELECT * FROM Event WHERE id = :id")
     fun get(id: Int): Flow<Event>
