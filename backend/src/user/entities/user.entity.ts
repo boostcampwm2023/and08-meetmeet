@@ -17,7 +17,7 @@ export class User extends commonEntity {
   @Column({ nullable: true })
   profileId: number;
 
-  @ManyToOne(() => Content)
+  @ManyToOne(() => Content, { eager: true })
   @JoinColumn()
   profile: Content;
 

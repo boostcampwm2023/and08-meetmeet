@@ -33,6 +33,7 @@ export class Event extends commonEntity {
 
   @OneToMany(() => EventMember, (eventMember) => eventMember.event, {
     cascade: ['soft-remove'],
+    eager: true,
   })
   eventMembers: EventMember[];
 
