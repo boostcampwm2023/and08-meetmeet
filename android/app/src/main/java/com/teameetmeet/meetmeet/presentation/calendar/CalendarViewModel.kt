@@ -59,11 +59,7 @@ class CalendarViewModel @Inject constructor(
 
     val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
 
-    init {
-        fetchUserProfile()
-    }
-
-    private fun fetchUserProfile() {
+    fun fetchUserProfile() {
         viewModelScope.launch {
             userRepository.getUserProfile().catch {
                 updateUserProfile(UserProfile(null, "", ""))

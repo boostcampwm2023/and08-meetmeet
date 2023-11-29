@@ -10,6 +10,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -77,6 +82,25 @@ class UserRepository @Inject constructor(
                 response.isAvailable
             }.catch {
                 throw it
+            }
+    }
+
+    fun patchUserProfile(image: File?, nickname: String): Flow<UserProfile> {
+        return flowOf(true)
+            .map {
+                val profileImageRequest = if (image == null) {
+                    null
+                } else {
+                    MultipartBody.Part.createFormData(
+                        "profile",
+                        image.name,
+                        image.asRequestBody()
+                    )
+                }
+                val nicknameRequest = nickname.toRequestBody("text/plain".toMediaType())
+                val response = userApi.updateUserProfile(nicknameRequest, profileImageRequest)
+                fetchUserProfile(response)
+                response
             }
     }
 }

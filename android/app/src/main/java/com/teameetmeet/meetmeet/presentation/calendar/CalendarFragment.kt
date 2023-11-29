@@ -35,6 +35,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
     override fun onResume() {
         super.onResume()
         viewModel.fetchEvents()
+        viewModel.fetchUserProfile()
     }
 
     private fun setBinding() {
