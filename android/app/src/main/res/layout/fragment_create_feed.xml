@@ -56,15 +56,14 @@
                 android:layout_weight="1"
                 android:gravity="top"
                 android:maxLength="@integer/text_length_long"
-                android:onTextChanged="@{(p1,p2,p3,p4) -> vm.setFeedText(p1)}"
-                />
+                android:onTextChanged="@{(p1,p2,p3,p4) -> vm.setFeedText(p1)}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
             android:id="@+id/create_feed_ll_media"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="bottom"
             android:orientation="horizontal"
             android:paddingVertical="5dp"
             android:paddingStart="20dp"
@@ -86,11 +85,11 @@
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/create_feed_rv_media"
+                sub_list="@{vm.mediaList}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                uris="@{vm.mediaList}"
-                listener="@{vm}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_create_feed_media" />
         </LinearLayout>
