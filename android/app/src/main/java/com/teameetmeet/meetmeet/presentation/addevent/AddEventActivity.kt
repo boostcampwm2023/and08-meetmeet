@@ -1,9 +1,5 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.util.Pair
@@ -87,32 +83,6 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
                     }
                 }
             }
-        }
-    }
-
-    private fun registerAlarm(event: AddEventUiEvent.AlarmSetting) {
-        val alarmMgr = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        val alarmIntent = Intent(this, AlarmReceiver::class.java).apply {
-            putExtra("title", event.title)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            this,
-            event.eventId,
-            alarmIntent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
-        )
-
-        try {
-            println("이벤트 등록")
-            alarmMgr.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                event.start.minusMinutes(event.alarm.minutes.toLong()).toLong(ZoneId.of("UTC")),
-                pendingIntent
-            )
-            println("이벤트 등록 완료")
-        } catch (_: SecurityException) {
-
         }
     }
 

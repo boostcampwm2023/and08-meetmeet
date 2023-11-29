@@ -72,7 +72,7 @@
         </service>
 
         <receiver
-            android:name=".presentation.addevent.AlarmReceiver"
+            android:name=".service.AlarmReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
