@@ -2,6 +2,7 @@ import {
   IsBoolean,
   IsDateString,
   IsEnum,
+  IsInt,
   IsOptional,
   IsString,
   Length,
@@ -41,6 +42,14 @@ export class UpdateScheduleDto {
   @IsString()
   @Length(1, 64)
   memo?: string;
+
+  @ApiProperty({ name: 'color', example: 10 })
+  @IsInt()
+  color: number;
+
+  @ApiProperty({ name: 'alarmMinutes', example: 10 })
+  @IsInt()
+  alarmMinutes: number;
 
   @ApiProperty({ name: 'RepeatTerm', example: 'DAY' })
   @IsOptional()

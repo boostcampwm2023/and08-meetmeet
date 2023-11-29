@@ -44,7 +44,15 @@ export class EventService {
     });
 
     const result: any[] = [];
-    events.forEach((event) => [
+    events.forEach((event) => {
+      const event_detail = event.eventMembers.find(
+        (eventMember) => eventMember.user.id === user.id,
+      );
+
+      if (!event_detail) {
+        throw new Error('event detail is not valid');
+      }
+
       result.push({
         id: event.id,
         title: event.title,
@@ -56,14 +64,13 @@ export class EventService {
           profile: `/user/profile/${eventMember.user.id}`,
           authority: eventMember.authority.displayName,
         })),
-        authority:
-          event.eventMembers.find(
-            (eventMember) => eventMember.user.id === user.id,
-          )?.authority?.displayName || null,
+        color: event_detail.detail.color,
+        alarmMinutes: event_detail.detail.alarmMinutes,
+        authority: event_detail.authority.displayName,
         repeatPolicyId: event.repeatPolicyId,
         isJoinable: event.isJoinable ? true : false,
-      }),
-    ]);
+      });
+    });
     return { events: result };
   }
 
@@ -72,7 +79,7 @@ export class EventService {
       where: { id: eventId },
       relations: ['repeatPolicy', 'eventMembers'],
     });
-    console.log(event);
+
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
@@ -141,6 +148,8 @@ export class EventService {
         isJoinable: event.isJoinable ? true : false,
         isVisible: detail?.isVisible ? true : false,
         memo: detail?.memo,
+        color: detail?.color,
+        alarmMinutes: detail?.alarmMinutes,
         repeatTerm: repeatTerm,
         repeatFrequency: repeatFrequency,
         repeatEndDate: repeatEndDate,
@@ -173,8 +182,14 @@ export class EventService {
         title: event.title,
         startDate: event.startDate,
         endDate: event.endDate,
-        // color: event.eventMembers.find((eventMember) => eventMember.user.id === userId).detail || null,
-        color: null,
+        color:
+          event.eventMembers.find(
+            (eventMember) => eventMember.user.id === userId,
+          )?.detail.color || null,
+        alarmMinutes:
+          event.eventMembers.find(
+            (eventMember) => eventMember.user.id === userId,
+          )?.detail.alarmMinutes || null,
       }),
     ]);
     return { events: result };
@@ -604,6 +619,14 @@ export class EventService {
     });
 
     const result = events.map((event) => {
+      const event_detail = event.eventMembers.find(
+        (eventMember) => eventMember.user.id === user.id,
+      );
+
+      if (!event_detail) {
+        throw new Error('event detail is not valid');
+      }
+
       return {
         id: event.id,
         title: event.title,
@@ -615,10 +638,9 @@ export class EventService {
           profile: `/user/profile/${eventMember.user.id}`,
           authority: eventMember.authority.displayName,
         })),
-        authority:
-          event.eventMembers.find(
-            (eventMember) => eventMember.user.id === user.id,
-          )?.authority?.displayName || null,
+        authority: event_detail.authority.displayName,
+        color: event_detail.detail.color,
+        alarmMinutes: event_detail.detail.alarmMinutes,
         repeatPolicyId: event.repeatPolicyId,
         isJoinable: event.isJoinable ? true : false,
       };
