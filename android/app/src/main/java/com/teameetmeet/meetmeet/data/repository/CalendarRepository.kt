@@ -29,6 +29,10 @@ class CalendarRepository @Inject constructor(
         }
     }
 
+    suspend fun deleteEvents() {
+        localCalendarDataSource.deleteAll()
+    }
+
     fun addEvent(
         title: String,
         startDate: String,

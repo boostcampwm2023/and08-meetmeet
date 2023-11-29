@@ -40,11 +40,7 @@ class SettingHomeViewModel @Inject constructor(
     fun logout() {
         UserApiClient.instance.logout {
             viewModelScope.launch {
-                userRepository.logout().catch {
-                    _event.emit(SettingHomeEvent.ShowMessage(it.message.orEmpty()))
-                }.collect {
-                    _event.emit(SettingHomeEvent.NavigateToLoginActivity)
-                }
+                _event.emit(SettingHomeEvent.NavigateToLoginActivity)
             }
         }
     }

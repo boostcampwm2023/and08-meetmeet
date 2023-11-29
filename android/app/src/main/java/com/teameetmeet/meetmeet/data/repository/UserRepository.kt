@@ -54,9 +54,10 @@ class UserRepository @Inject constructor(
         dataStore.fetchUserProfile(userProfile)
     }
 
-    fun logout(): Flow<Unit> {
+    fun resetDataStore(): Flow<Unit> {
         return flowOf(true)
             .map {
+                dataStore.resetAlarmState()
                 dataStore.deleteUserProfile()
                 dataStore.deleteAppToken()
             }.catch {

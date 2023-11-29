@@ -26,6 +26,10 @@ class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
         dao.delete(event)
     }
 
+    suspend fun deleteAll() {
+        dao.deleteAll()
+    }
+
     suspend fun updateEventAttr(
         id: Int,
         title: String? = null,
