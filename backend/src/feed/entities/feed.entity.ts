@@ -16,7 +16,7 @@ export class Feed extends commonEntity {
   @ManyToOne(() => User, { nullable: false })
   author: User;
 
-  @ManyToOne(() => Event, { nullable: false })
+  @ManyToOne(() => Event, (event) => event.feeds, { nullable: false })
   event: Event;
 
   @Column({ type: 'varchar', length: 64, nullable: true, default: null })
