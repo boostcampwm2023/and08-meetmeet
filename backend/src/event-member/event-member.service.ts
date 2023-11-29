@@ -73,7 +73,7 @@ export class EventMemberService {
     });
 
     for (const eventMember of EventMembers) {
-      await this.eventMemberRepository.softDelete(eventMember.id);
+      await this.eventMemberRepository.softRemove(eventMember);
     }
   }
 }
