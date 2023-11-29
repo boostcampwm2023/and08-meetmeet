@@ -181,4 +181,35 @@ export class EventController {
       isAll,
     );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/user/:userId')
+  @ApiOperation({
+    summary: '일정 조회 API',
+    description: '입력된 startDate, endDate로 조회합니다.',
+  })
+  @ApiQuery({
+    name: 'startDate',
+    required: true,
+    example: '2021-01-01',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    required: true,
+    example: '2021-01-31',
+  })
+  async getUserEvents(
+    @GetUser() user: User,
+    @Param('userId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
+    userId: number,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return await this.eventService.getUserEvents(
+      user,
+      userId,
+      startDate,
+      endDate,
+    );
+  }
 }
