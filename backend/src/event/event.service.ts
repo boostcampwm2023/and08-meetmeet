@@ -5,7 +5,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOperator, Raw, Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateScheduleDto, RepeatTerm } from './dto/createSchedule.dto';
@@ -30,28 +30,30 @@ export class EventService {
   ) {}
 
   async getEvents(user: User, startDate: string, endDate: string) {
-    const eventsWithMembersAndAuthority = await this.eventRepository
-      .createQueryBuilder('event')
-      .leftJoinAndSelect('event.eventMembers', 'eventMember')
-      .leftJoinAndSelect('eventMember.user', 'user')
-      .leftJoinAndSelect('eventMember.authority', 'authority')
-      .where('user.id = :userId', { userId: user.id })
-      // todo 제대로 된 쿼리인 것 같은데 실제로 구현하면 이상하게 동작합니다.
-      // .andWhere(
-      //   '(:startDate BETWEEN event.startDate AND event.endDate) OR (:endDate BETWEEN event.startDate AND event.endDate) OR (event.startDate < :startDate AND event.endDate > :endDate)',
-      //   { startDate, endDate },
-      // )
-      .andWhere(
-        '(event.startDate <= :endDate AND event.endDate >= :startDate)',
-        {
-          startDate,
-          endDate,
-        },
-      )
-      .getMany();
+    const events = await this.eventRepository.find({
+      relations: ['eventMembers'],
+      where: {
+        startDate: Raw((alias) => `${alias} <= :end`, {
+          end: endDate,
+        }),
+        endDate: Raw((alias) => `${alias} >= :start`, {
+          start: startDate,
+        }),
+        eventMembers: { user: { id: user.id } },
+      },
+    });
 
-    const result = eventsWithMembersAndAuthority.map((event) => {
-      return {
+    const result: any[] = [];
+    events.forEach((event) => {
+      const event_detail = event.eventMembers.find(
+        (eventMember) => eventMember.user.id === user.id,
+      );
+
+      if (!event_detail) {
+        throw new Error('event detail is not valid');
+      }
+
+      result.push({
         id: event.id,
         title: event.title,
         startDate: event.startDate,
@@ -62,32 +64,22 @@ export class EventService {
           profile: `/user/profile/${eventMember.user.id}`,
           authority: eventMember.authority.displayName,
         })),
-        authority:
-          event.eventMembers.find(
-            (eventMember) => eventMember.user.id === user.id,
-          )?.authority?.displayName || null,
+        color: event_detail.detail.color,
+        alarmMinutes: event_detail.detail.alarmMinutes,
+        authority: event_detail.authority.displayName,
         repeatPolicyId: event.repeatPolicyId,
         isJoinable: event.isJoinable ? true : false,
-      };
+      });
     });
-
-    if (!result) {
-      return { events: [] };
-    }
     return { events: result };
   }
 
   async getEvent(user: User, eventId: number) {
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
-      relations: [
-        'repeatPolicy',
-        'eventMembers',
-        'eventMembers.user',
-        'eventMembers.authority',
-        'eventMembers.detail',
-      ],
+      relations: ['repeatPolicy', 'eventMembers'],
     });
+
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
@@ -114,21 +106,27 @@ export class EventService {
 
     let repeatTerm;
     let repeatFrequency;
-    if (repeatPolicy.repeatDay !== null) {
+    let repeatEndDate;
+    if (repeatPolicy?.repeatDay !== undefined) {
       repeatTerm = 'DAY';
       repeatFrequency = repeatPolicy.repeatDay;
-    } else if (repeatPolicy.repeatWeek !== null) {
+      repeatEndDate = repeatPolicy.repeatDay;
+    } else if (repeatPolicy?.repeatWeek !== undefined) {
       repeatTerm = 'WEEK';
       repeatFrequency = repeatPolicy.repeatWeek;
-    } else if (repeatPolicy.repeatMonth !== null) {
+      repeatEndDate = repeatPolicy.repeatDay;
+    } else if (repeatPolicy?.repeatMonth !== undefined) {
       repeatTerm = 'MONTH';
       repeatFrequency = repeatPolicy.repeatMonth;
-    } else if (repeatPolicy.repeatYear !== null) {
+      repeatEndDate = repeatPolicy.repeatDay;
+    } else if (repeatPolicy?.repeatYear !== undefined) {
       repeatTerm = 'YEAR';
       repeatFrequency = repeatPolicy.repeatYear;
+      repeatEndDate = repeatPolicy.repeatDay;
     } else {
       repeatTerm = null;
       repeatFrequency = null;
+      repeatEndDate = null;
     }
 
     return {
@@ -148,12 +146,53 @@ export class EventService {
             (eventMember) => eventMember.user.id === user.id,
           )?.authority?.displayName || null,
         isJoinable: event.isJoinable ? true : false,
-        isVisible: detail?.isVisible,
+        isVisible: detail?.isVisible ? true : false,
         memo: detail?.memo,
+        color: detail?.color,
+        alarmMinutes: detail?.alarmMinutes,
         repeatTerm: repeatTerm,
         repeatFrequency: repeatFrequency,
+        repeatEndDate: repeatEndDate,
       },
     };
+  }
+
+  async getUserEvents(
+    user: User,
+    userId: number,
+    startDate: string,
+    endDate: string,
+  ) {
+    const events = await this.eventRepository.find({
+      relations: ['eventMembers'],
+      where: {
+        startDate: Raw((alias) => `${alias} <= :end`, {
+          end: endDate,
+        }),
+        endDate: Raw((alias) => `${alias} >= :start`, {
+          start: startDate,
+        }),
+        eventMembers: { user: { id: userId }, detail: { isVisible: true } },
+      },
+    });
+    const result: any[] = [];
+    events.forEach((event) => [
+      result.push({
+        id: event.id,
+        title: event.title,
+        startDate: event.startDate,
+        endDate: event.endDate,
+        color:
+          event.eventMembers.find(
+            (eventMember) => eventMember.user.id === userId,
+          )?.detail.color || null,
+        alarmMinutes:
+          event.eventMembers.find(
+            (eventMember) => eventMember.user.id === userId,
+          )?.detail.alarmMinutes || null,
+      }),
+    ]);
+    return { events: result };
   }
 
   async getEventFeeds(user: User, eventId: number) {
@@ -162,9 +201,6 @@ export class EventService {
       relations: [
         'repeatPolicy',
         'eventMembers',
-        'eventMembers.user',
-        'eventMembers.authority',
-        'eventMembers.detail',
         'feeds',
         'feeds.feedContents',
         'feeds.feedContents.content',
@@ -194,7 +230,9 @@ export class EventService {
       isJoinable: event.isJoinable ? true : false,
       isVisible: event.eventMembers.find(
         (eventMember) => eventMember.user.id === user.id,
-      )?.detail?.isVisible,
+      )?.detail?.isVisible
+        ? true
+        : false,
       memo: event.eventMembers.find(
         (eventMember) => eventMember.user.id === user.id,
       )?.detail?.memo,
@@ -263,16 +301,13 @@ export class EventService {
   async deleteEvent(user: User, eventId: number, isAll: boolean) {
     // 일정 중간부터면 생각 다시해야한다....
     // 단건 삭제
-    const event = await this.eventRepository
-      .createQueryBuilder('event')
-      .leftJoinAndSelect('event.eventMembers', 'eventMember')
-      .leftJoinAndSelect('eventMember.user', 'user')
-      .leftJoinAndSelect('eventMember.authority', 'authority')
-      .leftJoinAndSelect('eventMember.detail', 'detail')
-      .where('user.id = :userId', { userId: user.id })
-      .andWhere('event.id = :eventId', { eventId })
-      .getOne();
-
+    const event = await this.eventRepository.findOne({
+      relations: ['eventMembers', 'feeds'],
+      where: {
+        id: eventId,
+        eventMembers: { user: { id: user.id } },
+      },
+    });
     // if (
     //   event?.eventMembers.some(
     //     (eventMember) =>
@@ -294,26 +329,17 @@ export class EventService {
           updatedEvent.authority = eventMember.authority.displayName;
         }
       });
-      // todo feed 삭제는 건들지도 않았음...
       if (updatedEvent.authority === 'OWNER') {
         await this.eventRepository.softRemove(event);
-        await this.eventMemberService.deleteEventMemberByEventId(event);
-        for (const eventMember of event.eventMembers) {
-          if (eventMember.user.id === user.id) {
-            await this.detailService.deleteDetail(eventMember.detail);
-          }
-        }
       } else if (updatedEvent.authority === 'ADMIN') {
         // todo 운영자는 어떻게 할지 고민
       } else if (updatedEvent.authority === 'MEMBER') {
-        // 어차피 onwer가 아니라서 삭제안되지 않나..?
-        // 일정을 삭제하는 요청이니까
         await this.eventMemberService.deleteEventMemberByEventId(event);
-        for (const eventMember of event.eventMembers) {
-          if (eventMember.user.id === user.id) {
-            await this.detailService.deleteDetail(eventMember.detail);
-          }
-        }
+        // for (const eventMember of event.eventMembers) {
+        //   if (eventMember.user.id === user.id) {
+        //     await this.detailService.deleteDetail(eventMember.detail);
+        //   }
+        // }
       }
     } else {
       // 전체 삭제를 가정(반복인걸 이미 가정되고 들어와야한다.)
@@ -567,26 +593,40 @@ export class EventService {
       throw new BadRequestException('일정 검색 기간은 6개월 이내여야 합니다.');
     }
 
-    const query = this.eventRepository
-      .createQueryBuilder('event')
-      .leftJoinAndSelect('event.eventMembers', 'eventMember')
-      .leftJoinAndSelect('eventMember.user', 'user')
-      .leftJoinAndSelect('eventMember.authority', 'authority')
-      .where('user.id = :userId', { userId: user.id })
-      .andWhere('event.startDate BETWEEN :startDate AND :endDate', {
-        startDate: searchEventDto.startDate,
-        endDate: searchEventDto.endDate,
-      });
+    const whereClause: {
+      startDate: FindOperator<any>;
+      endDate: FindOperator<any>;
+      title?: FindOperator<any>;
+      eventMembers: { user: { id: number } };
+    } = {
+      startDate: Raw((alias) => `${alias} <= :end`, {
+        end: endDate,
+      }),
+      endDate: Raw((alias) => `${alias} >= :start`, {
+        start: startDate,
+      }),
+      eventMembers: { user: { id: user.id } },
+    };
 
     if (searchEventDto.keyword) {
-      query.andWhere('event.title LIKE :title', {
+      whereClause.title = Raw((alias) => `${alias} LIKE :title`, {
         title: `%${searchEventDto.keyword}%`,
       });
     }
+    const events = await this.eventRepository.find({
+      relations: ['eventMembers'],
+      where: whereClause,
+    });
 
-    const eventsWithMembersAndAuthority = await query.getMany();
+    const result = events.map((event) => {
+      const event_detail = event.eventMembers.find(
+        (eventMember) => eventMember.user.id === user.id,
+      );
 
-    const result = eventsWithMembersAndAuthority.map((event) => {
+      if (!event_detail) {
+        throw new Error('event detail is not valid');
+      }
+
       return {
         id: event.id,
         title: event.title,
@@ -598,10 +638,9 @@ export class EventService {
           profile: `/user/profile/${eventMember.user.id}`,
           authority: eventMember.authority.displayName,
         })),
-        authority:
-          event.eventMembers.find(
-            (eventMember) => eventMember.user.id === user.id,
-          )?.authority?.displayName || null,
+        authority: event_detail.authority.displayName,
+        color: event_detail.detail.color,
+        alarmMinutes: event_detail.detail.alarmMinutes,
         repeatPolicyId: event.repeatPolicyId,
         isJoinable: event.isJoinable ? true : false,
       };

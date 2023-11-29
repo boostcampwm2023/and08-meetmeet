@@ -36,6 +36,8 @@ export class Event extends commonEntity {
   })
   eventMembers: EventMember[];
 
-  @OneToMany(() => Feed, (feed) => feed.event)
+  @OneToMany(() => Feed, (feed) => feed.event, {
+    cascade: ['soft-remove'],
+  })
   feeds: Feed[];
 }

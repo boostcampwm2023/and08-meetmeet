@@ -21,6 +21,6 @@ export class EventMember extends commonEntity {
   @JoinColumn()
   detail: Detail;
 
-  @ManyToOne(() => Authority, { nullable: false })
+  @ManyToOne(() => Authority, { nullable: false, eager: true })
   authority: Authority;
 }
