@@ -22,7 +22,6 @@ class CalendarRepository @Inject constructor(
     suspend fun getEvents(startDate: Long, endDate: Long): Flow<List<Event>> {
         try {
             syncEvents(startDate, endDate)
-            println("get Events")
         } finally {
             return localCalendarDataSource.getEvents(startDate, endDate)
         }
@@ -72,7 +71,6 @@ class CalendarRepository @Inject constructor(
     }
 
     private suspend fun syncEvents(startDateTime: Long, endDateTime: Long) {
-        println("sync events")
         remoteCalendarDataSource
             .getEvents(
                 startDateTime.toDateString(DateTimeFormat.SERVER_DATE, ZoneId.of("UTC")),
