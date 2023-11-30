@@ -164,6 +164,34 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Patch('/:eventId/announcement')
+  @ApiOperation({
+    summary: '일정 공지 수정 API',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        announcement: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  async updateEventAnnouncement(
+    @GetUser() user: User,
+    @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
+    eventId: number,
+    @Body('announcement') announcement: string,
+  ) {
+    return await this.eventService.updateEventAnnouncement(
+      user,
+      eventId,
+      announcement,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch('/:eventId')
   @ApiOperation({
     summary: '일정 수정 API',
