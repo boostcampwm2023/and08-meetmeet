@@ -13,6 +13,6 @@ data class AddEventRequest(
     val memo: String?,
     val color: Int,
     val repeatTerm: String?,
-    val repeatFrequency: Int,
-    val repeatEndDate: String
+    val repeatFrequency: Int?,
+    val repeatEndDate: String?
 )

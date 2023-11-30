@@ -1,8 +1,8 @@
 package com.teameetmeet.meetmeet.data.network.api
 
-import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
+import com.teameetmeet.meetmeet.data.network.entity.EventStoryDetailResponse
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -21,8 +21,8 @@ interface EventStoryApi {
     @GET("/event/{event_id}/feeds")
     suspend fun getStory(@Path("event_id") id: String): EventStory
 
-    @GET("/event/{event_id}")
-    suspend fun getStoryDetail(@Path("event_id") id: String): EventDetail
+    @GET("/event/{eventId}")
+    suspend fun getStoryDetail(@Path("eventId") id: String): EventStoryDetailResponse
 
     @POST()
     suspend fun editNotification(@Body singleStringRequest: KakaoLoginRequest)

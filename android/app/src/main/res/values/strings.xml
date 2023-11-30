@@ -169,5 +169,6 @@
     <string name="story_detail_message_time_pick_end_time_fail_after_repeat_end">종료 시간이 반복 일정 종료 시간보다 늦게 설정할 수 없습니다.</string>
     <string name="story_detail_success_edit_event">수정이 완료되었습니다.</string>
     <string name="story_detail_message_edit_message_fail">이벤트 수정 실패\n%s</string>
+    <string name="story_detail_message_no_repeat_frequency">반복 주기를 설정해주세요.</string>
 
 </resources>
