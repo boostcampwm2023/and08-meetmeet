@@ -31,8 +31,20 @@ fun Uri.toAbsolutePath(): String? {
     return file?.absolutePath
 }
 
-private fun Uri.getMimeType(): String? {
+fun Uri.getMimeType(): String? {
     val context = MeetMeetApp.applicationContext()
     val contentResolver = context.contentResolver
     return contentResolver.getType(this)
+}
+
+fun Uri.getSize(): Long {
+    val context = MeetMeetApp.applicationContext()
+    val contentResolver = context.contentResolver
+
+    return contentResolver.query(this, null, null, null, null)?.use { cursor ->
+        val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+        cursor.moveToFirst()
+        val size = cursor.getLong(sizeIndex).also { cursor.close() }
+        size
+    } ?: 0L
 }
