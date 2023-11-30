@@ -171,4 +171,14 @@
     <string name="story_detail_message_edit_message_fail">이벤트 수정 실패\n%s</string>
     <string name="story_detail_message_no_repeat_frequency">반복 주기를 설정해주세요.</string>
 
+    <string name="notification_title_event_notification">일정 알림</string>
+    <string name="notification_channel_description_event">일정에 대한 알림을 받을 수 있는 알림 채널입니다.</string>
+    <string name="alarm_description_alarm_minutes">일정 시작 %s 입니다.</string>
+    <string name="alarm_notification_message_on_time">일정이 지금 시작됩니다!!</string>
+    <string name="alarm_notification_message_before_10_minutes">일정 시작 10분 전이에요!! 서두르세요~</string>
+    <string name="alarm_notification_message_before_1_hour">일정 시작 1시간 전이네요~! 슬슬 준비하셔야겠어요!!</string>
+    <string name="alarm_notification_message_before_1_day">일정 시작 하루 전이에요! 마음의 준비는 되셨나요??</string>
+    <string name="alarm_notification_message_before_1_week">일정 시작 일주일 전이에요!!</string>
+    <string name="alarm_notification_message_unknown">일정 알림이 왔어요~ 앱에 들어가서 일정을 확인해보세요!</string>
+
 </resources>

@@ -1,10 +1,11 @@
-package com.teameetmeet.meetmeet.service
+package com.teameetmeet.meetmeet.service.alarm
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
-import com.teameetmeet.meetmeet.service.model.EventAlarm
+import com.teameetmeet.meetmeet.service.alarm.model.EventAlarm
+import com.teameetmeet.meetmeet.service.notification.NotificationHelper
 import com.teameetmeet.meetmeet.util.date.getLocalDateTime
 import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,10 +24,15 @@ class AlarmReceiver : BroadcastReceiver() {
     @Inject
     lateinit var alarmHelper: AlarmHelper
 
+    @Inject
+    lateinit var notificationHelper: NotificationHelper
+
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             Intent.ACTION_BOOT_COMPLETED -> {
                 alarmHelper.registerRepeatAlarm()
+                println("부팅 후 채널 생성 시작")
+                notificationHelper.createNotificationChannel()
             }
 
             AlarmHelper.INTENT_ACTION_ALARM_UPDATE -> {
@@ -34,10 +40,18 @@ class AlarmReceiver : BroadcastReceiver() {
             }
 
             AlarmHelper.INTENT_ACTION_ALARM_EVENT -> {
-                // todo noti 보내는 부분 구현 해야함
+                println("알림 호출")
+                notificationHelper.createEventNotification(
+                    channelId = NotificationHelper.CHANNEL_ID_EVENT_NOTIFICATION,
+                    title = intent.getStringExtra(AlarmHelper.INTENT_EXTRA_TITLE),
+                    content = intent.getStringExtra(AlarmHelper.INTENT_EXTRA_CONTENT).orEmpty(),
+                    eventId = intent.getIntExtra(AlarmHelper.INTENT_EXTRA_EVENT_ID, 0)
+                )
             }
         }
     }
+
+
 
     private fun setAlarms() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -52,6 +66,7 @@ class AlarmReceiver : BroadcastReceiver() {
                         EventAlarm(
                             id = it.id,
                             triggerTime = it.getTriggerTime(),
+                            it.notification,
                             title = it.title
                         )
                     }.forEach { eventAlarm ->
