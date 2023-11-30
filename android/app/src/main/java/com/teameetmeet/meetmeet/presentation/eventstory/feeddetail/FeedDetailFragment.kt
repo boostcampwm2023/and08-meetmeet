@@ -32,6 +32,7 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         with(binding) {
             vm = viewModel
             feedDetailVpMedia.adapter = FeedContentsAdapter()
+            feedDetailRvComment.adapter = FeedCommentsAdapter()
         }
     }
 

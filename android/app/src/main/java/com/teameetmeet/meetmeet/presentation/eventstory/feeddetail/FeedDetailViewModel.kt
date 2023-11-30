@@ -24,6 +24,10 @@ class FeedDetailViewModel @Inject constructor(
         _feedDetailUiState.update { it.copy(feedId = feedId) }
     }
 
+    fun onCommentTextChanged(charSequence: CharSequence) {
+        _feedDetailUiState.update { it.copy(typedComment = charSequence.toString()) }
+    }
+
     fun getFeedDetail() {
         viewModelScope.launch {
             eventStoryRepository.getFeedDetail(_feedDetailUiState.value.feedId)

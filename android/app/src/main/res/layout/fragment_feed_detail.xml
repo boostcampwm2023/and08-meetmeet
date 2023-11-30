@@ -147,6 +147,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/feed_detail_rv_comment"
                     add_divider="@{true}"
+                    sub_list="@{vm.feedDetailUiState.feedDetail.comments}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

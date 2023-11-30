@@ -5,13 +5,17 @@
 
     <data>
 
+        <variable
+            name="item"
+            type="com.teameetmeet.meetmeet.data.model.Comment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clipToPadding="false"
         android:paddingHorizontal="16dp"
-        android:paddingTop="16dp">
+        android:paddingVertical="10dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/feed_comment_cv"
@@ -51,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="5dp"
+            android:text="@{item.memo}"
             app:layout_constraintEnd_toEndOf="@id/feed_comment_tv_user_name"
             app:layout_constraintStart_toEndOf="@id/feed_comment_cv"
             app:layout_constraintTop_toBottomOf="@id/feed_comment_tv_user_name"
@@ -62,10 +67,10 @@
             android:layout_height="wrap_content"
             android:background="@null"
             android:padding="5dp"
-            android:src="@drawable/ic_delete"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_cancel_two_tone"
+            app:layout_constraintBottom_toBottomOf="@id/feed_comment_cv"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/feed_comment_cv"
             tools:text="팔로우" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
