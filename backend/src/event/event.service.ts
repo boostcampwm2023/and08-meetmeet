@@ -334,8 +334,6 @@ export class EventService {
   }
 
   async deleteEvent(user: User, eventId: number, isAll: boolean) {
-    // 일정 중간부터면 생각 다시해야한다....
-    // 단건 삭제
     // todo : 일정 삭제 멤버일때 잘 조회되는지 확인해야한다.
     const event = await this.eventRepository.findOne({
       relations: ['eventMembers', 'feeds'],
@@ -344,87 +342,34 @@ export class EventService {
         eventMembers: { user: { id: user.id } },
       },
     });
-    // if (
-    //   event?.eventMembers.some(
-    //     (eventMember) =>
-    //       eventMember.user.id === user.id &&
-    //       eventMember.authority.displayName !== 'OWNER',
-    //   )
-    // ) {
-    //   throw UnauthorizedException;
-    // }
+
+    if (!event) {
+      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    const isValidUser = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === user.id,
+    );
+    if (!isValidUser) {
+      throw new HttpException(
+        '이벤트에 참여하지 않았습니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     if (!isAll) {
-      const updatedEvent: any = { ...event, authority: undefined };
-      if (!event) {
-        throw new Error('event is not valid');
-      }
-      updatedEvent.deletedAt = new Date();
-      event.eventMembers.forEach((eventMember) => {
-        if (eventMember.user.id === user.id) {
-          updatedEvent.authority = eventMember.authority.displayName;
-        }
-      });
-      if (updatedEvent.authority === 'OWNER') {
+      if (!event.repeatPolicy) {
         await this.eventRepository.softRemove(event);
-      } else if (updatedEvent.authority === 'ADMIN') {
-        // todo 운영자는 어떻게 할지 고민
-      } else if (updatedEvent.authority === 'MEMBER') {
-        await this.eventMemberService.deleteEventMemberByEventId(event);
+      } else {
+        const eventsWithRepeatPolicy = await this.eventRepository.findBy({
+          repeatPolicyId: event.repeatPolicyId,
+        });
+        if (eventsWithRepeatPolicy.length === 1) {
+          await this.repeatPolicyRepository.softRemove(event.repeatPolicy);
+        }
+        await this.eventRepository.softRemove(event);
       }
     } else {
-      // 전체 삭제를 가정(반복인걸 이미 가정되고 들어와야한다.)
-      // 반복일정인지 체크는 해야하지 않나...
-      // 주인인지 아닌지 판단하고 전체 삭제해야한다.
-      const event = await this.eventRepository
-        .createQueryBuilder('event')
-        .leftJoinAndSelect('event.eventMembers', 'eventMember')
-        .leftJoinAndSelect('eventMember.user', 'user')
-        .leftJoinAndSelect('eventMember.authority', 'authority')
-        .leftJoinAndSelect('eventMember.detail', 'detail')
-        .leftJoinAndSelect('event.repeatPolicy', 'repeatPolicy')
-        .where('user.id = :userId', { userId: user.id })
-        .andWhere('event.id = :eventId', { eventId })
-        .getOne();
-
-      if (!event) {
-        throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
-      }
-
-      const resultObject = event
-        ? {
-            id: event.id,
-            title: event.title,
-            startDate: event.startDate,
-            endDate: event.endDate,
-            eventMember: event.eventMembers,
-            eventMembers: event.eventMembers.map((eventMember) => ({
-              id: eventMember.id,
-              nickname: eventMember.user.nickname,
-              profile: `/user/profile/${eventMember.user.id}`,
-              authority: eventMember.authority.displayName,
-            })),
-            authority:
-              event.eventMembers.find(
-                (eventMember) => eventMember.user.id === user.id,
-              )?.authority?.displayName || null,
-            repeatPolicy: {
-              repeatPolicyId: event.repeatPolicy?.id || null,
-              repeatPolicyName: event.repeatPolicy,
-              // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
-            },
-            isJoinable: event.isJoinable ? true : false,
-            detail: event.eventMembers[0].detail,
-          }
-        : null;
-
-      if (!resultObject) {
-        throw new HttpException(
-          '반복되는 컨텐츠가 아닙니다.',
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
       const eventsWithRepeatPolicyAndNoFeed = await this.eventRepository
         .createQueryBuilder('event')
         .leftJoinAndSelect('event.eventMembers', 'eventMember')
@@ -433,27 +378,16 @@ export class EventService {
         .leftJoinAndSelect('eventMember.user', 'user')
         .leftJoin('Feed', 'feed', 'feed.event = event.id')
         .where('event.repeatPolicy IS NOT NULL')
+        .where('event.startDate >= :startDate', {
+          startDate: event.startDate,
+        })
         .andWhere('feed.event IS NULL')
         .andWhere('repeatPolicy.id = :repeatPolicyId', {
-          repeatPolicyId: resultObject.repeatPolicy.repeatPolicyId,
+          repeatPolicyId: event.repeatPolicyId,
         })
         .getMany();
-      // 삭제하려는게 전체 반복의 중간일 경우(?)
-      for (const event1 of eventsWithRepeatPolicyAndNoFeed) {
-        // todo 일괄 처리되도록 수정해야한다.
 
-        for (const eventMember of event1.eventMembers) {
-          if (eventMember.user.id === user.id) {
-            await this.detailService.deleteDetail(eventMember.detail);
-          }
-        }
-        await this.eventRepository.softRemove(event1);
-        await this.eventMemberService.deleteEventMemberByEventId(event1);
-
-        await this.repeatPolicyRepository.softRemove(
-          resultObject.repeatPolicy.repeatPolicyName,
-        );
-      }
+      await this.eventRepository.softRemove(eventsWithRepeatPolicyAndNoFeed);
     }
   }
 
