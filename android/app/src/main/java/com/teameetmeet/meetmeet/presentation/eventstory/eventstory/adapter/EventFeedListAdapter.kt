@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.data.model.Feed
 import com.teameetmeet.meetmeet.databinding.ItemEventFeedBinding
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnFeedItemClickListener
-import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnItemClickListener
 
 class EventFeedListAdapter(
     private val onItemClickListener: OnFeedItemClickListener
@@ -29,16 +28,13 @@ class EventFeedListAdapter(
 
     class EventFeedViewHolder(
         private val binding: ItemEventFeedBinding,
-        onItemClickListener: OnFeedItemClickListener
+        private val onItemClickListener: OnFeedItemClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            binding.root.setOnClickListener {
-                onItemClickListener.onItemClick()
-            }
-        }
         fun bind(item: Feed) {
             binding.item = item
+            itemView.setOnClickListener {
+                onItemClickListener.onItemClick(item)
+            }
         }
     }
 

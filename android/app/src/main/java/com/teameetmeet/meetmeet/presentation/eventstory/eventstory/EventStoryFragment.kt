@@ -144,7 +144,9 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         }
     }
 
-    override fun onItemClick() {
-        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment())
+    override fun onItemClick(feed: Feed) {
+        findNavController().navigate(
+            EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment(feed.id)
+        )
     }
 }
