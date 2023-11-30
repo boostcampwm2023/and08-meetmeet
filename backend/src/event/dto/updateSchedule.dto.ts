@@ -44,10 +44,12 @@ export class UpdateScheduleDto {
   memo?: string;
 
   @ApiProperty({ name: 'color', example: 10 })
+  @IsOptional()
   @IsInt()
   color: number;
 
   @ApiProperty({ name: 'alarmMinutes', example: 10 })
+  @IsOptional()
   @IsInt()
   alarmMinutes: number;
 
