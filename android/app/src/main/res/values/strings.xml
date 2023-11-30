@@ -184,5 +184,7 @@
     <string name="event_story_message_join_event_success">일정 참여 완료!!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="story_detail_title_tool_bar">일정 상세</string>
+    <string name="event_member_title_app_bar">일정 멤버</string>
 
 </resources>
