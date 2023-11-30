@@ -25,11 +25,11 @@ class EventMemberFragment : BaseFragment<FragmentEventMemberBinding>(R.layout.fr
 
     override fun onResume() {
         super.onResume()
-        viewModel.fetchEventMember(args.eventMember)
+        viewModel.fetchEventMember(args.eventMember.map{it.nickname})
     }
 
     private fun setBinding() {
-        binding.eventMemberRcv.adapter = EventMemberAdapter()
+        binding.eventMemberRcv.adapter = EventMemberAdapter(viewModel)
         binding.vm = viewModel
     }
 

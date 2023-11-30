@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.ListAdapter
 import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
 import com.teameetmeet.meetmeet.databinding.ItemEventJoinMemberBinding
 
-class EventMemberAdapter : ListAdapter<UserWithFollowStatus, EventMemberViewHolder>(diffCallback) {
+class EventMemberAdapter(private val eventMemberClickListener: EventMemberClickListener) : ListAdapter<UserWithFollowStatus, EventMemberViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventMemberViewHolder {
         val binding = ItemEventJoinMemberBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
-        return EventMemberViewHolder(binding)
+        return EventMemberViewHolder(binding, eventMemberClickListener)
     }
 
     override fun onBindViewHolder(holder: EventMemberViewHolder, position: Int) {
