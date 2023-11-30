@@ -6,6 +6,7 @@ import { S3 } from 'aws-sdk';
 export class ObjectStorage {
   private readonly s3: S3;
   private readonly s3Bucket: string;
+  private readonly locationPrefix: string;
 
   constructor(configService: ConfigService) {
     this.s3 = new S3({
@@ -19,13 +20,17 @@ export class ObjectStorage {
     });
 
     this.s3Bucket = configService.get('S3_BUCKET', 'meetmeet');
+    this.locationPrefix = configService.get(
+      'CONTENT_PREFIX',
+      'https://kr.object.ncloudstorage.com/meetmeet/',
+    );
   }
 
   async upload(file: Express.Multer.File) {
     await this.s3
       .upload({
         Bucket: this.s3Bucket,
-        Key: file.path,
+        Key: file.path.replace(this.locationPrefix, ''),
         ACL: 'public-read',
         Body: file.buffer,
       })

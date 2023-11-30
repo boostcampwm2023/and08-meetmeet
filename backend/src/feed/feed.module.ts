@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommentModule } from 'src/comment/comment.module';
 import { ContentModule } from 'src/content/content.module';
 import { EventMemberModule } from 'src/event-member/event-member.module';
 import { Feed } from './entities/feed.entity';
@@ -12,6 +13,7 @@ import { FeedService } from './feed.service';
     TypeOrmModule.forFeature([Feed, FeedContent]),
     ContentModule,
     EventMemberModule,
+    CommentModule,
   ],
   controllers: [FeedController],
   providers: [FeedService],

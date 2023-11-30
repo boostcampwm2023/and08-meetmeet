@@ -1,14 +1,13 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
 import { User } from './entities/user.entity';
 import { OauthProvider } from './entities/oauthProvider.entity';
-import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 import { ContentService } from 'src/content/content.service';
 import { FollowService } from '../follow/follow.service';
 
@@ -70,10 +69,14 @@ export class UserService {
       .where('user.id = :id', { id: user.id })
       .getOne();
 
+    if (!result) {
+      throw new NotFoundException('There is no such user.');
+    }
+
     const userInfo = {
-      email: result?.oauthProvider?.displayName ?? result?.email,
-      nickname: result?.nickname,
-      profileUrl: result?.profile?.path ?? null,
+      email: result.oauthProvider?.displayName ?? result.email,
+      nickname: result.nickname,
+      profileUrl: result.profile?.path ?? null,
     };
 
     return userInfo;
@@ -86,28 +89,28 @@ export class UserService {
     return await this.userRepository.findOne({ where: { id: user.id } });
   }
 
-  async updateUserInfo(
-    user: User,
-    updateUserDto: UpdateUserInfoDto,
-    profileImage: Express.Multer.File,
-  ) {
-    if (
-      updateUserDto.nickname &&
-      (await this.findUserByNickname(updateUserDto.nickname))
-    ) {
+  async updateUserNickname(user: User, nickname: string) {
+    if (await this.findUserByNickname(nickname)) {
       throw new BadRequestException('중복된 닉네임입니다.');
     }
-    if (profileImage) {
-      const userProfile = await this.updateProfileImage(
-        user.profileId,
-        profileImage,
-      );
 
-      user.profile = userProfile;
-      user.profileId = userProfile.id;
+    await this.userRepository.update(user.id, { nickname: nickname });
+  }
+
+  async updateUserProfile(user: User, profileImage: Express.Multer.File) {
+    if (!profileImage) {
+      await this.userRepository.update(user.id, { profileId: null });
+      if (user.profile.id) {
+        await this.contentService.softDeleteContent([user.profile.id]);
+      }
+      return;
     }
+    const userProfile = await this.updateProfileImage(
+      user.profileId,
+      profileImage,
+    );
 
-    await this.userRepository.update(user.id, updateUserDto);
+    await this.userRepository.update(user.id, { profile: userProfile });
   }
 
   async updateProfileImage(
@@ -118,15 +121,13 @@ export class UserService {
       return await this.contentService.createContent(profileImage, 'user');
     }
 
-    const result = await this.contentService.updateContent(
-      profileId,
+    const newProfile = await this.contentService.createContent(
       profileImage,
+      'user',
     );
-    if (!result) {
-      throw new InternalServerErrorException('프로필 변경에 실패했습니다.');
-    }
+    await this.contentService.softDeleteContent([profileId]);
 
-    return result;
+    return newProfile;
   }
 
   async deleteUser(user: User) {
@@ -156,7 +157,7 @@ export class UserService {
     return {
       id: searchResult.id,
       nickname: searchResult.nickname,
-      profile: searchResult.profileId,
+      profile: searchResult.profile?.path ?? null,
       isFollowed: await this.followService.isFollowed(user, searchResult.id),
     };
   }
