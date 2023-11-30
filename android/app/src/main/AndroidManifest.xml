@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
@@ -35,7 +36,7 @@
             android:exported="false" />
         <activity
             android:name=".presentation.login.LoginActivity"
-            android:exported="true"></activity>
+            android:exported="true"/>
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
@@ -72,7 +73,7 @@
         </service>
 
         <receiver
-            android:name=".service.AlarmReceiver"
+            android:name=".service.alarm.AlarmReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
