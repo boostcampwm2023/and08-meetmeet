@@ -53,10 +53,6 @@ export class FeedController {
     schema: {
       type: 'object',
       properties: {
-        feedId: {
-          type: 'number',
-          description: '댓글을 작성할 피드의 id',
-        },
         memo: {
           type: 'string',
           description: '댓글 내용',
@@ -66,10 +62,10 @@ export class FeedController {
   })
   createComment(
     @GetUser() user: User,
-    @Body('feedId') feedId: number,
+    @Param('id') id: number,
     @Body('memo') memo: string,
   ) {
-    return this.feedService.createComment(user, feedId, memo);
+    return this.feedService.createComment(user, id, memo);
   }
 
   @UseGuards(JwtAuthGuard)
