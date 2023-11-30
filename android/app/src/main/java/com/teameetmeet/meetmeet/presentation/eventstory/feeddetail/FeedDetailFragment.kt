@@ -1,7 +1,9 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -20,6 +22,8 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.setFeedId(navArgs.feedId)
+
+        setCallBacks()
         setBinding()
         setTopAppBar()
     }
@@ -33,6 +37,12 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         with(binding) {
             vm = viewModel
             feedDetailVpMedia.adapter = FeedContentsAdapter()
+            feedDetailRvComment.adapter = FeedCommentsAdapter()
+        }
+    }
+
+    private fun setCallBacks() {
+        with(binding) {
             feedDetailVpMedia.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
@@ -40,8 +50,13 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
                     viewModel.setContentPage(position)
                 }
             })
-
-            feedDetailRvComment.adapter = FeedCommentsAdapter()
+            feedDetailIbCommentSend.setOnClickListener {
+                viewModel.addComment()
+                val imm =
+                    requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.feedDetailEtComment.windowToken, 0)
+                feedDetailNsv.fullScroll(View.FOCUS_DOWN)
+            }
         }
     }
 

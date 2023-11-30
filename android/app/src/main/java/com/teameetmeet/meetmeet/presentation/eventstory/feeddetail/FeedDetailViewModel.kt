@@ -48,7 +48,8 @@ class FeedDetailViewModel @Inject constructor(
                         it.copy(
                             feedId = response.id,
                             feedDetail = response,
-                            isLoading = false
+                            isLoading = false,
+                            typedComment = ""
                         )
                     }
                 }

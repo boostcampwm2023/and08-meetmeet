@@ -36,6 +36,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/feed_detail_nsv"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -213,6 +214,7 @@
                 android:maxLength="@integer/text_length_long"
                 android:onTextChanged="@{(p1,p2,p3,p4)-> vm.onCommentTextChanged(p1)}"
                 android:padding="12dp"
+                android:text="@{vm.feedDetailUiState.typedComment}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/feed_detail_view_comment_background"
                 app:layout_constraintStart_toStartOf="parent"
@@ -223,7 +225,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:background="@null"
-                android:onClick="@{v -> vm.addComment()}"
                 android:paddingHorizontal="10dp"
                 android:src="@drawable/ic_send"
                 app:layout_constraintBottom_toBottomOf="parent"
