@@ -8,12 +8,12 @@ data class FeedDetail(
     @Json(name = "id")
     val id: Int,
     @Json(name = "memo")
-    val memo: String,
+    val memo: String?,
     //todo: 이거 모델 이름 바꾸는 게 좋을 듯
     @Json(name = "author")
-    val author: EventMember,
+    val author: Author,
     @Json(name = "contents")
-    val contents: List<String>,
+    val contents: List<Content>,
     @Json(name = "comments")
     val comments: List<Comment>
 )

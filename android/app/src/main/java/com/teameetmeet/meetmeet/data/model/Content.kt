@@ -4,11 +4,11 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Comment(
+data class Content(
     @Json(name = "id")
     val id: Int,
-    @Json(name = "memo")
-    val memo: String,
-    @Json(name = "author")
-    val author: Author
+    @Json(name = "mimeType")
+    val mimeType: String,
+    @Json(name = "path")
+    val path: String
 )
