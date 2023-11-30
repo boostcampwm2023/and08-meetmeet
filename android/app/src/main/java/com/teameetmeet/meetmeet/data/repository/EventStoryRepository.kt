@@ -35,7 +35,7 @@ class EventStoryRepository @Inject constructor(
     fun getEventStoryDetail(id: Int): Flow<EventDetail> {
         return flowOf(Unit)
             .map {
-                eventStoryApi.getStoryDetail(id.toString())
+                eventStoryApi.getStoryDetail(id.toString()).result
             }.catch {
                 throw it.toException()
             }

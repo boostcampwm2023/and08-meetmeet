@@ -97,7 +97,7 @@ class EventStoryDetailViewModel @Inject constructor(
                                 else -> EventRepeatTerm.NONE
                             },
                             isJoinable = isJoin,
-                            isOpen = isVisible==1,
+                            isOpen = isVisible,
                             authority = when (authority) {
                                 "OWNER" -> EventAuthority.OWNER
                                 "MEMBER" -> EventAuthority.PARTICIPANT
