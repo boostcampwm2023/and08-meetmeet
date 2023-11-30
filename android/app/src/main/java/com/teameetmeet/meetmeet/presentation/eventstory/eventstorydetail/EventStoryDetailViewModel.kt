@@ -1,6 +1,5 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 
-import android.util.Log
 import android.widget.RadioGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -106,7 +105,7 @@ class EventStoryDetailViewModel @Inject constructor(
                             color = EventColor.entries.first { it.value ==  color},
                             alarm = EventNotification.entries.first{it.minutes == alarmMinutes},
                             memo = memo.orEmpty(),
-                            eventRepeatEndDate = "2024-11-31", //TODO("서버 변경 되면 뒤에 것으로 변경 예정") //repeatEndDate.orEmpty().toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toDateString(DateTimeFormat.LOCAL_DATE),
+                            eventRepeatEndDate = "2024년 11월 31일", //TODO("서버 변경 되면 뒤에 것으로 변경 예정") //repeatEndDate.orEmpty().toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toDateString(DateTimeFormat.LOCAL_DATE),
                             isRepeatEvent = repeatTerm!=null
                         )
 
@@ -163,6 +162,7 @@ class EventStoryDetailViewModel @Inject constructor(
 
             val repeatEndDate = _uiState.value.eventRepeatEndDate?.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
                 ?.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+
 
             with(_uiState.value) {
                 eventStoryRepository.editEventStory(
@@ -301,6 +301,5 @@ class EventStoryDetailViewModel @Inject constructor(
         _uiState.update {
             it.copy(color = EventColor.values()[index])
         }
-        Log.d("test", uiState.value.toString())
     }
 }

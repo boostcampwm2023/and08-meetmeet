@@ -1,6 +1,5 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
@@ -19,8 +18,7 @@ import java.io.File
 import javax.inject.Inject
 
 class EventStoryRepository @Inject constructor(
-    private val eventStoryApi: EventStoryApi,
-    private val dao: EventDao
+    private val eventStoryApi: EventStoryApi
 ) {
 
     fun getEventStory(id: Int): Flow<EventStory> {
