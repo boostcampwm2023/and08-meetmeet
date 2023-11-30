@@ -25,8 +25,9 @@ fun MaterialToolbar.bindMenuEnable(eventAuthority: EventAuthority) {
 
 @BindingAdapter("repeat_frequency")
 fun AutoCompleteTextView.bindRepeatFrequency(repeatFrequency: Int?) {
-    repeatFrequency ?: return
-    setText(repeatFrequency.toString())
+    if(repeatFrequency!=null) {
+        setText(repeatFrequency.toString())
+    }
     val frequencyItems = arrayOf("1", "2", "3", "4", "5", "6")
     setAdapter(ArrayAdapter(context, android.R.layout.simple_list_item_1, frequencyItems))
 }
