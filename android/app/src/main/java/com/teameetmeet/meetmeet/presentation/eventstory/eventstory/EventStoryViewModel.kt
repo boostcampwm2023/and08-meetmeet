@@ -75,6 +75,20 @@ class EventStoryViewModel @Inject constructor(
         return eventStoryUiState.value.eventStory?.announcement.orEmpty()
     }
 
+    fun joinEventStory() {
+        viewModelScope.launch {
+            eventStoryRepository.joinEventStory(eventStoryUiState.value.eventId).catch { exception ->
+                when(exception) {
+                    is ExpiredRefreshTokenException -> _event.emit(EventStoryEvent.NavigateToLoginActivity)
+                    is UnknownHostException -> _event.emit(EventStoryEvent.ShowMessage(R.string.common_message_no_internet))
+                    else -> _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_join_event_fail, exception.message.orEmpty()))
+                }
+            }.collect {
+                _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_join_event_success))
+            }
+        }
+    }
+
 
     override fun onItemClick() {
         _eventStoryUiState.update {
@@ -86,6 +100,7 @@ class EventStoryViewModel @Inject constructor(
         }
     }
 
+
     override fun onSaveButtonClick(message: String) {
         viewModelScope.launch {
             eventStoryRepository.editNotification(message).catch {
@@ -94,7 +109,6 @@ class EventStoryViewModel @Inject constructor(
                 _eventStoryUiState.update {
                     it.copy(eventStory = eventStoryUiState.value.eventStory?.copy(announcement = message))
                 }
-                //TODO("일정 공지 수정되는 거 봐야함")
             }
         }
     }

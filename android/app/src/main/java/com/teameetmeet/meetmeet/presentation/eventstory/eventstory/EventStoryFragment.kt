@@ -59,9 +59,10 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
             }
             eventStoryCvInviteMember.setOnClickListener {
                 when (viewModel.eventStoryUiState.value.authority) {
-                    EventAuthority.GUEST -> {}//TODO("참여 신청")
+                    EventAuthority.GUEST -> {
+                        viewModel.joinEventStory()
+                    }
                     EventAuthority.OWNER -> {
-                        //TODO("초대 페이지로 이동")
                         viewModel.eventStoryUiState.value.eventStory?.let { story ->
                             findNavController().navigate(
                                 EventStoryFragmentDirections.actionEventStoryFragmentToFollowFragment()
@@ -69,7 +70,6 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                             )
                         }
                     }
-
                     else -> return@setOnClickListener
                 }
             }

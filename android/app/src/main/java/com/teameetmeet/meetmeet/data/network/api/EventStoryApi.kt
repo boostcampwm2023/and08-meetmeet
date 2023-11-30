@@ -27,6 +27,9 @@ interface EventStoryApi {
     @POST()
     suspend fun editNotification(@Body singleStringRequest: KakaoLoginRequest)
 
+    @POST("event/schedule/join/{eventId}")
+    suspend fun joinEventStory(@Path("eventId") eventId: Int)
+
     @DELETE("event/{eventId}")
     suspend fun deleteEventStory(
         @Path("eventId") id: String,
