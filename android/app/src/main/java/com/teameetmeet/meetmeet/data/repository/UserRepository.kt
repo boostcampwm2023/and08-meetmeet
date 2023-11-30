@@ -1,10 +1,11 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
+import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -25,9 +26,7 @@ class UserRepository @Inject constructor(
     fun getUserProfile(): Flow<UserProfile> {
         return flowOf(true)
             .map {
-                val token = dataStore.getAppToken().first() ?: throw NoDataException()
-                val result = userApi.getUserProfile()
-                result
+                userApi.getUserProfile()
             }.onEach {
                 fetchUserProfile(it)
             }.catch {
@@ -49,6 +48,22 @@ class UserRepository @Inject constructor(
             //TODO(예외 처리 필요)
         }
     }
+
+    suspend fun getUserWithFollowStatus(nickname: String): Flow<UserWithFollowStatus> {
+        val userNickname = dataStore.getUserProfile().first().nickname
+        return flowOf(true)
+            .map {
+                val user = userApi.getUserWithFollowStatus(nickname)
+                if(user.nickname == userNickname) {
+                    user.copy(isMe = true)
+                } else {
+                    user
+                }
+            }.catch {
+                throw it.toException()
+            }
+    }
+
 
     private suspend fun fetchUserProfile(userProfile: UserProfile) {
         dataStore.fetchUserProfile(userProfile)

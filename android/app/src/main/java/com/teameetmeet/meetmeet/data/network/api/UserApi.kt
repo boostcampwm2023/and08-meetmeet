@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import okhttp3.MultipartBody
@@ -23,6 +24,9 @@ interface UserApi {
 
     @GET("auth/check/nickname")
     suspend fun checkNickNameDuplication(@Query("nickname") nickname: String): AvailableResponse
+
+    @GET("user/search")
+    suspend fun getUserWithFollowStatus(@Query("nickname") nickname: String): UserWithFollowStatus
 
     @PATCH("user/account")
     suspend fun patchPassword(@Body passwordChangeRequest: PasswordChangeRequest): UserProfile
