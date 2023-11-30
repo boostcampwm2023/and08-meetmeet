@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { In, Repository } from 'typeorm';
@@ -48,25 +48,25 @@ export class ContentService {
     });
   }
 
-  async updateContent(id: number, file: Express.Multer.File) {
-    const prevContent = await this.contentRepository.findOne({ where: { id } });
-    if (!prevContent) {
-      throw new InternalServerErrorException(
-        `There is no content where id = ${id}`,
-      );
-    }
+  // async updateContent(id: number, file: Express.Multer.File) {
+  //   const prevContent = await this.contentRepository.findOne({ where: { id } });
+  //   if (!prevContent) {
+  //     throw new InternalServerErrorException(
+  //       `There is no content where id = ${id}`,
+  //     );
+  //   }
 
-    const dir = prevContent.path.split('/').at(0) ?? '';
-    await this.objectStorage.delete(prevContent.path);
+  //   const dir = prevContent.path.split('/').at(0) ?? '';
+  //   await this.objectStorage.delete(prevContent.path);
 
-    file.path = this.generateFilePath(dir, file.originalname);
-    const updatedContent = this.createEntity(file);
+  //   file.path = this.generateFilePath(dir, file.originalname);
+  //   const updatedContent = this.createEntity(file);
 
-    await this.objectStorage.upload(file);
-    await this.contentRepository.update(id, updatedContent);
+  //   await this.objectStorage.upload(file);
+  //   await this.contentRepository.update(id, updatedContent);
 
-    return await this.contentRepository.findOne({ where: { id } });
-  }
+  //   return await this.contentRepository.findOne({ where: { id } });
+  // }
 
   async softDeleteContent(idList: number[]) {
     const files = await this.contentRepository.find({
@@ -74,10 +74,11 @@ export class ContentService {
     });
 
     await this.contentRepository.softDelete(idList);
+    // TODO: delete 시 object storage에서 바로 삭제할 것인지
     await this.objectStorage.deleteBulk(files.map((file) => file.path));
   }
 
   generateFilePath(dir: string, fileName: string) {
-    return `${dir}/${uuidv4()}${extname(fileName)}`;
+    return `${dir}/${uuidv4().substring(0, 18)}${extname(fileName)}`;
   }
 }
