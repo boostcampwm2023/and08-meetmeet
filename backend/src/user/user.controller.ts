@@ -51,7 +51,6 @@ export class UserController {
     @GetUser() user: User,
     @Body() updateUserDto: UpdateUserInfoDto,
   ) {
-    console.log(profileImage);
     return this.userService.updateUserInfo(user, updateUserDto, profileImage);
   }
 
@@ -95,6 +94,7 @@ export class UserController {
     description: 'parameter의 nickname으로 검색합니다.',
   })
   searchUser(@GetUser() user: User, @Query('nickname') nickname: string) {
+    // todo : search 할때 리턴값 profile인지 확인
     return this.userService.searchUser(user, nickname);
   }
 }
