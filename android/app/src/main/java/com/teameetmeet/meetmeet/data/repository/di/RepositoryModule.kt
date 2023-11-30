@@ -2,7 +2,6 @@ package com.teameetmeet.meetmeet.data.repository.di
 
 import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
 import com.teameetmeet.meetmeet.data.datasource.RemoteCalendarDataSource
-import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.AuthApi
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
@@ -49,9 +48,8 @@ class RepositoryModule {
     @Singleton
     @Provides
     fun provideEventStoryRepository(
-        eventStoryApi: EventStoryApi,
-        eventDao: EventDao
-    ) = EventStoryRepository(eventStoryApi, eventDao)
+        eventStoryApi: EventStoryApi
+    ) = EventStoryRepository(eventStoryApi)
 
     @Singleton
     @Provides

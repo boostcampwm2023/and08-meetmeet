@@ -1,6 +1,5 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
@@ -19,8 +18,7 @@ import java.io.File
 import javax.inject.Inject
 
 class EventStoryRepository @Inject constructor(
-    private val eventStoryApi: EventStoryApi,
-    private val dao: EventDao
+    private val eventStoryApi: EventStoryApi
 ) {
 
     fun getEventStory(id: Int): Flow<EventStory> {
@@ -35,7 +33,7 @@ class EventStoryRepository @Inject constructor(
     fun getEventStoryDetail(id: Int): Flow<EventDetail> {
         return flowOf(Unit)
             .map {
-                eventStoryApi.getStoryDetail(id.toString())
+                eventStoryApi.getStoryDetail(id.toString()).result
             }.catch {
                 throw it.toException()
             }
@@ -61,8 +59,8 @@ class EventStoryRepository @Inject constructor(
         isVisible: Boolean,
         memo: String,
         repeatTerm: String?,
-        repeatFrequency: Int,
-        repeatEndDate: String,
+        repeatFrequency: Int?,
+        repeatEndDate: String?,
         color: EventColor,
         alarm: EventNotification
     ): Flow<Unit> {

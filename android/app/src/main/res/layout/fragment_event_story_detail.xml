@@ -73,6 +73,7 @@
                     style="@style/medium"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:text="@{vm.uiState.eventName}"
                     android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
                     android:maxLength="64"
                     android:onTextChanged="@{(c, c1, c2, c3) -> vm.setEventName(c)}" />
@@ -167,6 +168,7 @@
                     style="@style/medium"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:notification="@{vm.uiState.alarm}"
                     android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                     android:inputType="none" />
 
@@ -189,6 +191,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:checkedButton="@id/radio_red"
+                app:color="@{vm.uiState.color}"
                 android:onCheckedChanged="@{(group, id) -> vm.setEventColor(group, id)}"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="@id/event_story_tv_event_color"
@@ -267,6 +270,7 @@
                     android:id="@+id/story_detail_et_event_repeat"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:repeat_term="@{vm.uiState.eventRepeat}"
                     android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
                     android:inputType="none" />
 
@@ -291,8 +295,9 @@
                     android:id="@+id/story_detail_et_event_repeat_frequency"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    app:repeat_frequency="@{vm.uiState.eventRepeatFrequency}"
                     android:enabled="@{(vm.uiState.authority == EventAuthority.OWNER &amp;&amp; vm.uiState.eventRepeat != EventRepeatTerm.NONE)? true : false}"
-                    android:inputType="number" />
+                    android:inputType="none" />
 
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -313,7 +318,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
-                android:text="@{vm.uiState.eventRepeatEndDate.isEmpty() ? @string/story_detail_date_not_decided : vm.uiState.eventRepeatEndDate}"
+                android:text="@{vm.uiState.eventRepeatEndDate ?? @string/story_detail_date_not_decided}"
                 android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
                 app:layout_constraintBottom_toBottomOf="@id/story_detail_til_event_repeat_frequency"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
@@ -335,6 +340,7 @@
                     style="@style/medium"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:text="@{vm.uiState.memo}"
                     android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                     android:onTextChanged="@{(c, c1, c2, c3) -> vm.setEventMemo(c)}" />
 
@@ -356,6 +362,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:checked="@{vm.uiState.isOpen}"
                 android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
                 android:onCheckedChanged="@{(view, isChecked) -> vm.setEventOpen(isChecked)}"
                 app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_event_public"
@@ -377,6 +384,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:checked="@{vm.uiState.isJoinable}"
                 android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
                 android:onCheckedChanged="@{(view, isChecked) -> vm.setEventJoinable(isChecked)}"
                 app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_event_joinable"

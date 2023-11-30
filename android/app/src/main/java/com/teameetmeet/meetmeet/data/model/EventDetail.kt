@@ -15,14 +15,20 @@ data class EventDetail(
     val endDate: String,
     @Json(name = "authority")
     val authority: String?,
-    @Json(name = "repeatPolicyId")
-    val repeatPolicyId: Int?,
     @Json(name = "isJoinable")
     val isJoin: Boolean,
     @Json(name = "isVisible")
-    val isVisible: Int = 0,
+    val isVisible: Boolean,
+    @Json(name = "memo")
+    val memo: String?,
+    @Json(name = "color")
+    val color: Int,
+    @Json(name = "alarmMinutes")
+    val alarmMinutes: Int,
     @Json(name = "repeatTerm")
     val repeatTerm: String?,
     @Json(name = "repeatFrequency")
-    val repeatFrequency: Int?
+    val repeatFrequency: Int?,
+    @Json(name = "repeatEndDate")
+    val repeatEndDate: String?,
 )
