@@ -38,11 +38,11 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemCl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
-        lifecycleScope.launch {
-            viewModel.currentDate.collectLatest {
-                if (it.events.isEmpty()) dismiss()
-            }
-        }
+//        lifecycleScope.launch {
+//            viewModel.currentDate.collectLatest {
+//                if (it.events.isEmpty()) dismiss()
+//            }
+//        }
     }
 
     private fun setBinding() {
