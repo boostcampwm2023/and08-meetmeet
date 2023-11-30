@@ -30,3 +30,9 @@ fun Uri.toAbsolutePath(): String? {
     }
     return file?.absolutePath
 }
+
+private fun Uri.getMimeType(): String? {
+    val context = MeetMeetApp.applicationContext()
+    val contentResolver = context.contentResolver
+    return contentResolver.getType(this)
+}
