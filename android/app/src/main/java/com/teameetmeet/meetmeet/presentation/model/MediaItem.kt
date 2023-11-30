@@ -7,9 +7,14 @@ data class MediaItem(
     val uri: Uri,
     val size: Long
 ) {
-    private val kilo = 1024
     val sizeString =
-        if (size / kilo < 1) "${size}B"
-        else if (size / (kilo * kilo) < 1) "${size / kilo}KB"
-        else "${size / (kilo * kilo)}MB"
+        if (size / KILO < 1) "${size}B"
+        else if (size / (KILO * KILO) < 1) "${size / KILO}KB"
+        else "${size / (KILO * KILO)}MB"
+
+    companion object {
+        const val KILO = 1024
+        const val MEDIA_AMOUNT_CONSTRAINT = 10
+        const val MEDIA_VOLUME_CONSTRAINT = 1024 * 1024 * 50
+    }
 }
