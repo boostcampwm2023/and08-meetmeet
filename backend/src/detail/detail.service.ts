@@ -18,6 +18,11 @@ export class DetailService {
     return await this.detailRepository.save(detail);
   }
 
+  // todo : detail insert interface 생성
+  async createDetailSingle(detail: Detail) {
+    return await this.detailRepository.save(detail);
+  }
+
   async createDetailBulk(createScheduleDto: CreateScheduleDto, count: number) {
     const detailArray = [];
     for (let i = 0; i < count; i++) {

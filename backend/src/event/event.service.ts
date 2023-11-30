@@ -21,6 +21,8 @@ import { FollowService } from '../follow/follow.service';
 import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
+import { Detail } from '../detail/entities/detail.entity';
+import { of } from 'rxjs';
 
 @Injectable()
 export class EventService {
@@ -862,16 +864,16 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
-
+    console.log(rawFollowings);
     const result: any[] = [];
     rawFollowings.forEach((follower) => {
       const eventMember = event.eventMembers.find(
         (eventMember) => eventMember.user.id === follower.id,
       );
       result.push({
-        id: follower.user.id,
-        nickname: follower.user.nickname,
-        profile: follower.user.profile?.path ?? null,
+        id: follower.follower.id,
+        nickname: follower.follower.nickname,
+        profile: follower.follower.profile?.path ?? null,
         isJoined: eventMember ? true : false,
       });
     });
@@ -895,9 +897,9 @@ export class EventService {
         (eventMember) => eventMember.user.id === follower.id,
       );
       result.push({
-        id: follower.user.id,
-        nickname: follower.user.nickname,
-        profile: follower.user.profile?.path ?? null,
+        id: follower.follower.id,
+        nickname: follower.follower.nickname,
+        profile: follower.follower.profile?.path ?? null,
         isJoined: eventMember ? true : false,
       });
     });
@@ -931,13 +933,70 @@ export class EventService {
     };
   }
 
-  async inviteSchedule(user: User, eventId: number) {
+  async inviteSchedule(user: User, userId: number, eventId: number) {
     // 초대를 보내야 하지만 현재는 무조건 참여하도록 구현
-      await this.eventMemberService
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+    });
 
+    if (!event) {
+      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    const detail = {
+      isVisible: true,
+      memo: '',
+      color: -39579,
+      alarmMinutes: 10,
+    } as Detail;
+
+    const savedDetail = await this.detailService.createDetailSingle(detail);
+
+    const authority = await this.eventMemberService.getAuthorityId('MEMBER');
+    if (!authority) {
+      throw new Error('authority is not valid');
+    }
+
+    await this.eventMemberService.createEventMember(
+      event,
+      user,
+      savedDetail,
+      authority,
+    );
 
     // todo : 초대를 보내는 것으로 구현한다.
+    return { result: '초대요청이 전송되었습니다.' };
   }
 
-  async joinSchedule(user: User, eventId: number) {}
+  async joinSchedule(user: User, eventId: number) {
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+    });
+
+    if (!event) {
+      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    const detail = {
+      isVisible: true,
+      memo: '',
+      color: -39579,
+      alarmMinutes: 10,
+    } as Detail;
+
+    const savedDetail = await this.detailService.createDetailSingle(detail);
+
+    const authority = await this.eventMemberService.getAuthorityId('MEMBER');
+    if (!authority) {
+      throw new Error('authority is not valid');
+    }
+
+    await this.eventMemberService.createEventMember(
+      event,
+      user,
+      savedDetail,
+      authority,
+    );
+  return { result: '참여요청이 전송되었습니다.' };
+  }
 }
