@@ -750,9 +750,7 @@ export class EventService {
     const month = date.substring(4, 6);
     const day = date.substring(6, 8);
 
-    const formattedDate = `${year}-${month}-${day}`;
-
-    return formattedDate;
+    return `${year}-${month}-${day}`;
   }
 
   incrementDate(
@@ -870,6 +868,7 @@ export class EventService {
         isJoined: eventMember ? true : false,
       });
     });
+    return { users: result };
   }
 
   async searchUserEvents(user: User, userId: number, eventId: number) {
