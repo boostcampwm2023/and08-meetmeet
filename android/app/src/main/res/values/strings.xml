@@ -1,14 +1,13 @@
 <resources>
     <string name="app_name">MeetMeetApp</string>
 
-    <string name="common_korea_date_format">yyyy년 MM월 dd일</string>
-    <string name="common_korea_time_format">%1s시 %2분</string>
+    <string name="common_local_date_format">yyyy년 MM월 dd일</string>
+    <string name="common_local_time_format">%1s시 %2분</string>
     <string name="common_local_date_time_format">yyyy년 MM월 dd일 HH:mm</string>
     <string name="common_iso_date_format">yyyy-MM-dd</string>
     <string name="common_iso_time_format">HH:mm</string>
-    <string name="common_iso_date_time_format">yyyy-MM-dd HH:mm:ss</string>
-    <string name="server_date_format">yyyy-MM-dd</string>
-    <string name="server_date_time_format">yyyy-MM-dd\'T\'HH:mm:ss.SSSXXX</string>
+    <string name="common_iso_date_time_format">yyyy-MM-dd\'T\'HH:mm:ss.SSSXXX</string>
+    <string name="common_global_date_time_format">yyyy-MM-dd HH:mm:ss</string>
     <string name="common_none"> </string>
 
     <string name="menu_save">저장</string>

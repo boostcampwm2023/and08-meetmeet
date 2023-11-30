@@ -52,15 +52,15 @@ class AddEventViewModel @Inject constructor(
                     _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
                         .plusMinutes(_uiState.value.startTime.minute.toLong())
                         .toLong(ZoneId.systemDefault())
-                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+                        .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
                 val endDateTime =
                     _uiState.value.endDate.plusHours(_uiState.value.endTime.hour.toLong())
                         .plusMinutes(_uiState.value.endTime.minute.toLong())
                         .toLong(ZoneId.systemDefault())
-                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+                        .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
 
                 val repeatEndDate = _uiState.value.eventRepeatEndDate.toLong(ZoneId.systemDefault())
-                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+                    .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
 
                 with(_uiState.value) {
                     calendarRepository.addEvent(
@@ -78,7 +78,7 @@ class AddEventViewModel @Inject constructor(
                     ).catch {
                         _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
                     }.collectLatest {
-                        startDateTime.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
+                        startDateTime.toLocalDateTime(DateTimeFormat.GLOBAL_DATE_TIME)
                             ?.let { startDateTime ->
                                 // todo API 되면 이벤트 아이디 받아서 넘기기
                                 // todo 알림 없음일 경우 알림 생성 x

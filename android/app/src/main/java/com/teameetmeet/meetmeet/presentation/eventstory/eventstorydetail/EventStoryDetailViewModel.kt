@@ -79,8 +79,8 @@ class EventStoryDetailViewModel @Inject constructor(
             }.collect {eventDetail ->
                 _uiState.update {
                     with(eventDetail) {
-                        val startLocalDateTime = startDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toLocalDateTime()
-                        val endLocalDateTime = endDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toLocalDateTime()
+                        val startLocalDateTime = startDate.toTimeStampLong(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")).toLocalDateTime()
+                        val endLocalDateTime = endDate.toTimeStampLong(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")).toLocalDateTime()
                         it.copy(
                             eventId = id,
                             eventName = title,
@@ -149,16 +149,16 @@ class EventStoryDetailViewModel @Inject constructor(
                     .plusHours(_uiState.value.startTime.hour.toLong())
                     .plusMinutes(_uiState.value.startTime.minute.toLong())
                     .toLong(ZoneId.systemDefault())
-                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+                    .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
             val endDateTime =
                 _uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE).toLocalDateTime()
                     .plusHours(_uiState.value.endTime.hour.toLong())
                     .plusMinutes(_uiState.value.endTime.minute.toLong())
                     .toLong(ZoneId.systemDefault())
-                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+                    .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
 
             val repeatEndDate = _uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
-                .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+                .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
 
             with(_uiState.value) {
                 eventStoryRepository.editEventStory(

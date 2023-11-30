@@ -73,8 +73,8 @@ class CalendarRepository @Inject constructor(
     private suspend fun syncEvents(startDateTime: Long, endDateTime: Long) {
         remoteCalendarDataSource
             .getEvents(
-                startDateTime.toDateString(DateTimeFormat.SERVER_DATE, ZoneId.of("UTC")),
-                endDateTime.toDateString(DateTimeFormat.SERVER_DATE, ZoneId.of("UTC"))
+                startDateTime.toDateString(DateTimeFormat.ISO_DATE, ZoneId.of("UTC")),
+                endDateTime.toDateString(DateTimeFormat.ISO_DATE, ZoneId.of("UTC"))
             ).collect {
                 localCalendarDataSource.deleteEvents(startDateTime, endDateTime)
                 localCalendarDataSource.insertEvents(it.map(EventResponse::toEvent))

@@ -46,11 +46,11 @@ class SearchResultEventAdapter(
             }
 
             val startDate = item.startDate.toTimeStampLong(
-                DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")
+                DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")
             ).toLocalDate()
 
             val endDate = item.endDate.toTimeStampLong(
-                DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")
+                DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")
             ).toLocalDate()
 
             setBinding(item, startDate, endDate)
