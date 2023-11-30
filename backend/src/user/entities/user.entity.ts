@@ -15,7 +15,7 @@ export class User extends commonEntity {
   nickname: string;
 
   @Column({ nullable: true })
-  profileId: number;
+  profileId: number | null;
 
   @ManyToOne(() => Content, { eager: true })
   @JoinColumn()
