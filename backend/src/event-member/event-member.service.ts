@@ -27,14 +27,14 @@ export class EventMemberService {
     user: User,
     detail: Detail,
     authority: Authority,
-  ): Promise<void> {
+  ) {
     const eventMember = this.eventMemberRepository.create({
       user: user,
       detail: detail,
       authority: authority,
       event: event,
     });
-    await this.eventMemberRepository.save(eventMember);
+    return await this.eventMemberRepository.save(eventMember);
   }
 
   async createEventMemberBulk(
@@ -52,8 +52,7 @@ export class EventMemberService {
         event: events[i],
       });
     }
-    console.log(eventMembers);
-    await this.eventMemberRepository.save(eventMembers);
+    return await this.eventMemberRepository.save(eventMembers);
   }
 
   async getAuthorityOfUserByEventId(eventId: number, userId: number) {

@@ -19,6 +19,7 @@ import {
 } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
@@ -126,6 +127,7 @@ export class UserController {
     description: 'parameter의 nickname으로 검색합니다.',
   })
   searchUser(@GetUser() user: User, @Query('nickname') nickname: string) {
+    // todo : search 할때 리턴값 profile인지 확인
     return this.userService.searchUser(user, nickname);
   }
 }

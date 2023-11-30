@@ -17,12 +17,12 @@ export class UpdateScheduleDto {
   @Length(1, 64)
   title: string;
 
-  @ApiProperty({ name: 'startDate', example: '2021-01-01' })
+  @ApiProperty({ name: 'startDate', example: '2023-11-01T03:00:00.000Z' })
   @IsOptional()
   @IsDateString()
   startDate: Date;
 
-  @ApiProperty({ name: 'endDate', example: '2021-01-01' })
+  @ApiProperty({ name: 'endDate', example: '2023-11-30T03:00:00.000Z' })
   @IsOptional()
   @IsDateString()
   endDate: Date;
@@ -44,10 +44,12 @@ export class UpdateScheduleDto {
   memo?: string;
 
   @ApiProperty({ name: 'color', example: 10 })
+  @IsOptional()
   @IsInt()
   color: number;
 
   @ApiProperty({ name: 'alarmMinutes', example: 10 })
+  @IsOptional()
   @IsInt()
   alarmMinutes: number;
 
@@ -60,7 +62,7 @@ export class UpdateScheduleDto {
   @IsOptional()
   repeatFrequency?: number;
 
-  @ApiProperty({ name: 'repeatEndDate', example: '2021-01-01' })
+  @ApiProperty({ name: 'repeatEndDate', example: '2023-11-01T03:00:00.000Z' })
   @IsOptional()
   @IsDateString()
   repeatEndDate?: Date;
