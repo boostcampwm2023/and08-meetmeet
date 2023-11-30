@@ -10,18 +10,24 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickMultipleVisualMedia
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentCreateFeedBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.model.MediaItem
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
     R.layout.fragment_create_feed
 ) {
     val viewModel: CreateFeedViewModel by viewModels()
+    val navArgs: CreateFeedFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -30,6 +36,7 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
         setTopAppBar()
         setKeyboard()
         setSelectMedia()
+        collectViewModelEvent()
     }
 
     private fun setSelectMedia() {
@@ -50,7 +57,7 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
             setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.menu_save -> {
-                        viewModel.onSave()
+                        viewModel.onSave(navArgs.storyId)
                         true
                     }
 
@@ -72,6 +79,25 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
         }
     }
 
+    private fun collectViewModelEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.createFeedUiEvent.collect {
+                    when (it) {
+                        is CreateFeedUiEvent.ShowMessage -> showMessage(
+                            it.messageId,
+                            it.extraMessage
+                        )
+
+                        is CreateFeedUiEvent.CreateFeedSuccess -> {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun Uri.toMediaItem(): MediaItem {
         val contentResolver = requireActivity().contentResolver
         val mimeType = contentResolver.getType(this)
@@ -82,8 +108,7 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
             val size = cursor.getLong(sizeIndex).also { cursor.close() }
             size
         } ?: 0
-        return MediaItem(
-            isVideo, this, size
-        )
+
+        return MediaItem(isVideo, this, size)
     }
 }

@@ -44,6 +44,7 @@
                 android:background="@null"
                 android:hint="@string/search_event_hint"
                 android:imeOptions="actionSearch"
+                android:text="@{vm.searchKeyword}"
                 android:inputType="text"
                 android:maxLength="@integer/text_length_short"
                 android:maxLines="1"

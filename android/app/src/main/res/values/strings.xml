@@ -119,8 +119,10 @@
     <string name="event_story_event_date">%1s - %2s</string>
 
     <string name="create_feed_text_hint">텍스트를 입력하세요</string>
-    <string name="create_feed_media_constraint_size">미디어를 50MB 초과로 업로드 할 수 없습니다.</string>
+    <string name="create_feed_media_constraint_volume">미디어를 50MB 초과로 업로드 할 수 없습니다.</string>
     <string name="create_feed_constraint_amount">미디어를 10개 초과로 업로드 할 수 없습니다.</string>
+    <string name="create_feed_fail_message">피드 생성을 실패하였습니다.</string>
+    <string name="create_feed_no_contents_message">피드 내용을 추가해주세요</string>
 
     <string name="event_story_description_loading_image">loading_image</string>
     <string name="notification_change_title">공지 작성</string>
