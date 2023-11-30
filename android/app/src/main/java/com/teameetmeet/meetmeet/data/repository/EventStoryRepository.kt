@@ -5,6 +5,7 @@ import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.FeedDetail
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
+import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.toException
 import com.teameetmeet.meetmeet.presentation.model.EventColor
@@ -117,7 +118,18 @@ class EventStoryRepository @Inject constructor(
 
     fun getFeedDetail(feedId: Int): Flow<FeedDetail> {
         return flowOf(true).map {
-            eventStoryApi.getFeedDetail(feedId.toString())
+            eventStoryApi.getFeedDetail(feedId)
+        }.catch {
+            //todo: 예외처리
+            throw it
+        }
+    }
+
+    fun addFeedComment(feedId: Int, memo: String): Flow<Unit> {
+        return flowOf(true).map {
+            eventStoryApi.addFeedComment(
+                feedId, AddFeedCommentRequest(memo)
+            )
         }.catch {
             //todo: 예외처리
             throw it
