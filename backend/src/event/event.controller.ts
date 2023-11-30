@@ -212,4 +212,56 @@ export class EventController {
       endDate,
     );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/user/followings')
+  async getFollowingsEvents(
+    @GetUser() user: User,
+    @Query('eventId', ParseIntPipe) eventId: number,
+  ) {
+    return await this.eventService.getFollowingsEvents(user, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/user/followers')
+  async getFollowersEvents(
+    @GetUser() user: User,
+    @Query('eventId', ParseIntPipe) eventId: number,
+  ) {
+    return await this.eventService.getFollowersEvents(user, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/user/search')
+  async searchUserEvents(
+    @GetUser() user: User,
+    @Query('userId', ParseIntPipe) userId: number,
+  ) {
+    return await this.eventService.searchUserEvents(user, userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/schedule/invite/:eventId')
+  async inviteSchedule(
+    @GetUser() user: User,
+    @Param('eventId', ParseIntPipe) eventId: number,
+  ) {
+    return await this.eventService.inviteSchedule(user, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/schedule/join/:eventId')
+  async cancelSchedule(
+    @GetUser() user: User,
+    @Param('eventId', ParseIntPipe) eventId: number,
+  ) {
+    return await this.eventService.joinSchedule(user, eventId);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post('/schedule/accept/:eventId')
+  async acceptSchedule(@Param('eventId', ParseIntPipe) eventId: number) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/schedule/decline/:eventId')
+  async declineSchedule(@Param('eventId', ParseIntPipe) eventId: number) {}
 }

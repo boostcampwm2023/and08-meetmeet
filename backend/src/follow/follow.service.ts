@@ -10,6 +10,33 @@ export class FollowService {
     @InjectRepository(Follow) private followRepository: Repository<Follow>,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
+
+  async getRawFollowers(user: User) {
+    const followers = await this.followRepository.find({
+      relations: {
+        user: true,
+        follower: true,
+      },
+      where: {
+        follower: Equal(user.id),
+      },
+    });
+    return followers;
+  }
+
+  async getRawFollowings(user: User) {
+    const followings = await this.followRepository.find({
+      relations: {
+        user: true,
+        follower: true,
+      },
+      where: {
+        user: Equal(user.id),
+      },
+    });
+    return followings;
+  }
+
   async getFollowers(user: User) {
     const followers = await this.followRepository.find({
       relations: {

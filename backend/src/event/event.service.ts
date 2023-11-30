@@ -16,6 +16,7 @@ import { EventMemberService } from '../event-member/event-member.service';
 import { Calendar } from '../calendar/entities/calendar.entity';
 import { SearchEventDto } from './dto/searchEvent.dto';
 import { UpdateScheduleDto } from './dto/updateSchedule.dto';
+import { FollowService } from '../follow/follow.service';
 
 @Injectable()
 export class EventService {
@@ -27,6 +28,7 @@ export class EventService {
     private calendarService: CalendarService,
     private detailService: DetailService,
     private eventMemberService: EventMemberService,
+    private followService: FollowService,
   ) {}
 
   async getEvents(user: User, startDate: string, endDate: string) {
@@ -897,4 +899,37 @@ export class EventService {
     }
     return await this.eventRepository.save(events);
   }
+
+  async getFollowingsEvents(user: User, eventId: number) {
+    const rawFollowings = await this.followService.getRawFollowings(user);
+    const event = await this.eventRepository.findOne({
+      relations: ['eventMembers'],
+      where: {
+        id: eventId,
+      },
+    });
+    if (!event) {
+      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    // const result/*: any[] = [];
+    // rawFollowings.forEach((follower) => {
+    //   const eventMember = event.eventMembers.find(eventMember => eventMember.user.id === rawFollowing.id)
+    //   result.push({
+    //     id: follower.user.id,
+    //     nickname: follower.user.nickname,
+    //     profile:
+    //
+    //   })
+    // })*/
+  }
+  async getFollowersEvents(user: User, eventId: number) {
+    const rawFollowers = await this.followService.getRawFollowers(user);
+  }
+
+  async searchUserEvents(user: User, userId: number) {}
+
+  async inviteSchedule(user: User, eventId: number) {}
+
+  async joinSchedule(user: User, eventId: number) {}
 }
