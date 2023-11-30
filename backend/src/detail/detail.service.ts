@@ -39,4 +39,13 @@ export class DetailService {
   async deleteDetail(detail: Detail) {
     return await this.detailRepository.softDelete(detail.id);
   }
+
+  async bulkUpdateDetail(detailIds: number[], detail: Detail) {
+    await this.detailRepository
+      .createQueryBuilder('detail')
+      .update()
+      .set(detail)
+      .whereInIds(detailIds)
+      .execute();
+  }
 }
