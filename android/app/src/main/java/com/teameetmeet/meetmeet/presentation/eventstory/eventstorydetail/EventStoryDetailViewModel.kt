@@ -251,12 +251,28 @@ class EventStoryDetailViewModel @Inject constructor(
         }
     }
 
+
     fun setEventRepeatFrequency(index: Int) {
         _uiState.update {
             it.copy(eventRepeatFrequency = index+1)
         }
     }
 
+
+    fun setEventDate(startDate: String, endDate: String) {
+        if(uiState.value.eventRepeatEndDate != null && endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE) > uiState.value.eventRepeatEndDate!!.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
+            _event.tryEmit(EventStoryDetailEvent.ShowMessage((R.string.story_detail_message_time_pick_end_time_fail_after_repeat_end)))
+            return
+        }
+        _uiState.update {
+            it.copy(
+                startDate = startDate,
+                startTime = EventTime(0, 0),
+                endDate = endDate,
+                endTime = EventTime(0, 0)
+            )
+        }
+    }
     fun setEventStartDate(time: Long) {
         if (time > uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
             _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_start_time_fail))

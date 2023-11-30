@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
+import androidx.core.util.Pair
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -17,8 +18,12 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toDateString
+import com.teameetmeet.meetmeet.util.date.toTimeStampLong
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.time.ZoneId
 
 @AndroidEntryPoint
 class EventStoryDetailFragment :
@@ -150,25 +155,51 @@ class EventStoryDetailFragment :
     }
 
     private fun setDateTimePicker() {
+
+
         binding.storyDetailTvValueStartDate.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.story_detail_description_start_date)).build()
-            datePicker.show(requireActivity().supportFragmentManager, null)
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setEventStartDate(it)
+            val dateRangePicker =
+                MaterialDatePicker.Builder.dateRangePicker()
+                    .setTitleText(getString(R.string.add_event_title))
+                    .setSelection(
+                        Pair(
+                            viewModel.uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC")),
+                            viewModel.uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                        )
+                    ).build()
+
+            dateRangePicker.addOnPositiveButtonClickListener {
+                viewModel.setEventDate(
+                    it.first.toDateString(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC")),
+                    it.second.toDateString(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC"))
+                )
             }
+            dateRangePicker.show(requireActivity().supportFragmentManager, "DateRangePicker")
         }
-        binding.storyDetailTvValueEndDate.setOnClickListener {
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.story_detail_description_end_date)).build()
-            datePicker.show(requireActivity().supportFragmentManager, null)
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setEventEndDate(it)
+        binding.storyDetailTvValueEndDate.setOnClickListener {val dateRangePicker =
+            MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText(getString(R.string.add_event_title))
+                .setSelection(
+                    Pair(
+                        viewModel.uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC")),
+                        viewModel.uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                    )
+                ).build()
+
+            dateRangePicker.addOnPositiveButtonClickListener {
+                viewModel.setEventDate(
+                    it.first.toDateString(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC")),
+                    it.second.toDateString(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC"))
+                )
             }
+            dateRangePicker.show(requireActivity().supportFragmentManager, "DateRangePicker")
+
         }
+
         binding.eventStoryTvValueEventRepeatEndDate.setOnClickListener {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText(getString(R.string.story_detail_description_event_repeat_end_date))
+                .setSelection(viewModel.uiState.value.eventRepeatEndDate?.toTimeStampLong(DateTimeFormat.LOCAL_DATE))
                 .build()
             datePicker.show(requireActivity().supportFragmentManager, null)
             datePicker.addOnPositiveButtonClickListener {
