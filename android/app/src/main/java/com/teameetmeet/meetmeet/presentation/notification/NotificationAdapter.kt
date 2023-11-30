@@ -7,8 +7,8 @@ import com.teameetmeet.meetmeet.presentation.notification.follow.FollowNotificat
 import com.teameetmeet.meetmeet.presentation.notification.group.GroupNotificationFragment
 
 class NotificationAdapter(
-    fragment: Fragment
-) : FragmentStateAdapter(fragment) {
+    notificationActivity: NotificationActivity
+) : FragmentStateAdapter(notificationActivity) {
     override fun getItemCount(): Int = 3
 
     override fun createFragment(position: Int): Fragment {
