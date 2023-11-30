@@ -182,5 +182,7 @@
     <string name="alarm_notification_message_unknown">일정 알림이 왔어요~ 앱에 들어가서 일정을 확인해보세요!</string>
     <string name="event_story_message_join_event_fail">일정 참여에 실패하셨습니다.\n%s</string>
     <string name="event_story_message_join_event_success">일정 참여 완료!!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -55,7 +55,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 showDialog(viewModel.getNoti())
             }
             eventStoryIbSeeMoreMember.setOnClickListener {
-                //TODO("더보기")
+                findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventMemberFragment(viewModel.eventStoryUiState.value.eventStory?.eventMembers?.toTypedArray().orEmpty()))
             }
             eventStoryCvInviteMember.setOnClickListener {
                 when (viewModel.eventStoryUiState.value.authority) {

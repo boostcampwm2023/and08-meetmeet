@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_event_story_fragment_to_login_activity"
             app:destination="@id/login_activity" />
+        <action
+            android:id="@+id/action_event_story_fragment_to_event_member_fragment"
+            app:destination="@id/event_member_fragment" />
     </fragment>
 
     <fragment
@@ -73,4 +76,13 @@
         android:id="@+id/login_activity"
         android:name="com.teameetmeet.meetmeet.presentation.login.LoginActivity"
         android:label="login_activity" />
+    <fragment
+        android:id="@+id/event_member_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.eventstory.eventmember.EventMemberFragment"
+        tools:layout="@layout/fragment_event_member"
+        android:label="event_member_fragment" >
+        <argument
+            android:name="eventMember"
+            app:argType="com.teameetmeet.meetmeet.data.model.EventMember[]" />
+    </fragment>
 </navigation>
