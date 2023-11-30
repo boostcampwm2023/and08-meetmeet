@@ -10,7 +10,7 @@ export class Member extends UserResponse {
     return {
       id: eventMember.user.id,
       nickname: eventMember.user.nickname,
-      profile: eventMember.user.profile.path ?? null,
+      profile: eventMember.user.profile?.path ?? null,
       authority: eventMember.authority.displayName,
     };
   }
