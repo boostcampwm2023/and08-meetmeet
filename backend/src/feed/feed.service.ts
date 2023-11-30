@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CommentService } from 'src/comment/comment.service';
 import { ContentService } from 'src/content/content.service';
 import { AuthorityEnum } from 'src/event-member/entities/authority.enum';
 import { EventMemberService } from 'src/event-member/event-member.service';
@@ -23,6 +24,7 @@ export class FeedService {
     private feedContentRepository: Repository<FeedContent>,
     private readonly contentService: ContentService,
     private readonly eventMemberService: EventMemberService,
+    private readonly commentService: CommentService,
   ) {}
 
   async createFeed(
@@ -121,5 +123,46 @@ export class FeedService {
     }
 
     await this.feedRepository.softRemove(feed);
+  }
+
+  async createComment(user: User, feedId: number, memo: string) {
+    const feed = await this.feedRepository.findOne({ where: { id: feedId } });
+    if (!feed) {
+      throw new BadRequestException(`There is no feed where id = ${feedId}`);
+    }
+
+    if (
+      !(await this.eventMemberService.getAuthorityOfUserByEventId(
+        feed.eventId,
+        user.id,
+      ))
+    ) {
+      throw new UnauthorizedException(`일정 멤버만 댓글을 작성할 수 있습니다.`);
+    }
+
+    await this.commentService.createComment(user, feed, memo);
+  }
+
+  async deleteComment(user: User, feedId: number, commentId: number) {
+    const comment = await this.commentService.getCommentById(commentId);
+    const feed = await this.feedRepository.findOne({ where: { id: feedId } });
+
+    if (!comment || !feed) {
+      throw new NotFoundException('Comment Not Found');
+    }
+
+    if (comment.authorId !== user.id) {
+      const authority =
+        await this.eventMemberService.getAuthorityOfUserByEventId(
+          feed.eventId,
+          user.id,
+        );
+
+      if (!authority || authority !== 'OWNER') {
+        throw new UnauthorizedException(`댓글 삭제 권한이 없습니다.`);
+      }
+    }
+
+    await this.commentService.deleteComment(commentId);
   }
 }
