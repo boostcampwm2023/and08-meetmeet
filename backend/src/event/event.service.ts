@@ -22,7 +22,6 @@ import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
 import { Detail } from '../detail/entities/detail.entity';
-import { of } from 'rxjs';
 
 @Injectable()
 export class EventService {
@@ -352,38 +351,7 @@ export class EventService {
     if (!event) {
       throw new HttpException('컨텐츠가 없습니다.', HttpStatus.NOT_FOUND);
     }
-    const resultObject = event
-      ? {
-          id: event.id,
-          title: event.title,
-          startDate: event.startDate,
-          endDate: event.endDate,
-          eventMember: event.eventMembers,
-          eventMembers: event.eventMembers.map((eventMember) => ({
-            id: eventMember.id,
-            nickname: eventMember.user.nickname,
-            profile: eventMember.user.profile?.path ?? null,
-            authority: eventMember.authority.displayName,
-          })),
-          authority:
-            event.eventMembers.find(
-              (eventMember) => eventMember.user.id === user.id,
-            )?.authority?.displayName || null,
-          repeatPolicy: {
-            repeatPolicyId: event.repeatPolicy?.id || null,
-            repeatPolicyName: event.repeatPolicy,
-            // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
-          },
-          isJoinable: event.isJoinable ? true : false,
-          detail: event.eventMembers.find(
-            (eventMember) => eventMember.user.id === user.id,
-          )?.detail,
-        }
-      : null;
 
-    if (!resultObject) {
-      throw new HttpException('컨텐츠가 없습니다.', HttpStatus.NOT_FOUND);
-    }
     const eventMember = event.eventMembers.find(
       (eventMember) => eventMember.user.id === user.id,
     );
@@ -529,7 +497,7 @@ export class EventService {
               }
             });
           });
-          console.log(eventMember.detail);
+
           const detail = {
             ...eventMember.detail,
             ...updateScheduleDto,
@@ -864,7 +832,6 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
-    console.log(rawFollowings);
     const result: any[] = [];
     rawFollowings.forEach((follower) => {
       const eventMember = event.eventMembers.find(
@@ -997,6 +964,6 @@ export class EventService {
       savedDetail,
       authority,
     );
-  return { result: '참여요청이 전송되었습니다.' };
+    return { result: '참여요청이 전송되었습니다.' };
   }
 }
