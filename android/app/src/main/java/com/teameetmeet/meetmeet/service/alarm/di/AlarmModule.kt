@@ -1,7 +1,7 @@
-package com.teameetmeet.meetmeet.service.di
+package com.teameetmeet.meetmeet.service.alarm.di
 
 import android.content.Context
-import com.teameetmeet.meetmeet.service.AlarmHelper
+import com.teameetmeet.meetmeet.service.alarm.AlarmHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
