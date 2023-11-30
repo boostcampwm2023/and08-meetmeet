@@ -22,7 +22,7 @@ export class FeedService {
     @InjectRepository(FeedContent)
     private feedContentRepository: Repository<FeedContent>,
     private readonly contentService: ContentService,
-    private readonly eventMemberSercive: EventMemberService,
+    private readonly eventMemberService: EventMemberService,
   ) {}
 
   async createFeed(
@@ -34,7 +34,7 @@ export class FeedService {
       throw new BadRequestException('사진/영상/글을 작성해주세요.');
     }
 
-    const authority = await this.eventMemberSercive.getAuthorityOfUserByEventId(
+    const authority = await this.eventMemberService.getAuthorityOfUserByEventId(
       createFeedDto.eventId,
       user.id,
     );
@@ -44,7 +44,10 @@ export class FeedService {
     }
 
     const feed = this.feedRepository.create({ ...createFeedDto, author: user });
-    const contents = await this.contentService.createContentBulk(files, 'feed');
+    const contents = await this.contentService.createContentBulk(
+      files,
+      `event/${createFeedDto.eventId}`,
+    );
     await this.feedRepository.save(feed);
 
     const feedContents = contents.reduce((acc, content) => {
@@ -101,7 +104,7 @@ export class FeedService {
 
     if (feed.authorId !== user.id) {
       const authority =
-        await this.eventMemberSercive.getAuthorityOfUserByEventId(
+        await this.eventMemberService.getAuthorityOfUserByEventId(
           feed.eventId,
           user.id,
         );
