@@ -50,4 +50,19 @@ class FeedDetailViewModel @Inject constructor(
                 }
         }
     }
+
+    fun addComment() {
+        if (_feedDetailUiState.value.typedComment.isBlank()) return
+        viewModelScope.launch {
+            eventStoryRepository.addFeedComment(
+                _feedDetailUiState.value.feedId,
+                _feedDetailUiState.value.typedComment
+            ).catch {
+                //todo: 예외처리
+                throw it
+            }.collectLatest {
+                getFeedDetail()
+            }
+        }
+    }
 }
