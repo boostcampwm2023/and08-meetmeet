@@ -34,8 +34,8 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         collectViewModelEvent()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         viewModel.getStory()
     }
 
