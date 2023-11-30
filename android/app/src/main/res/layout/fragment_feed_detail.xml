@@ -4,7 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.FeedDetailViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,6 +58,7 @@
 
                     <ImageView
                         android:id="@+id/feed_detail_iv_user"
+                        image="@{vm.feedDetailUiState.feedDetail.author.profile}"
                         android:layout_width="45dp"
                         android:layout_height="45dp"
                         android:backgroundTint="@color/black"
@@ -66,6 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
+                    android:text="@{vm.feedDetailUiState.feedDetail.author.nickname}"
                     app:layout_constraintBottom_toBottomOf="@id/feed_detail_cv_user"
                     app:layout_constraintStart_toEndOf="@id/feed_detail_cv_user"
                     app:layout_constraintTop_toTopOf="@id/feed_detail_cv_user"
@@ -73,6 +81,7 @@
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/feed_detail_vp_media"
+                    sub_list="@{vm.feedDetailUiState.feedDetail.contents}"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_margin="16dp"
@@ -101,11 +110,12 @@
 
                 <TextView
                     android:id="@+id/feed_detail_tv_content"
-                    style="@style/small.bold"
+                    style="@style/medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="30dp"
+                    android:text="@{vm.feedDetailUiState.feedDetail.memo}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/feed_detail_vp_media"
@@ -118,6 +128,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="30dp"
+                    android:text="@{@string/feed_detail_comment_amount(vm.feedDetailUiState.feedDetail.comments.size())}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/feed_detail_tv_content"
@@ -135,6 +146,7 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/feed_detail_rv_comment"
+                    add_divider="@{true}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -147,7 +159,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:constraint_referenced_ids="feed_detail_tv_comment_title, feed_detail_divider_comment, feed_detail_rv_comment"
-                    tools:visibility="visible" />
+                    tools:visibility="@{vm.feedDetailUiState.feedDetail.comments.isEmpty()?View.GONE:View.VISIBLE}" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="feed_detail_vp_media, feed_detail_tv_media_count"
+                    tools:visibility="@{vm.feedDetailUiState.feedDetail.contents.isEmpty()?View.GONE:View.VISIBLE}" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -158,20 +176,35 @@
             android:layout_height="wrap_content"
             android:background="@color/grey3"
             android:orientation="vertical"
-            android:padding="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <EditText
-                android:id="@+id/feed_detail_et_comment"
+            <View
+                android:id="@+id/feed_detail_view_comment_background"
+                style="@style/medium"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginVertical="10dp"
+                android:layout_marginStart="15dp"
                 android:background="@drawable/background_comment_et"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/feed_detail_ib_comment_send"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/feed_detail_et_comment"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:background="@null"
+                android:hint="@string/feed_detail_comment_hint"
+                android:maxLength="@integer/text_length_long"
+                android:padding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/feed_detail_view_comment_background"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

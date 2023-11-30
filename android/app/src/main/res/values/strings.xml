@@ -181,4 +181,7 @@
     <string name="alarm_notification_message_before_1_week">일정 시작 일주일 전이에요!!</string>
     <string name="alarm_notification_message_unknown">일정 알림이 왔어요~ 앱에 들어가서 일정을 확인해보세요!</string>
 
+    <string name="feed_detail_comment_hint">댓글을 입력하세요</string>
+    <string name="feed_detail_comment_amount">댓글 %d회</string>
+
 </resources>

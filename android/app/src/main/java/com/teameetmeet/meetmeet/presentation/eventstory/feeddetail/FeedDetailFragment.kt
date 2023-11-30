@@ -18,7 +18,21 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.setFeedId(navArgs.feedId)
+        setBinding()
         setTopAppBar()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getFeedDetail()
+    }
+
+    private fun setBinding() {
+        with(binding) {
+            vm = viewModel
+            feedDetailVpMedia.adapter = FeedContentsAdapter()
+        }
     }
 
     private fun setTopAppBar() {
