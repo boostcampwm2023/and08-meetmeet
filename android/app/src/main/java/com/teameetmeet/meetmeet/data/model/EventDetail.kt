@@ -20,7 +20,7 @@ data class EventDetail(
     @Json(name = "isVisible")
     val isVisible: Boolean,
     @Json(name = "memo")
-    val memo: String,
+    val memo: String?,
     @Json(name = "color")
     val color: Int,
     @Json(name = "alarmMinutes")
