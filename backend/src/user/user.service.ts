@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
@@ -101,6 +97,7 @@ export class UserService {
       const userProfile = await this.updateProfileImage(
         user.profileId,
         profileImage,
+        user.id,
       );
 
       user.profile = userProfile;
@@ -113,20 +110,22 @@ export class UserService {
   async updateProfileImage(
     profileId: number | null,
     profileImage: Express.Multer.File,
+    userId: number,
   ) {
     if (!profileId) {
-      return await this.contentService.createContent(profileImage, 'user');
+      return await this.contentService.createContent(
+        profileImage,
+        `user/${userId}`,
+      );
     }
 
-    const result = await this.contentService.updateContent(
-      profileId,
+    const newProfile = await this.contentService.createContent(
       profileImage,
+      `user/${userId}`,
     );
-    if (!result) {
-      throw new InternalServerErrorException('프로필 변경에 실패했습니다.');
-    }
+    await this.contentService.softDeleteContent([profileId]);
 
-    return result;
+    return newProfile;
   }
 
   async deleteUser(user: User) {
