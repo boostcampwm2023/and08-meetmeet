@@ -6,5 +6,6 @@ data class FeedDetailUiState(
     val feedId: Int,
     val feedDetail: FeedDetail? = null,
     val typedComment: String = "",
+    val contentPage: Int = 0,
     val isLoading: Boolean = false
 )

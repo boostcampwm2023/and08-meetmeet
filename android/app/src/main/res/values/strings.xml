@@ -184,5 +184,6 @@
 
     <string name="feed_detail_comment_hint">댓글을 입력하세요</string>
     <string name="feed_detail_comment_amount">댓글 %d회</string>
+    <string name="feed_detail_media_count">%d/%d</string>
 
 </resources>

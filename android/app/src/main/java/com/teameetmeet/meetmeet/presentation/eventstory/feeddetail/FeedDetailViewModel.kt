@@ -24,6 +24,10 @@ class FeedDetailViewModel @Inject constructor(
         _feedDetailUiState.update { it.copy(feedId = feedId) }
     }
 
+    fun setContentPage(page: Int) {
+        _feedDetailUiState.update { it.copy(contentPage = page) }
+    }
+
     fun onCommentTextChanged(charSequence: CharSequence) {
         _feedDetailUiState.update { it.copy(typedComment = charSequence.toString()) }
     }
