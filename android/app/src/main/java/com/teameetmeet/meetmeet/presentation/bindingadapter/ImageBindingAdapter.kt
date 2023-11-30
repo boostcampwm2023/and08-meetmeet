@@ -13,3 +13,13 @@ fun ImageView.bindUserProfileImage(
         .centerCrop()
         .placeholder(R.drawable.ic_person).into(this)
 }
+
+//todo: 속성 이름 바꿔야 할 듯
+@BindingAdapter("image_src")
+fun ImageView.bindThumbnailImage(
+    thumbnailImage: String?
+) {
+    Glide.with(context).load(thumbnailImage)
+        .centerCrop()
+        .placeholder(R.drawable.ic_no_image_filled).into(this)
+}

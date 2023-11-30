@@ -2,7 +2,7 @@ package com.teameetmeet.meetmeet.presentation.calendar
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.teameetmeet.meetmeet.util.toYearMonth
+import com.teameetmeet.meetmeet.util.date.toYearMonth
 import java.time.LocalDate
 
 @BindingAdapter("local_date")

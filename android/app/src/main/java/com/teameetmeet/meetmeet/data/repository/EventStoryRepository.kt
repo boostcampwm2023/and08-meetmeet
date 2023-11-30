@@ -1,6 +1,5 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
@@ -13,11 +12,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class EventStoryRepository @Inject constructor(
-    private val eventStoryApi: EventStoryApi,
-    private val dao: EventDao
+    private val eventStoryApi: EventStoryApi
 ) {
 
     fun getEventStory(id: Int): Flow<EventStory> {
@@ -32,7 +34,7 @@ class EventStoryRepository @Inject constructor(
     fun getEventStoryDetail(id: Int): Flow<EventDetail> {
         return flowOf(Unit)
             .map {
-                eventStoryApi.getStoryDetail(id.toString())
+                eventStoryApi.getStoryDetail(id.toString()).result
             }.catch {
                 throw it.toException()
             }
@@ -58,8 +60,8 @@ class EventStoryRepository @Inject constructor(
         isVisible: Boolean,
         memo: String,
         repeatTerm: String?,
-        repeatFrequency: Int,
-        repeatEndDate: String,
+        repeatFrequency: Int?,
+        repeatEndDate: String?,
         color: EventColor,
         alarm: EventNotification
     ): Flow<Unit> {
@@ -69,15 +71,17 @@ class EventStoryRepository @Inject constructor(
                     id = eventId.toString(),
                     isAll = isAll,
                     AddEventRequest(
-                        title,
-                        startDate,
-                        endDate,
-                        isJoinable,
-                        isVisible,
-                        memo.ifEmpty { null },
-                        repeatTerm,
-                        repeatFrequency,
-                        repeatEndDate
+                        title = title,
+                        startDate = startDate,
+                        endDate = endDate,
+                        isJoinable = isJoinable,
+                        isVisible = isVisible,
+                        alarmMinutes = alarm.minutes,
+                        memo = memo.ifEmpty { null },
+                        color = color.value,
+                        repeatTerm = repeatTerm,
+                        repeatFrequency = repeatFrequency,
+                        repeatEndDate = repeatEndDate
                     )
                 )
             }.catch {
@@ -92,6 +96,22 @@ class EventStoryRepository @Inject constructor(
             }.catch {
                 throw it
             }
+    }
+
+    fun createFeed(eventId: Int, memo: String?, media: List<File>?): Flow<Unit> {
+        return flowOf(true).map {
+            val contents = media?.map {
+                MultipartBody.Part.createFormData("contents", it.name, it.asRequestBody())
+            }
+            eventStoryApi.createFeed(
+                eventId.toString().toRequestBody(),
+                memo?.toRequestBody(),
+                contents
+            )
+        }.catch {
+            //todo: 예외처리
+            throw it
+        }
     }
 
 }

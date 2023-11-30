@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.util
+package com.teameetmeet.meetmeet.util.date
 
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import java.time.LocalDate
@@ -19,7 +19,7 @@ fun LocalDate.toEndLong(zoneId: ZoneId = ZoneId.systemDefault()): Long {
     return plusDays(1).toStartLong(zoneId) - 1
 }
 
-fun LocalDate.getDayListInMonth(date: LocalDate): List<CalendarItem> {
+fun LocalDate.getDayListInMonth(): List<CalendarItem> {
     val dayList = mutableListOf<CalendarItem>()
     val lastDay = YearMonth.from(this).lengthOfMonth()
     val firstDayOfWeek = withDayOfMonth(1).dayOfWeek.value
@@ -27,8 +27,8 @@ fun LocalDate.getDayListInMonth(date: LocalDate): List<CalendarItem> {
         dayList.add(CalendarItem())
     }
     (1..lastDay).forEach { day ->
-        if (date.dayOfMonth == day) {
-            dayList.add(CalendarItem(date = date, isSelected = true))
+        if (this.dayOfMonth == day) {
+            dayList.add(CalendarItem(date = this, isSelected = true))
         } else {
             dayList.add(CalendarItem(date = LocalDate.of(year, month, day)))
         }

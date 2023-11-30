@@ -17,8 +17,8 @@ import com.teameetmeet.meetmeet.databinding.ActivityAddEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
-import com.teameetmeet.meetmeet.util.toLocalDateTime
-import com.teameetmeet.meetmeet.util.toLong
+import com.teameetmeet.meetmeet.util.date.toLocalDateTime
+import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -77,7 +77,9 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
                             event.extraMessage
                         )
 
-                        is AddEventUiEvent.FinishAddEventActivity -> finish()
+                        is AddEventUiEvent.FinishAddEventActivity -> {
+                            finish()
+                        }
                     }
                 }
             }

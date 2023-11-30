@@ -11,11 +11,11 @@ import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
 import com.teameetmeet.meetmeet.presentation.model.EventBar
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
 import com.teameetmeet.meetmeet.presentation.model.toEventSimple
-import com.teameetmeet.meetmeet.util.getDayListInMonth
-import com.teameetmeet.meetmeet.util.getLocalDate
-import com.teameetmeet.meetmeet.util.toEndLong
-import com.teameetmeet.meetmeet.util.toLocalDate
-import com.teameetmeet.meetmeet.util.toStartLong
+import com.teameetmeet.meetmeet.util.date.getDayListInMonth
+import com.teameetmeet.meetmeet.util.date.getLocalDate
+import com.teameetmeet.meetmeet.util.date.toEndLong
+import com.teameetmeet.meetmeet.util.date.toLocalDate
+import com.teameetmeet.meetmeet.util.date.toStartLong
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -36,11 +36,12 @@ class CalendarViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository
 ) : ViewModel(), CalendarItemClickListener {
 
-    private val _currentDate = MutableStateFlow<LocalDate>(getLocalDate())
-    val currentDate: StateFlow<LocalDate> = _currentDate
+    private val _currentDate = MutableStateFlow<CalendarItem>(CalendarItem(getLocalDate()))
+    val currentDate: StateFlow<CalendarItem> = _currentDate
 
-    private val _daysInMonth =
-        MutableStateFlow<List<CalendarItem>>(currentDate.value.getDayListInMonth(currentDate.value))
+    private val _daysInMonth = MutableStateFlow<List<CalendarItem>>(
+        currentDate.value.date?.getDayListInMonth() ?: emptyList()
+    )
     val daysInMonth: StateFlow<List<CalendarItem>> = _daysInMonth
 
     private val _userProfileImage = MutableStateFlow<String>("")
@@ -76,7 +77,7 @@ class CalendarViewModel @Inject constructor(
 
     fun fetchEvents() {
         viewModelScope.launch {
-            val date = currentDate.value
+            val date = currentDate.value.date ?: return@launch
             val startDateTime = date.withDayOfMonth(1).toStartLong()
             val endDateTime = date.withDayOfMonth(date.lengthOfMonth()).toEndLong()
             calendarRepository
@@ -90,6 +91,9 @@ class CalendarViewModel @Inject constructor(
     private fun setDaysInMonth(monthlyEvents: List<EventSimple>) {
         _daysInMonth.update {
             allocateEventsPerDay(it, monthlyEvents)
+        }
+        _currentDate.update { prev ->
+            _daysInMonth.value.find { it.date == prev.date } ?: prev
         }
     }
 
@@ -109,11 +113,15 @@ class CalendarViewModel @Inject constructor(
         calendarItems: List<CalendarItem>,
         monthlyEvents: List<EventSimple>
     ): List<CalendarItem> {
-        val temp = mutableListOf<CalendarItem>()
+        val daysInMonth = mutableListOf<CalendarItem>()
 
         for (i in calendarItems.indices) {
-            temp.add(calendarItems[i])
-            val today = temp[i].date
+            daysInMonth.add(
+                CalendarItem(
+                    date = calendarItems[i].date,
+                    isSelected = calendarItems[i].isSelected)
+            )
+            val today = daysInMonth[i].date
             today ?: continue
 
             val todayEvents = monthlyEvents
@@ -127,13 +135,13 @@ class CalendarViewModel @Inject constructor(
                 .sortedWith(comparator(today))
                 .groupBy { event ->
                     i % 7 != 0 && today.dayOfMonth != 1 &&
-                            temp[i - 1].eventBars.any { it?.id == event.id }
+                            daysInMonth[i - 1].eventBars.any { it?.id == event.id }
                 }
 
             var eventBars: MutableList<EventBar?> = (0..<5).map { null }.toMutableList()
 
             continuity[true]?.map { event ->
-                val index = temp[i - 1].eventBars.indexOfFirst { it?.id == event.id }
+                val index = daysInMonth[i - 1].eventBars.indexOfFirst { it?.id == event.id }
                 eventBars[index] = EventBar(
                     id = event.id,
                     color = event.color,
@@ -161,17 +169,17 @@ class CalendarViewModel @Inject constructor(
                 )
             }
 
-            temp[i] = temp[i].copy(events = todayEvents, eventBars = eventBars.take(5))
+            daysInMonth[i] = daysInMonth[i].copy(events = todayEvents, eventBars = eventBars.take(5))
         }
-        return temp
+        return daysInMonth
     }
 
     fun moveMonth(offset: Long) {
         _currentDate.update {
-            it.plusMonths(offset)
+            CalendarItem(it.date?.plusMonths(offset))
         }
         _daysInMonth.update {
-            currentDate.value.getDayListInMonth(currentDate.value)
+            currentDate.value.date?.getDayListInMonth() ?: emptyList()
         }
         fetchEvents()
     }
@@ -191,7 +199,7 @@ class CalendarViewModel @Inject constructor(
         if (calendarItem.events.isNotEmpty()) {
             _dayClickEvent.tryEmit(DayClickEvent(calendarItem.date, calendarItem.events))
         }
-        if (currentDate.value == calendarItem.date) return
+        if (currentDate.value.date == calendarItem.date) return
         _daysInMonth.update { list ->
             list.map {
                 when (it.date) {
@@ -200,6 +208,6 @@ class CalendarViewModel @Inject constructor(
                 }
             }
         }
-        _currentDate.update { calendarItem.date }
+        _currentDate.update { calendarItem }
     }
 }

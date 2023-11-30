@@ -12,6 +12,6 @@ export class Content extends commonEntity {
   @Column({ type: 'varchar', length: 64, nullable: true })
   thumbnail: string;
 
-  @Column({ type: 'varchar', length: 64 })
+  @Column({ type: 'varchar', length: 255 })
   path: string;
 }

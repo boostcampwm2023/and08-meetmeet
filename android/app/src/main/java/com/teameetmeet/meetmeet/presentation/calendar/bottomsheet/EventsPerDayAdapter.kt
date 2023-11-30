@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.databinding.ItemEventSimpleBinding
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
-import com.teameetmeet.meetmeet.util.DateTimeFormat
-import com.teameetmeet.meetmeet.util.toDateString
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toDateString
 
 class EventsPerDayAdapter(
     private val listener: EventItemClickListener

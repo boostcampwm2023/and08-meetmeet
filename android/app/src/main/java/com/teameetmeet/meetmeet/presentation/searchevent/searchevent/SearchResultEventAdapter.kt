@@ -10,9 +10,9 @@ import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.databinding.ItemEventSearchBinding
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnItemClickListener
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
-import com.teameetmeet.meetmeet.util.DateTimeFormat
-import com.teameetmeet.meetmeet.util.toLocalDate
-import com.teameetmeet.meetmeet.util.toTimeStampLong
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toLocalDate
+import com.teameetmeet.meetmeet.util.date.toTimeStampLong
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.TextStyle
@@ -46,11 +46,11 @@ class SearchResultEventAdapter(
             }
 
             val startDate = item.startDate.toTimeStampLong(
-                DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")
+                DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")
             ).toLocalDate()
 
             val endDate = item.endDate.toTimeStampLong(
-                DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")
+                DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")
             ).toLocalDate()
 
             setBinding(item, startDate, endDate)

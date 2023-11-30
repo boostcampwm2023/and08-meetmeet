@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.util.Pair
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -17,9 +16,9 @@ import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.databinding.FragmentSearchEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnItemClickListener
-import com.teameetmeet.meetmeet.util.addUtcTimeOffset
-import com.teameetmeet.meetmeet.util.toLocalDate
-import com.teameetmeet.meetmeet.util.toStartLong
+import com.teameetmeet.meetmeet.util.date.addUtcTimeOffset
+import com.teameetmeet.meetmeet.util.date.toLocalDate
+import com.teameetmeet.meetmeet.util.date.toStartLong
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -121,11 +120,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
         val std = start.plusDays(179)
 
         return if (end.isAfter(std)) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.search_event_range_constraint_message),
-                Toast.LENGTH_SHORT
-            ).show()
+            showMessage(R.string.search_event_range_constraint_message, "")
             Pair(start.toStartLong(), std.toStartLong())
         } else {
             Pair(start.toStartLong(), end.toStartLong())
@@ -138,7 +133,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
 
     override fun onClick(event: EventResponse) {
         findNavController().navigate(
-            SearchEventFragmentDirections.actionSearchEventFragmentToEventStoryActivity()
+            SearchEventFragmentDirections.actionSearchEventFragmentToEventStoryActivity(event.id)
         )
     }
 }

@@ -5,21 +5,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventsPerDayBottomSheetBinding
+import com.teameetmeet.meetmeet.presentation.calendar.CalendarFragmentDirections
+import com.teameetmeet.meetmeet.presentation.calendar.CalendarViewModel
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
-import com.teameetmeet.meetmeet.util.DateTimeFormat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemClickListener {
     private var _binding: FragmentEventsPerDayBottomSheetBinding? = null
     private val binding get() = requireNotNull(_binding)
 
-    private val args: EventsPerDayBottomSheetFragmentArgs by navArgs()
+    private val viewModel: CalendarViewModel by viewModels({ requireParentFragment() })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -34,27 +38,28 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemCl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
-        setRecyclerView()
+        lifecycleScope.launch {
+            viewModel.currentDate.collectLatest {
+                if (it.events.isEmpty()) dismiss()
+            }
+        }
     }
 
     private fun setBinding() {
         with(binding) {
             lifecycleOwner = viewLifecycleOwner
-            eventsPerDayTvDate.text =
-                args.eventsPerDay.date.format(DateTimeFormat.ISO_DATE.formatter)
+            vm = viewModel
+            eventsPerDayBsRv.adapter =
+                EventsPerDayAdapter(this@EventsPerDayBottomSheetFragment)
             eventsPerDayBsBtnAddEvent.setOnClickListener {
-                findNavController().navigate(
-                    EventsPerDayBottomSheetFragmentDirections
-                        .actionBottomSheetDialogToAddEventActivity(args.eventsPerDay.date)
-                )
+                viewModel.currentDate.value.date?.let { date ->
+                    requireParentFragment().findNavController().navigate(
+                        CalendarFragmentDirections
+                            .actionCalendarFragmentToAddEventActivity(date)
+                    )
+                }
             }
         }
-    }
-
-    private fun setRecyclerView() {
-        binding.eventsPerDayBsRv.adapter = EventsPerDayAdapter(this)
-        (binding.eventsPerDayBsRv.adapter as EventsPerDayAdapter)
-            .submitList(args.eventsPerDay.events)
     }
 
     override fun onDestroyView() {
@@ -63,8 +68,8 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemCl
     }
 
     override fun onItemClick(eventSimple: EventSimple) {
-        findNavController().navigate(
-            EventsPerDayBottomSheetFragmentDirections.actionBottomSheetDialogToEventStoryActivity(eventSimple.id)
+        requireParentFragment().findNavController().navigate(
+            CalendarFragmentDirections.actionCalendarFragmentToEventStoryActivity(eventSimple.id)
         )
     }
 }

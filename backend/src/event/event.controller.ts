@@ -17,6 +17,7 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -30,6 +31,9 @@ import { CreateScheduleDto } from './dto/createSchedule.dto';
 import { SearchEventDto } from './dto/searchEvent.dto';
 import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 import { SlackInterceptor } from '../log/slack.interceptor';
+import { EventsResponseDto } from './dto/events-response.dto';
+import { EventResponseDto } from './dto/event-response.dto';
+import { EventStoryResponseDto } from './dto/event-story-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('event')
@@ -67,6 +71,7 @@ export class EventController {
     required: true,
     example: '2021-01-31',
   })
+  @ApiOkResponse({ type: EventsResponseDto })
   async getEvents(
     @GetUser() user: User,
     @Query('startDate') startDate: string,
@@ -86,6 +91,7 @@ export class EventController {
     required: true,
     example: 123,
   })
+  @ApiOkResponse({ type: EventResponseDto })
   async getEvent(
     @GetUser() user: User,
     @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
@@ -105,6 +111,7 @@ export class EventController {
     required: true,
     example: 123,
   })
+  @ApiOkResponse({ type: EventStoryResponseDto })
   async getEventFeeds(
     @GetUser() user: User,
     @Param('event_id', new ParseIntPipe({ errorHttpStatusCode: 400 }))
@@ -198,6 +205,7 @@ export class EventController {
     required: true,
     example: '2021-01-31',
   })
+  @ApiOkResponse({ type: EventsResponseDto })
   async getUserEvents(
     @GetUser() user: User,
     @Param('userId', new ParseIntPipe({ errorHttpStatusCode: 400 }))

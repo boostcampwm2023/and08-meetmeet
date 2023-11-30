@@ -128,7 +128,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_cl_profile"
-            app:local_date="@{vm.currentDate}"
+            app:local_date="@{vm.currentDate.date}"
             tools:text="2023년 11월" />
 
         <ImageButton

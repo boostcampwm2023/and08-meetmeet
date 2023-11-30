@@ -18,6 +18,10 @@ class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
         dao.insert(event)
     }
 
+    suspend fun insertEvents(events: List<Event>) {
+        dao.insertEvents(*events.toTypedArray())
+    }
+
     suspend fun update(event: Event) {
         dao.update(event)
     }
@@ -28,6 +32,10 @@ class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
 
     suspend fun deleteAll() {
         dao.deleteAll()
+    }
+
+    suspend fun deleteEvents(startDateTime: Long, endDateTime: Long) {
+        dao.deleteEvents(startDateTime, endDateTime)
     }
 
     suspend fun updateEventAttr(

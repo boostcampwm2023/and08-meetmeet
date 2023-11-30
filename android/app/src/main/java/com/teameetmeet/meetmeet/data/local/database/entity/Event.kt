@@ -11,6 +11,10 @@ data class Event(
     val startDateTime: Long,
     val endDateTime: Long,
     val isRepeat: Boolean,
-    val notification: String = "none",
+    val notification: Int = -1,
     val color: Int = -39579
-)
+) {
+    fun getTriggerTime(): Long {
+        return startDateTime - notification * 60 * 1000
+    }
+}

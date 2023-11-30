@@ -1,14 +1,13 @@
 <resources>
     <string name="app_name">MeetMeetApp</string>
 
-    <string name="common_korea_date_format">yyyy년 MM월 dd일</string>
-    <string name="common_korea_time_format">%1s시 %2분</string>
+    <string name="common_local_date_format">yyyy년 MM월 dd일</string>
+    <string name="common_local_time_format">%1s시 %2분</string>
     <string name="common_local_date_time_format">yyyy년 MM월 dd일 HH:mm</string>
     <string name="common_iso_date_format">yyyy-MM-dd</string>
     <string name="common_iso_time_format">HH:mm</string>
-    <string name="common_iso_date_time_format">yyyy-MM-dd HH:mm:ss</string>
-    <string name="server_date_format">yyyy-MM-dd</string>
-    <string name="server_date_time_format">yyyy-MM-dd\'T\'HH:mm:ss.SSSXXX</string>
+    <string name="common_iso_date_time_format">yyyy-MM-dd\'T\'HH:mm:ss.SSSXXX</string>
+    <string name="common_global_date_time_format">yyyy-MM-dd HH:mm:ss</string>
     <string name="common_none"> </string>
 
     <string name="menu_save">저장</string>
@@ -38,6 +37,7 @@
     <string name="add_event_err_repeat_term">반복 주기는 일정 기간보다 길어야 합니다.</string>
 
     <string name="notification_none">알림 없음</string>
+    <string name="notification_on_time">정각</string>
     <string name="notification_ten_minutes_before">10분 전</string>
     <string name="notification_one_hour_before">1시간 전</string>
     <string name="notification_one_day_before">1일 전</string>
@@ -119,6 +119,10 @@
     <string name="event_story_event_date">%1s - %2s</string>
 
     <string name="create_feed_text_hint">텍스트를 입력하세요</string>
+    <string name="create_feed_media_constraint_volume">미디어를 50MB 초과로 업로드 할 수 없습니다.</string>
+    <string name="create_feed_constraint_amount">미디어를 10개 초과로 업로드 할 수 없습니다.</string>
+    <string name="create_feed_fail_message">피드 생성을 실패하였습니다.</string>
+    <string name="create_feed_no_contents_message">피드 내용을 추가해주세요</string>
 
     <string name="event_story_description_loading_image">loading_image</string>
     <string name="notification_change_title">공지 작성</string>
@@ -165,5 +169,6 @@
     <string name="story_detail_message_time_pick_end_time_fail_after_repeat_end">종료 시간이 반복 일정 종료 시간보다 늦게 설정할 수 없습니다.</string>
     <string name="story_detail_success_edit_event">수정이 완료되었습니다.</string>
     <string name="story_detail_message_edit_message_fail">이벤트 수정 실패\n%s</string>
+    <string name="story_detail_message_no_repeat_frequency">반복 주기를 설정해주세요.</string>
 
 </resources>

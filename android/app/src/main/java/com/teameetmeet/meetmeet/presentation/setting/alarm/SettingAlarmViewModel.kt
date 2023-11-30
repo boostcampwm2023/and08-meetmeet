@@ -15,7 +15,7 @@ import javax.inject.Inject
 class SettingAlarmViewModel @Inject constructor(
     private val settingRepository: SettingRepository
 ) : ViewModel() {
-    private val _isPushAlarmOn = MutableStateFlow<Boolean>(false)
+    private val _isPushAlarmOn = MutableStateFlow<Boolean>(true)
     val isPushAlarmOn: StateFlow<Boolean> = _isPushAlarmOn
 
     init {

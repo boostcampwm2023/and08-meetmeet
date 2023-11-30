@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOperator, Raw, Repository } from 'typeorm';
@@ -17,6 +18,9 @@ import { Calendar } from '../calendar/entities/calendar.entity';
 import { SearchEventDto } from './dto/searchEvent.dto';
 import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 import { FollowService } from '../follow/follow.service';
+import { EventsResponseDto } from './dto/events-response.dto';
+import { EventResponseDto } from './dto/event-response.dto';
+import { EventStoryResponseDto } from './dto/event-story-response.dto';
 
 @Injectable()
 export class EventService {
@@ -45,8 +49,7 @@ export class EventService {
       },
     });
 
-    const result: any[] = [];
-    events.forEach((event) => {
+    const result: EventsResponseDto[] = events.map((event) => {
       const event_detail = event.eventMembers.find(
         (eventMember) => eventMember.user.id === user.id,
       );
@@ -55,24 +58,9 @@ export class EventService {
         throw new Error('event detail is not valid');
       }
 
-      result.push({
-        id: event.id,
-        title: event.title,
-        startDate: event.startDate,
-        endDate: event.endDate,
-        eventMembers: event.eventMembers.map((eventMember) => ({
-          id: eventMember.id,
-          nickname: eventMember.user.nickname,
-          profile: `/user/profile/${eventMember.user.id}`,
-          authority: eventMember.authority.displayName,
-        })),
-        color: event_detail.detail.color,
-        alarmMinutes: event_detail.detail.alarmMinutes,
-        authority: event_detail.authority.displayName,
-        repeatPolicyId: event.repeatPolicyId,
-        isJoinable: event.isJoinable ? true : false,
-      });
+      return EventsResponseDto.of(event, event_detail);
     });
+
     return { events: result };
   }
 
@@ -86,76 +74,24 @@ export class EventService {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
 
-    if (
-      event.eventMembers.find((eventMember) => eventMember.user.id === user.id)
-        ?.authority?.displayName !== 'OWNER' &&
-      event.eventMembers.find((eventMember) => eventMember.user.id === user.id)
-        ?.authority?.displayName !== 'ADMIN' &&
-      event.eventMembers.find((eventMember) => eventMember.user.id === user.id)
-        ?.authority?.displayName !== 'MEMBER'
-    ) {
-      throw new HttpException(
-        '이벤트에 참여하지 않았습니다.',
-        HttpStatus.NOT_FOUND,
-      );
+    const authority = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === user.id,
+    )?.authority?.displayName;
+
+    if (!authority || !['OWNER', 'MEMBER', 'ADMIN'].includes(authority)) {
+      throw new NotFoundException('이벤트에 참여하지 않았습니다.');
     }
 
     const detail = event.eventMembers.find(
       (eventMember) => eventMember.user.id === user.id,
-    )?.detail;
+    );
 
-    const repeatPolicy = event.repeatPolicy;
-
-    let repeatTerm;
-    let repeatFrequency;
-    let repeatEndDate;
-    if (repeatPolicy?.repeatDay !== undefined) {
-      repeatTerm = 'DAY';
-      repeatFrequency = repeatPolicy.repeatDay;
-      repeatEndDate = repeatPolicy.repeatDay;
-    } else if (repeatPolicy?.repeatWeek !== undefined) {
-      repeatTerm = 'WEEK';
-      repeatFrequency = repeatPolicy.repeatWeek;
-      repeatEndDate = repeatPolicy.repeatDay;
-    } else if (repeatPolicy?.repeatMonth !== undefined) {
-      repeatTerm = 'MONTH';
-      repeatFrequency = repeatPolicy.repeatMonth;
-      repeatEndDate = repeatPolicy.repeatDay;
-    } else if (repeatPolicy?.repeatYear !== undefined) {
-      repeatTerm = 'YEAR';
-      repeatFrequency = repeatPolicy.repeatYear;
-      repeatEndDate = repeatPolicy.repeatDay;
-    } else {
-      repeatTerm = null;
-      repeatFrequency = null;
-      repeatEndDate = null;
+    if (!detail) {
+      throw new Error('Cannot find event detail');
     }
 
     return {
-      result: {
-        id: event.id,
-        title: event.title,
-        startDate: event.startDate,
-        endDate: event.endDate,
-        eventMembers: event.eventMembers.map((eventMember) => ({
-          id: eventMember.id,
-          nickname: eventMember.user.nickname,
-          profile: `/user/profile/${eventMember.user.id}`,
-          authority: eventMember.authority.displayName,
-        })),
-        authority:
-          event.eventMembers.find(
-            (eventMember) => eventMember.user.id === user.id,
-          )?.authority?.displayName || null,
-        isJoinable: event.isJoinable ? true : false,
-        isVisible: detail?.isVisible ? true : false,
-        memo: detail?.memo,
-        color: detail?.color,
-        alarmMinutes: detail?.alarmMinutes,
-        repeatTerm: repeatTerm,
-        repeatFrequency: repeatFrequency,
-        repeatEndDate: repeatEndDate,
-      },
+      result: EventResponseDto.of(event, detail),
     };
   }
 
@@ -177,6 +113,7 @@ export class EventService {
         eventMembers: { user: { id: userId }, detail: { isVisible: true } },
       },
     });
+
     const result: any[] = [];
     events.forEach((event) => [
       result.push({
@@ -212,38 +149,7 @@ export class EventService {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
 
-    return {
-      id: event.id,
-      title: event.title,
-      startDate: event.startDate,
-      endDate: event.endDate,
-      announcement: event.announcement,
-      eventMembers: event.eventMembers.map((eventMember) => ({
-        id: eventMember.id,
-        nickname: eventMember.user.nickname,
-        profile: `/user/profile/${eventMember.user.id}`,
-        authority: eventMember.authority.displayName,
-      })),
-      authority:
-        event.eventMembers.find(
-          (eventMember) => eventMember.user.id === user.id,
-        )?.authority?.displayName || null,
-      repeatPolicyId: event.repeatPolicyId,
-      isJoinable: event.isJoinable ? true : false,
-      isVisible: event.eventMembers.find(
-        (eventMember) => eventMember.user.id === user.id,
-      )?.detail?.isVisible
-        ? true
-        : false,
-      memo: event.eventMembers.find(
-        (eventMember) => eventMember.user.id === user.id,
-      )?.detail?.memo,
-      feeds: event.feeds.map((feed) => ({
-        id: feed.id,
-        thumbnail: feed.feedContents[0]?.content?.thumbnail,
-        memo: feed.memo,
-      })),
-    };
+    return EventStoryResponseDto.of(event, user.id);
   }
 
   async createEvent(user: User, createScheduleDto: CreateScheduleDto) {
@@ -348,16 +254,48 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
-
-    const isValidUser = event.eventMembers.find(
-      (eventMember) => eventMember.user.id === user.id,
-    );
-    if (!isValidUser) {
-      throw new HttpException(
-        '이벤트에 참여하지 않았습니다.',
-        HttpStatus.NOT_FOUND,
+      const isValidUser = event.eventMembers.find(
+          (eventMember) => eventMember.user.id === user.id,
       );
-    }
+      if (!isValidUser) {
+          throw new HttpException(
+              '이벤트에 참여하지 않았습니다.',
+              HttpStatus.NOT_FOUND,
+          );
+      }
+      const resultObject = event
+        ? {
+            id: event.id,
+            title: event.title,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            eventMember: event.eventMembers,
+            eventMembers: event.eventMembers.map((eventMember) => ({
+              id: eventMember.id,
+              nickname: eventMember.user.nickname,
+              profile: eventMember.user.profile?.path ?? null,
+              authority: eventMember.authority.displayName,
+            })),
+            authority:
+              event.eventMembers.find(
+                (eventMember) => eventMember.user.id === user.id,
+              )?.authority?.displayName || null,
+            repeatPolicy: {
+              repeatPolicyId: event.repeatPolicy?.id || null,
+              repeatPolicyName: event.repeatPolicy,
+              // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
+            },
+            isJoinable: event.isJoinable ? true : false,
+            detail: event.eventMembers[0].detail,
+          }
+        : null;
+
+      if (!resultObject) {
+        throw new HttpException(
+          '반복되는 컨텐츠가 아닙니다.',
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
     if (!isAll) {
       if (!event.repeatPolicy) {
@@ -412,7 +350,36 @@ export class EventService {
     if (!event) {
       throw new HttpException('컨텐츠가 없습니다.', HttpStatus.NOT_FOUND);
     }
-    if (!event) {
+    const resultObject = event
+      ? {
+          id: event.id,
+          title: event.title,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          eventMember: event.eventMembers,
+          eventMembers: event.eventMembers.map((eventMember) => ({
+            id: eventMember.id,
+            nickname: eventMember.user.nickname,
+            profile: eventMember.user.profile?.path ?? null,
+            authority: eventMember.authority.displayName,
+          })),
+          authority:
+            event.eventMembers.find(
+              (eventMember) => eventMember.user.id === user.id,
+            )?.authority?.displayName || null,
+          repeatPolicy: {
+            repeatPolicyId: event.repeatPolicy?.id || null,
+            repeatPolicyName: event.repeatPolicy,
+            // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
+          },
+          isJoinable: event.isJoinable ? true : false,
+          detail: event.eventMembers.find(
+            (eventMember) => eventMember.user.id === user.id,
+          )?.detail,
+        }
+      : null;
+
+    if (!resultObject) {
       throw new HttpException('컨텐츠가 없습니다.', HttpStatus.NOT_FOUND);
     }
     const eventMember = event.eventMembers.find(
@@ -719,23 +686,7 @@ export class EventService {
         throw new Error('event detail is not valid');
       }
 
-      return {
-        id: event.id,
-        title: event.title,
-        startDate: event.startDate,
-        endDate: event.endDate,
-        eventMembers: event.eventMembers.map((eventMember) => ({
-          id: eventMember.id,
-          nickname: eventMember.user.nickname,
-          profile: `/user/profile/${eventMember.user.id}`,
-          authority: eventMember.authority.displayName,
-        })),
-        authority: event_detail.authority.displayName,
-        color: event_detail.detail.color,
-        alarmMinutes: event_detail.detail.alarmMinutes,
-        repeatPolicyId: event.repeatPolicyId,
-        isJoinable: event.isJoinable ? true : false,
-      };
+      return EventsResponseDto.of(event, event_detail);
     });
 
     if (!result) {
@@ -748,7 +699,6 @@ export class EventService {
     if (!createScheduleDto.repeatTerm || !createScheduleDto.repeatFrequency) {
       return false;
     }
-
     if (
       createScheduleDto.repeatFrequency <= 0 ||
       createScheduleDto.repeatFrequency > 7
@@ -757,6 +707,7 @@ export class EventService {
     }
     return true;
   }
+
   isReapeatPolicy(createScheduleDto: CreateScheduleDto) {
     if (createScheduleDto.repeatTerm) {
       return true;
