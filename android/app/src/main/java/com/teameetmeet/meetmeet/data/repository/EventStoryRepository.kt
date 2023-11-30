@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.data.repository
 
 import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
+import com.teameetmeet.meetmeet.data.model.FeedDetail
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
@@ -108,6 +109,15 @@ class EventStoryRepository @Inject constructor(
                 memo?.toRequestBody(),
                 contents
             )
+        }.catch {
+            //todo: 예외처리
+            throw it
+        }
+    }
+
+    fun getFeedDetail(feedId: Int): Flow<FeedDetail> {
+        return flowOf(true).map {
+            eventStoryApi.getFeedDetail(feedId.toString())
         }.catch {
             //todo: 예외처리
             throw it
