@@ -17,6 +17,7 @@ import {
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -30,6 +31,9 @@ import { CreateScheduleDto } from './dto/createSchedule.dto';
 import { SearchEventDto } from './dto/searchEvent.dto';
 import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 import { SlackInterceptor } from '../log/slack.interceptor';
+import { EventsResponseDto } from './dto/events-response.dto';
+import { EventResponseDto } from './dto/event-response.dto';
+import { EventStoryResponseDto } from './dto/event-story-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('event')
@@ -60,13 +64,14 @@ export class EventController {
   @ApiQuery({
     name: 'startDate',
     required: true,
-    example: '2021-01-01',
+    example: '2023-11-01T03:00:00.000Z',
   })
   @ApiQuery({
     name: 'endDate',
     required: true,
-    example: '2021-01-31',
+    example: '2023-11-30T03:00:00.000Z',
   })
+  @ApiOkResponse({ type: EventsResponseDto })
   async getEvents(
     @GetUser() user: User,
     @Query('startDate') startDate: string,
@@ -86,6 +91,7 @@ export class EventController {
     required: true,
     example: 123,
   })
+  @ApiOkResponse({ type: EventResponseDto })
   async getEvent(
     @GetUser() user: User,
     @Param('eventId', new ParseIntPipe({ errorHttpStatusCode: 400 }))
@@ -105,6 +111,7 @@ export class EventController {
     required: true,
     example: 123,
   })
+  @ApiOkResponse({ type: EventStoryResponseDto })
   async getEventFeeds(
     @GetUser() user: User,
     @Param('event_id', new ParseIntPipe({ errorHttpStatusCode: 400 }))
@@ -183,6 +190,113 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/user/followings')
+  @ApiOperation({
+    summary: '일정 초대 관련 팔로잉 조회',
+    description: '',
+  })
+  @ApiQuery({
+    name: 'eventId',
+    required: true,
+    example: 123,
+  })
+  async getFollowingsEvents(
+    @GetUser() user: User,
+    @Query('eventId') eventId: number,
+  ) {
+    return await this.eventService.getFollowingsEvents(user, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/user/followers')
+  @ApiOperation({
+    summary: '일정 초대 관련 팔로우 조회',
+    description: '',
+  })
+  @ApiQuery({
+    name: 'eventId',
+    required: true,
+    example: 123,
+  })
+  async getFollowersEvents(
+    @GetUser() user: User,
+    @Query('eventId', ParseIntPipe) eventId: number,
+  ) {
+    return await this.eventService.getFollowersEvents(user, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/user/search/:eventId')
+  @ApiOperation({
+    summary: '일정 초대 관련 유저 검색',
+    description: '',
+  })
+  @ApiQuery({
+    name: 'userId',
+    required: true,
+    example: 123,
+  })
+  @ApiParam({
+    name: 'eventId',
+    required: true,
+    example: 123,
+  })
+  async searchUserEvents(
+    @GetUser() user: User,
+    @Param('eventId', ParseIntPipe) eventId: number,
+    @Query('userId', ParseIntPipe) userId: number,
+  ) {
+    return await this.eventService.searchUserEvents(user, userId, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/schedule/invite/:eventId')
+  @ApiOperation({
+    summary: '일정 초대 API',
+    description: '',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        userId: {
+          type: 'number',
+        },
+        eventId: {
+          type: 'number',
+        },
+      },
+    },
+  })
+  async inviteSchedule(
+    @GetUser() user: User,
+    @Body('userId', ParseIntPipe) userId: number,
+    @Body('eventId', ParseIntPipe) eventId: number,
+  ) {
+    return await this.eventService.inviteSchedule(user, userId, eventId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/schedule/join/:eventId')
+  @ApiOperation({
+    summary: '일정 참여 API',
+    description: '',
+  })
+  async cancelSchedule(
+    @GetUser() user: User,
+    @Param('eventId', ParseIntPipe) eventId: number,
+  ) {
+    return await this.eventService.joinSchedule(user, eventId);
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post('/schedule/accept/:eventId')
+  async acceptSchedule(@Param('eventId', ParseIntPipe) eventId: number) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/schedule/decline/:eventId')
+  async declineSchedule(@Param('eventId', ParseIntPipe) eventId: number) {}
+
+  @UseGuards(JwtAuthGuard)
   @Get('/user/:userId')
   @ApiOperation({
     summary: '일정 조회 API',
@@ -191,13 +305,14 @@ export class EventController {
   @ApiQuery({
     name: 'startDate',
     required: true,
-    example: '2021-01-01',
+    example: '2023-11-01T03:00:00.000Z',
   })
   @ApiQuery({
     name: 'endDate',
     required: true,
-    example: '2021-01-31',
+    example: '2023-11-30T03:00:00.000Z',
   })
+  @ApiOkResponse({ type: EventsResponseDto })
   async getUserEvents(
     @GetUser() user: User,
     @Param('userId', new ParseIntPipe({ errorHttpStatusCode: 400 }))

@@ -12,6 +12,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiConsumes,
   ApiOperation,
   ApiTags,
@@ -42,6 +43,42 @@ export class FeedController {
     @Body() createFeedDto: CreateFeedDto,
   ) {
     return this.feedService.createFeed(user, contents, createFeedDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/comment')
+  @ApiOperation({ summary: '댓글 작성 API' })
+  @ApiBearerAuth()
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        memo: {
+          type: 'string',
+          description: '댓글 내용',
+        },
+      },
+    },
+  })
+  createComment(
+    @GetUser() user: User,
+    @Param('id') id: number,
+    @Body('memo') memo: string,
+  ) {
+    return this.feedService.createComment(user, id, memo);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  // @HttpCode(204)
+  @Delete(':feedId/comment/:commentId')
+  @ApiOperation({ summary: '댓글 삭제 API' })
+  @ApiBearerAuth()
+  deleteComment(
+    @GetUser() user: User,
+    @Param('feedId') feedId: number,
+    @Param('commentId') commentId: number,
+  ) {
+    return this.feedService.deleteComment(user, feedId, commentId);
   }
 
   @UseGuards(JwtAuthGuard)
