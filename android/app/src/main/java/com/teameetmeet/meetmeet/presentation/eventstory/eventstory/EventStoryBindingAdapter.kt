@@ -17,10 +17,10 @@ fun TextView.bindTextViewDate(eventStory: EventStory?) {
     text = String.format(
         context.getString(R.string.event_story_event_date),
         eventStory.startDate.toTimeStampLong(
-            DateTimeFormat.SERVER_DATE_TIME,
+            DateTimeFormat.ISO_DATE_TIME,
             zoneId = ZoneId.of("UTC")
         ).toDateString(DateTimeFormat.LOCAL_DATE_TIME),
-        eventStory.endDate.toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC"))
+        eventStory.endDate.toTimeStampLong(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
             .toDateString(DateTimeFormat.LOCAL_DATE_TIME)
     )
 }

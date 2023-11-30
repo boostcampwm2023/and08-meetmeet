@@ -5,6 +5,7 @@ import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventStoryDetailResponse
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -40,10 +41,10 @@ interface EventStoryApi {
     )
 
     @Multipart
-    @POST("/feed")
+    @POST("feed")
     suspend fun createFeed(
-        @Part eventId: Int,
-        @Part memo: String?,
+        @Part("eventId") eventId: RequestBody,
+        @Part("memo") memo: RequestBody?,
         @Part contents: List<MultipartBody.Part>?
     )
 }

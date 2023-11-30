@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.createfeed
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.MediaItem
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -40,24 +42,39 @@ class CreateFeedViewModel @Inject constructor(
         _mediaList.update { it.filter { item -> item != mediaItem } }
     }
 
-    fun onSave() {
+    fun onSave(eventId: Int) {
         val mediaSizeConstraint = 1024 * 1024 * 50
-        if (mediaList.value.size > 10) {
-            _createFeedUiEvent.tryEmit(
-                CreateFeedUiEvent.ShowMessage(R.string.create_feed_constraint_amount)
-            )
-        } else if (mediaList.value.sumOf { it.size } > mediaSizeConstraint) {
-            _createFeedUiEvent.tryEmit(
-                CreateFeedUiEvent.ShowMessage(R.string.create_feed_media_constraint_size)
-            )
-        } else {
-            mediaList.value
-                .mapNotNull { it.uri.toAbsolutePath() }
-                .map { File(it) }
-                .let { eventStoryRepository.createFeed(0, feedText.value, it) }
-                .catch {
-                    //todo: 예외처리
-                }
+        viewModelScope.launch {
+            if (mediaList.value.isEmpty() && feedText.value.isBlank()) {
+                _createFeedUiEvent.emit(
+                    CreateFeedUiEvent.ShowMessage(R.string.create_feed_no_contents_message)
+                )
+            } else if (mediaList.value.size > 10) {
+                _createFeedUiEvent.emit(
+                    CreateFeedUiEvent.ShowMessage(R.string.create_feed_constraint_amount)
+                )
+            } else if (mediaList.value.sumOf { it.size } > mediaSizeConstraint) {
+                _createFeedUiEvent.emit(
+                    CreateFeedUiEvent.ShowMessage(R.string.create_feed_media_constraint_volume)
+                )
+            } else {
+                mediaList.value
+                    .mapNotNull { it.uri.toAbsolutePath() }
+                    .map { File(it) }
+                    .let {
+                        eventStoryRepository.createFeed(
+                            eventId,
+                            feedText.value.ifBlank { null },
+                            it.ifEmpty { null }
+                        )
+                    }
+                    .catch {
+                        it.printStackTrace()
+                        _createFeedUiEvent.emit(CreateFeedUiEvent.ShowMessage(R.string.create_feed_fail_message))
+                    }.collect {
+                        _createFeedUiEvent.emit(CreateFeedUiEvent.CreateFeedSuccess)
+                    }
+            }
         }
     }
 }
