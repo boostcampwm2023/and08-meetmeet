@@ -22,5 +22,5 @@ fun Long.removeUtcTimeOffset(): Long {
 }
 
 fun Long.toDateString(format: DateTimeFormat, zoneId: ZoneId = ZoneId.systemDefault()): String {
-    return toLocalDateTime(zoneId).format(format.formatter)
+    return Instant.ofEpochMilli(this).atZone(zoneId).format(format.formatter)
 }
