@@ -15,10 +15,7 @@ export class ContentService {
     private readonly objectStorage: ObjectStorage,
     private readonly configService: ConfigService,
   ) {
-    this.locationPrefix = configService.get(
-      'CONTENT_PREFIX',
-      'https://kr.object.ncloudstorage.com/meetmeet/',
-    );
+    this.locationPrefix = configService.get('CONTENT_PREFIX', '');
   }
 
   async createContent(file: Express.Multer.File, dir: string) {
@@ -96,6 +93,6 @@ export class ContentService {
   }
 
   generateFilePath(dir: string, fileName: string) {
-    return `${dir}/${uuidv4().substring(0, 18)}${extname(fileName)}`;
+    return `${dir}/${uuidv4().split('-').slice(2).join()}${extname(fileName)}`;
   }
 }
