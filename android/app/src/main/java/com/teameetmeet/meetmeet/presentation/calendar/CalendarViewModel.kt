@@ -113,11 +113,15 @@ class CalendarViewModel @Inject constructor(
         calendarItems: List<CalendarItem>,
         monthlyEvents: List<EventSimple>
     ): List<CalendarItem> {
-        val temp = mutableListOf<CalendarItem>()
+        val daysInMonth = mutableListOf<CalendarItem>()
 
         for (i in calendarItems.indices) {
-            temp.add(calendarItems[i])
-            val today = temp[i].date
+            daysInMonth.add(
+                CalendarItem(
+                    date = calendarItems[i].date,
+                    isSelected = calendarItems[i].isSelected)
+            )
+            val today = daysInMonth[i].date
             today ?: continue
 
             val todayEvents = monthlyEvents
@@ -131,13 +135,13 @@ class CalendarViewModel @Inject constructor(
                 .sortedWith(comparator(today))
                 .groupBy { event ->
                     i % 7 != 0 && today.dayOfMonth != 1 &&
-                            temp[i - 1].eventBars.any { it?.id == event.id }
+                            daysInMonth[i - 1].eventBars.any { it?.id == event.id }
                 }
 
             var eventBars: MutableList<EventBar?> = (0..<5).map { null }.toMutableList()
 
             continuity[true]?.map { event ->
-                val index = temp[i - 1].eventBars.indexOfFirst { it?.id == event.id }
+                val index = daysInMonth[i - 1].eventBars.indexOfFirst { it?.id == event.id }
                 eventBars[index] = EventBar(
                     id = event.id,
                     color = event.color,
@@ -165,9 +169,9 @@ class CalendarViewModel @Inject constructor(
                 )
             }
 
-            temp[i] = temp[i].copy(events = todayEvents, eventBars = eventBars.take(5))
+            daysInMonth[i] = daysInMonth[i].copy(events = todayEvents, eventBars = eventBars.take(5))
         }
-        return temp
+        return daysInMonth
     }
 
     fun moveMonth(offset: Long) {
