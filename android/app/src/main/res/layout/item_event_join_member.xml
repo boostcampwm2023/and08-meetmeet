@@ -6,7 +6,8 @@
     <data>
         <variable
             name="eventMember"
-            type="com.teameetmeet.meetmeet.presentation.eventstory.eventstory.eventmember.EventMemberState" />
+            type="com.teameetmeet.meetmeet.data.model.UserWithFollowStatus" />
+        <import type="android.view.View"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -27,7 +28,7 @@
                 android:id="@+id/event_join_member_iv_profile"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:image="@{eventMember.eventMember.profile}"
+                app:image="@{eventMember.profile}"
                 android:backgroundTint="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -40,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="@{eventMember.eventMember.nickname}"
+            android:text="@{eventMember.nickname}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/event_join_member_btn_action"
             app:layout_constraintStart_toEndOf="@id/event_join_member_cv"
@@ -53,6 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:visibility="@{eventMember.isMe == true ? View.GONE : View.VISIBLE}"
+            android:text="@{eventMember.isFollowed == true ? @string/event_member_unfollow : @string/event_member_follow }"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

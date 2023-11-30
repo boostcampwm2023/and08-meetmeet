@@ -185,6 +185,8 @@
 
     <string name="story_detail_title_tool_bar">일정 상세</string>
     <string name="event_member_title_app_bar">일정 멤버</string>
+    <string name="event_member_follow">팔로우</string>
+    <string name="event_member_unfollow">언팔로우</string>
     <string name="notification_tab_follow">팔로우</string>
     <string name="notification_tab_invite_event">일정 초대</string>
     <string name="notification_tab_invite_group">그룹 초대</string>

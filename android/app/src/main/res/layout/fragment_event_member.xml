@@ -36,7 +36,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
-            app:sub_list="@{vm.uiState.eventMember}"
+            app:sub_list="@{vm.uiState}"
             tools:listitem="@layout/item_event_join_member"
             />
 

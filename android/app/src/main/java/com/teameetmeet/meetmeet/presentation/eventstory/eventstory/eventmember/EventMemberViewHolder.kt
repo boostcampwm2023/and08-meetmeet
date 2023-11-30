@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstory.eventmember
 
 import androidx.recyclerview.widget.RecyclerView
+import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
 import com.teameetmeet.meetmeet.databinding.ItemEventJoinMemberBinding
 
 class EventMemberViewHolder(private val binding: ItemEventJoinMemberBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -11,7 +12,7 @@ class EventMemberViewHolder(private val binding: ItemEventJoinMemberBinding) : R
         }
     }
 
-    fun bind(item: EventMemberState) {
+    fun bind(item: UserWithFollowStatus) {
         binding.eventMember = item
     }
 }

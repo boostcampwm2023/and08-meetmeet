@@ -8,7 +8,9 @@ import androidx.navigation.fragment.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventMemberBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EventMemberFragment : BaseFragment<FragmentEventMemberBinding>(R.layout.fragment_event_member) {
 
     private val args: EventMemberFragmentArgs by navArgs()

@@ -4,9 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
 import com.teameetmeet.meetmeet.databinding.ItemEventJoinMemberBinding
 
-class EventMemberAdapter : ListAdapter<EventMemberState, EventMemberViewHolder>(diffCallback) {
+class EventMemberAdapter : ListAdapter<UserWithFollowStatus, EventMemberViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventMemberViewHolder {
         val binding = ItemEventJoinMemberBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -21,17 +22,17 @@ class EventMemberAdapter : ListAdapter<EventMemberState, EventMemberViewHolder>(
     }
 
     companion object {
-        private val diffCallback = object: DiffUtil.ItemCallback<EventMemberState>() {
+        private val diffCallback = object: DiffUtil.ItemCallback<UserWithFollowStatus>() {
             override fun areItemsTheSame(
-                oldItem: EventMemberState,
-                newItem: EventMemberState
+                oldItem: UserWithFollowStatus,
+                newItem: UserWithFollowStatus
             ): Boolean {
-                return oldItem.eventMember.id == newItem.eventMember.id
+                return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
-                oldItem: EventMemberState,
-                newItem: EventMemberState
+                oldItem: UserWithFollowStatus,
+                newItem: UserWithFollowStatus
             ): Boolean {
                 return oldItem == newItem
             }
