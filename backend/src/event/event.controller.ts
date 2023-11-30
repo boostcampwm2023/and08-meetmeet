@@ -240,12 +240,13 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/user/search')
+  @Get('/user/search/:eventId')
   async searchUserEvents(
     @GetUser() user: User,
+    @Param('eventId', ParseIntPipe) eventId: number,
     @Query('userId', ParseIntPipe) userId: number,
   ) {
-    return await this.eventService.searchUserEvents(user, userId);
+    return await this.eventService.searchUserEvents(user, userId, eventId);
   }
 
   @UseGuards(JwtAuthGuard)

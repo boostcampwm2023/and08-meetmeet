@@ -254,48 +254,48 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
-      const isValidUser = event.eventMembers.find(
-          (eventMember) => eventMember.user.id === user.id,
+    const isValidUser = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === user.id,
+    );
+    if (!isValidUser) {
+      throw new HttpException(
+        '이벤트에 참여하지 않았습니다.',
+        HttpStatus.NOT_FOUND,
       );
-      if (!isValidUser) {
-          throw new HttpException(
-              '이벤트에 참여하지 않았습니다.',
-              HttpStatus.NOT_FOUND,
-          );
-      }
-      const resultObject = event
-        ? {
-            id: event.id,
-            title: event.title,
-            startDate: event.startDate,
-            endDate: event.endDate,
-            eventMember: event.eventMembers,
-            eventMembers: event.eventMembers.map((eventMember) => ({
-              id: eventMember.id,
-              nickname: eventMember.user.nickname,
-              profile: eventMember.user.profile?.path ?? null,
-              authority: eventMember.authority.displayName,
-            })),
-            authority:
-              event.eventMembers.find(
-                (eventMember) => eventMember.user.id === user.id,
-              )?.authority?.displayName || null,
-            repeatPolicy: {
-              repeatPolicyId: event.repeatPolicy?.id || null,
-              repeatPolicyName: event.repeatPolicy,
-              // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
-            },
-            isJoinable: event.isJoinable ? true : false,
-            detail: event.eventMembers[0].detail,
-          }
-        : null;
+    }
+    const resultObject = event
+      ? {
+          id: event.id,
+          title: event.title,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          eventMember: event.eventMembers,
+          eventMembers: event.eventMembers.map((eventMember) => ({
+            id: eventMember.id,
+            nickname: eventMember.user.nickname,
+            profile: eventMember.user.profile?.path ?? null,
+            authority: eventMember.authority.displayName,
+          })),
+          authority:
+            event.eventMembers.find(
+              (eventMember) => eventMember.user.id === user.id,
+            )?.authority?.displayName || null,
+          repeatPolicy: {
+            repeatPolicyId: event.repeatPolicy?.id || null,
+            repeatPolicyName: event.repeatPolicy,
+            // RepeatPolicy의 다른 필드들을 여기에 추가할 수 있습니다.
+          },
+          isJoinable: event.isJoinable ? true : false,
+          detail: event.eventMembers[0].detail,
+        }
+      : null;
 
-      if (!resultObject) {
-        throw new HttpException(
-          '반복되는 컨텐츠가 아닙니다.',
-          HttpStatus.NOT_FOUND,
-        );
-      }
+    if (!resultObject) {
+      throw new HttpException(
+        '반복되는 컨텐츠가 아닙니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
     if (!isAll) {
       if (!event.repeatPolicy) {
@@ -863,24 +863,81 @@ export class EventService {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
 
-    // const result/*: any[] = [];
-    // rawFollowings.forEach((follower) => {
-    //   const eventMember = event.eventMembers.find(eventMember => eventMember.user.id === rawFollowing.id)
-    //   result.push({
-    //     id: follower.user.id,
-    //     nickname: follower.user.nickname,
-    //     profile:
-    //
-    //   })
-    // })*/
+    const result: any[] = [];
+    rawFollowings.forEach((follower) => {
+      const eventMember = event.eventMembers.find(
+        (eventMember) => eventMember.user.id === follower.id,
+      );
+      result.push({
+        id: follower.user.id,
+        nickname: follower.user.nickname,
+        profile: follower.user.profile?.path ?? null,
+        isJoined: eventMember ? true : false,
+      });
+    });
+    return { users: result };
   }
   async getFollowersEvents(user: User, eventId: number) {
     const rawFollowers = await this.followService.getRawFollowers(user);
+    const event = await this.eventRepository.findOne({
+      relations: ['eventMembers'],
+      where: {
+        id: eventId,
+      },
+    });
+    if (!event) {
+      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    const result: any[] = [];
+    rawFollowers.forEach((follower) => {
+      const eventMember = event.eventMembers.find(
+        (eventMember) => eventMember.user.id === follower.id,
+      );
+      result.push({
+        id: follower.user.id,
+        nickname: follower.user.nickname,
+        profile: follower.user.profile?.path ?? null,
+        isJoined: eventMember ? true : false,
+      });
+    });
   }
 
-  async searchUserEvents(user: User, userId: number) {}
+  async searchUserEvents(user: User, userId: number, eventId: number) {
+    const event = await this.eventRepository.findOne({
+      relations: ['eventMembers'],
+      where: {
+        id: eventId,
+      },
+    });
+    if (!event) {
+      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+    const eventMember = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === userId,
+    );
+    if (!eventMember) {
+      throw new HttpException(
+        '이벤트에 참여하지 않았습니다.',
+        HttpStatus.NOT_FOUND,
+      );
+    }
 
-  async inviteSchedule(user: User, eventId: number) {}
+    return {
+      id: eventMember.user.id,
+      nickname: eventMember.user.nickname,
+      profile: eventMember.user.profile?.path ?? null,
+      isJoined: eventMember ? true : false,
+    };
+  }
+
+  async inviteSchedule(user: User, eventId: number) {
+    // 초대를 보내야 하지만 현재는 무조건 참여하도록 구현
+      await this.eventMemberService
+
+
+    // todo : 초대를 보내는 것으로 구현한다.
+  }
 
   async joinSchedule(user: User, eventId: number) {}
 }
