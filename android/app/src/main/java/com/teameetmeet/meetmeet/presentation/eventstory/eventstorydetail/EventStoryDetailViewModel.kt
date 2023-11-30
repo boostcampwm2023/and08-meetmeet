@@ -88,7 +88,7 @@ class EventStoryDetailViewModel @Inject constructor(
                             endDate = endLocalDateTime.toLong().toDateString(DateTimeFormat.LOCAL_DATE),
                             startTime = EventTime(startLocalDateTime.hour, startLocalDateTime.minute),
                             endTime = EventTime(endLocalDateTime.hour, endLocalDateTime.minute),
-                            eventRepeatFrequency = repeatFrequency?:0,
+                            eventRepeatFrequency = repeatFrequency,
                             eventRepeat = when(repeatTerm) {
                                 "DAY" -> EventRepeatTerm.DAY
                                 "WEEK" -> EventRepeatTerm.WEEK
@@ -103,6 +103,10 @@ class EventStoryDetailViewModel @Inject constructor(
                                 "MEMBER" -> EventAuthority.PARTICIPANT
                                 else -> EventAuthority.GUEST
                             },
+                            color = EventColor.entries.first { it.value ==  color},
+                            alarm = EventNotification.entries.first{it.minutes == alarmMinutes},
+                            memo = memo.orEmpty(),
+                            eventRepeatEndDate = "2024-11-31", //TODO("서버 변경 되면 뒤에 것으로 변경 예정") //repeatEndDate.orEmpty().toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toDateString(DateTimeFormat.LOCAL_DATE),
                             isRepeatEvent = repeatTerm!=null
                         )
 
@@ -157,8 +161,8 @@ class EventStoryDetailViewModel @Inject constructor(
                     .toLong(ZoneId.systemDefault())
                     .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
-            val repeatEndDate = _uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
-                .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+            val repeatEndDate = _uiState.value.eventRepeatEndDate?.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                ?.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
             with(_uiState.value) {
                 eventStoryRepository.editEventStory(
@@ -221,9 +225,9 @@ class EventStoryDetailViewModel @Inject constructor(
         }
     }
 
-    fun setEventRepeatFrequency(frequency: String) {
+    fun setEventRepeatFrequency(index: Int) {
         _uiState.update {
-            it.copy(eventRepeatFrequency = frequency.toInt())
+            it.copy(eventRepeatFrequency = index+1)
         }
     }
 
@@ -245,7 +249,7 @@ class EventStoryDetailViewModel @Inject constructor(
             _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_end_time_fail))
             return
         }
-        if(time > uiState.value.eventRepeatEndDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
+        if(uiState.value.eventRepeatEndDate != null && time > uiState.value.eventRepeatEndDate!!.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
             _event.tryEmit(EventStoryDetailEvent.ShowMessage((R.string.story_detail_message_time_pick_end_time_fail_after_repeat_end)))
             return
         }

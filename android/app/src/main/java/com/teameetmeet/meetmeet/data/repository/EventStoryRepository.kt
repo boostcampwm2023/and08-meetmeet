@@ -61,8 +61,8 @@ class EventStoryRepository @Inject constructor(
         isVisible: Boolean,
         memo: String,
         repeatTerm: String?,
-        repeatFrequency: Int,
-        repeatEndDate: String,
+        repeatFrequency: Int?,
+        repeatEndDate: String?,
         color: EventColor,
         alarm: EventNotification
     ): Flow<Unit> {
