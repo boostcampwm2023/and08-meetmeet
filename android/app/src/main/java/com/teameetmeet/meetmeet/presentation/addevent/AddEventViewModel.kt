@@ -10,8 +10,8 @@ import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
-import com.teameetmeet.meetmeet.service.AlarmHelper
-import com.teameetmeet.meetmeet.service.model.EventAlarm
+import com.teameetmeet.meetmeet.service.alarm.AlarmHelper
+import com.teameetmeet.meetmeet.service.alarm.model.EventAlarm
 import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.toDateString
 import com.teameetmeet.meetmeet.util.date.toLocalDateTime
@@ -88,6 +88,7 @@ class AddEventViewModel @Inject constructor(
                                         startDateTime.minusMinutes(alarm.minutes.toLong()).toLong(
                                             ZoneId.of("UTC")
                                         ),
+                                        alarm.minutes,
                                         eventName
                                     )
                                 )
