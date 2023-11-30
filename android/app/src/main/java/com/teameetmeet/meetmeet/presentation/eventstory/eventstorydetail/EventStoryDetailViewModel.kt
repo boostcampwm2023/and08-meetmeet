@@ -106,7 +106,7 @@ class EventStoryDetailViewModel @Inject constructor(
                             color = EventColor.entries.first { it.value ==  color},
                             alarm = EventNotification.entries.first{it.minutes == alarmMinutes},
                             memo = memo.orEmpty(),
-                            eventRepeatEndDate = "2024년 11월 31일", //TODO("서버 변경 되면 뒤에 것으로 변경 예정") //repeatEndDate.orEmpty().toTimeStampLong(DateTimeFormat.SERVER_DATE_TIME, ZoneId.of("UTC")).toDateString(DateTimeFormat.LOCAL_DATE),
+                            eventRepeatEndDate = repeatEndDate.orEmpty().toTimeStampLong(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")).toDateString(DateTimeFormat.LOCAL_DATE),
                             isRepeatEvent = repeatTerm!=null
                         )
 
