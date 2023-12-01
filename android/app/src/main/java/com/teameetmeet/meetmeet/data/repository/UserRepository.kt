@@ -4,6 +4,7 @@ import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.network.api.UserApi
+import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -96,11 +97,24 @@ class UserRepository @Inject constructor(
             }
     }
 
-    fun patchUserProfile(image: File?, nickname: String): Flow<UserProfile> {
+    fun patchNickname(nickname: String): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.patchNickname(NicknameChangeRequest(nickname))
+            }.catch {
+                throw it
+            }
+    }
+
+    fun patchProfileImage(image: File?): Flow<Unit> {
         return flowOf(true)
             .map {
                 val profileImageRequest = if (image == null) {
-                    null
+                    MultipartBody.Part.createFormData(
+                        "profile",
+                        "",
+                        "".toRequestBody("text/plain".toMediaType())
+                    )
                 } else {
                     MultipartBody.Part.createFormData(
                         "profile",
@@ -108,10 +122,9 @@ class UserRepository @Inject constructor(
                         image.asRequestBody()
                     )
                 }
-                val nicknameRequest = nickname.toRequestBody("text/plain".toMediaType())
-                val response = userApi.updateUserProfile(nicknameRequest, profileImageRequest)
-                fetchUserProfile(response)
-                response
+                userApi.updateProfileImage(profileImageRequest)
+            }.catch {
+                throw it
             }
     }
 }
