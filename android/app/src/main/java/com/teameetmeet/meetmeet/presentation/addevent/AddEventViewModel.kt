@@ -4,6 +4,7 @@ import android.widget.RadioGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
@@ -70,43 +71,68 @@ class AddEventViewModel @Inject constructor(
                     .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
 
                 with(_uiState.value) {
-                    calendarRepository.addEvent(
-                        title = eventName,
-                        startDate = startDateTime,
-                        endDate = endDateTime,
-                        isJoinable = isJoinable,
-                        isVisible = isOpen,
-                        memo = memo,
-                        repeatTerm = eventRepeat.value,
-                        repeatFrequency = eventRepeatFrequency,
-                        repeatEndDate = repeatEndDate,
-                        color = color,
-                        alarm = alarm,
-                    ).catch {
-                        _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
-                        _showPlaceholder.update { false }
-                    }.collectLatest { events ->
-                        events.take(MAX_ALARM_COUNT).forEach { event ->
-                            val currentTime = LocalDateTime.now().toLong()
-                            val triggerTime =
-                                event.startDate.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
-                                    ?.minusMinutes(alarm.minutes.toLong())?.toLong()
-                            if (triggerTime != null && currentTime <= triggerTime && alarm != EventNotification.NONE) {
-                                alarmHelper.registerEventAlarm(
-                                    EventAlarm(
-                                        event.id,
-                                        triggerTime,
-                                        alarm.minutes,
-                                        eventName
-                                    )
-                                )
+                    if (eventRepeat == EventRepeatTerm.NONE) {
+                        calendarRepository.addSingleEvent(
+                            title = eventName,
+                            startDate = startDateTime,
+                            endDate = endDateTime,
+                            isJoinable = isJoinable,
+                            isVisible = isOpen,
+                            memo = memo,
+                            repeatTerm = eventRepeat.value,
+                            repeatFrequency = eventRepeatFrequency,
+                            repeatEndDate = repeatEndDate,
+                            color = color,
+                            alarm = alarm,
+                        ).catch {
+                            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                            _showPlaceholder.update { false }
+                        }.collectLatest { event ->
+                            setAlarm(event)
+                        }
+                    } else {
+                        calendarRepository.addRepeatEvent(
+                            title = eventName,
+                            startDate = startDateTime,
+                            endDate = endDateTime,
+                            isJoinable = isJoinable,
+                            isVisible = isOpen,
+                            memo = memo,
+                            repeatTerm = eventRepeat.value,
+                            repeatFrequency = eventRepeatFrequency,
+                            repeatEndDate = repeatEndDate,
+                            color = color,
+                            alarm = alarm,
+                        ).catch {
+                            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                            _showPlaceholder.update { false }
+                        }.collectLatest { events ->
+                            events.take(MAX_ALARM_COUNT).forEach { event ->
+                                setAlarm(event)
                             }
                         }
-                        _event.emit(AddEventUiEvent.FinishAddEventActivity)
-                        _showPlaceholder.update { false }
                     }
+                    _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                    _showPlaceholder.update { false }
                 }
             }
+        }
+    }
+
+    private fun AddEventUiState.setAlarm(event: EventResponse) {
+        val currentTime = LocalDateTime.now().toLong()
+        val triggerTime =
+            event.startDate.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
+                ?.minusMinutes(alarm.minutes.toLong())?.toLong()
+        if (triggerTime != null && currentTime <= triggerTime && alarm != EventNotification.NONE) {
+            alarmHelper.registerEventAlarm(
+                EventAlarm(
+                    event.id,
+                    triggerTime,
+                    alarm.minutes,
+                    eventName
+                )
+            )
         }
     }
 
