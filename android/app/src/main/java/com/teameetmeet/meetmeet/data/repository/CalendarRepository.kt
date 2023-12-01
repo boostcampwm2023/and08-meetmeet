@@ -43,7 +43,7 @@ class CalendarRepository @Inject constructor(
         repeatEndDate: String,
         color: EventColor,
         alarm: EventNotification
-    ): Flow<Unit> {
+    ): Flow<List<EventResponse>> {
         val request = AddEventRequest(
             title = title,
             startDate = startDate,
@@ -59,6 +59,7 @@ class CalendarRepository @Inject constructor(
         )
         return remoteCalendarDataSource.addEvent(request)
             .catch {
+                throw it
             }
     }
 

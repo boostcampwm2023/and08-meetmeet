@@ -24,5 +24,5 @@ interface CalendarApi {
     @POST("event")
     suspend fun addEvent(
         @Body addEventRequest: AddEventRequest
-    )
+    ): Events
 }

@@ -35,10 +35,12 @@ class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi)
             }
     }
 
-    fun addEvent(addEventRequest: AddEventRequest): Flow<Unit> {
+    fun addEvent(addEventRequest: AddEventRequest): Flow<List<EventResponse>> {
         return flowOf(true)
             .map {
-                api.addEvent(addEventRequest)
+                api.addEvent(addEventRequest).events
+            }.catch {
+                throw it
             }
     }
 }
