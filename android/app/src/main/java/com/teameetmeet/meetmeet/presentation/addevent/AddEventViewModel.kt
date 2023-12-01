@@ -48,8 +48,12 @@ class AddEventViewModel @Inject constructor(
     )
     val event: SharedFlow<AddEventUiEvent> = _event
 
+    private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
+
     fun eventSave() {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             if (checkEvent()) {
                 val startDateTime =
                     _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
@@ -80,6 +84,7 @@ class AddEventViewModel @Inject constructor(
                         alarm = alarm,
                     ).catch {
                         _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                        _showPlaceholder.update { false }
                     }.collectLatest { events ->
                         events.take(MAX_ALARM_COUNT).forEach { event ->
                             val currentTime = LocalDateTime.now().toLong()
@@ -98,6 +103,7 @@ class AddEventViewModel @Inject constructor(
                             }
                         }
                         _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                        _showPlaceholder.update { false }
                     }
                 }
             }
