@@ -1,6 +1,5 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
-import android.util.Log
 import android.widget.RadioGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,6 +35,10 @@ class AddEventViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository,
     private val alarmHelper: AlarmHelper
 ) : ViewModel() {
+
+    companion object {
+        const val MAX_ALARM_COUNT = 2
+    }
 
     private val _uiState = MutableStateFlow(AddEventUiState())
     val uiState: StateFlow<AddEventUiState> = _uiState
@@ -77,23 +80,24 @@ class AddEventViewModel @Inject constructor(
                         alarm = alarm,
                     ).catch {
                         _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
-                    }.collectLatest {
-                        startDateTime.toLocalDateTime(DateTimeFormat.GLOBAL_DATE_TIME)
-                            ?.let { startDateTime ->
-                                // todo API 되면 이벤트 아이디 받아서 넘기기
-                                // todo 알림 없음일 경우 알림 생성 x
+                    }.collectLatest { events ->
+                        events.take(MAX_ALARM_COUNT).forEach { event ->
+                            val currentTime = LocalDateTime.now().toLong()
+                            val triggerTime =
+                                event.startDate.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
+                                    ?.minusMinutes(alarm.minutes.toLong())?.toLong()
+                            if (triggerTime != null && currentTime <= triggerTime && alarm != EventNotification.NONE) {
                                 alarmHelper.registerEventAlarm(
                                     EventAlarm(
-                                        1,
-                                        startDateTime.minusMinutes(alarm.minutes.toLong()).toLong(
-                                            ZoneId.of("UTC")
-                                        ),
+                                        event.id,
+                                        triggerTime,
                                         alarm.minutes,
                                         eventName
                                     )
                                 )
-                                _event.emit(AddEventUiEvent.FinishAddEventActivity)
                             }
+                        }
+                        _event.emit(AddEventUiEvent.FinishAddEventActivity)
                     }
                 }
             }
@@ -210,6 +214,5 @@ class AddEventViewModel @Inject constructor(
         _uiState.update {
             it.copy(color = EventColor.values()[index])
         }
-        Log.d("test", uiState.value.toString())
     }
 }
