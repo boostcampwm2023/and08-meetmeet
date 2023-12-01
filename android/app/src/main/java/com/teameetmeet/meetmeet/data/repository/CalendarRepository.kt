@@ -31,7 +31,7 @@ class CalendarRepository @Inject constructor(
         localCalendarDataSource.deleteAll()
     }
 
-    fun addEvent(
+    fun addRepeatEvent(
         title: String,
         startDate: String,
         endDate: String,
@@ -57,7 +57,39 @@ class CalendarRepository @Inject constructor(
             repeatFrequency = repeatFrequency,
             repeatEndDate = repeatEndDate
         )
-        return remoteCalendarDataSource.addEvent(request)
+        return remoteCalendarDataSource.addRepeatEvent(request)
+            .catch {
+                throw it
+            }
+    }
+
+    fun addSingleEvent(
+        title: String,
+        startDate: String,
+        endDate: String,
+        isJoinable: Boolean,
+        isVisible: Boolean,
+        memo: String,
+        repeatTerm: String?,
+        repeatFrequency: Int,
+        repeatEndDate: String,
+        color: EventColor,
+        alarm: EventNotification
+    ): Flow<EventResponse> {
+        val request = AddEventRequest(
+            title = title,
+            startDate = startDate,
+            endDate = endDate,
+            isJoinable = isJoinable,
+            isVisible = isVisible,
+            alarmMinutes = alarm.minutes,
+            memo = memo.ifEmpty { null },
+            color = color.value,
+            repeatTerm = repeatTerm,
+            repeatFrequency = repeatFrequency,
+            repeatEndDate = repeatEndDate
+        )
+        return remoteCalendarDataSource.addSingleEvent(request)
             .catch {
                 throw it
             }
