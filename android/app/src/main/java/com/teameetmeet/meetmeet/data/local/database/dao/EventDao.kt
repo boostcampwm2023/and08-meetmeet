@@ -33,7 +33,7 @@ interface EventDao {
     fun get(id: Int): Flow<Event>
 
     @Query("SELECT * FROM Event WHERE endDateTime >= :startDateTime AND startDateTime <= :endDateTime")
-    fun getEvents(startDateTime: Long, endDateTime: Long): Flow<List<Event>>
+    suspend fun getEvents(startDateTime: Long, endDateTime: Long): List<Event>
 
     @Query("UPDATE Event SET title = :title WHERE id = :id ")
     suspend fun updateTitle(id: Int, title: String)

@@ -1,7 +1,9 @@
 package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.EventStory
+import com.teameetmeet.meetmeet.data.model.FeedDetail
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
+import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventStoryDetailResponse
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import okhttp3.MultipartBody
@@ -46,5 +48,16 @@ interface EventStoryApi {
         @Part("eventId") eventId: RequestBody,
         @Part("memo") memo: RequestBody?,
         @Part contents: List<MultipartBody.Part>?
+    )
+
+    @GET("feed/{feedId}")
+    suspend fun getFeedDetail(
+        @Path("feedId") id: Int
+    ): FeedDetail
+
+    @POST("feed/{feedId}/comment")
+    suspend fun addFeedComment(
+        @Path("feedId") id: Int,
+        @Body addFeedCommentRequest: AddFeedCommentRequest
     )
 }
