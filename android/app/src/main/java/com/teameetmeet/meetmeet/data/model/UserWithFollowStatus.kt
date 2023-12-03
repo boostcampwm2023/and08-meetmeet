@@ -12,6 +12,12 @@ data class UserWithFollowStatus(
     @Json(name = "profile")
     val profile: String,
     @Json(name = "isFollowed")
-    val isFollowed: Boolean,
+    val isFollowed: Boolean = true,
     val isMe: Boolean = false
+)
+
+@JsonClass(generateAdapter = true)
+data class FollowUsers(
+    @Json(name = "users")
+    val users: List<UserWithFollowStatus>
 )
