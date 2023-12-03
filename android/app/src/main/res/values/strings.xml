@@ -100,6 +100,7 @@
     <string name="setting_password_change_fail">비밀번호 변경 실패</string>
     <string name="setting_profile_fail">프로필 변경 실패</string>
     <string name="setting_profile_set_default">기본 이미지로 변경</string>
+    <string name="setting_profile_network_error">프로필 정보를 가져올 수 없습니다</string>
 
     <string name="sign_up_duplicate_check_complete">중복확인 완료</string>
     <string name="sign_up_duplicate_check_fail">중복된 이메일 입니다</string>
