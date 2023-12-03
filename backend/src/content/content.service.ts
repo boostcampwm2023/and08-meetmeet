@@ -35,11 +35,11 @@ export class ContentService {
       return [...acc, content];
     }, []);
 
-    Promise.all(files.map((file) => this.objectStorage.upload(file))).catch(
-      (err) => {
-        throw err;
-      },
-    );
+    await Promise.all(
+      files.map((file) => this.objectStorage.upload(file)),
+    ).catch((err) => {
+      throw err;
+    });
 
     const insertResult = await this.contentRepository.insert(contents);
     const contentsId = insertResult.identifiers.map((value) => value.id);
