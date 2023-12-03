@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Feed } from 'src/feed/entities/feed.entity';
 import { Event } from '../entities/event.entity';
@@ -9,7 +10,7 @@ class EventFeed {
   @ApiProperty()
   thumbnail: string | null;
   @ApiProperty()
-  memo: string;
+  memo: string | null;
 
   static of(feed: Feed): EventFeed {
     return {
@@ -25,20 +26,21 @@ export class EventStoryResponseDto extends EventResponse {
   @ApiProperty()
   announcement: string | null;
   @ApiProperty()
-  repeatPolicyId: number;
+  repeatPolicyId: number | null;
   @ApiProperty()
   isVisible: boolean;
   @ApiProperty()
-  memo: string;
+  memo: string | null;
   @ApiProperty({ type: EventFeed })
   feeds: EventFeed[];
 
   static of(event: Event, userId: number): EventStoryResponseDto {
     const memberDetail = event.eventMembers.find(
-      (eventMember) => eventMember.user.id === userId,
+      (eventMember) => eventMember.user?.id === userId,
     );
+
     if (!memberDetail) {
-      throw new Error(
+      throw new NotFoundException(
         `Cannot find eventmember where eventId=${event.id} and userId=${userId}`,
       );
     }
@@ -53,10 +55,10 @@ export class EventStoryResponseDto extends EventResponse {
       ),
       announcement: event.announcement,
       authority: memberDetail.authority.displayName ?? null,
-      repeatPolicyId: event.repeatPolicyId,
+      repeatPolicyId: event.repeatPolicyId ?? null,
       isJoinable: event.isJoinable ? true : false,
       isVisible: memberDetail.detail.isVisible ? true : false,
-      memo: memberDetail.detail.memo,
+      memo: memberDetail.detail.memo ?? null,
       feeds: event.feeds.map((feed) => EventFeed.of(feed)),
     };
   }
