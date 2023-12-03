@@ -127,6 +127,9 @@
     <string name="event_story_title_event_notification">일정 공지</string>
     <string name="event_story_message_event_story_fail">스토리를 불러올 수 없습니다.\n%s</string>
     <string name="event_story_event_date">%1s - %2s</string>
+    <string name="event_story_invite_fail">일정 초대 실패</string>
+    <string name="event_story_invite">초대</string>
+    <string name="event_story_participating">참여중</string>
 
     <string name="create_feed_text_hint">텍스트를 입력하세요</string>
     <string name="create_feed_media_constraint_volume">미디어를 50MB 초과로 업로드 할 수 없습니다.</string>

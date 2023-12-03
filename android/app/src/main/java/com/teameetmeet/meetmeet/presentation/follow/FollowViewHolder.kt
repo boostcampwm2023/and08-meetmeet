@@ -14,7 +14,7 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
         user: UserStatus,
         actionType: FollowActionType,
         userClickListener: OnUserClickListener,
-        id: Int
+        id: Int?
     ) {
         binding.user = user
         when (actionType) {
@@ -35,14 +35,27 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
             }
 
             FollowActionType.EVENT -> {
-                binding.followBtnAction.setOnClickListener {
-                    userClickListener.onInviteEventClick(user, id)
+                with(binding.followBtnAction) {
+                    if (user.isJoinable) {
+                        text = context.getString(R.string.event_story_invite)
+                        setOnClickListener {
+                            id?.let {
+                                userClickListener.onInviteEventClick(user, id)
+                            }
+                        }
+                        isEnabled = true
+                    } else {
+                        text = context.getString(R.string.event_story_participating)
+                        isEnabled = false
+                    }
                 }
             }
 
             FollowActionType.GROUP -> {
                 binding.followBtnAction.setOnClickListener {
-                    userClickListener.onInviteGroupClick(user, id)
+                    id?.let {
+                        userClickListener.onInviteGroupClick(user, id)
+                    }
                 }
             }
         }
