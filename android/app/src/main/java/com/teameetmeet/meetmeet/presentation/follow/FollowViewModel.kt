@@ -1,7 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.follow
 
 import androidx.lifecycle.ViewModel
-import com.teameetmeet.meetmeet.data.model.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -9,19 +9,23 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class FollowViewModel @Inject constructor() : ViewModel(), OnUserClickListener {
+class FollowViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val followRepository: FollowRepository
+) : ViewModel(), OnUserClickListener {
 
-    private val _follower: MutableStateFlow<List<UserProfile>> = MutableStateFlow(listOf())
-    val follower: StateFlow<List<UserProfile>> = _follower
+    private val _follower: MutableStateFlow<List<UserWithFollowStatus>> = MutableStateFlow(listOf())
+    val follower: StateFlow<List<UserWithFollowStatus>> = _follower
 
-    private val _following: MutableStateFlow<List<UserProfile>> = MutableStateFlow(listOf())
-    val following: StateFlow<List<UserProfile>> = _following
+    private val _following: MutableStateFlow<List<UserWithFollowStatus>> =
+        MutableStateFlow(listOf())
+    val following: StateFlow<List<UserWithFollowStatus>> = _following
 
     private val _searchKeyword: MutableStateFlow<String> = MutableStateFlow("")
-    val searchKeyword: StateFlow<String> = _searchKeyword
 
-    private val _searchedUser: MutableStateFlow<List<UserProfile>> = MutableStateFlow(listOf())
-    val searchedUser: StateFlow<List<UserProfile>> = _searchedUser
+    private val _searchedUser: MutableStateFlow<List<UserWithFollowStatus>> =
+        MutableStateFlow(listOf())
+    val searchedUser: StateFlow<List<UserWithFollowStatus>> = _searchedUser
 
     init {
         updateFollower()

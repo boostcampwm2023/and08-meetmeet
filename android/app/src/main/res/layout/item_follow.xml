@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="user"
-            type="com.teameetmeet.meetmeet.data.model.UserProfile" />
+            type="com.teameetmeet.meetmeet.data.model.UserWithFollowStatus" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,9 +28,9 @@
 
             <ImageView
                 android:id="@+id/follow_iv_profile"
+                image="@{user.profile}"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                image="@{user.profileImage}"
                 android:backgroundTint="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -54,6 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:visibility="@{user.isMe ?View.GONE:View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
