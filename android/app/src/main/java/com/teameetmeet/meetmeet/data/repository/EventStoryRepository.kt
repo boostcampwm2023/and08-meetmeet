@@ -120,6 +120,8 @@ class EventStoryRepository @Inject constructor(
             eventStoryApi.joinEventStory(eventId)
         }.catch {
             throw it.toException()
+        }
+    }
 
     fun getFeedDetail(feedId: Int): Flow<FeedDetail> {
         return flowOf(true).map {
@@ -140,5 +142,4 @@ class EventStoryRepository @Inject constructor(
             throw it
         }
     }
-
 }
