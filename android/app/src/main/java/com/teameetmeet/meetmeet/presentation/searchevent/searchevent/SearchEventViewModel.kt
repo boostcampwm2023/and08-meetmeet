@@ -54,11 +54,11 @@ class SearchEventViewModel @Inject constructor(
 
     fun searchEvents() {
         val startDate = _searchDateRange.value.first.toDateString(
-            DateTimeFormat.ISO_DATE,
+            DateTimeFormat.ISO_DATE_TIME,
             ZoneId.of("UTC")
         )
         val endDate = _searchDateRange.value.second.toDateString(
-            DateTimeFormat.ISO_DATE,
+            DateTimeFormat.ISO_DATE_TIME,
             ZoneId.of("UTC")
         )
 
@@ -96,7 +96,7 @@ class SearchEventViewModel @Inject constructor(
         setSearchDateRange(
             Pair(
                 getLocalDate().minusDays(89).toStartLong(),
-                getLocalDate().plusDays(90).toStartLong(),
+                getLocalDate().plusDays(90).toEndLong(),
             )
         )
     }

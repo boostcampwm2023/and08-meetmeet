@@ -17,6 +17,7 @@ import com.teameetmeet.meetmeet.databinding.FragmentSearchEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnItemClickListener
 import com.teameetmeet.meetmeet.util.date.addUtcTimeOffset
+import com.teameetmeet.meetmeet.util.date.toEndLong
 import com.teameetmeet.meetmeet.util.date.toLocalDate
 import com.teameetmeet.meetmeet.util.date.toStartLong
 import dagger.hilt.android.AndroidEntryPoint
@@ -121,9 +122,9 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
 
         return if (end.isAfter(std)) {
             showMessage(R.string.search_event_range_constraint_message, "")
-            Pair(start.toStartLong(), std.toStartLong())
+            Pair(start.toStartLong(), std.toEndLong())
         } else {
-            Pair(start.toStartLong(), end.toStartLong())
+            Pair(start.toStartLong(), end.toEndLong())
         }
     }
 

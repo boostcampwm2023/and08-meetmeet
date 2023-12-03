@@ -47,7 +47,11 @@
         android:id="@+id/feed_detail_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.FeedDetailFragment"
         android:label="FeedDetailFragment"
-        tools:layout="@layout/fragment_feed_detail" />
+        tools:layout="@layout/fragment_feed_detail">
+        <argument
+            android:name="feedId"
+            app:argType="integer" />
+    </fragment>
     <fragment
         android:id="@+id/follow_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.follow.FollowFragment"

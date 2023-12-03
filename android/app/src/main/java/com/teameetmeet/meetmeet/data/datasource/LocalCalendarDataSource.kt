@@ -3,6 +3,8 @@ package com.teameetmeet.meetmeet.data.datasource
 import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.local.database.entity.Event
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
@@ -11,7 +13,7 @@ class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
     }
 
     fun getEvents(startDateTime: Long, endDateTime: Long): Flow<List<Event>> {
-        return dao.getEvents(startDateTime, endDateTime)
+        return flowOf(true).map { dao.getEvents(startDateTime, endDateTime) }
     }
 
     suspend fun insert(event: Event) {

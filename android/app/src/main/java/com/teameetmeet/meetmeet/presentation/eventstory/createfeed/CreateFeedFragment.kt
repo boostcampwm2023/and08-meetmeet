@@ -1,9 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.createfeed
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.PickVisualMediaRequest
@@ -19,6 +17,8 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentCreateFeedBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.model.MediaItem
+import com.teameetmeet.meetmeet.util.getMimeType
+import com.teameetmeet.meetmeet.util.getSize
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -27,7 +27,7 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
     R.layout.fragment_create_feed
 ) {
     val viewModel: CreateFeedViewModel by viewModels()
-    val navArgs: CreateFeedFragmentArgs by navArgs()
+    private val navArgs: CreateFeedFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,8 +42,12 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
     private fun setSelectMedia() {
         val pickMedia =
             registerForActivityResult(PickMultipleVisualMedia(10)) { uris ->
-                uris?.map {
-                    it.toMediaItem()
+                uris?.map { uri ->
+                    MediaItem(
+                        uri.getMimeType()?.startsWith("video") ?: false,
+                        uri,
+                        uri.getSize()
+                    )
                 }?.let { viewModel.selectMedia(it) }
             }
 
@@ -96,19 +100,5 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
                 }
             }
         }
-    }
-
-    private fun Uri.toMediaItem(): MediaItem {
-        val contentResolver = requireActivity().contentResolver
-        val mimeType = contentResolver.getType(this)
-        val isVideo = mimeType?.startsWith("video") ?: false
-        val size = contentResolver.query(this, null, null, null, null)?.use { cursor ->
-            val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
-            cursor.moveToFirst()
-            val size = cursor.getLong(sizeIndex).also { cursor.close() }
-            size
-        } ?: 0
-
-        return MediaItem(isVideo, this, size)
     }
 }
