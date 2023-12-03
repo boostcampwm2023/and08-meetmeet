@@ -3,25 +3,34 @@ package com.teameetmeet.meetmeet.presentation.follow
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.teameetmeet.meetmeet.data.model.UserProfile
+import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
 import com.teameetmeet.meetmeet.databinding.ItemFollowBinding
 
 class FollowViewHolder private constructor(private val binding: ItemFollowBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        user: UserProfile,
+        user: UserWithFollowStatus,
         actionType: FollowActionType,
         userClickListener: OnUserClickListener,
         id: Int
     ) {
         binding.user = user
         when (actionType) {
-            // todo 타입 별로 버튼에 표시 될 text 추가 필요
             FollowActionType.FOLLOW -> {
-                // todo 팔,언팔 구분 필요
-                binding.followBtnAction.setOnClickListener {
-                    userClickListener.onFollowClick(user)
+                with(binding.followBtnAction) {
+                    if (user.isFollowed) {
+                        text = context.getString(R.string.follow_title_unfollow)
+                        setOnClickListener {
+                            userClickListener.onUnfollowClick(user)
+                        }
+                    } else {
+                        text = context.getString(R.string.follow_title_follow)
+                        setOnClickListener {
+                            userClickListener.onFollowClick(user)
+                        }
+                    }
                 }
             }
 

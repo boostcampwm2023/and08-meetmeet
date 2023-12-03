@@ -1,13 +1,20 @@
 package com.teameetmeet.meetmeet.presentation.follow
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.repository.FollowRepository
+import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,60 +36,98 @@ class FollowViewModel @Inject constructor(
         MutableStateFlow(listOf())
     val searchedUser: StateFlow<List<UserWithFollowStatus>> = _searchedUser
 
-    init {
-        updateFollower()
-        updateFollowing()
+    private val _event: MutableSharedFlow<FollowEvent> = MutableSharedFlow()
+    val event: SharedFlow<FollowEvent> = _event
+
+    fun updateSearchedUser(actionType: FollowActionType) {
+        viewModelScope.launch {
+            when (actionType) {
+                FollowActionType.FOLLOW -> {
+                    userRepository.getUserWithFollowStatus(
+                        _searchKeyword.value
+                    ).catch {
+                        _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
+                    }.collectLatest { user ->
+                        _searchedUser.update { listOf(user) }
+                    }
+                }
+
+                else -> {}
+            }
+        }
     }
 
-    fun updateSearchedUser() {
-        // TODO 유저 검색 API 갱신
-        val tmp = listOf(
-            UserProfile("https://github.com/LeeHaiLim.png", _searchKeyword.value, "email@naver.com")
-        )
-        _searchedUser.update { tmp }
+    fun updateFollowing(actionType: FollowActionType) {
+        viewModelScope.launch {
+            when (actionType) {
+                FollowActionType.FOLLOW -> {
+                    followRepository.getFollowingWithFollowState()
+                        .catch {
+                            _event.emit(FollowEvent.ShowMessage(R.string.follow_search_following_fail))
+                        }.collectLatest { users ->
+                            _following.update { users }
+                        }
+                }
+
+                else -> {}
+            }
+        }
     }
 
-    fun updateFollower() {
-        // TODO 팔로워 목록 API 갱신
-        val tmp = listOf(
-            UserProfile("https://github.com/chani1209.png", "차세찬", "email@naver.com"),
-            UserProfile("https://github.com/cdj2073.png", "최다정", "email@naver.com"),
-            UserProfile("https://github.com/agfalcon.png", "김근범", "email@naver.com"),
-            UserProfile("https://github.com/LeeHaiLim.png", "이해림", "email@naver.com"),
-            UserProfile("https://github.com/p-chanmin.png", "박찬민", "email@naver.com"),
-        )
-        _follower.update { tmp }
-    }
+    fun updateFollower(actionType: FollowActionType) {
+        viewModelScope.launch {
+            when (actionType) {
+                FollowActionType.FOLLOW -> {
+                    followRepository.getFollowerWithFollowState()
+                        .catch {
+                            _event.emit(FollowEvent.ShowMessage(R.string.follow_search_follower_fail))
+                        }.collectLatest { users ->
+                            _follower.update { users }
+                        }
+                }
 
-    fun updateFollowing() {
-        // TODO 팔로윙 목록 API 갱신
-        val tmp = listOf(
-            UserProfile("https://github.com/cdj2073.png", "최다정", "email@naver.com"),
-            UserProfile("https://github.com/chani1209.png", "차세찬", "email@naver.com"),
-            UserProfile("https://github.com/LeeHaiLim.png", "이해림", "email@naver.com"),
-            UserProfile("https://github.com/p-chanmin.png", "박찬민", "email@naver.com"),
-            UserProfile("https://github.com/agfalcon.png", "김근범", "email@naver.com"),
-        )
-        _following.update { tmp }
+                else -> {}
+            }
+        }
     }
 
     fun updateSearchKeyword(keyword: CharSequence?) {
         _searchKeyword.update { keyword.toString() }
     }
 
-    override fun onFollowClick(userProfile: UserProfile) {
-        println("${userProfile.nickname}님을 팔로우")
+    override fun onFollowClick(user: UserWithFollowStatus) {
+        viewModelScope.launch {
+            followRepository.follow(user.id).catch {
+                _event.emit(FollowEvent.ShowMessage(R.string.follow_follow_fail))
+            }.collectLatest {
+                updateFollowing(FollowActionType.FOLLOW)
+                updateFollower(FollowActionType.FOLLOW)
+                if (_searchKeyword.value == user.nickname) {
+                    _searchedUser.update { listOf() }
+                }
+            }
+        }
     }
 
-    override fun onUnfollowClick(userProfile: UserProfile) {
-        println("${userProfile.nickname}님을 언팔로우")
+    override fun onUnfollowClick(user: UserWithFollowStatus) {
+        viewModelScope.launch {
+            followRepository.unFollow(user.id).catch {
+                _event.emit(FollowEvent.ShowMessage(R.string.follow_unfollow_fail))
+            }.collectLatest {
+                updateFollowing(FollowActionType.FOLLOW)
+                updateFollower(FollowActionType.FOLLOW)
+                if (_searchKeyword.value == user.nickname) {
+                    _searchedUser.update { listOf() }
+                }
+            }
+        }
     }
 
-    override fun onInviteEventClick(userProfile: UserProfile, id: Int) {
-        println("${userProfile.nickname}님을 이벤트 $id 에 초대")
+    override fun onInviteEventClick(user: UserWithFollowStatus, id: Int) {
+        println("${user.nickname}님을 이벤트 $id 에 초대")
     }
 
-    override fun onInviteGroupClick(userProfile: UserProfile, id: Int) {
-        println("${userProfile.nickname}님을 그룹 $id 에 초대")
+    override fun onInviteGroupClick(user: UserWithFollowStatus, id: Int) {
+        println("${user.nickname}님을 그룹 $id 에 초대")
     }
 }
