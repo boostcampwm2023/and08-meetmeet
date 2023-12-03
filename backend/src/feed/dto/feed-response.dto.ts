@@ -1,22 +1,22 @@
-import { Comment } from 'src/comment/entities/comment.entity';
+import { CommentResponseDto } from 'src/comment/entities/comment-response.dto';
 import { Content } from 'src/content/entities/content.entity';
-import { User } from 'src/user/entities/user.entity';
+import { UserResponse } from 'src/user/dto/user-response';
 import { Feed } from '../entities/feed.entity';
 
 export class FeedResponseDto {
   id: number;
-  author: User;
+  author: UserResponse;
   memo: string;
   contents: Content[];
-  comments: Comment[];
+  comments: CommentResponseDto[];
 
   static of(feed: Feed): FeedResponseDto {
     return {
       id: feed.id,
       memo: feed.memo ?? null,
-      author: feed.author,
+      author: UserResponse.from(feed.author),
       contents: feed.feedContents.map((feedContent) => feedContent.content),
-      comments: feed.comments, // TODO: comment 추가
+      comments: feed.comments.map((comment) => CommentResponseDto.of(comment)),
     };
   }
 }
