@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class UserWithFollowStatus(
+data class UserStatus(
     @Json(name = "id")
     val id: Int,
     @Json(name = "nickname")
@@ -19,5 +19,5 @@ data class UserWithFollowStatus(
 @JsonClass(generateAdapter = true)
 data class FollowUsers(
     @Json(name = "users")
-    val users: List<UserWithFollowStatus>
+    val users: List<UserStatus>
 )

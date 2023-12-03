@@ -3,7 +3,7 @@ package com.teameetmeet.meetmeet.presentation.follow
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.model.UserStatus
 
 
 class FollowAdapter(
@@ -11,7 +11,7 @@ class FollowAdapter(
     private val userClickListener: OnUserClickListener,
     private val id: Int
 ) :
-    ListAdapter<UserWithFollowStatus, FollowViewHolder>(ItemDiffCallback) {
+    ListAdapter<UserStatus, FollowViewHolder>(ItemDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowViewHolder {
         return FollowViewHolder.from(parent)
     }
@@ -20,17 +20,17 @@ class FollowAdapter(
         holder.bind(getItem(position), actionType, userClickListener, id)
     }
 
-    object ItemDiffCallback : DiffUtil.ItemCallback<UserWithFollowStatus>() {
+    object ItemDiffCallback : DiffUtil.ItemCallback<UserStatus>() {
         override fun areItemsTheSame(
-            oldItem: UserWithFollowStatus,
-            newItem: UserWithFollowStatus
+            oldItem: UserStatus,
+            newItem: UserStatus
         ): Boolean {
             return oldItem === newItem
         }
 
         override fun areContentsTheSame(
-            oldItem: UserWithFollowStatus,
-            newItem: UserWithFollowStatus
+            oldItem: UserStatus,
+            newItem: UserStatus
         ): Boolean {
             return oldItem == newItem
         }

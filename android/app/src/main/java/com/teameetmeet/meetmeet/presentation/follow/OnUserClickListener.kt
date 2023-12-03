@@ -1,11 +1,11 @@
 package com.teameetmeet.meetmeet.presentation.follow
 
-import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.model.UserStatus
 
 interface OnUserClickListener {
 
-    fun onFollowClick(user: UserWithFollowStatus)
-    fun onUnfollowClick(user: UserWithFollowStatus)
-    fun onInviteEventClick(user: UserWithFollowStatus, id: Int)
-    fun onInviteGroupClick(user: UserWithFollowStatus, id: Int)
+    fun onFollowClick(user: UserStatus)
+    fun onUnfollowClick(user: UserStatus)
+    fun onInviteEventClick(user: UserStatus, id: Int)
+    fun onInviteGroupClick(user: UserStatus, id: Int)
 }

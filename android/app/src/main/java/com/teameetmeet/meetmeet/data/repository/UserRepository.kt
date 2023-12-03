@@ -2,7 +2,7 @@ package com.teameetmeet.meetmeet.data.repository
 
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.UserProfile
-import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
@@ -50,7 +50,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserWithFollowStatus(nickname: String): Flow<UserWithFollowStatus> {
+    suspend fun getUserWithFollowStatus(nickname: String): Flow<UserStatus> {
         val userNickname = dataStore.getUserProfile().first().nickname
         return flowOf(true)
             .map {

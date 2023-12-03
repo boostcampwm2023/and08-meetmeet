@@ -3,7 +3,7 @@ package com.teameetmeet.meetmeet.presentation.follow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
-import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.repository.FollowRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,18 +23,18 @@ class FollowViewModel @Inject constructor(
     private val followRepository: FollowRepository
 ) : ViewModel(), OnUserClickListener {
 
-    private val _follower: MutableStateFlow<List<UserWithFollowStatus>> = MutableStateFlow(listOf())
-    val follower: StateFlow<List<UserWithFollowStatus>> = _follower
+    private val _follower: MutableStateFlow<List<UserStatus>> = MutableStateFlow(listOf())
+    val follower: StateFlow<List<UserStatus>> = _follower
 
-    private val _following: MutableStateFlow<List<UserWithFollowStatus>> =
+    private val _following: MutableStateFlow<List<UserStatus>> =
         MutableStateFlow(listOf())
-    val following: StateFlow<List<UserWithFollowStatus>> = _following
+    val following: StateFlow<List<UserStatus>> = _following
 
     private val _searchKeyword: MutableStateFlow<String> = MutableStateFlow("")
 
-    private val _searchedUser: MutableStateFlow<List<UserWithFollowStatus>> =
+    private val _searchedUser: MutableStateFlow<List<UserStatus>> =
         MutableStateFlow(listOf())
-    val searchedUser: StateFlow<List<UserWithFollowStatus>> = _searchedUser
+    val searchedUser: StateFlow<List<UserStatus>> = _searchedUser
 
     private val _event: MutableSharedFlow<FollowEvent> = MutableSharedFlow()
     val event: SharedFlow<FollowEvent> = _event
@@ -95,7 +95,7 @@ class FollowViewModel @Inject constructor(
         _searchKeyword.update { keyword.toString() }
     }
 
-    override fun onFollowClick(user: UserWithFollowStatus) {
+    override fun onFollowClick(user: UserStatus) {
         viewModelScope.launch {
             followRepository.follow(user.id).catch {
                 _event.emit(FollowEvent.ShowMessage(R.string.follow_follow_fail))
@@ -109,7 +109,7 @@ class FollowViewModel @Inject constructor(
         }
     }
 
-    override fun onUnfollowClick(user: UserWithFollowStatus) {
+    override fun onUnfollowClick(user: UserStatus) {
         viewModelScope.launch {
             followRepository.unFollow(user.id).catch {
                 _event.emit(FollowEvent.ShowMessage(R.string.follow_unfollow_fail))
@@ -123,11 +123,11 @@ class FollowViewModel @Inject constructor(
         }
     }
 
-    override fun onInviteEventClick(user: UserWithFollowStatus, id: Int) {
+    override fun onInviteEventClick(user: UserStatus, id: Int) {
         println("${user.nickname}님을 이벤트 $id 에 초대")
     }
 
-    override fun onInviteGroupClick(user: UserWithFollowStatus, id: Int) {
+    override fun onInviteGroupClick(user: UserStatus, id: Int) {
         println("${user.nickname}님을 그룹 $id 에 초대")
     }
 }

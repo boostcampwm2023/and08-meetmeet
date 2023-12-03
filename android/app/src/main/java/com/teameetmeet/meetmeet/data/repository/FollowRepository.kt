@@ -1,6 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.api.FollowApi
 import com.teameetmeet.meetmeet.data.network.entity.FollowRequest
 import com.teameetmeet.meetmeet.data.toException
@@ -32,7 +32,7 @@ class FollowRepository @Inject constructor(
             }
     }
 
-    fun getFollowingWithFollowState(): Flow<List<UserWithFollowStatus>> {
+    fun getFollowingWithFollowState(): Flow<List<UserStatus>> {
         return flowOf(true)
             .map {
                 followApi.getFollowingWithFollowStatus().users
@@ -41,7 +41,7 @@ class FollowRepository @Inject constructor(
             }
     }
 
-    fun getFollowerWithFollowState(): Flow<List<UserWithFollowStatus>> {
+    fun getFollowerWithFollowState(): Flow<List<UserStatus>> {
         return flowOf(true)
             .map {
                 followApi.getFollowerWithFollowStatus().users

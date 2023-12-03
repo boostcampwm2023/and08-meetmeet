@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.R
-import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.databinding.ItemFollowBinding
 
 class FollowViewHolder private constructor(private val binding: ItemFollowBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
-        user: UserWithFollowStatus,
+        user: UserStatus,
         actionType: FollowActionType,
         userClickListener: OnUserClickListener,
         id: Int
