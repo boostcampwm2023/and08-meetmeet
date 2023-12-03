@@ -43,17 +43,16 @@ class CreateFeedViewModel @Inject constructor(
     }
 
     fun onSave(eventId: Int) {
-        val mediaSizeConstraint = 1024 * 1024 * 50
         viewModelScope.launch {
             if (mediaList.value.isEmpty() && feedText.value.isBlank()) {
                 _createFeedUiEvent.emit(
                     CreateFeedUiEvent.ShowMessage(R.string.create_feed_no_contents_message)
                 )
-            } else if (mediaList.value.size > 10) {
+            } else if (mediaList.value.size > MediaItem.MEDIA_AMOUNT_CONSTRAINT) {
                 _createFeedUiEvent.emit(
                     CreateFeedUiEvent.ShowMessage(R.string.create_feed_constraint_amount)
                 )
-            } else if (mediaList.value.sumOf { it.size } > mediaSizeConstraint) {
+            } else if (mediaList.value.sumOf { it.size } > MediaItem.MEDIA_VOLUME_CONSTRAINT) {
                 _createFeedUiEvent.emit(
                     CreateFeedUiEvent.ShowMessage(R.string.create_feed_media_constraint_volume)
                 )

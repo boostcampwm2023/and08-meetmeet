@@ -4,6 +4,7 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOperator, Raw, Repository } from 'typeorm';
@@ -610,6 +611,25 @@ export class EventService {
       }
     }
     // Todo 업데이트 한거 줘야한다.
+  }
+
+  async updateEventAnnouncement(
+    user: User,
+    eventId: number,
+    announcement: string,
+  ) {
+    const authority = await this.eventMemberService.getAuthorityOfUserByEventId(
+      eventId,
+      user.id,
+    );
+
+    if (!authority || authority !== 'OWNER') {
+      throw new UnauthorizedException('일정 공지 권한이 없습니다.');
+    }
+
+    await this.eventRepository.update(eventId, {
+      announcement: announcement ?? null,
+    });
   }
 
   async searchEvent(user: User, searchEventDto: SearchEventDto) {

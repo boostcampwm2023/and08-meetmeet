@@ -23,7 +23,7 @@ export class Event extends commonEntity {
   isJoinable: boolean;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
-  announcement: string;
+  announcement: string | null;
 
   @Column({ nullable: true })
   repeatPolicyId: number;

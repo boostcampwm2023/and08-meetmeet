@@ -8,6 +8,8 @@
     <string name="common_iso_time_format">HH:mm</string>
     <string name="common_iso_date_time_format">yyyy-MM-dd\'T\'HH:mm:ss.SSSXXX</string>
     <string name="common_global_date_time_format">yyyy-MM-dd HH:mm:ss</string>
+
+    <string name="common_message_no_internet">인터넷을 연결하고 다시 시도해주세요.</string>
     <string name="common_none"> </string>
 
     <string name="menu_save">저장</string>
@@ -153,7 +155,6 @@
     <string name="story_detail_title_event_repeat_end_date">반복 종료일</string>
     <string name="story_detail_message_repeat_end_date_fail">반복 일정 종료일이 일정 종료 시간보다 빠르게 설정될 수 없습니다.</string>
     <string name="story_detail_description_event_repeat_end_date">일정 종료 날짜 지정</string>
-    <string name="common_message_no_internet">인터넷을 연결하고 다시 시도해주세요.</string>
     <string name="story_detail_delete_event_dialog_title">반복 일정 삭제 안내</string>
     <string name="story_detail_delete_event_dialog_message">반복 일정을 전체 삭제 하시면 이후의 반복 일정이 모두 삭제됩니다.\n 이 일정만 삭제하시면 이후의 반복 일정은 남아있고 이 일정만 삭제됩니다.</string>
     <string name="story_detail_delete_event_dialog_description_delete_all">전체 삭제</string>
@@ -192,5 +193,9 @@
     <string name="notification_tab_invite_group">그룹 초대</string>
     <string name="notification_follow_message">%s님이 팔로우하였습니다.</string>
     <string name="notification_event_message">%1s님이 %s에 회원님을 초대하였습니다.</string>
+
+    <string name="feed_detail_comment_hint">댓글을 입력하세요</string>
+    <string name="feed_detail_comment_amount">댓글 %d회</string>
+    <string name="feed_detail_media_count">%d/%d</string>
 
 </resources>

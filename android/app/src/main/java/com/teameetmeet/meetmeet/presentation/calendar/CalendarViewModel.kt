@@ -119,7 +119,8 @@ class CalendarViewModel @Inject constructor(
             daysInMonth.add(
                 CalendarItem(
                     date = calendarItems[i].date,
-                    isSelected = calendarItems[i].isSelected)
+                    isSelected = calendarItems[i].isSelected
+                )
             )
             val today = daysInMonth[i].date
             today ?: continue
@@ -169,7 +170,8 @@ class CalendarViewModel @Inject constructor(
                 )
             }
 
-            daysInMonth[i] = daysInMonth[i].copy(events = todayEvents, eventBars = eventBars.take(5))
+            daysInMonth[i] =
+                daysInMonth[i].copy(events = todayEvents, eventBars = eventBars.take(5))
         }
         return daysInMonth
     }
