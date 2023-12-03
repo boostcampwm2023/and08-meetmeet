@@ -9,7 +9,7 @@ import com.teameetmeet.meetmeet.data.model.UserStatus
 class FollowAdapter(
     private val actionType: FollowActionType,
     private val userClickListener: OnUserClickListener,
-    private val id: Int
+    private val id: Int?
 ) :
     ListAdapter<UserStatus, FollowViewHolder>(ItemDiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowViewHolder {

@@ -32,9 +32,6 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
         binding.vm = viewModel
         binding.actionType = args.actionType
 
-        viewModel.updateFollowing(args.actionType)
-        viewModel.updateFollower(args.actionType)
-
         setRecyclerViewAdapter()
         setPagerAdapter()
         collectViewModelEvent()

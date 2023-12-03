@@ -16,7 +16,7 @@ class FollowSearchFragment :
 
     private val followViewModel: FollowViewModel by viewModels({ requireParentFragment() })
     private lateinit var followState: FollowState
-    private var id: Int = 0
+    private var id: Int? = null
     private lateinit var actionType: FollowActionType
     private lateinit var followAdapter: FollowAdapter
 
@@ -30,7 +30,7 @@ class FollowSearchFragment :
                 FollowActionType.GROUP.name -> FollowActionType.GROUP
                 else -> FollowActionType.FOLLOW
             }
-            id = it.getInt(ID_KEY, 0)
+            id = it.getInt(ID_KEY)
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -45,6 +45,12 @@ class FollowSearchFragment :
             actionType = actionType, userClickListener = followViewModel, id = id
         )
         binding.followListRv.adapter = followAdapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        followViewModel.updateFollowing(actionType, id)
+        followViewModel.updateFollower(actionType, id)
     }
 
     companion object {
