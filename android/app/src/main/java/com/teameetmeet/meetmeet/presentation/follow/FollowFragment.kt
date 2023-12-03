@@ -3,6 +3,9 @@ package com.teameetmeet.meetmeet.presentation.follow
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -11,6 +14,8 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentFollowBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_follow) {
@@ -28,9 +33,24 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
 
         setRecyclerViewAdapter()
         setPagerAdapter()
+        collectViewModelEvent()
 
         binding.followSearchIbNavPre.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun collectViewModelEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collectLatest { event ->
+                    when (event) {
+                        is FollowEvent.ShowMessage -> {
+                            showMessage(event.message, event.extraMessage)
+                        }
+                    }
+                }
+            }
         }
     }
 

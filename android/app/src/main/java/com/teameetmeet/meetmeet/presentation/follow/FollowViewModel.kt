@@ -3,7 +3,9 @@ package com.teameetmeet.meetmeet.presentation.follow
 import androidx.lifecycle.ViewModel
 import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
