@@ -5,10 +5,12 @@ import com.teameetmeet.meetmeet.data.datasource.RemoteCalendarDataSource
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.AuthApi
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
+import com.teameetmeet.meetmeet.data.network.api.FollowApi
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
+import com.teameetmeet.meetmeet.data.repository.FollowRepository
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import com.teameetmeet.meetmeet.data.repository.SettingRepository
 import com.teameetmeet.meetmeet.data.repository.TokenRepository
@@ -63,4 +65,10 @@ class RepositoryModule {
         dataStore: DataStoreHelper,
         authApi: AuthApi
     ) = TokenRepository(dataStore, authApi)
+
+    @Singleton
+    @Provides
+    fun provideFollowRepository(
+        followApi: FollowApi
+    ) = FollowRepository(followApi)
 }

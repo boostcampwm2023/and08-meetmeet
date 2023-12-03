@@ -34,7 +34,7 @@
                 app:menu="@menu/top_app_bar_add_event"
                 app:menu_enable="@{vm.uiState.authority}"
                 app:navigationIcon="@drawable/ic_nav_pre"
-                app:title="일정 상세"
+                app:title="@string/story_detail_title_tool_bar"
                 app:titleTextAppearance="@style/large" />
 
             <androidx.constraintlayout.widget.Guideline

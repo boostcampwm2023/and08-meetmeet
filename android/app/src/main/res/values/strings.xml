@@ -181,6 +181,18 @@
     <string name="alarm_notification_message_before_1_day">일정 시작 하루 전이에요! 마음의 준비는 되셨나요??</string>
     <string name="alarm_notification_message_before_1_week">일정 시작 일주일 전이에요!!</string>
     <string name="alarm_notification_message_unknown">일정 알림이 왔어요~ 앱에 들어가서 일정을 확인해보세요!</string>
+    <string name="event_story_message_join_event_fail">일정 참여에 실패하셨습니다.\n%s</string>
+    <string name="event_story_message_join_event_success">일정 참여 완료!!</string>
+
+    <string name="story_detail_title_tool_bar">일정 상세</string>
+    <string name="event_member_title_app_bar">일정 멤버</string>
+    <string name="event_member_follow">팔로우</string>
+    <string name="event_member_unfollow">언팔로우</string>
+    <string name="notification_tab_follow">팔로우</string>
+    <string name="notification_tab_invite_event">일정 초대</string>
+    <string name="notification_tab_invite_group">그룹 초대</string>
+    <string name="notification_follow_message">%s님이 팔로우하였습니다.</string>
+    <string name="notification_event_message">%1s님이 %s에 회원님을 초대하였습니다.</string>
 
     <string name="feed_detail_comment_hint">댓글을 입력하세요</string>
     <string name="feed_detail_comment_amount">댓글 %d회</string>

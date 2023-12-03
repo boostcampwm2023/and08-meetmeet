@@ -40,7 +40,6 @@ class EventStoryRepository @Inject constructor(
             }.catch {
                 throw it.toException()
             }
-        //TODO("이벤트 세부 정보 가져오고 로컬에 이벤트가 있으면 색과 알림 가져오기 아니면 DEFAULT 색 일정으로 파싱해서 내리기")
     }
 
     fun deleteEventStory(id: Int, isAll: Boolean = false): Flow<Unit> {
@@ -96,7 +95,7 @@ class EventStoryRepository @Inject constructor(
             .map {
                 eventStoryApi.editNotification(KakaoLoginRequest(message))
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -113,6 +112,14 @@ class EventStoryRepository @Inject constructor(
         }.catch {
             //todo: 예외처리
             throw it
+        }
+    }
+
+    fun joinEventStory(eventId: Int): Flow<Unit> {
+        return flowOf(true).map {
+            eventStoryApi.joinEventStory(eventId)
+        }.catch {
+            throw it.toException()
         }
     }
 
@@ -135,5 +142,4 @@ class EventStoryRepository @Inject constructor(
             throw it
         }
     }
-
 }

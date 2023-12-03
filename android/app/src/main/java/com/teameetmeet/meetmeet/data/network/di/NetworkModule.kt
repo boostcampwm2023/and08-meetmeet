@@ -5,6 +5,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.teameetmeet.meetmeet.data.network.api.AuthApi
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
+import com.teameetmeet.meetmeet.data.network.api.FollowApi
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.repository.TokenRepository
@@ -134,5 +135,10 @@ class NetworkModule {
     @Provides
     fun provideEventStoryApi(@Named("retrofitWithAuth") retrofit: Retrofit): EventStoryApi
     = retrofit.create(EventStoryApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideFollowApi(@Named("retrofitWithAuth") retrofit: Retrofit): FollowApi
+            = retrofit.create(FollowApi::class.java)
 
 }

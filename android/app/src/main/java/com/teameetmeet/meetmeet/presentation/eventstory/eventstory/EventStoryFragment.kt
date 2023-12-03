@@ -56,13 +56,14 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                 showDialog(viewModel.getNoti())
             }
             eventStoryIbSeeMoreMember.setOnClickListener {
-                //TODO("더보기")
+                findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventMemberFragment(viewModel.eventStoryUiState.value.eventStory?.eventMembers?.toTypedArray().orEmpty()))
             }
             eventStoryCvInviteMember.setOnClickListener {
                 when (viewModel.eventStoryUiState.value.authority) {
-                    EventAuthority.GUEST -> {}//TODO("참여 신청")
+                    EventAuthority.GUEST -> {
+                        viewModel.joinEventStory()
+                    }
                     EventAuthority.OWNER -> {
-                        //TODO("초대 페이지로 이동")
                         viewModel.eventStoryUiState.value.eventStory?.let { story ->
                             findNavController().navigate(
                                 EventStoryFragmentDirections.actionEventStoryFragmentToFollowFragment()
@@ -70,7 +71,6 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                             )
                         }
                     }
-
                     else -> return@setOnClickListener
                 }
             }
