@@ -10,6 +10,7 @@ import { ContentService } from 'src/content/content.service';
 import { AuthorityEnum } from 'src/event-member/entities/authority.enum';
 import { EventMemberService } from 'src/event-member/event-member.service';
 import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 import { Repository } from 'typeorm';
 import { CreateFeedDto } from './dto/create-feed.dto';
 import { FeedResponseDto } from './dto/feed-response.dto';
@@ -25,6 +26,7 @@ export class FeedService {
     private readonly contentService: ContentService,
     private readonly eventMemberService: EventMemberService,
     private readonly commentService: CommentService,
+    private readonly userService: UserService,
   ) {}
 
   async createFeed(
@@ -80,6 +82,16 @@ export class FeedService {
     if (!feed) {
       throw new NotFoundException();
     }
+
+    await Promise.all(
+      feed.comments.map(async (comment) => {
+        const author = await this.userService.getUserById(comment.authorId);
+        if (!author) throw new NotFoundException('Not Found Comment author');
+        comment.author = author;
+      }),
+    ).catch((err) => {
+      throw err;
+    });
 
     return FeedResponseDto.of(feed);
   }

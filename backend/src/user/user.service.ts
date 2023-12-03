@@ -55,8 +55,8 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async getUserInfo(user: User) {
-    const result = await this.userRepository
+  async getUserById(id: number) {
+    return await this.userRepository
       .createQueryBuilder('user')
       .select([
         'user.email',
@@ -66,8 +66,12 @@ export class UserService {
       ])
       .leftJoin('user.profile', 'profile')
       .leftJoin('user.oauthProvider', 'oauth')
-      .where('user.id = :id', { id: user.id })
+      .where('user.id = :id', { id })
       .getOne();
+  }
+
+  async getUserInfo(user: User) {
+    const result = await this.getUserById(user.id);
 
     if (!result) {
       throw new NotFoundException('There is no such user.');
@@ -76,7 +80,7 @@ export class UserService {
     const userInfo = {
       email: result.oauthProvider?.displayName ?? result.email,
       nickname: result.nickname,
-      profileUrl: result.profile?.path ?? null,
+      profile: result.profile?.path ?? null,
     };
 
     return userInfo;
