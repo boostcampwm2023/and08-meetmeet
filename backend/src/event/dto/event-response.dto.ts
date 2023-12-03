@@ -37,15 +37,15 @@ export class EventResponseDto extends EventResponse {
   @ApiProperty()
   alarmMinutes: number;
   @ApiProperty()
-  memo: string;
+  memo: string | null;
   @ApiProperty()
   isVisible: boolean;
   @ApiProperty()
-  repeatTerm: string | null = null;
+  repeatTerm: string | null;
   @ApiProperty()
-  repeatFrequency: number | null = null;
+  repeatFrequency: number | null;
   @ApiProperty()
-  repeatEndDate: string | null = null;
+  repeatEndDate: string | null;
 
   static of(event: Event, memberDetail: EventMember): EventResponseDto {
     return {

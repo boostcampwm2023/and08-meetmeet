@@ -5,7 +5,7 @@ import { EventResponse, Member } from './event-response';
 
 export class EventsResponseDto extends EventResponse {
   @ApiProperty()
-  repeatPolicyId: number;
+  repeatPolicyId: number | null;
   @ApiProperty()
   color: number;
   @ApiProperty()
@@ -21,7 +21,7 @@ export class EventsResponseDto extends EventResponse {
         Member.of(eventMember),
       ),
       isJoinable: event.isJoinable ? true : false,
-      repeatPolicyId: event.repeatPolicyId,
+      repeatPolicyId: event.repeatPolicyId ?? null,
       authority: memberDetail.authority.displayName,
       color: memberDetail.detail.color,
       alarmMinutes: memberDetail.detail.alarmMinutes,
