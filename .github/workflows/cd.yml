@@ -1,11 +1,9 @@
 name: auto deploy
 
 on:
-  pull_request:
+  push:
     branches:
       - dev-be
-#    types:
-#      - closed
 
 jobs:
   push_to_registry:
