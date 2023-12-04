@@ -103,7 +103,7 @@ class EventStoryViewModel @Inject constructor(
 
     override fun onSaveButtonClick(message: String) {
         viewModelScope.launch {
-            eventStoryRepository.editNotification(message).catch {
+            eventStoryRepository.editNotification(eventStoryUiState.value.eventId, message).catch {
                 _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_edit_noti_fail, it.message.orEmpty()))
             }.collect {
                 _eventStoryUiState.update {
