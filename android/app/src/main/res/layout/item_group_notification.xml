@@ -43,7 +43,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/follow_notification_cv"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@{String.format(@string/notification_event_message, item.inviterNickName, item.groupName)}"
+            android:text="@{@string/notification_event_invitation_message(item.inviterNickName, item.groupName)}"
             android:maxLines="2"
             android:ellipsize="end"
             app:layout_constraintTop_toTopOf="parent" />
