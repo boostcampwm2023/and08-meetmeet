@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class UserProfile(
-    @Json(name = "profileUrl")
+    @Json(name = "profile")
     val profileImage: String? = null,
     @Json(name = "nickname")
     val nickname: String,

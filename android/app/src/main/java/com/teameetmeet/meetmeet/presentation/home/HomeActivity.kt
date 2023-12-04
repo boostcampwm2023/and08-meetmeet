@@ -37,6 +37,7 @@ class HomeActivity : BaseActivity<ActivityHomeBinding>(R.layout.activity_home) {
             supportFragmentManager.findFragmentById(binding.fragmentContainer.id) as NavHostFragment
         navController = navHost.navController
         binding.bottomNav.setupWithNavController(navController)
+        viewModel.updateFcmToken()
     }
 
     private fun askNotificationPermission() {
