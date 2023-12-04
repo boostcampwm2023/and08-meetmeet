@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class AccessTokenRequest(
+data class TokenRequest(
     @Json(name = "token")
-    val accessToken: String
+    val token: String
 )

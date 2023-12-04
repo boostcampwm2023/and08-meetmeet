@@ -6,6 +6,7 @@ import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.api.UserApi
 import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
+import com.teameetmeet.meetmeet.data.network.entity.TokenRequest
 import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -55,7 +56,7 @@ class UserRepository @Inject constructor(
         return flowOf(true)
             .map {
                 val user = userApi.getUserWithFollowStatus(nickname)
-                if(user.nickname == userNickname) {
+                if (user.nickname == userNickname) {
                     user.copy(isMe = true)
                 } else {
                     user
@@ -141,5 +142,13 @@ class UserRepository @Inject constructor(
             }.catch {
                 throw it
             }
+    }
+
+    suspend fun updateFcmToken(token: String) {
+        try {
+            userApi.updateFcmToken(TokenRequest(token))
+        } catch (e:Exception) {
+            //todo: 예외처리
+        }
     }
 }
