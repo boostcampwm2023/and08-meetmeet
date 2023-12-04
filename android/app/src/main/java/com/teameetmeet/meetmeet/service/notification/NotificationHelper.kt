@@ -67,9 +67,12 @@ class NotificationHelper @Inject constructor(private val context: Context) {
             .setAutoCancel(true)
 
         icon?.let {
-            notificationBuilder.setLargeIcon(
-                it.toBitmap(context)
-            )
+            try {
+                val bitmap = it.toBitmap(context)
+                notificationBuilder.setLargeIcon(bitmap)
+            } catch (_: Exception) {
+
+            }
         }
 
         with(NotificationManagerCompat.from(context)) {
