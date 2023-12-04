@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentService } from 'src/comment/comment.service';
 import { ContentService } from 'src/content/content.service';
@@ -15,6 +10,13 @@ import { CreateFeedDto } from './dto/create-feed.dto';
 import { FeedResponseDto } from './dto/feed-response.dto';
 import { Feed } from './entities/feed.entity';
 import { FeedContent } from './entities/feedContent.entity';
+import {
+  CommentForbiddenException,
+  CommentNotFoundException,
+  EmptyFeedRequestException,
+  FeedForbiddenException,
+  FeedNotFoundException,
+} from './exception/feed.exception';
 
 @Injectable()
 export class FeedService {
@@ -33,7 +35,7 @@ export class FeedService {
     createFeedDto: CreateFeedDto,
   ) {
     if (!files && !createFeedDto.memo) {
-      throw new BadRequestException('사진/영상/글을 작성해주세요.');
+      throw new EmptyFeedRequestException();
     }
 
     const authority = await this.eventMemberService.getAuthorityOfUserByEventId(
@@ -42,7 +44,7 @@ export class FeedService {
     );
 
     if (!authority) {
-      throw new BadRequestException('일정 멤버만 피드를 추가할 수 있습니다.');
+      throw new FeedForbiddenException();
     }
 
     const feed = this.feedRepository.create({ ...createFeedDto, author: user });
@@ -78,8 +80,24 @@ export class FeedService {
       .getOne();
 
     if (!feed) {
-      throw new NotFoundException();
+      throw new FeedNotFoundException();
     }
+
+    await Promise.all(
+      feed.comments.map(async (comment) => {
+        const result = await this.commentService.getCommentWithAuthorAndTime(
+          comment.id,
+        );
+        if (!result) {
+          throw new CommentNotFoundException();
+        }
+
+        comment.author = result.author;
+        comment.updatedAt = result.updatedAt;
+      }),
+    ).catch((err) => {
+      throw err;
+    });
 
     return FeedResponseDto.of(feed);
   }
@@ -101,7 +119,7 @@ export class FeedService {
       .getOne();
 
     if (!feed) {
-      throw new NotFoundException();
+      throw new FeedNotFoundException();
     }
 
     if (feed.authorId !== user.id) {
@@ -112,7 +130,7 @@ export class FeedService {
         );
 
       if (authority !== AuthorityEnum.OWNER) {
-        throw new UnauthorizedException('피드 삭제 권한이 없습니다.');
+        throw new FeedForbiddenException();
       }
     }
 
@@ -128,7 +146,7 @@ export class FeedService {
   async createComment(user: User, feedId: number, memo: string) {
     const feed = await this.feedRepository.findOne({ where: { id: feedId } });
     if (!feed) {
-      throw new BadRequestException(`There is no feed where id = ${feedId}`);
+      throw new FeedNotFoundException();
     }
 
     if (
@@ -137,7 +155,7 @@ export class FeedService {
         user.id,
       ))
     ) {
-      throw new UnauthorizedException(`일정 멤버만 댓글을 작성할 수 있습니다.`);
+      throw new CommentForbiddenException();
     }
 
     await this.commentService.createComment(user, feed, memo);
@@ -148,7 +166,7 @@ export class FeedService {
     const feed = await this.feedRepository.findOne({ where: { id: feedId } });
 
     if (!comment || !feed) {
-      throw new NotFoundException('Comment Not Found');
+      throw new CommentNotFoundException();
     }
 
     if (comment.authorId !== user.id) {
@@ -159,7 +177,7 @@ export class FeedService {
         );
 
       if (!authority || authority !== 'OWNER') {
-        throw new UnauthorizedException(`댓글 삭제 권한이 없습니다.`);
+        throw new CommentForbiddenException();
       }
     }
 

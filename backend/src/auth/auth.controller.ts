@@ -77,14 +77,14 @@ export class AuthController {
     schema: {
       type: 'object',
       properties: {
-        accessToken: {
+        token: {
           type: 'string',
           description: 'access token이 유효한지 검증한다.',
         },
       },
     },
   })
-  checkAccessToken(@Body('accessToken') token: string) {
+  checkAccessToken(@Body('token') token: string) {
     return this.authService.verifyAccessToken(token);
   }
 

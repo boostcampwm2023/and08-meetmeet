@@ -7,7 +7,7 @@ export class Detail extends commonEntity {
   isVisible: boolean;
 
   @Column({ type: 'varchar', length: 64, nullable: true })
-  memo: string;
+  memo: string | null;
 
   @Column({ type: 'int', nullable: false, default: -39579 })
   color: number;

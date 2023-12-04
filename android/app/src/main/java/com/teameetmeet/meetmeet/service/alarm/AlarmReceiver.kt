@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
+import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_EVENT_NOTIFICATION
 import com.teameetmeet.meetmeet.service.alarm.model.EventAlarm
 import com.teameetmeet.meetmeet.service.notification.NotificationHelper
 import com.teameetmeet.meetmeet.util.date.getLocalDateTime
@@ -32,7 +33,7 @@ class AlarmReceiver : BroadcastReceiver() {
             Intent.ACTION_BOOT_COMPLETED -> {
                 alarmHelper.registerRepeatAlarm()
                 println("부팅 후 채널 생성 시작")
-                notificationHelper.createNotificationChannel()
+                notificationHelper.createNotificationChannels()
             }
 
             AlarmHelper.INTENT_ACTION_ALARM_UPDATE -> {
@@ -41,16 +42,16 @@ class AlarmReceiver : BroadcastReceiver() {
 
             AlarmHelper.INTENT_ACTION_ALARM_EVENT -> {
                 println("알림 호출")
-                notificationHelper.createEventNotification(
+                notificationHelper.createNotification(
                     channelId = NotificationHelper.CHANNEL_ID_EVENT_NOTIFICATION,
+                    requestCode = INTENT_REQUEST_ID_EVENT_NOTIFICATION,
                     title = intent.getStringExtra(AlarmHelper.INTENT_EXTRA_TITLE),
                     content = intent.getStringExtra(AlarmHelper.INTENT_EXTRA_CONTENT).orEmpty(),
-                    eventId = intent.getIntExtra(AlarmHelper.INTENT_EXTRA_EVENT_ID, 0)
+                    id = intent.getIntExtra(AlarmHelper.INTENT_EXTRA_EVENT_ID, 0)
                 )
             }
         }
     }
-
 
 
     private fun setAlarms() {

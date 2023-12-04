@@ -5,12 +5,14 @@ import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
 import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
+import com.teameetmeet.meetmeet.data.network.entity.TokenRequest
 import okhttp3.MultipartBody
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Query
 
@@ -38,5 +40,10 @@ interface UserApi {
     @PATCH("user/profile")
     suspend fun updateProfileImage(
         @Part profile: MultipartBody.Part,
+    )
+
+    @POST("user/fcm")
+    suspend fun updateFcmToken(
+        @Body tokenRequest: TokenRequest
     )
 }
