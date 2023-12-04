@@ -36,7 +36,7 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
 
             FollowActionType.EVENT -> {
                 with(binding.followBtnAction) {
-                    if (user.isJoinable) {
+                    if (!user.isJoined) {
                         text = context.getString(R.string.event_story_invite)
                         setOnClickListener {
                             id?.let {
