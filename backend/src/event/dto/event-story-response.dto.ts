@@ -23,7 +23,7 @@ class EventFeed {
 
 export class EventStoryResponseDto extends EventResponse {
   @ApiProperty()
-  announcement: string;
+  announcement: string | null;
   @ApiProperty()
   repeatPolicyId: number;
   @ApiProperty()

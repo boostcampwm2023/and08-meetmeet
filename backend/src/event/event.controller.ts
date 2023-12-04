@@ -12,7 +12,6 @@ import {
   Post,
   Query,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -30,7 +29,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateScheduleDto } from './dto/createSchedule.dto';
 import { SearchEventDto } from './dto/searchEvent.dto';
 import { UpdateScheduleDto } from './dto/updateSchedule.dto';
-import { SlackInterceptor } from '../log/slack.interceptor';
 import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
@@ -38,7 +36,6 @@ import { EventStoryResponseDto } from './dto/event-story-response.dto';
 @ApiBearerAuth()
 @ApiTags('event')
 @Controller('event')
-@UseInterceptors(SlackInterceptor)
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 

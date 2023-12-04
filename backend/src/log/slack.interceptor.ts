@@ -28,7 +28,7 @@ export class SlackInterceptor implements NestInterceptor {
         if (statusCode !== 418 && statusCode >= 500) {
           this.sendSlackNotification(error, method, url);
         }
-        return of(error);
+        throw error;
       }),
     );
   }
