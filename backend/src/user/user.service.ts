@@ -176,7 +176,15 @@ export class UserService {
     return await this.userRepository.findOne({ where: { nickname: nickname } });
   }
 
+  async findUserById(id: number) {
+    return await this.userRepository.findOne({ where: { id: id } });
+  }
+
   async registerFCMToken(user: User, token: string) {
     await this.userRepository.update(user.id, { fcmToken: token });
+  }
+
+  async logout(user: User) {
+    await this.userRepository.update(user.id, { fcmToken: null });
   }
 }

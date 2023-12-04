@@ -150,4 +150,13 @@ export class UserController {
   registerFCMToken(@GetUser() user: User, @Body('token') token: string) {
     return this.userService.registerFCMToken(user, token);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  @ApiOperation({
+    summary: '사용자 로그아웃 API',
+  })
+  logout(@GetUser() user: User) {
+    return this.userService.logout(user);
+  }
 }
