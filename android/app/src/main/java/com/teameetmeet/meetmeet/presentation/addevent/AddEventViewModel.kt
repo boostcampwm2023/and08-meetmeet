@@ -102,7 +102,7 @@ class AddEventViewModel @Inject constructor(
         val currentTime = LocalDateTime.now().toLong()
         val triggerTime =
             event.startDate.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
-                ?.minusMinutes(alarm.minutes.toLong())?.toLong()
+                ?.minusMinutes(alarm.minutes.toLong())?.toLong(ZoneId.of("UTC"))
         if (triggerTime != null && currentTime <= triggerTime && alarm != EventNotification.NONE) {
             alarmHelper.registerEventAlarm(
                 EventAlarm(
