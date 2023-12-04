@@ -6,7 +6,7 @@
     <data>
         <variable
             name="vm"
-            type="com.teameetmeet.meetmeet.presentation.calendar.CalendarViewModel" />
+            type="com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarViewModel" />
 
     </data>
 

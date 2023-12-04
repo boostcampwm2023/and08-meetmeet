@@ -17,7 +17,7 @@ abstract class BaseActivity<T : ViewDataBinding>(private val layoutResId: Int) :
         binding.lifecycleOwner = this
     }
 
-    protected fun showMessage(messageId: Int, extraMessage: String) {
+    protected fun showMessage(messageId: Int, extraMessage: String = "") {
         if (extraMessage.isNotEmpty()) {
             Toast.makeText(
                 this,
