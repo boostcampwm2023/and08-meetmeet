@@ -8,36 +8,73 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.presentation.notification.NotificationActivity
 import com.teameetmeet.meetmeet.presentation.splash.SplashActivity
-import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_EVENT_NOTIFICATION
+import com.teameetmeet.meetmeet.util.toBitmap
 import javax.inject.Inject
 
 class NotificationHelper @Inject constructor(private val context: Context) {
 
+    fun createNotification(
+        channelId: String,
+        requestCode: Int,
+        title: String?,
+        content: String,
+        id: Int,
+        icon: String? = null
+    ) {
+        val notificationIntent = when (channelId) {
+            CHANNEL_ID_EVENT_NOTIFICATION -> {
+                Intent(context, SplashActivity::class.java)
+            }
 
-    fun createEventNotification(channelId: String, title: String?, content: String, eventId: Int) {
+            CHANNEL_ID_FOLLOW_NOTIFICATION -> {
+                Intent(context, NotificationActivity::class.java).apply {
+                    putExtra(
+                        NotificationActivity.TAB_INDEX,
+                        NotificationActivity.TAB_INDEX_FOLLOW
+                    )
+                }
+            }
 
-        val notificationIntent = Intent(context, SplashActivity::class.java).apply {
+            else -> {
+                Intent(context, NotificationActivity::class.java).apply {
+                    putExtra(
+                        NotificationActivity.TAB_INDEX,
+                        NotificationActivity.TAB_INDEX_EVENT_INVITATION
+                    )
+                }
+            }
+        }.apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
             context,
-            INTENT_REQUEST_ID_EVENT_NOTIFICATION,
+            requestCode,
             notificationIntent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
         )
 
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle(title ?: context.getString(R.string.notification_title_event_notification))
+            .setContentTitle(
+                title ?: context.getString(R.string.notification_title_default)
+            )
             .setContentText(content)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
 
+        icon?.let {
+            notificationBuilder.setLargeIcon(
+                it.toBitmap(context)
+            )
+        }
+
         with(NotificationManagerCompat.from(context)) {
             try {
-                notify(eventId, notificationBuilder.build())
+                notify(id, notificationBuilder.build())
             } catch (_: SecurityException) {
             }
         }
