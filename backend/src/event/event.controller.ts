@@ -257,9 +257,9 @@ export class EventController {
     description: '',
   })
   @ApiQuery({
-    name: 'userId',
+    name: 'nickname',
     required: true,
-    example: 123,
+    example: 'nickname',
   })
   @ApiParam({
     name: 'eventId',
@@ -269,9 +269,9 @@ export class EventController {
   async searchUserEvents(
     @GetUser() user: User,
     @Param('eventId', ParseIntPipe) eventId: number,
-    @Query('userId', ParseIntPipe) userId: number,
+    @Query('nickname') nickname: string,
   ) {
-    return await this.eventService.searchUserEvents(user, userId, eventId);
+    return await this.eventService.searchUserEvents(user, nickname, eventId);
   }
 
   @UseGuards(JwtAuthGuard)

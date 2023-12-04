@@ -23,6 +23,7 @@ import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
 import { Detail } from '../detail/entities/detail.entity';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class EventService {
@@ -35,6 +36,7 @@ export class EventService {
     private detailService: DetailService,
     private eventMemberService: EventMemberService,
     private followService: FollowService,
+    private userService: UserService,
   ) {}
 
   async getEvents(user: User, startDate: string, endDate: string) {
@@ -892,7 +894,7 @@ export class EventService {
     return { users: result };
   }
 
-  async searchUserEvents(user: User, userId: number, eventId: number) {
+  async searchUserEvents(user: User, nickname: string, eventId: number) {
     const event = await this.eventRepository.findOne({
       relations: ['eventMembers'],
       where: {
@@ -902,20 +904,26 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
-    const eventMember = event.eventMembers.find(
-      (eventMember) => eventMember.user.id === userId,
-    );
-    if (!eventMember) {
+
+    const findByNickname = await this.userService.findUserByNickname(nickname);
+    if (!findByNickname) {
+      throw new HttpException('유저가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+    if (findByNickname.id === user.id) {
       throw new HttpException(
-        '이벤트에 참여하지 않았습니다.',
-        HttpStatus.NOT_FOUND,
+        '자기 자신은 검색할 수 없습니다.',
+        HttpStatus.BAD_REQUEST,
       );
     }
 
+    const eventMember = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === findByNickname.id,
+    );
+
     return {
-      id: eventMember.user.id,
-      nickname: eventMember.user.nickname,
-      profile: eventMember.user.profile?.path ?? null,
+      id: findByNickname.id,
+      nickname: findByNickname.nickname,
+      profile: findByNickname.profile?.path ?? null,
       isJoined: eventMember ? true : false,
     };
   }
