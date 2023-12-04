@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 services:
   nest:
     image: meetmeet-container-registry.kr.ncr.ntruss.com/nest:latest
@@ -8,5 +8,5 @@ services:
       - 3000:3000
     volumes:
       - .env:/var/app/.env
-      - ./uploads:/var/app/uploads
+      - ./meetmeet-firebase.json:/var/app/meetmeet-firebase.json
     command: npm run start:dev

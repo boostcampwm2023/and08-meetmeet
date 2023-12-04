@@ -93,7 +93,7 @@ export class FollowService {
         id: following.follower.id,
         nickname: following.follower.nickname,
         profile: following.follower.profile?.path ?? null,
-        isFollowed: false,
+        isFollowed: true,
       };
       result.push(user);
     });

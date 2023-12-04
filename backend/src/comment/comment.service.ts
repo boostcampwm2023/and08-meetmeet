@@ -24,6 +24,14 @@ export class CommentService {
     return await this.commentRepository.findOne({ where: { id } });
   }
 
+  async getCommentWithAuthorAndTime(id: number) {
+    return await this.commentRepository.findOne({
+      relations: ['author'],
+      where: { id },
+      select: ['id', 'memo', 'author', 'updatedAt'],
+    });
+  }
+
   async deleteComment(id: number) {
     await this.commentRepository.softDelete(id);
   }

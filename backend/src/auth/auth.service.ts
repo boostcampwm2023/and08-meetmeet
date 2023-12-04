@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  ImATeapotException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { v4 as uuidv4 } from 'uuid';
 import { compare } from 'bcrypt';
@@ -11,6 +6,17 @@ import { UserService } from 'src/user/user.service';
 import { AuthUserDto } from './dto/auth-user.dto';
 import { User } from 'src/user/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
+import {
+  DeletedUserException,
+  ExpiredTokenException,
+  InvalidPayloadException,
+  InvalidTokenException,
+  InvalidUserException,
+} from './exception/auth.exception';
+import {
+  DuplicatedEmailException,
+  DuplicatedNicknameException,
+} from 'src/user/exception/user.exception';
 
 @Injectable()
 export class AuthService {
@@ -25,12 +31,12 @@ export class AuthService {
 
     const existedUser = await this.userService.findUserByEmail(email);
     if (existedUser) {
-      throw new BadRequestException('중복된 이메일입니다.');
+      throw new DuplicatedEmailException();
     }
 
     const nickname = uuidv4().split('-').at(0)!;
     if (await this.userService.findUserByNickname(nickname)) {
-      throw new BadRequestException('중복된 닉네임입니다.');
+      throw new DuplicatedNicknameException();
     }
 
     await this.userService.localCreateUser(email, password, nickname);
@@ -40,7 +46,7 @@ export class AuthService {
     const user = await this.userService.findUserWithPasswordByEmail(email);
 
     if (!user || !(await compare(password, user.password))) {
-      throw new BadRequestException();
+      throw new InvalidUserException();
     }
 
     return user;
@@ -50,6 +56,9 @@ export class AuthService {
     const user = await this.userService.findUserByOAuth(kakaoId, 'kakao');
 
     if (user) {
+      if (user.deletedAt) {
+        throw new DeletedUserException();
+      }
       return this.login(user);
     }
 
@@ -79,7 +88,7 @@ export class AuthService {
       const user = await this.userService.findUserByEmail(payload.email);
 
       if (!user) {
-        throw new UnauthorizedException('Invalid User');
+        throw new InvalidPayloadException();
       }
 
       return {
@@ -88,9 +97,9 @@ export class AuthService {
       };
     } catch (err) {
       if (err instanceof Error && err.name === 'TokenExpiredError') {
-        throw new ImATeapotException('Refresh token is expired.');
+        throw new ExpiredTokenException();
       }
-      throw new ImATeapotException('Invalid token');
+      throw new InvalidTokenException();
     }
   }
 
@@ -119,10 +128,10 @@ export class AuthService {
       });
 
       if (this.isExpired(payload.exp)) {
-        throw new ImATeapotException('Access token is expired.');
+        throw new ExpiredTokenException();
       }
     } catch (err) {
-      throw new ImATeapotException('Invalid access token');
+      throw new InvalidTokenException();
     }
   }
 
