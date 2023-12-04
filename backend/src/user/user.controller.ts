@@ -20,7 +20,6 @@ import {
 } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { UpdateUserInfoDto } from './dto/update-user-info.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
