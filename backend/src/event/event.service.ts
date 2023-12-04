@@ -225,20 +225,22 @@ export class EventService {
         authority,
       );
       return {
-        event: {
-          id: savedEventMembers.event.id,
-          startDate: savedEventMembers.event.startDate,
-          endDate: savedEventMembers.event.endDate,
-          title: savedEventMembers.event.title,
-          repeatPolicyId: savedEventMembers.event.repeatPolicyId,
-          isJoinable: savedEventMembers.event.isJoinable ? true : false,
-          announcement: savedEventMembers.event.announcement,
-          isVisible: savedEventMembers.detail.isVisible ? true : false,
-          memo: savedEventMembers.detail.memo,
-          color: savedEventMembers.detail.color,
-          alarmMinutes: savedEventMembers.detail.alarmMinutes,
-          authority: savedEventMembers.authority.displayName,
-        },
+        events: [
+          {
+            id: savedEventMembers.event.id,
+            startDate: savedEventMembers.event.startDate,
+            endDate: savedEventMembers.event.endDate,
+            title: savedEventMembers.event.title,
+            repeatPolicyId: savedEventMembers.event.repeatPolicyId,
+            isJoinable: savedEventMembers.event.isJoinable ? true : false,
+            announcement: savedEventMembers.event.announcement,
+            isVisible: savedEventMembers.detail.isVisible ? true : false,
+            memo: savedEventMembers.detail.memo,
+            color: savedEventMembers.detail.color,
+            alarmMinutes: savedEventMembers.detail.alarmMinutes,
+            authority: savedEventMembers.authority.displayName,
+          },
+        ],
       };
     }
   }
@@ -610,7 +612,6 @@ export class EventService {
         }
       }
     }
-    // Todo 업데이트 한거 줘야한다.
   }
 
   async updateEventAnnouncement(
