@@ -91,6 +91,7 @@ export class FollowService {
         id: following.follower.id,
         nickname: following.follower.nickname,
         profile: following.follower.profileId,
+        isFollowed: false,
       };
       result.push(user);
     });

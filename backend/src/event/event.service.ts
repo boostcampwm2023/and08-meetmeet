@@ -856,7 +856,7 @@ export class EventService {
     const result: any[] = [];
     rawFollowings.forEach((follower) => {
       const eventMember = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === follower.id,
+        (eventMember) => eventMember.user.id === follower.user.id,
       );
       result.push({
         id: follower.follower.id,
@@ -882,12 +882,12 @@ export class EventService {
     const result: any[] = [];
     rawFollowers.forEach((follower) => {
       const eventMember = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === follower.id,
+        (eventMember) => eventMember.user.id === follower.user.id,
       );
       result.push({
-        id: follower.follower.id,
-        nickname: follower.follower.nickname,
-        profile: follower.follower.profile?.path ?? null,
+        id: follower.user.id,
+        nickname: follower.user.nickname,
+        profile: follower.user.profile?.path ?? null,
         isJoined: eventMember ? true : false,
       });
     });
@@ -936,6 +936,13 @@ export class EventService {
 
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    if (user.id === userId) {
+      throw new HttpException(
+        '자기 자신을 초대할 수 없습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const detail = {
