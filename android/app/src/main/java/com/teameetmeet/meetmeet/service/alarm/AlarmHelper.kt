@@ -96,4 +96,19 @@ class AlarmHelper @Inject constructor(private val context: Context) {
             pendingIntent
         )
     }
+
+    fun cancelAlarm(eventId: Int) {
+        val alarmIntent = Intent(context, AlarmReceiver::class.java).apply {
+            action = INTENT_ACTION_ALARM_EVENT
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            eventId,
+            alarmIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+        )
+
+        alarmMgr.cancel(pendingIntent)
+    }
 }
