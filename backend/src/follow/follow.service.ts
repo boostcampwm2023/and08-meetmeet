@@ -160,8 +160,8 @@ export class FollowService {
   async isFollowed(user: User, userId: number) {
     const isFollowed = await this.followRepository.findOne({
       where: {
-        user: Equal(userId),
-        follower: Equal(user.id),
+        user: Equal(user.id),
+        follower: Equal(userId),
       },
     });
     return isFollowed ? true : false;
