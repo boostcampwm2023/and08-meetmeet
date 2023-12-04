@@ -32,7 +32,7 @@ class AlarmReceiver : BroadcastReceiver() {
             Intent.ACTION_BOOT_COMPLETED -> {
                 alarmHelper.registerRepeatAlarm()
                 println("부팅 후 채널 생성 시작")
-                notificationHelper.createNotificationChannel()
+                notificationHelper.createNotificationChannels()
             }
 
             AlarmHelper.INTENT_ACTION_ALARM_UPDATE -> {

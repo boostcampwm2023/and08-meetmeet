@@ -43,11 +43,33 @@ class NotificationHelper @Inject constructor(private val context: Context) {
         }
     }
 
-    fun createNotificationChannel() {
-        val name = context.getString(R.string.notification_title_event_notification)
-        val descriptionText = context.getString(R.string.notification_channel_description_event)
+    fun createNotificationChannels() {
+        createNotificationChannel(
+            R.string.notification_title_event_notification,
+            R.string.notification_channel_description_event,
+            CHANNEL_ID_EVENT_NOTIFICATION
+        )
+        createNotificationChannel(
+            R.string.notification_title_follow_notification,
+            R.string.notification_channel_description_follow,
+            CHANNEL_ID_FOLLOW_NOTIFICATION
+        )
+        createNotificationChannel(
+            R.string.notification_title_event_invitation_notification,
+            R.string.notification_channel_description_event_invitation,
+            CHANNEL_ID_EVENT_INVITATION_NOTIFICATION
+        )
+    }
+
+    private fun createNotificationChannel(
+        notificationNameResId: Int,
+        notificationDescriptionResId: Int,
+        channelId: String
+    ) {
+        val name = context.getString(notificationNameResId)
+        val descriptionText = context.getString(notificationDescriptionResId)
         val importance = NotificationManager.IMPORTANCE_HIGH
-        val channel = NotificationChannel(CHANNEL_ID_EVENT_NOTIFICATION, name, importance).apply {
+        val channel = NotificationChannel(channelId, name, importance).apply {
             description = descriptionText
         }
         val notificationManager: NotificationManager =
@@ -57,5 +79,7 @@ class NotificationHelper @Inject constructor(private val context: Context) {
 
     companion object {
         const val CHANNEL_ID_EVENT_NOTIFICATION = "channelIdEventNotification"
+        const val CHANNEL_ID_FOLLOW_NOTIFICATION = "channelIdFollowNotification"
+        const val CHANNEL_ID_EVENT_INVITATION_NOTIFICATION = "channelIdEventInvitationNotification"
     }
 }
