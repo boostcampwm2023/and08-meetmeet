@@ -96,12 +96,16 @@
                     style="@style/small.bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:alpha="0.5"
                     android:background="@drawable/background_paging_tv"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="2dp"
+                    android:layout_margin="4dp"
                     android:text="@{@string/feed_detail_media_count(vm.feedDetailUiState.contentPage+1,vm.feedDetailUiState.feedDetail.contents.size())}"
+                    android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="@id/feed_detail_vp_media"
-                    app:layout_constraintTop_toTopOf="@id/feed_detail_vp_media" />
+                    app:layout_constraintTop_toTopOf="@id/feed_detail_vp_media"
+                    tools:text="1/2" />
 
                 <androidx.constraintlayout.widget.Group
                     android:layout_width="wrap_content"
@@ -120,6 +124,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/feed_detail_vp_media"
+                    android:visibility="@{vm.feedDetailUiState.feedDetail.memo==null?View.GONE:View.VISIBLE}"
                     tools:text="오늘 같이 간 문기, 이리, 기정이 다 너무 재밌었어~!!" />
 
                 <TextView
@@ -213,7 +218,7 @@
                 android:hint="@string/feed_detail_comment_hint"
                 android:maxLength="@integer/text_length_long"
                 android:onTextChanged="@{(p1,p2,p3,p4)-> vm.onCommentTextChanged(p1)}"
-                android:padding="12dp"
+                android:padding="15dp"
                 android:text="@{vm.feedDetailUiState.typedComment}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/feed_detail_view_comment_background"
