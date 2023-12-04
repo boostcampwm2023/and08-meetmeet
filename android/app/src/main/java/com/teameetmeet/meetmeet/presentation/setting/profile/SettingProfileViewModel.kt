@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -43,13 +44,14 @@ class SettingProfileViewModel @Inject constructor(
             _showPlaceholder.update { true }
             userRepository.getUserProfile()
                 .catch {
-                    // 예외 처리
+                    _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_network_error))
                 }.collect { userProfile ->
                     _uiState.update {
                         it.copy(
                             currentUserProfile = userProfile,
                             profileImage = userProfile.profileImage?.toUri(),
-                            nickname = userProfile.nickname
+                            nickname = userProfile.nickname,
+                            nickNameState = NickNameState.Same
                         )
                     }
                 }
@@ -108,20 +110,25 @@ class SettingProfileViewModel @Inject constructor(
     fun patchUserProfile() {
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            val imageFile =
-                if (_uiState.value.currentUserProfile.profileImage == _uiState.value.profileImage.toString()) {
+            if (_uiState.value.currentUserProfile.profileImage != _uiState.value.profileImage.toString()) {
+                val imageFile = if (_uiState.value.profileImage == null) {
                     null
                 } else {
                     _uiState.value.profileImage?.toAbsolutePath()?.let { File(it) }
                 }
-            userRepository.patchUserProfile(imageFile, _uiState.value.nickname)
-                .catch {
-                    _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_fail))
-                }
-                .collectLatest {
-                    _event.emit(SettingProfileUiEvent.NavigateToSettingHomeFragment)
-                }
-            imageFile?.delete()
+                userRepository.patchProfileImage(imageFile)
+                    .catch {
+                        _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_fail))
+                    }.first()
+                imageFile?.delete()
+            }
+            if (_uiState.value.currentUserProfile.nickname != _uiState.value.nickname) {
+                userRepository.patchNickname(_uiState.value.nickname)
+                    .catch {
+                        _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_fail))
+                    }.first()
+            }
+            _event.emit(SettingProfileUiEvent.NavigateToSettingHomeFragment)
             _showPlaceholder.update { false }
         }
     }

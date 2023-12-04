@@ -46,16 +46,21 @@ class SettingProfileFragment :
         binding.vm = viewModel
         setTopAppBar(args.isFirstSignIn)
         setPhotoPicker()
-        collectViewModelEvent()
+        collectViewModelEvent(args.isFirstSignIn)
     }
 
-    private fun collectViewModelEvent() {
+    private fun collectViewModelEvent(isFirstSignIn: Boolean) {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
                     when (event) {
                         is SettingProfileUiEvent.NavigateToSettingHomeFragment -> {
-                            findNavController().popBackStack()
+                            if (isFirstSignIn) {
+                                findNavController().navigate(SettingProfileFragmentDirections.actionSettingProfileFragmentToHomeActivity())
+                                requireActivity().finish()
+                            } else {
+                                findNavController().popBackStack()
+                            }
                         }
 
                         is SettingProfileUiEvent.ShowMessage -> {
