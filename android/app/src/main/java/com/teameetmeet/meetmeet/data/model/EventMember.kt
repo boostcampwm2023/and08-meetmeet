@@ -12,14 +12,13 @@ data class EventMember(
     @Json(name = "nickname")
     val nickname: String,
     @Json(name = "profile")
-    val profile: String
+    val profile: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString().toString(),
         parcel.readString().toString()
-    ) {
-    }
+    )
 
     override fun describeContents(): Int {
         return id

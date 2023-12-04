@@ -22,9 +22,8 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.setFeedId(navArgs.feedId)
-
-        setCallBacks()
         setBinding()
+        setCallBacks()
         setTopAppBar()
     }
 
@@ -56,6 +55,9 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(binding.feedDetailEtComment.windowToken, 0)
                 feedDetailNsv.fullScroll(View.FOCUS_DOWN)
+                feedDetailRvComment.scrollToPosition(
+                    feedDetailRvComment.adapter?.itemCount?.minus(1) ?: 0
+                )
             }
         }
     }

@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
@@ -14,10 +11,7 @@ import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentCalendarBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
-import com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @ExperimentalBadgeUtils
 @AndroidEntryPoint
@@ -29,20 +23,17 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         super.onViewCreated(view, savedInstanceState)
         setBinding()
         setClickListener()
-        collectViewModelEvent()
         setBadge()
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.fetchEvents()
         viewModel.fetchUserProfile()
     }
 
     private fun setBinding() {
         with(binding) {
             vm = viewModel
-            calendarRvCalendar.adapter = CalendarAdapter(viewModel)
         }
     }
 
@@ -66,14 +57,6 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
     }
 
     private fun setClickListener() {
-        binding.fabAddEvent.setOnClickListener {
-            viewModel.currentDate.value.date?.let {
-                findNavController().navigate(
-                    CalendarFragmentDirections.actionCalendarFragmentToAddEventActivity(it)
-                )
-            }
-        }
-
         binding.calendarClProfile.setOnClickListener {
             findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToSettingActivity())
         }
@@ -84,20 +67,6 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
 
         binding.calendarFlNotification.setOnClickListener {
             findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToNotificationActivity())
-        }
-    }
-
-    private fun collectViewModelEvent() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.dayClickEvent.collect {
-                    EventsPerDayBottomSheetFragment().show(
-                        childFragmentManager,
-                        "bottom sheet"
-                    )
-                    delay(1000)
-                }
-            }
         }
     }
 }

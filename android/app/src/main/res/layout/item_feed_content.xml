@@ -15,7 +15,6 @@
         android:id="@+id/item_event_feed_iv_thumbnail"
         image_src="@{item.path}"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:adjustViewBounds="true" />
+        android:layout_height="match_parent" />
 
 </layout>
