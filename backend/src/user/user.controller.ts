@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Patch,
+  Post,
   Query,
   UploadedFile,
   UseGuards,
@@ -127,7 +128,27 @@ export class UserController {
     description: 'parameter의 nickname으로 검색합니다.',
   })
   searchUser(@GetUser() user: User, @Query('nickname') nickname: string) {
-    // todo : search 할때 리턴값 profile인지 확인
     return this.userService.searchUser(user, nickname);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('fcm')
+  @ApiOperation({
+    summary: '사용자 FCM 토큰 등록 API',
+    description: 'parameter의 token으로 FCM 토큰을 등록합니다.',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        token: {
+          type: 'string',
+          description: 'FCM 토큰',
+        },
+      },
+    },
+  })
+  registerFCMToken(@GetUser() user: User, @Body('token') token: string) {
+    return this.userService.registerFCMToken(user, token);
   }
 }

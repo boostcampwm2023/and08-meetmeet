@@ -174,4 +174,8 @@ export class UserService {
   async findUserByNickname(nickname: string) {
     return await this.userRepository.findOne({ where: { nickname: nickname } });
   }
+
+  async registerFCMToken(user: User, token: string) {
+    await this.userRepository.update(user.id, { fcmToken: token });
+  }
 }

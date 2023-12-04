@@ -17,6 +17,9 @@ export class User extends commonEntity {
   @Column({ nullable: true })
   profileId: number | null;
 
+  @Column({ type: 'varchar', nullable: true })
+  fcmToken: string | null;
+
   @ManyToOne(() => Content, { eager: true })
   @JoinColumn()
   profile: Content;
