@@ -945,6 +945,15 @@ export class EventService {
       );
     }
 
+    event.eventMembers.forEach((eventMember) => {
+      if (eventMember.user.id === userId) {
+        throw new HttpException(
+          '이미 참여한 유저입니다.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    });
+
     const detail = {
       isVisible: true,
       memo: '',
@@ -978,6 +987,15 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
+
+    event.eventMembers.forEach((eventMember) => {
+      if (eventMember.user.id === user.id) {
+        throw new HttpException(
+          '이미 참여한 유저입니다.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    });
 
     const detail = {
       isVisible: true,

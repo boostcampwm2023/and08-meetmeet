@@ -275,7 +275,7 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/schedule/invite/:eventId')
+  @Post('/schedule/invite')
   @ApiOperation({
     summary: '일정 초대 API',
     description: '',
@@ -302,14 +302,24 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/schedule/join/:eventId')
+  @Post('/schedule/join')
   @ApiOperation({
     summary: '일정 참여 API',
     description: '',
   })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        eventId: {
+          type: 'number',
+        },
+      },
+    },
+  })
   async cancelSchedule(
     @GetUser() user: User,
-    @Param('eventId', ParseIntPipe) eventId: number,
+    @Body('eventId', ParseIntPipe) eventId: number,
   ) {
     return await this.eventService.joinSchedule(user, eventId);
   }
