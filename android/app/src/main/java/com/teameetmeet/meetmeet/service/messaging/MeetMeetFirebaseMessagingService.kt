@@ -5,11 +5,15 @@ import com.google.firebase.messaging.RemoteMessage
 import com.squareup.moshi.Moshi
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.EventMember
+import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_EVENT_INVITATION_NOTIFICATION
 import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_FOLLOW_NOTIFICATION
 import com.teameetmeet.meetmeet.service.messaging.model.EventInvitationMessage
 import com.teameetmeet.meetmeet.service.notification.NotificationHelper
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -21,9 +25,14 @@ class MeetMeetFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     lateinit var moshi: Moshi
 
+    @Inject
+    lateinit var userRepository: UserRepository
+
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        //todo: 서버에 토큰 보내기
+        CoroutineScope(Dispatchers.IO).launch {
+            userRepository.updateFcmToken(token)
+        }
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
