@@ -2,8 +2,10 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.FeedDetail
+import com.teameetmeet.meetmeet.data.model.FollowUsers
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
+import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventStoryDetailResponse
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import okhttp3.MultipartBody
@@ -63,4 +65,13 @@ interface EventStoryApi {
         @Path("feedId") id: Int,
         @Body addFeedCommentRequest: AddFeedCommentRequest
     )
+
+    @GET("event/user/followings")
+    suspend fun getFollowingWithEventStatus(@Query("eventId") eventId: Int): FollowUsers
+
+    @GET("event/user/followers")
+    suspend fun getFollowerWithEventStatus(@Query("eventId") eventId: Int): FollowUsers
+
+    @POST("event/schedule/invite/{eventId}")
+    suspend fun inviteEvent(@Body eventInviteRequest: EventInviteRequest)
 }

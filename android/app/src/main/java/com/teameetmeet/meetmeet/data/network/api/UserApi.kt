@@ -1,7 +1,7 @@
 package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.UserProfile
-import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
 import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
@@ -26,7 +26,7 @@ interface UserApi {
     suspend fun checkNickNameDuplication(@Query("nickname") nickname: String): AvailableResponse
 
     @GET("user/search")
-    suspend fun getUserWithFollowStatus(@Query("nickname") nickname: String): UserWithFollowStatus
+    suspend fun getUserWithFollowStatus(@Query("nickname") nickname: String): UserStatus
 
     @PATCH("user/account")
     suspend fun patchPassword(@Body passwordChangeRequest: PasswordChangeRequest): UserProfile
