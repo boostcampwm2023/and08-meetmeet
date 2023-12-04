@@ -146,13 +146,11 @@ export class UserService {
   }
 
   async searchUser(user: User, nickname: string) {
-    const searchResult = await this.userRepository.findOne({
-      where: { nickname: nickname },
-    });
+    const searchResult = await this.findUserByNickname(nickname);
+
     if (!searchResult) {
       throw new BadRequestException('존재하지 않는 유저입니다.');
     }
-    // const followers = await this.fo
 
     return {
       id: searchResult.id,
@@ -175,5 +173,9 @@ export class UserService {
 
   async findUserByNickname(nickname: string) {
     return await this.userRepository.findOne({ where: { nickname: nickname } });
+  }
+
+  async registerFCMToken(user: User, token: string) {
+    await this.userRepository.update(user.id, { fcmToken: token });
   }
 }

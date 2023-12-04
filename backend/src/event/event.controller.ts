@@ -12,7 +12,6 @@ import {
   Post,
   Query,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -30,7 +29,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateScheduleDto } from './dto/createSchedule.dto';
 import { SearchEventDto } from './dto/searchEvent.dto';
 import { UpdateScheduleDto } from './dto/updateSchedule.dto';
-import { SlackInterceptor } from '../log/slack.interceptor';
 import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
@@ -38,7 +36,6 @@ import { EventStoryResponseDto } from './dto/event-story-response.dto';
 @ApiBearerAuth()
 @ApiTags('event')
 @Controller('event')
-@UseInterceptors(SlackInterceptor)
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
@@ -260,9 +257,9 @@ export class EventController {
     description: '',
   })
   @ApiQuery({
-    name: 'userId',
+    name: 'nickname',
     required: true,
-    example: 123,
+    example: 'nickname',
   })
   @ApiParam({
     name: 'eventId',
@@ -272,13 +269,13 @@ export class EventController {
   async searchUserEvents(
     @GetUser() user: User,
     @Param('eventId', ParseIntPipe) eventId: number,
-    @Query('userId', ParseIntPipe) userId: number,
+    @Query('nickname') nickname: string,
   ) {
-    return await this.eventService.searchUserEvents(user, userId, eventId);
+    return await this.eventService.searchUserEvents(user, nickname, eventId);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/schedule/invite/:eventId')
+  @Post('/schedule/invite')
   @ApiOperation({
     summary: '일정 초대 API',
     description: '',
@@ -305,14 +302,24 @@ export class EventController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/schedule/join/:eventId')
+  @Post('/schedule/join')
   @ApiOperation({
     summary: '일정 참여 API',
     description: '',
   })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        eventId: {
+          type: 'number',
+        },
+      },
+    },
+  })
   async cancelSchedule(
     @GetUser() user: User,
-    @Param('eventId', ParseIntPipe) eventId: number,
+    @Body('eventId', ParseIntPipe) eventId: number,
   ) {
     return await this.eventService.joinSchedule(user, eventId);
   }

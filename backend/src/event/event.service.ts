@@ -23,6 +23,7 @@ import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
 import { Detail } from '../detail/entities/detail.entity';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class EventService {
@@ -35,6 +36,7 @@ export class EventService {
     private detailService: DetailService,
     private eventMemberService: EventMemberService,
     private followService: FollowService,
+    private userService: UserService,
   ) {}
 
   async getEvents(user: User, startDate: string, endDate: string) {
@@ -225,20 +227,22 @@ export class EventService {
         authority,
       );
       return {
-        event: {
-          id: savedEventMembers.event.id,
-          startDate: savedEventMembers.event.startDate,
-          endDate: savedEventMembers.event.endDate,
-          title: savedEventMembers.event.title,
-          repeatPolicyId: savedEventMembers.event.repeatPolicyId,
-          isJoinable: savedEventMembers.event.isJoinable ? true : false,
-          announcement: savedEventMembers.event.announcement,
-          isVisible: savedEventMembers.detail.isVisible ? true : false,
-          memo: savedEventMembers.detail.memo,
-          color: savedEventMembers.detail.color,
-          alarmMinutes: savedEventMembers.detail.alarmMinutes,
-          authority: savedEventMembers.authority.displayName,
-        },
+        events: [
+          {
+            id: savedEventMembers.event.id,
+            startDate: savedEventMembers.event.startDate,
+            endDate: savedEventMembers.event.endDate,
+            title: savedEventMembers.event.title,
+            repeatPolicyId: savedEventMembers.event.repeatPolicyId,
+            isJoinable: savedEventMembers.event.isJoinable ? true : false,
+            announcement: savedEventMembers.event.announcement,
+            isVisible: savedEventMembers.detail.isVisible ? true : false,
+            memo: savedEventMembers.detail.memo,
+            color: savedEventMembers.detail.color,
+            alarmMinutes: savedEventMembers.detail.alarmMinutes,
+            authority: savedEventMembers.authority.displayName,
+          },
+        ],
       };
     }
   }
@@ -610,7 +614,6 @@ export class EventService {
         }
       }
     }
-    // Todo 업데이트 한거 줘야한다.
   }
 
   async updateEventAnnouncement(
@@ -853,7 +856,7 @@ export class EventService {
     const result: any[] = [];
     rawFollowings.forEach((follower) => {
       const eventMember = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === follower.id,
+        (eventMember) => eventMember.user.id === follower.user.id,
       );
       result.push({
         id: follower.follower.id,
@@ -879,19 +882,19 @@ export class EventService {
     const result: any[] = [];
     rawFollowers.forEach((follower) => {
       const eventMember = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === follower.id,
+        (eventMember) => eventMember.user.id === follower.user.id,
       );
       result.push({
-        id: follower.follower.id,
-        nickname: follower.follower.nickname,
-        profile: follower.follower.profile?.path ?? null,
+        id: follower.user.id,
+        nickname: follower.user.nickname,
+        profile: follower.user.profile?.path ?? null,
         isJoined: eventMember ? true : false,
       });
     });
     return { users: result };
   }
 
-  async searchUserEvents(user: User, userId: number, eventId: number) {
+  async searchUserEvents(user: User, nickname: string, eventId: number) {
     const event = await this.eventRepository.findOne({
       relations: ['eventMembers'],
       where: {
@@ -901,20 +904,26 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
-    const eventMember = event.eventMembers.find(
-      (eventMember) => eventMember.user.id === userId,
-    );
-    if (!eventMember) {
+
+    const findByNickname = await this.userService.findUserByNickname(nickname);
+    if (!findByNickname) {
+      throw new HttpException('유저가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+    if (findByNickname.id === user.id) {
       throw new HttpException(
-        '이벤트에 참여하지 않았습니다.',
-        HttpStatus.NOT_FOUND,
+        '자기 자신은 검색할 수 없습니다.',
+        HttpStatus.BAD_REQUEST,
       );
     }
 
+    const eventMember = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === findByNickname.id,
+    );
+
     return {
-      id: eventMember.user.id,
-      nickname: eventMember.user.nickname,
-      profile: eventMember.user.profile?.path ?? null,
+      id: findByNickname.id,
+      nickname: findByNickname.nickname,
+      profile: findByNickname.profile?.path ?? null,
       isJoined: eventMember ? true : false,
     };
   }
@@ -928,6 +937,22 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
+
+    if (user.id === userId) {
+      throw new HttpException(
+        '자기 자신을 초대할 수 없습니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    event.eventMembers.forEach((eventMember) => {
+      if (eventMember.user.id === userId) {
+        throw new HttpException(
+          '이미 참여한 유저입니다.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    });
 
     const detail = {
       isVisible: true,
@@ -962,6 +987,15 @@ export class EventService {
     if (!event) {
       throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
     }
+
+    event.eventMembers.forEach((eventMember) => {
+      if (eventMember.user.id === user.id) {
+        throw new HttpException(
+          '이미 참여한 유저입니다.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    });
 
     const detail = {
       isVisible: true,

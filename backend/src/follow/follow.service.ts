@@ -63,7 +63,7 @@ export class FollowService {
       const user = {
         id: follower.user.id,
         nickname: follower.user.nickname,
-        profile: follower.user.profileId,
+        profile: follower.user.profile?.path ?? null,
         isFollowed: followings.some(
           (following) => following.follower.id === follower.user.id,
         )
@@ -90,7 +90,8 @@ export class FollowService {
       const user = {
         id: following.follower.id,
         nickname: following.follower.nickname,
-        profile: following.follower.profileId,
+        profile: following.follower.profile?.path ?? null,
+        isFollowed: false,
       };
       result.push(user);
     });
@@ -160,8 +161,8 @@ export class FollowService {
   async isFollowed(user: User, userId: number) {
     const isFollowed = await this.followRepository.findOne({
       where: {
-        user: Equal(userId),
-        follower: Equal(user.id),
+        user: Equal(user.id),
+        follower: Equal(userId),
       },
     });
     return isFollowed ? true : false;

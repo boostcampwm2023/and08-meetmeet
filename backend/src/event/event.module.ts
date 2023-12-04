@@ -13,6 +13,7 @@ import { Authority } from '../event-member/entities/authority.entity';
 import { EventMemberService } from '../event-member/event-member.service';
 import { EventMember } from '../event-member/entities/eventMember.entity';
 import { FollowModule } from '../follow/follow.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FollowModule } from '../follow/follow.module';
     ]),
     CalendarModule,
     FollowModule,
+    UserModule,
   ],
   controllers: [EventController],
   providers: [EventService, CalendarService, DetailService, EventMemberService],
