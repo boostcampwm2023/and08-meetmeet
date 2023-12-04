@@ -10,7 +10,7 @@ data class UserStatus(
     @Json(name = "nickname")
     val nickname: String,
     @Json(name = "profile")
-    val profile: String,
+    val profile: String?,
     @Json(name = "isFollowed")
     val isFollowed: Boolean = true,
     @Json(name = "isJoined")

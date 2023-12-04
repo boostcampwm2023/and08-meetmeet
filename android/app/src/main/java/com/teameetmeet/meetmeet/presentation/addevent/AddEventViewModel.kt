@@ -60,15 +60,15 @@ class AddEventViewModel @Inject constructor(
                     _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
                         .plusMinutes(_uiState.value.startTime.minute.toLong())
                         .toLong(ZoneId.systemDefault())
-                        .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
+                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
                 val endDateTime =
                     _uiState.value.endDate.plusHours(_uiState.value.endTime.hour.toLong())
                         .plusMinutes(_uiState.value.endTime.minute.toLong())
                         .toLong(ZoneId.systemDefault())
-                        .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
+                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
                 val repeatEndDate = _uiState.value.eventRepeatEndDate.toLong(ZoneId.systemDefault())
-                    .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
+                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
                 with(_uiState.value) {
                     if (eventRepeat == EventRepeatTerm.NONE) {
