@@ -85,9 +85,15 @@ export class FeedService {
 
     await Promise.all(
       feed.comments.map(async (comment) => {
-        const author = await this.userService.getUserById(comment.authorId);
-        if (!author) throw new NotFoundException('Not Found Comment author');
-        comment.author = author;
+        const result = await this.commentService.getCommentWithAuthorAndTime(
+          comment.id,
+        );
+        if (!result) {
+          throw new NotFoundException(`Not found comment id=${comment.id}`);
+        }
+
+        comment.author = result.author;
+        comment.updatedAt = result.updatedAt;
       }),
     ).catch((err) => {
       throw err;
