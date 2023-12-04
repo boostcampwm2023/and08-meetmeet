@@ -14,6 +14,8 @@ import { GroupModule } from './group/group.module';
 import { FollowModule } from './follow/follow.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { ContentModule } from './content/content.module';
+import { FeedModule } from './feed/feed.module';
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { UserModule } from './user/user.module';
         synchronize: false,
         logging: true,
         namingStrategy: new SnakeNamingStrategy(),
+        charset: 'utf8mb4',
       }),
     }),
     CalendarModule,
@@ -44,6 +47,8 @@ import { UserModule } from './user/user.module';
     FollowModule,
     UserModule,
     AuthModule,
+    ContentModule,
+    FeedModule,
   ],
   controllers: [AppController],
   providers: [AppService],

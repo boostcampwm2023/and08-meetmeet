@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:name=".MeetMeetApp"
@@ -17,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.eventstory.EventStoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
@@ -30,8 +36,7 @@
             android:exported="false" />
         <activity
             android:name=".presentation.login.LoginActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"/>
         <activity
             android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
             android:exported="true">
@@ -48,10 +53,33 @@
         </activity>
         <activity
             android:name=".presentation.home.HomeActivity"
-            android:exported="true"/>
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".presentation.addevent.AddEventActivity" />
-        <activity android:name=".presentation.searchevent.SearchActivity" />
+        <activity android:name=".presentation.searchevent.SearchEventActivity" />
         <activity android:name=".presentation.setting.SettingActivity" />
+
+        <service
+            android:name="com.google.android.gms.metadata.ModuleDependencies"
+            android:enabled="false"
+            android:exported="false"
+            tools:ignore="MissingClass">
+            <intent-filter>
+                <action android:name="com.google.android.gms.metadata.MODULE_DEPENDENCIES" />
+            </intent-filter>
+            <meta-data
+                android:name="photopicker_activity:0:required"
+                android:value="" />
+        </service>
+
+        <receiver
+            android:name=".service.alarm.AlarmReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

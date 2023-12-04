@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="item"
             type="com.teameetmeet.meetmeet.presentation.model.CalendarItem" />
@@ -11,17 +12,42 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:layout_height="match_parent"
+        android:background="@{item.isSelected?@color/calendar_background_purple:@color/transparent}">
 
         <TextView
             android:id="@+id/item_calendar_tv_date"
             style="@style/caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{item.getDay()}"
+            android:textColor="@{item.date.dayOfWeek.value==7?@color/red:item.date.dayOfWeek.value==6?@color/blue:@color/black}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="@{item.getDay()}"
             tools:text="1" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/item_calendar_rv_events"
+            sub_list="@{item.eventBars}"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/item_calendar_tv_date"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_event_bar" />
+
+        <View
+            android:id="@+id/item_calendar_view_touch"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

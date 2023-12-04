@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">MeetMeetApp</string>
 
+    <string name="common_local_date_format">yyyy년 MM월 dd일</string>
+    <string name="common_local_time_format">%1s시 %2분</string>
+    <string name="common_local_date_time_format">yyyy년 MM월 dd일 HH:mm</string>
+    <string name="common_iso_date_format">yyyy-MM-dd</string>
+    <string name="common_iso_time_format">HH:mm</string>
+    <string name="common_iso_date_time_format">yyyy-MM-dd\'T\'HH:mm:ss.SSSXXX</string>
+    <string name="common_global_date_time_format">yyyy-MM-dd HH:mm:ss</string>
+
+    <string name="common_message_no_internet">인터넷을 연결하고 다시 시도해주세요.</string>
+    <string name="common_none"> </string>
+
     <string name="menu_save">저장</string>
     <string name="menu_calendar">캘린더</string>
     <string name="menu_follow">팔로우</string>
@@ -22,8 +33,13 @@
     <string name="add_event_err_start_time">시작 시간을 지정해 주세요.</string>
     <string name="add_event_err_end_time">종료 시간을 지정해 주세요.</string>
     <string name="add_event_err_event_name">일정 이름을 입력해 주세요.</string>
+    <string name="add_event_err_fail">일정 추가를 실패하였습니다.</string>
+    <string name="add_event_err_no_title">일정 이름을 정해주세요.</string>
+    <string name="add_event_err_date_time">시작 시간과 종료 시간을 다시 정해주세요.</string>
+    <string name="add_event_err_repeat_term">반복 주기는 일정 기간보다 길어야 합니다.</string>
 
     <string name="notification_none">알림 없음</string>
+    <string name="notification_on_time">정각</string>
     <string name="notification_ten_minutes_before">10분 전</string>
     <string name="notification_one_hour_before">1시간 전</string>
     <string name="notification_one_day_before">1일 전</string>
@@ -47,27 +63,44 @@
     <string name="login_kakao_login_button_description">kakao login button</string>
     <string name="login_kakao_message_no_user_data">유저 정보를 불러올 수 없습니다.</string>
     <string name="login_kakao_message_kakao_login_fail">카카오 로그인 실패.\n%s</string>
+    <string name="login_message_self_login_fail">로그인 실패</string>
+    <string name="login_message_sign_up_fail">회원가입 실패</string>
     <string name="login_app_login">로그인</string>
     <string name="login_app_sign_up">회원가입</string>
     <string name="login_app_password">비밀번호</string>
     <string name="login_app_email">이메일</string>
     <string name="login_app_password_confirm">비밀번호 확인</string>
     <string name="login_app_duplicate_check">중복확인</string>
+    <string name="login_app_duplicate_check_fail">중복확인 실패</string>
 
     <string name="search_event_title">일정 검색</string>
     <string name="search_event_hint">검색어를 입력하세요</string>
+    <string name="search_event_range_constraint_message">검색 구간은 6개월을 넘을 수 없습니다.</string>
+
     <string name="setting_account">계정 설정</string>
     <string name="setting_profile">프로필 설정</string>
     <string name="setting_alarm">알림 설정</string>
     <string name="setting_logout">로그아웃</string>
     <string name="setting_password_change">비밀번호 변경</string>
     <string name="setting_account_delete">계정 탈퇴</string>
+    <string name="setting_account_delete_approve">탈퇴</string>
+    <string name="setting_account_delete_cancel">취소</string>
+    <string name="setting_account_delete_title">정말로 탈퇴하시겠습니까?</string>
+    <string name="setting_account_delete_description">회원 탈퇴를 하신 후에 일주일간 회원님의 정보를 유지합니다.\n회원 탈퇴를 하시면 쌓아오신 추억들이 모두 사라집니다.\n탈퇴하시겠습니까?</string>
+    <string name="setting_account_delete_fail">계정 탈퇴 실패</string>
     <string name="setting_duplicate_check">중복확인</string>
     <string name="setting_complete">완료</string>
     <string name="setting_nickname">닉네임</string>
     <string name="setting_new_password">새 비밀번호</string>
     <string name="setting_password_confirm">비밀번호 확인</string>
     <string name="setting_push_alarm">푸시 알림</string>
+    <string name="setting_nickname_duplicate_check_complete">사용 가능한 닉네임</string>
+    <string name="setting_nickname_duplicate_check_invalid">중복된 닉네임 입니다</string>
+    <string name="setting_nickname_duplicate_check_fail">중복확인 실패</string>
+    <string name="setting_password_change_fail">비밀번호 변경 실패</string>
+    <string name="setting_profile_fail">프로필 변경 실패</string>
+    <string name="setting_profile_set_default">기본 이미지로 변경</string>
+    <string name="setting_profile_network_error">프로필 정보를 가져올 수 없습니다</string>
 
     <string name="sign_up_duplicate_check_complete">중복확인 완료</string>
     <string name="sign_up_duplicate_check_fail">중복된 이메일 입니다</string>
@@ -76,4 +109,104 @@
     <string name="sign_up_password_invalid">영문자, 숫자, 특수문자 !@#*를 포함한 9자 이상 14자 이하</string>
     <string name="sign_up_password_confirm_valid">비밀번호가 일치합니다</string>
     <string name="sign_up_password_confirm_invalid">비밀번호가 일치하지 않습니다</string>
+
+    <string name="follow_following">팔로잉</string>
+    <string name="follow_follower">팔로워</string>
+    <string name="follow_search_hint">닉네임을 입력하세요</string>
+    <string name="follow_title_follow">팔로우</string>
+    <string name="follow_title_unfollow">언팔로우</string>
+    <string name="follow_search_fail">회원 검색 실패</string>
+    <string name="follow_search_following_fail">팔로잉 정보를 가져올 수 없습니다</string>
+    <string name="follow_search_follower_fail">팔로워 정보를 가져올 수 없습니다</string>
+    <string name="follow_follow_fail">팔로우 실패</string>
+    <string name="follow_unfollow_fail">언팔로우 실패</string>
+
+    <string name="event_story_menu_title_see_more">더보기</string>
+    <string name="event_story_title_event_time">일정 시간</string>
+    <string name="event_story_title_event_members">일정 멤버</string>
+    <string name="event_story_title_event_notification">일정 공지</string>
+    <string name="event_story_message_event_story_fail">스토리를 불러올 수 없습니다.\n%s</string>
+    <string name="event_story_event_date">%1s - %2s</string>
+    <string name="event_story_invite_fail">일정 초대 실패</string>
+    <string name="event_story_invite">초대</string>
+    <string name="event_story_participating">참여중</string>
+
+    <string name="create_feed_text_hint">텍스트를 입력하세요</string>
+    <string name="create_feed_media_constraint_volume">미디어를 50MB 초과로 업로드 할 수 없습니다.</string>
+    <string name="create_feed_constraint_amount">미디어를 10개 초과로 업로드 할 수 없습니다.</string>
+    <string name="create_feed_fail_message">피드 생성을 실패하였습니다.</string>
+    <string name="create_feed_no_contents_message">피드 내용을 추가해주세요</string>
+
+    <string name="event_story_description_loading_image">loading_image</string>
+    <string name="notification_change_title">공지 작성</string>
+    <string name="dialog_notification_change_cancel">취소</string>
+    <string name="dialog_notification_change_save">저장</string>
+    <string name="event_story_message_edit_noti_fail">일정 공지 수정에 실패했습니다.\n%s</string>
+    <string name="story_detail_event_name">일정 이름</string>
+    <string name="story_detail_event_time">일정 시간</string>
+    <string name="story_detail_event_alarm">일정 알림</string>
+    <string name="story_detail_event_color">일정 색</string>
+    <string name="story_detail_event_repeat">일정 반복</string>
+    <string name="story_detail_event_memo">일정 메모</string>
+    <string name="story_detail_public">공개 여부</string>
+    <string name="story_detail_joinable">참가 여부</string>
+    <string name="story_detail_date_not_decided">미정</string>
+    <string name="story_detail_remove_event">일정 삭제하기</string>
+    <string name="story_detail_title_start_date">시작 시간</string>
+    <string name="story_detail_tv_title_end_date">종료 시간</string>
+    <string name="story_detail_description_start_date">시작 날짜 지정</string>
+    <string name="story_detail_description_end_date">종료 날짜 지정</string>
+    <string name="story_deatil_description_start_time">시작 시간 지정</string>
+    <string name="story_detail_description_end_time">종료 시간 지정</string>
+    <string name="story_detail_message_time_pick_start_time_fail">시작 시간이 종료 시간 보다 뒤로 설정할 수 없습니다.</string>
+    <string name="story_detail_message_time_pick_end_time_fail">종료 시간이 시작 시간 보다 앞으로 설정할 수 없습니다.</string>
+    <string name="story_detail_message_story_detail_fetch_fail">일정 세부 정보를 가져올 수 없습니다.\n%s</string>
+    <string name="story_detail_message_event_story_delete_fail">일정 삭제에 실패했습니다.\n%s</string>
+    <string name="story_detail_event_repeat_fequency">반복 주기</string>
+    <string name="story_detail_title_event_repeat_end_date">반복 종료일</string>
+    <string name="story_detail_message_repeat_end_date_fail">반복 일정 종료일이 일정 종료 시간보다 빠르게 설정될 수 없습니다.</string>
+    <string name="story_detail_description_event_repeat_end_date">일정 종료 날짜 지정</string>
+    <string name="story_detail_delete_event_dialog_title">반복 일정 삭제 안내</string>
+    <string name="story_detail_delete_event_dialog_message">반복 일정을 전체 삭제 하시면 이후의 반복 일정이 모두 삭제됩니다.\n 이 일정만 삭제하시면 이후의 반복 일정은 남아있고 이 일정만 삭제됩니다.</string>
+    <string name="story_detail_delete_event_dialog_description_delete_all">전체 삭제</string>
+    <string name="story_detail_delete_event_dialog_description_delete_one">현재 일정만 삭제</string>
+    <string name="story_detail_delete_event_dialog_description_delete_cancel">취소</string>
+    <string name="story_detail_delete_event_confirm_dialog_title">일정 삭제</string>
+    <string name="story_detail_delete_event_confirm_dialog_message">정말 일정을 삭제하시겠습니까??\n 관련된 피드까지 모두 삭제가 됩니다.</string>
+    <string name="story_detail_delete_event_confirm_dialog_description_delete">삭제</string>
+    <string name="story_detail_edit_event_dialog_title">반복 일정 수정 안내</string>
+    <string name="story_detail_edit_event_dialog_message">반복 일정을 전체 수정 하시면 이후의 반복 일정이 모두 수정됩니다.\n 이 일정만 수정하시면 이후의 반복 일정은 남아있고 이 일정만 수정됩니다.</string>
+    <string name="story_detail_edit_event_dialog_description_delete_all">전체 수정</string>
+    <string name="story_detail_edit_event_dialog_description_delete_one">현재 일정만 수정</string>
+    <string name="story_detail_message_time_pick_end_time_fail_after_repeat_end">종료 시간이 반복 일정 종료 시간보다 늦게 설정할 수 없습니다.</string>
+    <string name="story_detail_success_edit_event">수정이 완료되었습니다.</string>
+    <string name="story_detail_message_edit_message_fail">이벤트 수정 실패\n%s</string>
+    <string name="story_detail_message_no_repeat_frequency">반복 주기를 설정해주세요.</string>
+
+    <string name="notification_title_event_notification">일정 알림</string>
+    <string name="notification_channel_description_event">일정에 대한 알림을 받을 수 있는 알림 채널입니다.</string>
+    <string name="alarm_description_alarm_minutes">일정 시작 %s 입니다.</string>
+    <string name="alarm_notification_message_on_time">일정이 지금 시작됩니다!!</string>
+    <string name="alarm_notification_message_before_10_minutes">일정 시작 10분 전이에요!! 서두르세요~</string>
+    <string name="alarm_notification_message_before_1_hour">일정 시작 1시간 전이네요~! 슬슬 준비하셔야겠어요!!</string>
+    <string name="alarm_notification_message_before_1_day">일정 시작 하루 전이에요! 마음의 준비는 되셨나요??</string>
+    <string name="alarm_notification_message_before_1_week">일정 시작 일주일 전이에요!!</string>
+    <string name="alarm_notification_message_unknown">일정 알림이 왔어요~ 앱에 들어가서 일정을 확인해보세요!</string>
+    <string name="event_story_message_join_event_fail">일정 참여에 실패하셨습니다.\n%s</string>
+    <string name="event_story_message_join_event_success">일정 참여 완료!!</string>
+
+    <string name="story_detail_title_tool_bar">일정 상세</string>
+    <string name="event_member_title_app_bar">일정 멤버</string>
+    <string name="event_member_follow">팔로우</string>
+    <string name="event_member_unfollow">언팔로우</string>
+    <string name="notification_tab_follow">팔로우</string>
+    <string name="notification_tab_invite_event">일정 초대</string>
+    <string name="notification_tab_invite_group">그룹 초대</string>
+    <string name="notification_follow_message">%s님이 팔로우하였습니다.</string>
+    <string name="notification_event_message">%1s님이 %s에 회원님을 초대하였습니다.</string>
+
+    <string name="feed_detail_comment_hint">댓글을 입력하세요</string>
+    <string name="feed_detail_comment_amount">댓글 %d회</string>
+    <string name="feed_detail_media_count">%d/%d</string>
+
 </resources>

@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.data.datasource
 
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
+import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -11,8 +12,12 @@ import javax.inject.Inject
 class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi) {
     fun getEvents(startDate: String, endDate: String): Flow<List<EventResponse>> {
         return flowOf(true)
-            .map { api.getEvents(startDate, endDate) }
+            .map {
+                val result = api.getEvents(startDate, endDate).events
+                result
+            }
             .catch {
+                throw it
                 //todo: 예외 처리
             }
     }
@@ -23,9 +28,28 @@ class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi)
         endDate: String
     ): Flow<List<EventResponse>> {
         return flowOf(true)
-            .map { api.getEvents(startDate, endDate) }
+            .map { api.searchEvents(keyword, startDate, endDate).events }
             .catch {
+                throw it
                 //todo: 예외 처리
+            }
+    }
+
+    fun addSingleEvent(addEventRequest: AddEventRequest): Flow<EventResponse> {
+        return flowOf(true)
+            .map {
+                api.addSingleEvent(addEventRequest).event
+            }.catch {
+                throw it
+            }
+    }
+
+    fun addRepeatEvent(addEventRequest: AddEventRequest): Flow<List<EventResponse>> {
+        return flowOf(true)
+            .map {
+                api.addRepeatEvent(addEventRequest).events
+            }.catch {
+                throw it
             }
     }
 }

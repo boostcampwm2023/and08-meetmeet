@@ -1,118 +1,250 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
 import android.widget.RadioGroup
-import androidx.core.util.Pair
 import androidx.lifecycle.ViewModel
-import com.google.android.material.datepicker.MaterialDatePicker
+import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.network.entity.EventResponse
+import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
 import com.teameetmeet.meetmeet.presentation.model.EventTime
+import com.teameetmeet.meetmeet.service.alarm.AlarmHelper
+import com.teameetmeet.meetmeet.service.alarm.model.EventAlarm
+import com.teameetmeet.meetmeet.util.date.DateTimeFormat
+import com.teameetmeet.meetmeet.util.date.toDateString
+import com.teameetmeet.meetmeet.util.date.toLocalDateTime
+import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 
 @HiltViewModel
-class AddEventViewModel @Inject constructor() : ViewModel() {
+class AddEventViewModel @Inject constructor(
+    private val calendarRepository: CalendarRepository,
+    private val alarmHelper: AlarmHelper
+) : ViewModel() {
 
-    private val _eventName: MutableStateFlow<String> = MutableStateFlow("")
+    companion object {
+        const val MAX_ALARM_COUNT = 2
+    }
 
-    private val _eventDate: MutableStateFlow<Pair<Long, Long>> = MutableStateFlow(
-        Pair(
-            MaterialDatePicker.todayInUtcMilliseconds(),
-            MaterialDatePicker.todayInUtcMilliseconds()
-        )
+    private val _uiState = MutableStateFlow(AddEventUiState())
+    val uiState: StateFlow<AddEventUiState> = _uiState
+
+    private val _event = MutableSharedFlow<AddEventUiEvent>(
+        extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val eventDate: StateFlow<Pair<Long, Long>> = _eventDate
+    val event: SharedFlow<AddEventUiEvent> = _event
 
-    private val _eventStartTime: MutableStateFlow<EventTime> = MutableStateFlow(
-        EventTime(0, 0)
-    )
-    val eventStartTime: StateFlow<EventTime> = _eventStartTime
+    private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
 
-    private val _eventEndTime: MutableStateFlow<EventTime> = MutableStateFlow(
-        EventTime(11, 59)
-    )
-    val eventEndTime: StateFlow<EventTime> = _eventEndTime
+    fun eventSave() {
+        viewModelScope.launch {
+            _showPlaceholder.update { true }
+            if (checkEvent()) {
+                val startDateTime =
+                    _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
+                        .plusMinutes(_uiState.value.startTime.minute.toLong())
+                        .toLong(ZoneId.systemDefault())
+                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+                val endDateTime =
+                    _uiState.value.endDate.plusHours(_uiState.value.endTime.hour.toLong())
+                        .plusMinutes(_uiState.value.endTime.minute.toLong())
+                        .toLong(ZoneId.systemDefault())
+                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
-    private val _eventNotification: MutableStateFlow<EventNotification> =
-        MutableStateFlow(EventNotification.NONE)
-    val eventNotification: StateFlow<EventNotification> = _eventNotification
+                val repeatEndDate = _uiState.value.eventRepeatEndDate.toLong(ZoneId.systemDefault())
+                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
-    private val _eventColor: MutableStateFlow<EventColor> =
-        MutableStateFlow(EventColor.RED)
-    val eventColor: StateFlow<EventColor> = _eventColor
-
-    private val _eventRepeatTerm: MutableStateFlow<EventRepeatTerm> =
-        MutableStateFlow(EventRepeatTerm.NONE)
-    val eventRepeatTerm: StateFlow<EventRepeatTerm> = _eventRepeatTerm
-
-    private val _eventMemo: MutableStateFlow<String> = MutableStateFlow("")
-
-    private val _isVisible: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val isVisible: StateFlow<Boolean> = _isVisible
-
-    private val _isJoin: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val isJoin: StateFlow<Boolean> = _isJoin
-
-    fun setEventName(name: CharSequence?) {
-        _eventName.update { name.toString() }
+                with(_uiState.value) {
+                    if (eventRepeat == EventRepeatTerm.NONE) {
+                        calendarRepository.addSingleEvent(
+                            title = eventName,
+                            startDate = startDateTime,
+                            endDate = endDateTime,
+                            isJoinable = isJoinable,
+                            isVisible = isOpen,
+                            memo = memo,
+                            repeatTerm = eventRepeat.value,
+                            repeatFrequency = eventRepeatFrequency,
+                            repeatEndDate = repeatEndDate,
+                            color = color,
+                            alarm = alarm,
+                        ).catch {
+                            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                            _showPlaceholder.update { false }
+                        }.collectLatest { event ->
+                            setAlarm(event)
+                        }
+                    } else {
+                        calendarRepository.addRepeatEvent(
+                            title = eventName,
+                            startDate = startDateTime,
+                            endDate = endDateTime,
+                            isJoinable = isJoinable,
+                            isVisible = isOpen,
+                            memo = memo,
+                            repeatTerm = eventRepeat.value,
+                            repeatFrequency = eventRepeatFrequency,
+                            repeatEndDate = repeatEndDate,
+                            color = color,
+                            alarm = alarm,
+                        ).catch {
+                            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                            _showPlaceholder.update { false }
+                        }.collectLatest { events ->
+                            events.take(MAX_ALARM_COUNT).forEach { event ->
+                                setAlarm(event)
+                            }
+                        }
+                    }
+                    _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                    _showPlaceholder.update { false }
+                }
+            }
+        }
     }
 
-    fun setEventDate(start: Long, end: Long) {
-        _eventDate.update { Pair(start, end) }
+    private fun AddEventUiState.setAlarm(event: EventResponse) {
+        val currentTime = LocalDateTime.now().toLong()
+        val triggerTime =
+            event.startDate.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
+                ?.minusMinutes(alarm.minutes.toLong())?.toLong()
+        if (triggerTime != null && currentTime <= triggerTime && alarm != EventNotification.NONE) {
+            alarmHelper.registerEventAlarm(
+                EventAlarm(
+                    event.id,
+                    triggerTime,
+                    alarm.minutes,
+                    eventName
+                )
+            )
+        }
     }
 
-    fun setEventStartTime(hour: Int, minute: Int) {
-        _eventStartTime.update { it.copy(hour = hour, minute = minute) }
+    private suspend fun checkEvent(): Boolean {
+        val startDateTime =
+            _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
+                .plusMinutes(_uiState.value.startTime.minute.toLong())
+        val endDateTime = _uiState.value.endDate.plusHours(_uiState.value.endTime.hour.toLong())
+            .plusMinutes(_uiState.value.endTime.minute.toLong())
+        if (_uiState.value.eventName.isEmpty()) {
+            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_no_title))
+            return false
+        } else if (startDateTime.isAfter(endDateTime)) {
+            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_date_time))
+            return false
+        } else if (_uiState.value.eventRepeat != EventRepeatTerm.NONE && _uiState.value.eventRepeat.days * _uiState.value.eventRepeatFrequency < ChronoUnit.DAYS.between(
+                startDateTime, endDateTime
+            ) + 1
+        ) {
+            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_repeat_term))
+            return false
+        }
+        return true
     }
 
-    fun setEventEndTime(hour: Int, minute: Int) {
-        _eventEndTime.update { it.copy(hour = hour, minute = minute) }
+    fun setEventName(name: CharSequence) {
+        _uiState.update {
+            it.copy(eventName = name.toString())
+        }
     }
 
-    fun setEventNotification(notification: EventNotification) {
-        _eventNotification.update { notification }
+    fun setEventDate(startDate: LocalDateTime, endDate: LocalDateTime) {
+        if (!endDate.isBefore(_uiState.value.eventRepeatEndDate)) {
+            _uiState.update {
+                it.copy(
+                    startDate = startDate,
+                    endDate = endDate,
+                    eventRepeatEndDate = endDate.plusYears(1)
+                )
+            }
+        } else {
+            _uiState.update {
+                it.copy(
+                    startDate = startDate,
+                    endDate = endDate,
+                )
+            }
+        }
+
     }
+
+    fun setEventMemo(memo: CharSequence) {
+        _uiState.update {
+            it.copy(memo = memo.toString())
+        }
+    }
+
+    fun setEventOpen(isChecked: Boolean) {
+        _uiState.update {
+            it.copy(isOpen = isChecked)
+        }
+    }
+
+    fun setEventJoinable(isChecked: Boolean) {
+        _uiState.update {
+            it.copy(isJoinable = isChecked)
+        }
+    }
+
+    fun setEventAlarm(index: Int) {
+        _uiState.update {
+            it.copy(alarm = EventNotification.values()[index])
+        }
+    }
+
+    fun setEventRepeat(index: Int) {
+        _uiState.update {
+            it.copy(eventRepeat = EventRepeatTerm.values()[index])
+        }
+    }
+
+    fun setEventRepeatFrequency(frequency: String) {
+        _uiState.update {
+            it.copy(eventRepeatFrequency = frequency.toInt())
+        }
+    }
+
+    fun setRepeatEndDate(repeatEndDate: LocalDateTime) {
+        if (!repeatEndDate.isBefore(_uiState.value.endDate)) {
+            _uiState.update {
+                it.copy(eventRepeatEndDate = repeatEndDate)
+            }
+        }
+    }
+
+    fun setEventStartTime(hour: Int, min: Int) {
+        _uiState.update {
+            it.copy(startTime = EventTime(hour, min), endTime = EventTime(hour, min))
+        }
+    }
+
+    fun setEventEndTime(hour: Int, min: Int) {
+        _uiState.update {
+            it.copy(endTime = EventTime(hour, min))
+        }
+    }
+
 
     fun setEventColor(radioGroup: RadioGroup, id: Int) {
         val index = radioGroup.indexOfChild(radioGroup.findViewById(id))
-        _eventColor.update { EventColor.values()[index] }
-    }
-
-    fun setEventRepeatTerm(repeatTerm: EventRepeatTerm) {
-        _eventRepeatTerm.update { repeatTerm }
-    }
-
-    fun setEventMemo(memo: CharSequence?) {
-        _eventMemo.update { memo.toString() }
-    }
-
-    fun setVisibleState(isChecked: Boolean) {
-        _isVisible.update { isChecked }
-    }
-
-    fun setJoinState(isChecked: Boolean) {
-        _isJoin.update { isChecked }
-    }
-
-    fun eventSave() {
-        // 일정 추가 저장 api 호출
-        println(
-            """
-            eventName : ${_eventName.value}
-            eventDate : ${_eventDate.value}
-            eventStartTime : ${_eventStartTime.value}
-            eventEndTime : ${_eventEndTime.value}
-            eventNoti : ${_eventNotification.value}
-            eventColor : ${_eventColor.value}
-            eventRepeatTerm : ${_eventRepeatTerm.value}
-            eventMemo : ${_eventMemo.value}
-            isVisible : ${_isVisible.value}
-            isJoin : ${_isJoin.value}
-        """.trimIndent()
-        )
+        _uiState.update {
+            it.copy(color = EventColor.values()[index])
+        }
     }
 }

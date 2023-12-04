@@ -1,15 +1,15 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.core.util.Pair
+import androidx.core.widget.doAfterTextChanged
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.navArgs
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.teameetmeet.meetmeet.R
@@ -17,23 +17,36 @@ import com.teameetmeet.meetmeet.databinding.ActivityAddEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
+import com.teameetmeet.meetmeet.util.date.toLocalDateTime
+import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneId
 
 @AndroidEntryPoint
 class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity_add_event) {
 
     private val viewModel: AddEventViewModel by viewModels()
 
+    private val args: AddEventActivityArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding.vm = viewModel
 
+        initDateTime(args.date)
         setTopAppBar()
-        setDatePicker()
-        setTimePicker()
+        setDateTimePicker()
         setNotificationOptions()
-        setRepeatTermOptions()
+        setRepeatOptions()
+        collectViewModelEvent()
+    }
+
+    private fun initDateTime(date: LocalDate) {
+        viewModel.setEventDate(date.atStartOfDay(), date.atStartOfDay())
+        viewModel.setRepeatEndDate(date.atStartOfDay().plusYears(1))
     }
 
     private fun setTopAppBar() {
@@ -54,132 +67,117 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setDatePicker() {
-        val datePicker =
-            MaterialDatePicker.Builder.dateRangePicker()
-                .setTitleText(getString(R.string.add_event_title))
-                .setSelection(
-                    viewModel.eventDate.value
-                ).build()
+    private fun collectViewModelEvent() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collect { event ->
+                    when (event) {
+                        is AddEventUiEvent.ShowMessage -> showMessage(
+                            event.messageId,
+                            event.extraMessage
+                        )
 
-        datePicker.addOnPositiveButtonClickListener {
-            viewModel.setEventDate(it.first, it.second)
-        }
-
-        binding.etEventStartDate.setOnTouchListener { _, e ->
-            if (e.action == MotionEvent.ACTION_UP) {
-                datePicker.show(supportFragmentManager, "DatePicker")
+                        is AddEventUiEvent.FinishAddEventActivity -> {
+                            finish()
+                        }
+                    }
+                }
             }
-            true
-        }
-        binding.etEventEndDate.setOnTouchListener { _, e ->
-            if (e.action == MotionEvent.ACTION_UP) {
-                datePicker.show(supportFragmentManager, "DatePicker")
-            }
-            true
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setTimePicker() {
+    private fun setRepeatOptions() {
+        val items = EventRepeatTerm.entries.map { getString(it.stringResId) }.toTypedArray()
+        (binding.addEventTilEventRepeat.editText as? MaterialAutoCompleteTextView)?.setText(items.first())
+        (binding.addEventTilEventRepeat.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(
+            items
+        )
+        binding.addEventEtEventRepeat.setOnItemClickListener { _, _, index, _ ->
+            viewModel.setEventRepeat(index)
+        }
+
+        val frequencyItems = arrayOf("1", "2", "3", "4", "5", "6")
+        (binding.addEventTilEventRepeatFrequency.editText as? MaterialAutoCompleteTextView)?.setText(
+            frequencyItems.first()
+        )
+        (binding.addEventTilEventRepeatFrequency.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(
+            frequencyItems
+        )
+        binding.addEventEtEventRepeatFrequency.doAfterTextChanged {
+            viewModel.setEventRepeatFrequency(it.toString())
+        }
+    }
+
+    private fun setNotificationOptions() {
+        val items = EventNotification.entries.map { getString(it.stringResId) }.toTypedArray()
+        (binding.addEventTilEventAlarm.editText as? MaterialAutoCompleteTextView)?.setText(items.first())
+        (binding.addEventTilEventAlarm.editText as? MaterialAutoCompleteTextView)?.setSimpleItems(
+            items
+        )
+        binding.addEventEtEventAlarm.setOnItemClickListener { _, _, index, _ ->
+            viewModel.setEventAlarm(index)
+        }
+    }
+
+    private fun setDateTimePicker() {
+        val dateRangePicker =
+            MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText(getString(R.string.add_event_title))
+                .setSelection(
+                    Pair(
+                        viewModel.uiState.value.startDate.toLong(ZoneId.of("UTC")),
+                        viewModel.uiState.value.endDate.toLong(ZoneId.of("UTC"))
+                    )
+                ).build()
+
+        dateRangePicker.addOnPositiveButtonClickListener {
+            viewModel.setEventDate(
+                it.first.toLocalDateTime(ZoneId.of("UTC")),
+                it.second.toLocalDateTime(ZoneId.of("UTC"))
+            )
+        }
+
+        binding.addEventTvValueStartDate.setOnClickListener {
+            dateRangePicker.show(supportFragmentManager, "DateRangePicker")
+        }
+        binding.addEventTvValueEndDate.setOnClickListener {
+            dateRangePicker.show(supportFragmentManager, "DateRangePicker")
+        }
+        binding.eventStoryTvValueEventRepeatEndDate.setOnClickListener {
+            val datePicker = MaterialDatePicker.Builder.datePicker()
+                .setTitleText(getString(R.string.story_detail_description_event_repeat_end_date))
+                .build()
+
+            datePicker.addOnPositiveButtonClickListener {
+                viewModel.setRepeatEndDate(it.toLocalDateTime(ZoneId.of("UTC")))
+            }
+            datePicker.show(supportFragmentManager, "DatePicker")
+        }
+
         val startTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
-            .setHour(viewModel.eventStartTime.value.hour)
-            .setMinute(viewModel.eventStartTime.value.minute)
+            .setHour(viewModel.uiState.value.startTime.hour)
+            .setMinute(viewModel.uiState.value.startTime.minute)
             .setTitleText(getString(R.string.add_event_err_start_time))
             .build()
-
-        val endTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
-            .setHour(viewModel.eventEndTime.value.hour)
-            .setMinute(viewModel.eventEndTime.value.minute)
-            .setTitleText(getString(R.string.add_event_err_end_time)).build()
-
-        binding.etEventStartTime.setOnTouchListener { _, e ->
-            if (e.action == MotionEvent.ACTION_UP) {
-                startTimePicker.show(supportFragmentManager, "StartTimePicker")
-            }
-            true
-        }
 
         startTimePicker.addOnPositiveButtonClickListener {
             viewModel.setEventStartTime(startTimePicker.hour, startTimePicker.minute)
         }
 
-        binding.etEventEndTime.setOnTouchListener { _, e ->
-            if (e.action == MotionEvent.ACTION_UP) {
-                endTimePicker.show(supportFragmentManager, "EndTimePicker")
-            }
-            true
-        }
+        val endTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
+            .setHour(viewModel.uiState.value.endTime.hour)
+            .setMinute(viewModel.uiState.value.endTime.minute)
+            .setTitleText(getString(R.string.add_event_err_end_time)).build()
 
         endTimePicker.addOnPositiveButtonClickListener {
             viewModel.setEventEndTime(endTimePicker.hour, endTimePicker.minute)
         }
-    }
 
-    private fun setNotificationOptions() {
-        val notificationOptions = EventNotification.values()
-        val adapter = object : ArrayAdapter<EventNotification>(
-            this, R.layout.item_text_field, notificationOptions
-        ) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getView(position, convertView, parent)
-                getItem(position)?.let {
-                    (view as TextView).text = getString(it.stringResId)
-                }
-                return view
-            }
+        binding.addEventTvValueStartTime.setOnClickListener {
+            startTimePicker.show(supportFragmentManager, "StartTimePicker")
         }
-
-        (binding.tfEventAlarm.editText as AutoCompleteTextView).setText(
-            getString(viewModel.eventNotification.value.stringResId), false
-        )
-
-        (binding.tfEventAlarm.editText as AutoCompleteTextView).let { tv ->
-            tv.setAdapter(adapter)
-            adapter.setDropDownViewResource(R.layout.item_text_field)
-
-            tv.setOnItemClickListener { _, _, position, _ ->
-                val selectedNotification = adapter.getItem(position)
-                selectedNotification?.let {
-                    viewModel.setEventNotification(it)
-                    val selectedNotificationText = getString(it.stringResId)
-                    tv.setText(selectedNotificationText, false)
-                }
-            }
-        }
-    }
-
-    private fun setRepeatTermOptions() {
-        val repeatTermOptions = EventRepeatTerm.values()
-        val adapter = object : ArrayAdapter<EventRepeatTerm>(
-            this, R.layout.item_text_field, repeatTermOptions
-        ) {
-            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-                val view = super.getView(position, convertView, parent)
-                getItem(position)?.let {
-                    (view as TextView).text = getString(it.stringResId)
-                }
-                return view
-            }
-        }
-
-        (binding.tfEventRepeat.editText as AutoCompleteTextView).setText(
-            getString(viewModel.eventRepeatTerm.value.stringResId), false
-        )
-
-        (binding.tfEventRepeat.editText as AutoCompleteTextView).let { tv ->
-            tv.setAdapter(adapter)
-            adapter.setDropDownViewResource(R.layout.item_text_field)
-
-            tv.setOnItemClickListener { _, _, position, _ ->
-                val selectedRepeatOption = adapter.getItem(position)
-                selectedRepeatOption?.let {
-                    viewModel.setEventRepeatTerm(it)
-                    val selectedNotificationText = getString(it.stringResId)
-                    tv.setText(selectedNotificationText, false)
-                }
-            }
+        binding.addEventTvValueEndTime.setOnClickListener {
+            endTimePicker.show(supportFragmentManager, "EndTimePicker")
         }
     }
 }

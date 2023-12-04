@@ -14,17 +14,26 @@ interface EventDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(event: Event)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertEvents(vararg events: Event)
+
     @Update
     suspend fun update(event: Event)
 
     @Delete
     suspend fun delete(event: Event)
 
-    @Query("SELECT * FROM Event WHERE id = :id")
-    suspend fun get(id: Int): Event
+    @Query("DELETE FROM Event")
+    suspend fun deleteAll()
 
-    @Query("SELECT * FROM Event WHERE endDateTime > :startDateTime AND startDateTime < :endDateTime")
-    fun getEvents(startDateTime: Long, endDateTime: Long): Flow<List<Event>>
+    @Query("DELETE FROM Event WHERE endDateTime >= :startDateTime AND startDateTime <= :endDateTime")
+    suspend fun deleteEvents(startDateTime: Long, endDateTime: Long)
+
+    @Query("SELECT * FROM Event WHERE id = :id")
+    fun get(id: Int): Flow<Event>
+
+    @Query("SELECT * FROM Event WHERE endDateTime >= :startDateTime AND startDateTime <= :endDateTime")
+    suspend fun getEvents(startDateTime: Long, endDateTime: Long): List<Event>
 
     @Query("UPDATE Event SET title = :title WHERE id = :id ")
     suspend fun updateTitle(id: Int, title: String)

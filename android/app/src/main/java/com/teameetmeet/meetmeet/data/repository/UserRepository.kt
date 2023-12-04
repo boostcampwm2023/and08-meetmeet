@@ -1,19 +1,23 @@
 package com.teameetmeet.meetmeet.data.repository
 
-import android.util.Log
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import com.teameetmeet.meetmeet.data.NoDataException
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
+import com.teameetmeet.meetmeet.data.model.UserProfile
+import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.api.UserApi
-import com.teameetmeet.meetmeet.data.network.entity.UserProfile
+import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
+import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
+import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.io.File
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
@@ -23,8 +27,7 @@ class UserRepository @Inject constructor(
     fun getUserProfile(): Flow<UserProfile> {
         return flowOf(true)
             .map {
-                val token = dataStore.getAppToken().first() ?: throw NoDataException()
-                userApi.getUserProfile(token)
+                userApi.getUserProfile()
             }.onEach {
                 fetchUserProfile(it)
             }.catch {
@@ -32,7 +35,7 @@ class UserRepository @Inject constructor(
             }
     }
 
-    fun getToken() : Flow<String?> {
+    fun getToken(): Flow<String?> {
         return dataStore.getAppToken()
             .catch {
                 throw it
@@ -47,45 +50,96 @@ class UserRepository @Inject constructor(
         }
     }
 
+    suspend fun getUserWithFollowStatus(nickname: String): Flow<UserStatus> {
+        val userNickname = dataStore.getUserProfile().first().nickname
+        return flowOf(true)
+            .map {
+                val user = userApi.getUserWithFollowStatus(nickname)
+                if(user.nickname == userNickname) {
+                    user.copy(isMe = true)
+                } else {
+                    user
+                }
+            }.catch {
+                throw it.toException()
+            }
+    }
+
+
     private suspend fun fetchUserProfile(userProfile: UserProfile) {
         dataStore.fetchUserProfile(userProfile)
     }
 
-    fun login(email: String, password: String): Flow<Boolean> = flow {
-
-        // todo API 호출, DataStore 저장
-
-        dataStore.storeAppToken(email, password)
-        emit(true)
-    }
-
-    fun logout(): Flow<Unit> {
+    fun resetDataStore(): Flow<Unit> {
         return flowOf(true)
             .map {
-                val token = dataStore.getAppToken().first() ?: throw NoDataException()
-                userApi.logout(token)
+                dataStore.resetAlarmState()
                 dataStore.deleteUserProfile()
                 dataStore.deleteAppToken()
             }.catch {
                 throw it
-                //TODO("예외 처리 필요")
             }
 
     }
 
-    fun signUp(email: String, password: String): Flow<Boolean> = flow {
-        // todo API 호출, DataStore 저장
-
-        dataStore.storeAppToken(email, password)
-        emit(true)
+    fun deleteUser(): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.deleteUser()
+                dataStore.deleteUserProfile()
+                dataStore.deleteAppToken()
+            }.catch {
+                throw it
+            }
     }
 
-    fun checkEmailDuplicate(email: String): Flow<Unit> = flowOf(true)
-        .map {
+    fun checkNickNameDuplication(nickname: String): Flow<Boolean> {
+        return flowOf(true)
+            .map {
+                val response = userApi.checkNickNameDuplication(nickname)
+                response.isAvailable
+            }.catch {
+                throw it
+            }
+    }
 
-        }.catch {
-            throw Exception()
-        }
+    fun patchPassword(password: String): Flow<UserProfile> {
+        return flowOf(true)
+            .map {
+                userApi.patchPassword(PasswordChangeRequest(password))
+            }.catch {
+                throw it
+            }
+    }
 
+    fun patchNickname(nickname: String): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.patchNickname(NicknameChangeRequest(nickname))
+            }.catch {
+                throw it
+            }
+    }
 
+    fun patchProfileImage(image: File?): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                val profileImageRequest = if (image == null) {
+                    MultipartBody.Part.createFormData(
+                        "profile",
+                        "",
+                        "".toRequestBody("text/plain".toMediaType())
+                    )
+                } else {
+                    MultipartBody.Part.createFormData(
+                        "profile",
+                        image.name,
+                        image.asRequestBody()
+                    )
+                }
+                userApi.updateProfileImage(profileImageRequest)
+            }.catch {
+                throw it
+            }
+    }
 }

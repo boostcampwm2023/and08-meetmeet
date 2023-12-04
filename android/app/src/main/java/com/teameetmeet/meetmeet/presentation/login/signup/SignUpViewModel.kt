@@ -2,7 +2,8 @@ package com.teameetmeet.meetmeet.presentation.login.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import com.teameetmeet.meetmeet.util.Verification
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val loginRepository: LoginRepository
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState())
@@ -64,32 +65,34 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun checkDuplicate() {
-        // todo email 중복 확인 API 호출
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            userRepository.checkEmailDuplicate(_uiState.value.email)
+            loginRepository.checkEmailDuplication(_uiState.value.email)
                 .catch {
-                    // 예외 처리
-                    _uiState.update { it.copy(emailState = EmailState.Invalid) }
-                    _showPlaceholder.update { false }
-                }.collectLatest {
-                    _uiState.update { it.copy(emailState = EmailState.Valid) }
-                    _showPlaceholder.update { false }
+                    _event.emit(SignUpEvent.ShowMessage(R.string.login_app_duplicate_check_fail))
+                }.collectLatest { isAvailable ->
+                    _uiState.update {
+                        if (isAvailable) {
+                            it.copy(emailState = EmailState.Valid)
+                        } else {
+                            it.copy(emailState = EmailState.Invalid)
+                        }
+                    }
                 }
+            _showPlaceholder.update { false }
         }
     }
 
     fun signUp() {
-        // todo 회원가입 API 호출
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            userRepository.signUp(_uiState.value.email, _uiState.value.password)
+            loginRepository.signUp(_uiState.value.email, _uiState.value.password)
                 .catch {
-                    // 예외 처리
+                    _event.emit(SignUpEvent.ShowMessage(R.string.login_message_sign_up_fail))
                     _showPlaceholder.update { false }
                 }
                 .collectLatest {
-                    _event.emit(SignUpEvent.SignUpSuccess)
+                    _event.emit(SignUpEvent.NavigateToProfileSettingFragment)
                     _showPlaceholder.update { false }
                 }
         }

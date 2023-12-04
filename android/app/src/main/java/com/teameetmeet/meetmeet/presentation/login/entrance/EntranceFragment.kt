@@ -2,12 +2,15 @@ package com.teameetmeet.meetmeet.presentation.login.entrance
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEntranceBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
@@ -27,7 +30,7 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
 
     private fun setClickListener() {
         binding.loginIbKakaoLogin.setOnClickListener {
-            viewModel.loginKakao()
+            loginKakao()
         }
 
         binding.loginTvAppLogin.setOnClickListener {
@@ -43,17 +46,55 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
         }
     }
 
+    private val kakaoLoginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            showMessage(R.string.login_kakao_message_kakao_login_fail, error.message.orEmpty())
+        } else if (token != null) {
+            viewModel.loginApp()
+        }
+    }
+
+    private fun loginKakao() {
+        lifecycleScope.launch {
+            if (UserApiClient.instance.isKakaoTalkLoginAvailable(requireContext())) {
+                UserApiClient.instance.loginWithKakaoTalk(requireContext()) { token, error ->
+                    if (error != null) {
+                       showMessage(R.string.login_kakao_message_kakao_login_fail, error.message.orEmpty())
+                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                            return@loginWithKakaoTalk
+                        }
+                        UserApiClient.instance.loginWithKakaoAccount(
+                            requireContext(),
+                            callback = kakaoLoginCallback
+                        )
+                    } else if (token != null) {
+                        viewModel.loginApp()
+                    }
+                }
+            } else {
+                UserApiClient.instance.loginWithKakaoAccount(
+                    requireContext(),
+                    callback = kakaoLoginCallback
+                )
+            }
+        }
+    }
+
     private fun collectViewModelEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.kakaoLoginEvent.collect {
                     when (it) {
-                        is KakaoLoginEvent.Success -> {
+                        is KakaoLoginEvent.NavigateToHomeActivity -> {
                             navigateToHomeActivity()
                         }
 
-                        is KakaoLoginEvent.Failure -> {
+                        is KakaoLoginEvent.ShowMessage -> {
                             showMessage(it.message, it.extraMessage)
+                        }
+
+                        is KakaoLoginEvent.NavigateToProfileSettingFragment -> {
+                            navigateToProfileSettingFragment()
                         }
                     }
                 }
@@ -61,15 +102,16 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
         }
     }
 
-    private fun showMessage(messageId: Int, extraMessage: String) {
-        if(extraMessage.isNotEmpty()) {
-            Toast.makeText(requireContext(), String.format(getString(messageId), extraMessage), Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), getString(messageId), Toast.LENGTH_SHORT).show()
-        }
-    }
 
     private fun navigateToHomeActivity() {
-        findNavController().navigate(EntranceFragmentDirections.entranceFragmentToHomeActivity())
+        findNavController().navigate(EntranceFragmentDirections.actionEntranceFragmentToHomeActivity())
+        requireActivity().finishAffinity()
+    }
+
+    private fun navigateToProfileSettingFragment() {
+        findNavController().navigate(
+            EntranceFragmentDirections.actionEntranceFragmentToSettingProfileFragment()
+                .setIsFirstSignIn(true)
+        )
     }
 }

@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 class SettingHomeFragment :
     BaseFragment<FragmentSettingHomeBinding>(R.layout.fragment_setting_home) {
 
-    private val viewModel : SettingHomeViewModel by viewModels()
+    private val viewModel: SettingHomeViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -26,6 +26,11 @@ class SettingHomeFragment :
         setTopAppBar()
         setNavigation()
         collectViewModelEvent()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchUserProfile()
     }
 
     private fun setBinding() {
@@ -54,7 +59,7 @@ class SettingHomeFragment :
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { event ->
-                    when(event) {
+                    when (event) {
                         is SettingHomeEvent.NavigateToLoginActivity -> navigateToLoginActivity()
                         is SettingHomeEvent.ShowMessage -> showToastMessage(event.message)
                     }
@@ -69,7 +74,7 @@ class SettingHomeFragment :
 
     private fun navigateToLoginActivity() {
         findNavController().navigate(SettingHomeFragmentDirections.actionSettingHomeFragmentToLoginActivity())
-        requireActivity().finish()
+        requireActivity().finishAffinity()
     }
 
     private fun setTopAppBar() {

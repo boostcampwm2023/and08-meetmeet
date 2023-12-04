@@ -14,7 +14,9 @@ import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentCalendarBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @ExperimentalBadgeUtils
@@ -25,10 +27,23 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.vm = viewModel
+        setBinding()
         setClickListener()
         collectViewModelEvent()
         setBadge()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchEvents()
+        viewModel.fetchUserProfile()
+    }
+
+    private fun setBinding() {
+        with(binding) {
+            vm = viewModel
+            calendarRvCalendar.adapter = CalendarAdapter(viewModel)
+        }
     }
 
     private fun setBadge() {
@@ -52,7 +67,11 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
 
     private fun setClickListener() {
         binding.fabAddEvent.setOnClickListener {
-            findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToAddEventActivity())
+            viewModel.currentDate.value.date?.let {
+                findNavController().navigate(
+                    CalendarFragmentDirections.actionCalendarFragmentToAddEventActivity(it)
+                )
+            }
         }
 
         binding.calendarClProfile.setOnClickListener {
@@ -72,7 +91,11 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.dayClickEvent.collect {
-                    findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToBottomSheet())
+                    EventsPerDayBottomSheetFragment().show(
+                        childFragmentManager,
+                        "bottom sheet"
+                    )
+                    delay(1000)
                 }
             }
         }

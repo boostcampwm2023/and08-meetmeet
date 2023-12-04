@@ -1,29 +1,28 @@
 package com.teameetmeet.meetmeet.presentation.login.entrance
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ClientError
-import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
+import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EntranceViewModel @Inject constructor(
-    private val application: Application,
-    private val loginRepository: LoginRepository
-) : AndroidViewModel(application) {
+    private val loginRepository: LoginRepository,
+    private val userRepository: UserRepository,
+    private val calendarRepository: CalendarRepository
+) : ViewModel() {
 
     private val _kakaoLoginEvent = MutableSharedFlow<KakaoLoginEvent>(
         extraBufferCapacity = 1,
@@ -31,75 +30,52 @@ class EntranceViewModel @Inject constructor(
     )
     val kakaoLoginEvent: SharedFlow<KakaoLoginEvent> = _kakaoLoginEvent.asSharedFlow()
 
-    private val kakaoLoginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-        if (error != null) {
-            _kakaoLoginEvent.tryEmit(
-                KakaoLoginEvent.Failure(
-                    R.string.login_kakao_message_kakao_login_fail,
-                    error.message.orEmpty()
-                )
-            )
-        } else if (token != null) {
-            loginApp()
-        }
+
+    init {
+        deleteLocalData()
     }
 
-    fun loginKakao() {
+    private fun deleteLocalData() {
         viewModelScope.launch {
-            if (UserApiClient.instance.isKakaoTalkLoginAvailable(application)) {
-                UserApiClient.instance.loginWithKakaoTalk(application) { token, error ->
-                    if (error != null) {
-                        _kakaoLoginEvent.tryEmit(
-                            KakaoLoginEvent.Failure(
-                                R.string.login_kakao_message_kakao_login_fail,
-                                error.message.orEmpty()
-                            )
-                        )
-                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                            return@loginWithKakaoTalk
-                        }
-                        UserApiClient.instance.loginWithKakaoAccount(
-                            application,
-                            callback = kakaoLoginCallback
-                        )
-                    } else if (token != null) {
-                        loginApp()
-                    }
-                }
-            } else {
-                UserApiClient.instance.loginWithKakaoAccount(
-                    application,
-                    callback = kakaoLoginCallback
-                )
+            try {
+                userRepository.resetDataStore().first()
+                calendarRepository.deleteEvents()
+            } catch (_: Exception) {
+
             }
         }
     }
 
-    private fun loginApp() {
+    fun loginApp() {
         UserApiClient.instance.me { user, error ->
             viewModelScope.launch {
                 if (error != null) {
                     _kakaoLoginEvent.tryEmit(
-                        KakaoLoginEvent.Failure(
+                        KakaoLoginEvent.ShowMessage(
                             R.string.login_kakao_message_kakao_login_fail,
                             error.message.orEmpty()
                         )
                     )
                 } else if (user?.id != null) {
-                    Log.i("KAKAO", "사용자 정보 요청 성공\n회원번호: ${user.id}")
-                    loginRepository.loginKakao(user.id!!).catch {
-                        _kakaoLoginEvent.tryEmit(
-                            KakaoLoginEvent.Failure(
-                                R.string.login_kakao_message_kakao_login_fail,
-                                it.message.orEmpty()
+                    loginRepository.loginKakao(user.id!!).catch { exception ->
+                        when(exception) {
+                            else -> _kakaoLoginEvent.tryEmit(
+                                KakaoLoginEvent.ShowMessage(
+                                    R.string.login_kakao_message_kakao_login_fail,
+                                    exception.message.orEmpty()
+                                )
                             )
-                        )
+                        }
                     }.collect {
-                        _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Success(user.id!!))
+                        if(it) {
+                            _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToProfileSettingFragment)
+                        } else {
+                            _kakaoLoginEvent.emit(KakaoLoginEvent.NavigateToHomeActivity(user.id!!))
+                        }
                     }
 
                 } else {
-                    _kakaoLoginEvent.tryEmit(KakaoLoginEvent.Failure(R.string.login_kakao_message_no_user_data))
+                    _kakaoLoginEvent.emit(KakaoLoginEvent.ShowMessage(R.string.login_kakao_message_no_user_data))
                 }
             }
         }

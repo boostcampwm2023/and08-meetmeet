@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
 
     <color name="event_color_red">#FF6565</color>
     <color name="event_color_orange">#FFC165</color>
@@ -10,6 +11,7 @@
     <color name="event_color_purple">#D765FF</color>
     <color name="event_color_checked">#6750A4</color>
 
+    <color name="event_color_warning">#B11212</color>
     <color name="blue">#FF0000FF</color>
     <color name="red">#FFFF0000</color>
     <color name="green">#4DA430</color>
@@ -20,6 +22,7 @@
     <color name="grey2">#828282</color>
     <color name="grey3">#E0E0E0</color>
     <color name="grey4">#F5F5F7</color>
+    <color name="grey5">#30828282</color>
 
     <color name="loading_background">#30000000</color>
 </resources>

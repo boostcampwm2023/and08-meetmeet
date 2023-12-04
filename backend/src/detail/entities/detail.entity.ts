@@ -8,4 +8,10 @@ export class Detail extends commonEntity {
 
   @Column({ type: 'varchar', length: 64, nullable: true })
   memo: string;
+
+  @Column({ type: 'int', nullable: false, default: -39579 })
+  color: number;
+
+  @Column({ type: 'int', nullable: false, default: 10 })
+  alarmMinutes: number;
 }

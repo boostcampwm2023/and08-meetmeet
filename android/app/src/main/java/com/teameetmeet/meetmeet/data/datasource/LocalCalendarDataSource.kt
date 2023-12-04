@@ -2,22 +2,26 @@ package com.teameetmeet.meetmeet.data.datasource
 
 import com.teameetmeet.meetmeet.data.local.database.dao.EventDao
 import com.teameetmeet.meetmeet.data.local.database.entity.Event
-import com.teameetmeet.meetmeet.data.toDateLong
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
-    fun getEvents(startDate: String, endDate: String): Flow<List<Event>> {
-        return startDate.toDateLong()?.let { startDateLong ->
-            endDate.toDateLong()?.let { endDateLong ->
-                dao.getEvents(startDateLong, endDateLong)
-            }
-        } ?: emptyFlow()
+    fun get(id: Int): Flow<Event> {
+        return dao.get(id)
+    }
+
+    fun getEvents(startDateTime: Long, endDateTime: Long): Flow<List<Event>> {
+        return flowOf(true).map { dao.getEvents(startDateTime, endDateTime) }
     }
 
     suspend fun insert(event: Event) {
         dao.insert(event)
+    }
+
+    suspend fun insertEvents(events: List<Event>) {
+        dao.insertEvents(*events.toTypedArray())
     }
 
     suspend fun update(event: Event) {
@@ -28,21 +32,25 @@ class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
         dao.delete(event)
     }
 
-    suspend fun get(id: Int): Event {
-        return dao.get(id)
+    suspend fun deleteAll() {
+        dao.deleteAll()
+    }
+
+    suspend fun deleteEvents(startDateTime: Long, endDateTime: Long) {
+        dao.deleteEvents(startDateTime, endDateTime)
     }
 
     suspend fun updateEventAttr(
         id: Int,
         title: String? = null,
-        startDate: String? = null,
-        endDate: String? = null,
+        startDateTime: Long? = null,
+        endDateTime: Long? = null,
         color: String? = null,
         notification: String? = null
     ) {
         title?.let { title -> dao.updateTitle(id, title) }
-        startDate?.toDateLong()?.let { startDateLong -> dao.updateStartDateTime(id, startDateLong) }
-        endDate?.toDateLong()?.let { endDateLong -> dao.updateStartDateTime(id, endDateLong) }
+        startDateTime?.let { startDateLong -> dao.updateStartDateTime(id, startDateLong) }
+        endDateTime?.let { endDateLong -> dao.updateEndDateTime(id, endDateLong) }
         color?.let { color -> dao.updateTitle(id, color) }
         notification?.let { notification -> dao.updateTitle(id, notification) }
     }

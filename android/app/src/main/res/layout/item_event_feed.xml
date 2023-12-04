@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.teameetmeet.meetmeet.data.model.Feed" />
+
+        <import type="android.view.View" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@drawable/background_with_gray_border"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/item_event_feed_iv_thumbnail"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:visibility="@{item.thumbnail == null ? View.INVISIBLE : View.VISIBLE}"
+            app:image="@{item.thumbnail}"
+            app:layout_constraintDimensionRatio="w,1:1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_event_feed_tv_memo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:text="@{item.memo}"
+            android:visibility="@{item.thumbnail == null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/item_event_feed_iv_thumbnail"
+            app:layout_constraintEnd_toEndOf="@id/item_event_feed_iv_thumbnail"
+            app:layout_constraintStart_toStartOf="@id/item_event_feed_iv_thumbnail"
+            app:layout_constraintTop_toTopOf="@id/item_event_feed_iv_thumbnail" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

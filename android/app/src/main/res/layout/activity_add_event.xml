@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm" />
 
         <variable
             name="vm"
@@ -44,137 +49,144 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/add_event_guideline_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.07" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/add_event_guideline_center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/add_event_guideline_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.93" />
+
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tf_event_name"
+                    android:id="@+id/add_event_til_event_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/add_event_name"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginTop="36dp"
+                    android:hint="@string/story_detail_event_name"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_right"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_event_name"
+                        android:id="@+id/add_event_et_event_name"
                         style="@style/medium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:maxLength="64"
-                        android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setEventName(p0)}" />
+                        android:onTextChanged="@{(c, c1, c2, c3) -> vm.setEventName(c)}" />
+
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tf_event_start_date"
+
+                <TextView
+                    android:id="@+id/add_event_tv_title_start_date"
+                    style="@style/medium.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/story_detail_title_start_date"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_til_event_name" />
+
+                <TextView
+                    android:id="@+id/add_event_tv_title_end_date"
+                    style="@style/medium.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/story_detail_tv_title_end_date"
+                    app:layout_constraintBottom_toBottomOf="@id/add_event_tv_title_start_date"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_center"
+                    app:layout_constraintTop_toTopOf="@id/add_event_tv_title_start_date" />
+
+                <TextView
+                    android:id="@+id/add_event_tv_value_start_date"
+                    style="@style/medium"
+                    date_text="@{vm.uiState.startDate}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/add_event_start_date"
-                    app:layout_constraintEnd_toStartOf="@id/tf_event_end_time"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tf_event_name">
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_center"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_tv_title_start_date" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_event_start_date"
-                        style="@style/medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        long_date_text="@{vm.eventDate.first}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tf_event_end_date"
+                <TextView
+                    android:id="@+id/add_event_tv_value_start_time"
+                    style="@style/medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="16dp"
-                    android:hint="@string/add_event_end_date"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tf_event_start_time"
-                    app:layout_constraintTop_toBottomOf="@id/tf_event_name">
+                    android:layout_marginTop="12dp"
+                    app:event_time="@{vm.uiState.startTime}"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_center"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_tv_value_start_date" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_event_end_date"
-                        style="@style/medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        long_date_text="@{vm.eventDate.second}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tf_event_start_time"
+                <TextView
+                    android:id="@+id/add_event_tv_value_end_date"
+                    style="@style/medium"
+                    date_text="@{vm.uiState.endDate}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:hint="@string/add_event_start_time"
-                    app:layout_constraintEnd_toStartOf="@id/tf_event_end_time"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tf_event_start_date">
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_right"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_center"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_tv_title_end_date" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_event_start_time"
-                        style="@style/medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{vm.eventStartTime.toString()}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tf_event_end_time"
+                <TextView
+                    android:id="@+id/add_event_tv_value_end_time"
+                    style="@style/medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:hint="@string/add_event_end_time"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tf_event_start_time"
-                    app:layout_constraintTop_toBottomOf="@id/tf_event_start_date">
+                    android:layout_marginTop="12dp"
+                    app:event_time="@{vm.uiState.endTime}"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_right"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_center"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_tv_value_end_date" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_event_end_time"
-                        style="@style/medium"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{vm.eventEndTime.toString()}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tf_event_alarm"
+                    android:id="@+id/add_event_til_event_alarm"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/add_event_alarm"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tf_event_start_time">
+                    android:layout_marginTop="24dp"
+                    android:hint="@string/story_detail_event_alarm"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_right"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_tv_value_end_time">
 
                     <AutoCompleteTextView
+                        android:id="@+id/add_event_et_event_alarm"
                         style="@style/medium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:inputType="none" />
+
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
-                    android:id="@+id/tv_event_color_title"
-                    style="@style/medium"
+                    android:id="@+id/event_story_tv_event_color"
+                    style="@style/medium.bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/add_event_color"
-                    app:layout_constraintStart_toStartOf="@id/tf_event_alarm"
-                    app:layout_constraintTop_toBottomOf="@id/tf_event_alarm" />
+                    android:layout_marginTop="24dp"
+                    android:text="@string/story_detail_event_color"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_til_event_alarm" />
 
                 <RadioGroup
                     android:id="@+id/radio_group_event_color"
@@ -184,9 +196,9 @@
                     android:checkedButton="@id/radio_red"
                     android:onCheckedChanged="@{(group, id) -> vm.setEventColor(group, id)}"
                     android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_event_color_title"
-                    app:layout_constraintStart_toEndOf="@id/tv_event_color_title"
-                    app:layout_constraintTop_toTopOf="@id/tv_event_color_title">
+                    app:layout_constraintBottom_toBottomOf="@id/event_story_tv_event_color"
+                    app:layout_constraintStart_toEndOf="@id/event_story_tv_event_color"
+                    app:layout_constraintTop_toTopOf="@id/event_story_tv_event_color">
 
                     <RadioButton
                         android:id="@+id/radio_red"
@@ -240,75 +252,162 @@
                 </RadioGroup>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tf_event_repeat"
+                    android:id="@+id/add_event_til_event_repeat"
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/add_event_repeat"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_event_color_title">
+                    android:layout_marginTop="24dp"
+                    android:hint="@string/story_detail_event_repeat"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_right"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_tv_event_color">
 
                     <AutoCompleteTextView
+                        android:id="@+id/add_event_et_event_repeat"
                         style="@style/medium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:inputType="none" />
 
+
                 </com.google.android.material.textfield.TextInputLayout>
+
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tf_event_memo"
+                    android:id="@+id/add_event_til_event_repeat_frequency"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="20dp"
-                    android:hint="@string/add_event_memo"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tf_event_repeat">
+                    android:layout_marginTop="24dp"
+                    android:hint="@string/story_detail_event_repeat_fequency"
+                    android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_center"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_til_event_repeat">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_event_memo"
+                    <AutoCompleteTextView
+                        android:id="@+id/add_event_et_event_repeat_frequency"
                         style="@style/medium"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLength="255"
-                        android:onTextChanged="@{(p0, p1, p2, p3) -> vm.setEventMemo(p0)}" />
+                        android:layout_height="match_parent"
+                        android:inputType="none" />
+
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/tv_event_open_title"
-                    style="@style/medium"
+                <TextView
+                    android:id="@+id/event_story_tv_title_event_repeat_end_date"
+                    style="@style/medium.bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="20dp"
-                    android:checked="@{vm.isVisible}"
-                    android:onCheckedChanged="@{(bv, check) -> vm.setVisibleState(check)}"
-                    android:text="@string/add_event_visible_state"
-                    app:layout_constraintStart_toStartOf="@id/tf_event_memo"
-                    app:layout_constraintTop_toBottomOf="@id/tf_event_memo" />
+                    android:layout_marginStart="12dp"
+                    android:text="@string/story_detail_title_event_repeat_end_date"
+                    android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_center"
+                    app:layout_constraintTop_toTopOf="@id/add_event_til_event_repeat_frequency" />
+
+                <TextView
+                    android:id="@+id/event_story_tv_value_event_repeat_end_date"
+                    date_text="@{vm.uiState.eventRepeatEndDate}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/add_event_til_event_repeat_frequency"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_right"
+                    app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_repeat_end_date"
+                    app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_repeat_end_date" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/add_event_til_event_memo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:hint="@string/story_detail_event_memo"
+                    app:layout_constraintEnd_toEndOf="@id/add_event_guideline_right"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_til_event_repeat_frequency">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/add_event_et_event_memo"
+                        style="@style/medium"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:onTextChanged="@{(c, c1, c2, c3) -> vm.setEventMemo(c)}" />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/add_event_tv_event_public"
+                    style="@style/medium.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/story_detail_public"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_til_event_memo" />
 
                 <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/tv_event_join_title"
-                    style="@style/medium"
+                    android:id="@+id/add_event_switch_event_public"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:checked="@{vm.isJoin}"
-                    android:onCheckedChanged="@{(bv, check) -> vm.setJoinState(check)}"
-                    android:text="@string/add_event_join_state"
-                    app:layout_constraintStart_toStartOf="@id/tv_event_open_title"
-                    app:layout_constraintTop_toBottomOf="@id/tv_event_open_title" />
+                    android:layout_marginStart="16dp"
+                    android:onCheckedChanged="@{(view, isChecked) -> vm.setEventOpen(isChecked)}"
+                    app:layout_constraintBottom_toBottomOf="@id/add_event_tv_event_public"
+                    app:layout_constraintStart_toEndOf="@id/add_event_tv_event_public"
+                    app:layout_constraintTop_toTopOf="@id/add_event_tv_event_public" />
+
+                <TextView
+                    android:id="@+id/add_event_tv_event_joinable"
+                    style="@style/medium.bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/story_detail_joinable"
+                    app:layout_constraintStart_toStartOf="@id/add_event_guideline_left"
+                    app:layout_constraintTop_toBottomOf="@id/add_event_tv_event_public" />
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/add_event_switch_joinable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:onCheckedChanged="@{(view, isChecked) -> vm.setEventJoinable(isChecked)}"
+                    app:layout_constraintBottom_toBottomOf="@id/add_event_tv_event_joinable"
+                    app:layout_constraintStart_toEndOf="@id/add_event_tv_event_joinable"
+                    app:layout_constraintTop_toTopOf="@id/add_event_tv_event_joinable" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
 
+        <View
+            android:id="@+id/view_loading_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/loading_background"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{vm.showPlaceholder ?View.VISIBLE:View.GONE}"
+            app:constraint_referenced_ids="view_loading_background, progress_bar"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -1,0 +1,410 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.eventstory.eventstorydetail.EventStoryDetailViewModel" />
+
+        <import type="com.teameetmeet.meetmeet.presentation.model.EventAuthority" />
+        <import type="com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm" />
+        <import type="android.view.View"/>
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".presentation.eventstory.eventstorydetail.EventStoryDetailFragment">
+
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/story_detail_mtb"
+                android:layout_width="0dp"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:menu="@menu/top_app_bar_add_event"
+                app:menu_enable="@{vm.uiState.authority}"
+                app:navigationIcon="@drawable/ic_nav_pre"
+                app:title="@string/story_detail_title_tool_bar"
+                app:titleTextAppearance="@style/large" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/story_detail_guideline_left"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.07" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/story_detail_guideline_center"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/story_detail_guideline_right"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.93" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="36dp"
+                android:hint="@string/story_detail_event_name"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_mtb">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/story_detail_et_event_name"
+                    style="@style/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@{vm.uiState.eventName}"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                    android:maxLength="64"
+                    android:onTextChanged="@{(c, c1, c2, c3) -> vm.setEventName(c)}" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/story_detail_tv_title_start_date"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/story_detail_title_start_date"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_name" />
+
+            <TextView
+                android:id="@+id/story_detail_tv_title_end_date"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/story_detail_tv_title_end_date"
+                app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_title_start_date"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
+                app:layout_constraintTop_toTopOf="@id/story_detail_tv_title_start_date" />
+
+            <TextView
+                android:id="@+id/story_detail_tv_value_start_date"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:text="@{vm.uiState.startDate.isEmpty() ? @string/story_detail_date_not_decided : vm.uiState.startDate}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_title_start_date" />
+
+            <TextView
+                android:id="@+id/story_detail_tv_value_start_time"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                app:event_time="@{vm.uiState.startTime}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_start_date" />
+
+            <TextView
+                android:id="@+id/story_detail_tv_value_end_date"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:text="@{vm.uiState.endDate.isEmpty() ? @string/story_detail_date_not_decided : vm.uiState.endDate}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_title_end_date" />
+
+            <TextView
+                android:id="@+id/story_detail_tv_value_end_time"
+                style="@style/medium"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                app:event_time="@{vm.uiState.endTime}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_end_date" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_alarm"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
+                android:hint="@string/story_detail_event_alarm"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_value_end_time">
+
+                <AutoCompleteTextView
+                    android:id="@+id/story_detail_et_event_alarm"
+                    style="@style/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:notification="@{vm.uiState.alarm}"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
+                    android:inputType="none" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/event_story_tv_event_color"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/story_detail_event_color"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_alarm" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_event_color"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:checkedButton="@id/radio_red"
+                app:color="@{vm.uiState.color}"
+                android:onCheckedChanged="@{(group, id) -> vm.setEventColor(group, id)}"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@id/event_story_tv_event_color"
+                app:layout_constraintStart_toEndOf="@id/event_story_tv_event_color"
+                app:layout_constraintTop_toTopOf="@id/event_story_tv_event_color">
+
+                <RadioButton
+                    android:id="@+id/radio_red"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_red"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+
+                <RadioButton
+                    android:id="@+id/radio_orange"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_orange"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+
+                <RadioButton
+                    android:id="@+id/radio_green"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_green"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+
+                <RadioButton
+                    android:id="@+id/radio_blue"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_blue"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+
+                <RadioButton
+                    android:id="@+id/radio_purple"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="9dp"
+                    android:background="@drawable/radio_button_event_color"
+                    android:backgroundTint="@color/event_color_purple"
+                    android:backgroundTintMode="multiply"
+                    android:button="@android:color/transparent"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}" />
+            </RadioGroup>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_repeat"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:hint="@string/story_detail_event_repeat"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/event_story_tv_event_color">
+
+                <AutoCompleteTextView
+                    android:id="@+id/story_detail_et_event_repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:repeat_term="@{vm.uiState.eventRepeat}"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                    android:inputType="none" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_repeat_frequency"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:enabled="@{(vm.uiState.authority == EventAuthority.OWNER &amp;&amp; vm.uiState.eventRepeat != EventRepeatTerm.NONE)? true : false}"
+                android:hint="@string/story_detail_event_repeat_fequency"
+                android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_center"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_repeat">
+
+                <AutoCompleteTextView
+                    android:id="@+id/story_detail_et_event_repeat_frequency"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:repeat_frequency="@{vm.uiState.eventRepeatFrequency}"
+                    android:enabled="@{(vm.uiState.authority == EventAuthority.OWNER &amp;&amp; vm.uiState.eventRepeat != EventRepeatTerm.NONE)? true : false}"
+                    android:inputType="none" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/event_story_tv_title_event_repeat_end_date"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="@string/story_detail_title_event_repeat_end_date"
+                android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_center"
+                app:layout_constraintTop_toTopOf="@id/story_detail_til_event_repeat_frequency" />
+
+            <TextView
+                android:id="@+id/event_story_tv_value_event_repeat_end_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:text="@{vm.uiState.eventRepeatEndDate ?? @string/story_detail_date_not_decided}"
+                android:visibility="@{vm.uiState.eventRepeat == EventRepeatTerm.NONE ? View.GONE : View.VISIBLE}"
+                app:layout_constraintBottom_toBottomOf="@id/story_detail_til_event_repeat_frequency"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/event_story_tv_title_event_repeat_end_date"
+                app:layout_constraintTop_toBottomOf="@id/event_story_tv_title_event_repeat_end_date" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/story_detail_til_event_memo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="@string/story_detail_event_memo"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_repeat_frequency">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/story_detail_et_event_memo"
+                    style="@style/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@{vm.uiState.memo}"
+                    android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
+                    android:onTextChanged="@{(c, c1, c2, c3) -> vm.setEventMemo(c)}" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/story_detail_tv_event_public"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/story_detail_public"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_til_event_memo" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/story_detail_switch_event_public"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:checked="@{vm.uiState.isOpen}"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
+                android:onCheckedChanged="@{(view, isChecked) -> vm.setEventOpen(isChecked)}"
+                app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_event_public"
+                app:layout_constraintStart_toEndOf="@id/story_detail_tv_event_public"
+                app:layout_constraintTop_toTopOf="@id/story_detail_tv_event_public" />
+
+            <TextView
+                android:id="@+id/story_detail_tv_event_joinable"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/story_detail_joinable"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_event_public" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/story_detail_switch_joinable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:checked="@{vm.uiState.isJoinable}"
+                android:enabled="@{vm.uiState.authority == EventAuthority.OWNER ? true : false}"
+                android:onCheckedChanged="@{(view, isChecked) -> vm.setEventJoinable(isChecked)}"
+                app:layout_constraintBottom_toBottomOf="@id/story_detail_tv_event_joinable"
+                app:layout_constraintStart_toEndOf="@id/story_detail_tv_event_joinable"
+                app:layout_constraintTop_toTopOf="@id/story_detail_tv_event_joinable" />
+
+            <Button
+                android:id="@+id/story_detail_btn_remove_event"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/event_color_warning"
+                android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
+                android:text="@string/story_detail_remove_event"
+                app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
+                app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
+                app:layout_constraintTop_toBottomOf="@id/story_detail_tv_event_joinable" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>

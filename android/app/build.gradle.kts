@@ -14,10 +14,10 @@ android {
 
     defaultConfig {
         applicationId = "com.teameetmeet.meetmeet"
-        minSdk = 28
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -29,9 +29,9 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
+            isDebuggable = false
         }
     }
     compileOptions {
@@ -76,7 +76,7 @@ dependencies {
     kapt("com.google.dagger:hilt-android-compiler:2.48")
 
     // Moshi JSON
-    implementation("com.squareup.moshi:moshi:1.14.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.14.0")
 
     // 코루틴
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
@@ -101,4 +101,8 @@ dependencies {
     //Glide(이미지 로더)
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+
+    //paging3
+    implementation("androidx.paging:paging-runtime:$3.2.1")
+    implementation("androidx.paging:paging-common-ktx:3.2.1")
 }

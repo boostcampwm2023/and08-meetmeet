@@ -1,14 +1,23 @@
 package com.teameetmeet.meetmeet.data.network.di
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.teameetmeet.meetmeet.data.network.api.AuthApi
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
-import com.teameetmeet.meetmeet.data.network.api.FakeLoginApi
-import com.teameetmeet.meetmeet.data.network.api.FakeUserApi
+import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
+import com.teameetmeet.meetmeet.data.network.api.FollowApi
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.api.UserApi
+import com.teameetmeet.meetmeet.data.repository.TokenRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Named
@@ -17,27 +26,119 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
+
     @Singleton
     @Provides
-    @Named("serverRetrofit")
-    fun providesServerRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("http://meetmeet.chani.pro/")
-            .addConverterFactory(MoshiConverterFactory.create())
+    fun provideMoshi(): Moshi {
+        return Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
             .build()
     }
 
     @Singleton
     @Provides
-    fun provideCalendarApi(@Named("serverRetrofit") retrofit: Retrofit): CalendarApi {
-        return retrofit.create(CalendarApi::class.java)
+    @Named("retrofitWithoutAuth")
+    fun provideRetrofitWithoutAuth(
+        moshi: Moshi
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("http://meetmeet.chani.pro/")
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
     }
 
     @Singleton
     @Provides
-    fun provideLoginApi(): LoginApi = FakeLoginApi()
+    @Named("retrofitWithAuth")
+    fun provideRetrofitWithAuth(
+        moshi: Moshi,
+        okHttpClient: OkHttpClient
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("http://meetmeet.chani.pro/")
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
 
     @Singleton
     @Provides
-    fun provideUserApi(): UserApi = FakeUserApi()
+    fun provideOkHttpClient(
+        interceptor: Interceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder().addInterceptor(interceptor).build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideInterceptor(
+        tokenRepository: TokenRepository
+    ): Interceptor {
+        return object : Interceptor {
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val token = runBlocking {
+                    tokenRepository.getAccessToken()
+                }
+                val tokenAddedRequest = chain.request().newBuilder()
+                    .addHeader("Authorization", "Bearer $token")
+                    .build()
+                val response = chain.proceed(tokenAddedRequest)
+
+                if (response.code == 418) {
+                    response.close()
+                    val accessToken = runBlocking {
+                        tokenRepository.refreshAccessToken()
+                    }
+                    val refreshedRequest = chain.request().putTokenHeader(accessToken)
+                    return chain.proceed(refreshedRequest)
+                }
+                return if (response.code == 204) {
+                    response.newBuilder().code(200).build()
+                } else {
+                    response
+                }
+            }
+
+            private fun Request.putTokenHeader(accessToken: String): Request {
+                return this.newBuilder()
+                    .addHeader("Authorization", "Bearer $accessToken")
+                    .build()
+            }
+        }
+    }
+
+    @Singleton
+    @Provides
+    fun provideCalendarApi(@Named("retrofitWithAuth") retrofit: Retrofit): CalendarApi =
+        retrofit.create(CalendarApi::class.java)
+
+    //AccessToken 필요한 api
+    @Singleton
+    @Provides
+    fun provideUserApi(@Named("retrofitWithAuth") retrofit: Retrofit): UserApi =
+        retrofit.create(UserApi::class.java)
+
+
+    //AccessToken 필요없는 api
+    @Singleton
+    @Provides
+    fun provideLoginApi(@Named("retrofitWithoutAuth") retrofit: Retrofit): LoginApi =
+        retrofit.create(LoginApi::class.java)
+
+
+    @Singleton
+    @Provides
+    fun provideAuthApi(@Named("retrofitWithoutAuth") retrofit: Retrofit): AuthApi =
+        retrofit.create(AuthApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideEventStoryApi(@Named("retrofitWithAuth") retrofit: Retrofit): EventStoryApi
+    = retrofit.create(EventStoryApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideFollowApi(@Named("retrofitWithAuth") retrofit: Retrofit): FollowApi
+            = retrofit.create(FollowApi::class.java)
+
 }

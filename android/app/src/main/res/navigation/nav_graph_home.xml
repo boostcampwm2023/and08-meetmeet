@@ -23,15 +23,27 @@
             android:id="@+id/action_calendar_fragment_to_notification_activity"
             app:destination="@id/notification_activity" />
         <action
-            android:id="@+id/action_calendar_fragment_to_bottomSheet"
-            app:destination="@id/bottom_sheet_dialog" />
+            android:id="@+id/action_calendar_fragment_to_eventStoryActivity"
+            app:destination="@id/event_story_activity" />
+        <action
+            android:id="@+id/action_calendar_fragment_to_follow_fragment"
+            app:destination="@id/follow_fragment" />
     </fragment>
 
     <fragment
         android:id="@+id/follow_fragment"
         android:name="com.teameetmeet.meetmeet.presentation.follow.FollowFragment"
         android:label="follow_fragment"
-        tools:layout="@layout/fragment_follow" />
+        tools:layout="@layout/fragment_follow">
+        <argument
+            android:name="actionType"
+            android:defaultValue="FOLLOW"
+            app:argType="com.teameetmeet.meetmeet.presentation.follow.FollowActionType" />
+        <argument
+            android:name="id"
+            android:defaultValue="0"
+            app:argType="integer" />
+    </fragment>
 
     <fragment
         android:id="@+id/group_fragment"
@@ -43,23 +55,37 @@
         android:id="@+id/add_event_activity"
         android:name="com.teameetmeet.meetmeet.presentation.addevent.AddEventActivity"
         android:label="add_event_activity"
-        tools:layout="@layout/activity_add_event" />
+        tools:layout="@layout/activity_add_event">
+        <argument
+            android:name="date"
+            app:argType="java.time.LocalDate" />
+    </activity>
+
     <activity
         android:id="@+id/setting_activity"
         android:name="com.teameetmeet.meetmeet.presentation.setting.SettingActivity"
         android:label="setting_activity"
         tools:layout="@layout/activity_setting" />
+
     <activity
         android:id="@+id/search_activity"
-        android:name="com.teameetmeet.meetmeet.presentation.searchevent.SearchActivity"
-        android:label="search_activity" />
+        android:name="com.teameetmeet.meetmeet.presentation.searchevent.SearchEventActivity"
+        android:label="search_activity"
+        tools:layout="@layout/activity_search_event" />
+
     <activity
         android:id="@+id/notification_activity"
         android:name="com.teameetmeet.meetmeet.presentation.notification.NotificationActivity"
-        android:label="Notification_activity" />
+        android:label="Notification_activity"
+        tools:layout="@layout/activity_notification" />
 
-    <dialog
-        android:id="@+id/bottom_sheet_dialog"
-        android:name="com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment"
-        tools:layout="@layout/fragment_bottom_sheet_events_per_day" />
+    <activity
+        android:id="@+id/event_story_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.EventStoryActivity"
+        android:label="event_story_activity"
+        tools:layout="@layout/activity_event_story" >
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </activity>
 </navigation>

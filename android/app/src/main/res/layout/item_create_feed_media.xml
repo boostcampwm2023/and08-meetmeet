@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="mediaItem"
+            type="com.teameetmeet.meetmeet.presentation.model.MediaItem" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/item_create_feed_cv"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                image_src="@{mediaItem.uri.toString()}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="center"
+                tools:src="@drawable/ic_no_image_filled" />
+
+            <TextView
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:alpha="0.7"
+                android:background="@color/black"
+                android:paddingHorizontal="5dp"
+                android:textColor="@color/white"
+                android:text="@{mediaItem.sizeString}" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageButton
+            android:id="@+id/item_create_feed_ib_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_cancel_two_tone"
+            app:layout_constraintBottom_toTopOf="@id/item_create_feed_cv"
+            app:layout_constraintEnd_toEndOf="@id/item_create_feed_cv"
+            app:layout_constraintStart_toEndOf="@id/item_create_feed_cv"
+            app:layout_constraintTop_toTopOf="@id/item_create_feed_cv" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_video_play_two_tone"
+            android:visibility="@{mediaItem.isVideo?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="@id/item_create_feed_cv"
+            app:layout_constraintEnd_toEndOf="@id/item_create_feed_cv"
+            app:layout_constraintStart_toStartOf="@id/item_create_feed_cv"
+            app:layout_constraintTop_toTopOf="@id/item_create_feed_cv" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

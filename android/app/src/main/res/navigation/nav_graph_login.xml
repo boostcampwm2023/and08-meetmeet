@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/login_nav_graph"
+    android:id="@+id/nav_graph_login"
     app:startDestination="@id/entrance_fragment">
 
     <fragment
@@ -11,7 +11,7 @@
         android:label="EntranceFragment"
         tools:layout="@layout/fragment_entrance">
         <action
-            android:id="@+id/entrance_fragment_to_home_activity"
+            android:id="@+id/action_entrance_fragment_to_home_activity"
             app:destination="@id/home_activity" />
         <action
             android:id="@+id/action_entranceFragment_to_self_login_fragment"
@@ -19,11 +19,14 @@
         <action
             android:id="@+id/action_entranceFragment_to_sign_up_fragment"
             app:destination="@id/sign_up_fragment" />
+        <action
+            android:id="@+id/action_entrance_fragment_to_setting_profile_fragment"
+            app:destination="@id/setting_profile_fragment" />
     </fragment>
     <activity
         android:id="@+id/home_activity"
         android:name="com.teameetmeet.meetmeet.presentation.home.HomeActivity"
-        android:label="HomeActivity"
+        android:label="home_activity"
         tools:layout="@layout/activity_home" />
     <fragment
         android:id="@+id/self_login_fragment"
@@ -41,6 +44,22 @@
         tools:layout="@layout/fragment_sign_up">
         <action
             android:id="@+id/action_sign_up_fragment_to_home_activity"
+            app:destination="@id/home_activity" />
+        <action
+            android:id="@+id/action_sign_up_fragment_to_setting_profile_fragment"
+            app:destination="@id/setting_profile_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/setting_profile_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.setting.profile.SettingProfileFragment"
+        android:label="setting_profile_fragment"
+        tools:layout="@layout/fragment_setting_profile">
+        <argument
+            android:name="isFirstSignIn"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <action
+            android:id="@+id/action_setting_profile_fragment_to_home_activity"
             app:destination="@id/home_activity" />
     </fragment>
 </navigation>

@@ -5,10 +5,11 @@ import java.time.LocalDate
 
 data class CalendarItem(
     val date: LocalDate? = null,
-    val events: List<String> = emptyList(),
-    var isSelected: Boolean = false
+    val events: List<EventSimple> = emptyList(),
+    val eventBars: List<EventBar?> = emptyList(),
+    val isSelected: Boolean = false
 ) {
-    fun getDay() : String {
+    fun getDay(): String {
         return date?.dayOfMonth?.toString() ?: ""
     }
 }

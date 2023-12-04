@@ -5,7 +5,10 @@ import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class Comment extends commonEntity {
-  @ManyToOne(() => Feed, { nullable: false })
+  @Column()
+  authorId: number;
+
+  @ManyToOne(() => Feed, { nullable: false, onDelete: 'CASCADE' })
   feed: Feed;
 
   @ManyToOne(() => User, { nullable: false })

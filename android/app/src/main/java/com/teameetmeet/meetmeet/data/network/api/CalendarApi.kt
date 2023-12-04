@@ -1,20 +1,34 @@
 package com.teameetmeet.meetmeet.data.network.api
 
-import com.teameetmeet.meetmeet.data.network.entity.EventResponse
+import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
+import com.teameetmeet.meetmeet.data.network.entity.Events
+import com.teameetmeet.meetmeet.data.network.entity.SingleEvent
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface CalendarApi {
-    @GET("calendar")
-    fun getEvents(
+    @GET("event")
+    suspend fun getEvents(
         @Query("startDate") startDate: String,
         @Query("endDate") endDate: String,
-    ): List<EventResponse>
+    ): Events
 
-    @GET("calendar/search")
-    fun searchEvents(
+    @GET("event/search")
+    suspend fun searchEvents(
         @Query("keyword") keyword: String?,
         @Query("startDate") startDate: String,
         @Query("endDate") endDate: String,
-    ): List<EventResponse>
+    ): Events
+
+    @POST("event")
+    suspend fun addSingleEvent(
+        @Body addEventRequest: AddEventRequest
+    ): SingleEvent
+
+    @POST("event")
+    suspend fun addRepeatEvent(
+        @Body addEventRequest: AddEventRequest
+    ): Events
 }

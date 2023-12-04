@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_search"
+    app:startDestination="@id/search_event_fragment">
+    <fragment
+        android:id="@+id/search_event_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.searchevent.searchevent.SearchEventFragment"
+        android:label="search_event_fragment">
+        <action
+            android:id="@+id/action_search_event_fragment_to_event_story_activity"
+            app:destination="@id/event_story_activity" />
+    </fragment>
+
+    <activity
+        android:id="@+id/event_story_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.EventStoryActivity"
+        android:label="event_story_activity">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </activity>
+</navigation>
