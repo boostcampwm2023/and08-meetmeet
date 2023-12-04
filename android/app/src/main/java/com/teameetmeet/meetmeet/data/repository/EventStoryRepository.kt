@@ -3,9 +3,11 @@ package com.teameetmeet.meetmeet.data.repository
 import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.FeedDetail
+import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
+import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.toException
 import com.teameetmeet.meetmeet.presentation.model.EventColor
@@ -141,5 +143,33 @@ class EventStoryRepository @Inject constructor(
             //todo: 예외처리
             throw it
         }
+    }
+
+    fun inviteEvent(eventId: Int, userId: Int): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                val request = EventInviteRequest(userId = userId, eventId = eventId)
+                eventStoryApi.inviteEvent(request)
+            }.catch {
+                throw it
+            }
+    }
+
+    fun getFollowingWithEventState(eventId: Int): Flow<List<UserStatus>> {
+        return flowOf(true)
+            .map {
+                eventStoryApi.getFollowingWithEventStatus(eventId).users
+            }.catch {
+                throw it
+            }
+    }
+
+    fun getFollowerWithEventState(eventId: Int): Flow<List<UserStatus>> {
+        return flowOf(true)
+            .map {
+                eventStoryApi.getFollowerWithEventStatus(eventId).users
+            }.catch {
+                throw it
+            }
     }
 }

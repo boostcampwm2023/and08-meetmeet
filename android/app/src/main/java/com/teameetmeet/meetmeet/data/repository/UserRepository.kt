@@ -2,8 +2,9 @@ package com.teameetmeet.meetmeet.data.repository
 
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.UserProfile
-import com.teameetmeet.meetmeet.data.model.UserWithFollowStatus
+import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.api.UserApi
+import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
@@ -49,7 +50,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserWithFollowStatus(nickname: String): Flow<UserWithFollowStatus> {
+    suspend fun getUserWithFollowStatus(nickname: String): Flow<UserStatus> {
         val userNickname = dataStore.getUserProfile().first().nickname
         return flowOf(true)
             .map {
@@ -111,11 +112,24 @@ class UserRepository @Inject constructor(
             }
     }
 
-    fun patchUserProfile(image: File?, nickname: String): Flow<UserProfile> {
+    fun patchNickname(nickname: String): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.patchNickname(NicknameChangeRequest(nickname))
+            }.catch {
+                throw it
+            }
+    }
+
+    fun patchProfileImage(image: File?): Flow<Unit> {
         return flowOf(true)
             .map {
                 val profileImageRequest = if (image == null) {
-                    null
+                    MultipartBody.Part.createFormData(
+                        "profile",
+                        "",
+                        "".toRequestBody("text/plain".toMediaType())
+                    )
                 } else {
                     MultipartBody.Part.createFormData(
                         "profile",
@@ -123,10 +137,9 @@ class UserRepository @Inject constructor(
                         image.asRequestBody()
                     )
                 }
-                val nicknameRequest = nickname.toRequestBody("text/plain".toMediaType())
-                val response = userApi.updateUserProfile(nicknameRequest, profileImageRequest)
-                fetchUserProfile(response)
-                response
+                userApi.updateProfileImage(profileImageRequest)
+            }.catch {
+                throw it
             }
     }
 }

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="eventMember"
-            type="com.teameetmeet.meetmeet.data.model.UserWithFollowStatus" />
+            type="com.teameetmeet.meetmeet.data.model.UserStatus" />
         <import type="android.view.View"/>
     </data>
 

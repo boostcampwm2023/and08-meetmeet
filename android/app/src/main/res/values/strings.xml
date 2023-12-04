@@ -100,6 +100,7 @@
     <string name="setting_password_change_fail">비밀번호 변경 실패</string>
     <string name="setting_profile_fail">프로필 변경 실패</string>
     <string name="setting_profile_set_default">기본 이미지로 변경</string>
+    <string name="setting_profile_network_error">프로필 정보를 가져올 수 없습니다</string>
 
     <string name="sign_up_duplicate_check_complete">중복확인 완료</string>
     <string name="sign_up_duplicate_check_fail">중복된 이메일 입니다</string>
@@ -112,6 +113,13 @@
     <string name="follow_following">팔로잉</string>
     <string name="follow_follower">팔로워</string>
     <string name="follow_search_hint">닉네임을 입력하세요</string>
+    <string name="follow_title_follow">팔로우</string>
+    <string name="follow_title_unfollow">언팔로우</string>
+    <string name="follow_search_fail">회원 검색 실패</string>
+    <string name="follow_search_following_fail">팔로잉 정보를 가져올 수 없습니다</string>
+    <string name="follow_search_follower_fail">팔로워 정보를 가져올 수 없습니다</string>
+    <string name="follow_follow_fail">팔로우 실패</string>
+    <string name="follow_unfollow_fail">언팔로우 실패</string>
 
     <string name="event_story_menu_title_see_more">더보기</string>
     <string name="event_story_title_event_time">일정 시간</string>
@@ -119,6 +127,9 @@
     <string name="event_story_title_event_notification">일정 공지</string>
     <string name="event_story_message_event_story_fail">스토리를 불러올 수 없습니다.\n%s</string>
     <string name="event_story_event_date">%1s - %2s</string>
+    <string name="event_story_invite_fail">일정 초대 실패</string>
+    <string name="event_story_invite">초대</string>
+    <string name="event_story_participating">참여중</string>
 
     <string name="create_feed_text_hint">텍스트를 입력하세요</string>
     <string name="create_feed_media_constraint_volume">미디어를 50MB 초과로 업로드 할 수 없습니다.</string>

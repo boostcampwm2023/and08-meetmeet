@@ -1,10 +1,10 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
-import android.util.Log
 import android.widget.RadioGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
@@ -37,6 +37,10 @@ class AddEventViewModel @Inject constructor(
     private val alarmHelper: AlarmHelper
 ) : ViewModel() {
 
+    companion object {
+        const val MAX_ALARM_COUNT = 2
+    }
+
     private val _uiState = MutableStateFlow(AddEventUiState())
     val uiState: StateFlow<AddEventUiState> = _uiState
 
@@ -45,58 +49,90 @@ class AddEventViewModel @Inject constructor(
     )
     val event: SharedFlow<AddEventUiEvent> = _event
 
+    private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
+
     fun eventSave() {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             if (checkEvent()) {
                 val startDateTime =
                     _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
                         .plusMinutes(_uiState.value.startTime.minute.toLong())
                         .toLong(ZoneId.systemDefault())
-                        .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
+                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
                 val endDateTime =
                     _uiState.value.endDate.plusHours(_uiState.value.endTime.hour.toLong())
                         .plusMinutes(_uiState.value.endTime.minute.toLong())
                         .toLong(ZoneId.systemDefault())
-                        .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
+                        .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
                 val repeatEndDate = _uiState.value.eventRepeatEndDate.toLong(ZoneId.systemDefault())
-                    .toDateString(DateTimeFormat.GLOBAL_DATE_TIME, ZoneId.of("UTC"))
+                    .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
                 with(_uiState.value) {
-                    calendarRepository.addEvent(
-                        title = eventName,
-                        startDate = startDateTime,
-                        endDate = endDateTime,
-                        isJoinable = isJoinable,
-                        isVisible = isOpen,
-                        memo = memo,
-                        repeatTerm = eventRepeat.value,
-                        repeatFrequency = eventRepeatFrequency,
-                        repeatEndDate = repeatEndDate,
-                        color = color,
-                        alarm = alarm,
-                    ).catch {
-                        _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
-                    }.collectLatest {
-                        startDateTime.toLocalDateTime(DateTimeFormat.GLOBAL_DATE_TIME)
-                            ?.let { startDateTime ->
-                                // todo API 되면 이벤트 아이디 받아서 넘기기
-                                // todo 알림 없음일 경우 알림 생성 x
-                                alarmHelper.registerEventAlarm(
-                                    EventAlarm(
-                                        1,
-                                        startDateTime.minusMinutes(alarm.minutes.toLong()).toLong(
-                                            ZoneId.of("UTC")
-                                        ),
-                                        alarm.minutes,
-                                        eventName
-                                    )
-                                )
-                                _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                    if (eventRepeat == EventRepeatTerm.NONE) {
+                        calendarRepository.addSingleEvent(
+                            title = eventName,
+                            startDate = startDateTime,
+                            endDate = endDateTime,
+                            isJoinable = isJoinable,
+                            isVisible = isOpen,
+                            memo = memo,
+                            repeatTerm = eventRepeat.value,
+                            repeatFrequency = eventRepeatFrequency,
+                            repeatEndDate = repeatEndDate,
+                            color = color,
+                            alarm = alarm,
+                        ).catch {
+                            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                            _showPlaceholder.update { false }
+                        }.collectLatest { event ->
+                            setAlarm(event)
+                        }
+                    } else {
+                        calendarRepository.addRepeatEvent(
+                            title = eventName,
+                            startDate = startDateTime,
+                            endDate = endDateTime,
+                            isJoinable = isJoinable,
+                            isVisible = isOpen,
+                            memo = memo,
+                            repeatTerm = eventRepeat.value,
+                            repeatFrequency = eventRepeatFrequency,
+                            repeatEndDate = repeatEndDate,
+                            color = color,
+                            alarm = alarm,
+                        ).catch {
+                            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                            _showPlaceholder.update { false }
+                        }.collectLatest { events ->
+                            events.take(MAX_ALARM_COUNT).forEach { event ->
+                                setAlarm(event)
                             }
+                        }
                     }
+                    _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                    _showPlaceholder.update { false }
                 }
             }
+        }
+    }
+
+    private fun AddEventUiState.setAlarm(event: EventResponse) {
+        val currentTime = LocalDateTime.now().toLong()
+        val triggerTime =
+            event.startDate.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
+                ?.minusMinutes(alarm.minutes.toLong())?.toLong()
+        if (triggerTime != null && currentTime <= triggerTime && alarm != EventNotification.NONE) {
+            alarmHelper.registerEventAlarm(
+                EventAlarm(
+                    event.id,
+                    triggerTime,
+                    alarm.minutes,
+                    eventName
+                )
+            )
         }
     }
 
@@ -210,6 +246,5 @@ class AddEventViewModel @Inject constructor(
         _uiState.update {
             it.copy(color = EventColor.values()[index])
         }
-        Log.d("test", uiState.value.toString())
     }
 }
