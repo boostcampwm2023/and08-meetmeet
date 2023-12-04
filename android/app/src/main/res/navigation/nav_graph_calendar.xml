@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_calendar"
+    app:startDestination="@id/month_calendar_fragment">
+
+    <fragment
+        android:id="@+id/month_calendar_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarFragment"
+        android:label="month_calendar_fragment">
+        <action
+            android:id="@+id/action_month_calendar_fragment_to_eventsPerDayBottomSheetFragment"
+            app:destination="@id/events_per_day_bottom_sheet_fragment" />
+        <action
+            android:id="@+id/action_month_calendar_fragment_to_add_event_activity"
+            app:destination="@id/add_event_activity" />
+    </fragment>
+    <dialog
+        android:id="@+id/events_per_day_bottom_sheet_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.calendar.bottomsheet.EventsPerDayBottomSheetFragment"
+        android:label="events_per_day_bottom_sheet_fragment">
+        <action
+            android:id="@+id/action_events_per_day_bottom_sheet_fragment_to_event_story_activity"
+            app:destination="@id/event_story_activity" />
+        <action
+            android:id="@+id/action_events_per_day_bottom_sheet_fragment_to_add_event_activity"
+            app:destination="@id/add_event_activity" />
+    </dialog>
+    <activity
+        android:id="@+id/add_event_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.addevent.AddEventActivity"
+        android:label="add_event_activity">
+        <argument
+            android:name="date"
+            app:argType="java.time.LocalDate" />
+    </activity>
+    <activity
+        android:id="@+id/event_story_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.EventStoryActivity"
+        android:label="add_event_activity">
+        <argument
+            android:name="eventId"
+            app:argType="integer" />
+    </activity>
+</navigation>

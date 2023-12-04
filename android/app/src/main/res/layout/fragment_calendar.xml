@@ -107,146 +107,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/calendar_cl_profile" />
 
-
-        <ImageButton
-            android:id="@+id/calendar_ib_nav_pre_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:background="@null"
-            android:onClick="@{() -> vm.moveMonth(-1l)}"
-            android:src="@drawable/ic_nav_pre"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_tv_date"
-            app:layout_constraintEnd_toStartOf="@id/calendar_tv_date"
-            app:layout_constraintTop_toTopOf="@id/calendar_tv_date" />
-
-        <TextView
-            android:id="@+id/calendar_tv_date"
-            style="@style/medium.bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_cl_profile"
-            app:local_date="@{vm.currentDate.date}"
-            tools:text="2023년 11월" />
-
-        <ImageButton
-            android:id="@+id/calendar_ib_nav_next_month"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:background="@null"
-            android:onClick="@{() -> vm.moveMonth(1l)}"
-            android:src="@drawable/ic_nav_next"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_tv_date"
-            app:layout_constraintStart_toEndOf="@id/calendar_tv_date"
-            app:layout_constraintTop_toTopOf="@id/calendar_tv_date" />
-
-
-        <TextView
-            android:id="@+id/calendar_tv_day_monday"
-            style="@style/caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/calendar_day_of_week_monday"
-            app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_tuesday"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="@id/calendar_rv_calendar"
-            app:layout_constraintTop_toBottomOf="@id/calendar_tv_date" />
-
-        <TextView
-            android:id="@+id/calendar_tv_day_tuesday"
-            style="@style/caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/calendar_day_of_week_tuesday"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
-            app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_wednesday"
-            app:layout_constraintStart_toEndOf="@id/calendar_tv_day_monday"
-            app:layout_constraintTop_toTopOf="@id/calendar_tv_day_monday" />
-
-        <TextView
-            android:id="@+id/calendar_tv_day_wednesday"
-            style="@style/caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/calendar_day_of_week_wednesday"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
-            app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_thursday"
-            app:layout_constraintStart_toEndOf="@id/calendar_tv_day_tuesday"
-            app:layout_constraintTop_toTopOf="@id/calendar_tv_day_monday" />
-
-        <TextView
-            android:id="@+id/calendar_tv_day_thursday"
-            style="@style/caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/calendar_day_of_week_thursday"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
-            app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_friday"
-            app:layout_constraintStart_toEndOf="@id/calendar_tv_day_wednesday"
-            app:layout_constraintTop_toTopOf="@id/calendar_tv_day_monday" />
-
-        <TextView
-            android:id="@+id/calendar_tv_day_friday"
-            style="@style/caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/calendar_day_of_week_friday"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
-            app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_saturday"
-            app:layout_constraintStart_toEndOf="@id/calendar_tv_day_thursday"
-            app:layout_constraintTop_toTopOf="@id/calendar_tv_day_monday" />
-
-        <TextView
-            android:id="@+id/calendar_tv_day_saturday"
-            style="@style/caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/calendar_day_of_week_saturday"
-            android:textColor="@color/blue"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
-            app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_sunday"
-            app:layout_constraintStart_toEndOf="@id/calendar_tv_day_friday"
-            app:layout_constraintTop_toTopOf="@id/calendar_tv_day_monday" />
-
-        <TextView
-            android:id="@+id/calendar_tv_day_sunday"
-            style="@style/caption"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/calendar_day_of_week_sunday"
-            android:textColor="@color/red"
-            app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
-            app:layout_constraintEnd_toEndOf="@id/calendar_rv_calendar"
-            app:layout_constraintStart_toEndOf="@id/calendar_tv_day_saturday"
-            app:layout_constraintTop_toTopOf="@id/calendar_tv_day_monday" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/calendar_rv_calendar"
-            sub_list="@{vm.daysInMonth}"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="16dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/calendar_tv_day_monday"
-            app:spanCount="7"
-            tools:itemCount="31" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_event"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:contentDescription="@string/add_event_title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_plus" />
+            app:navGraph="@navigation/nav_graph_calendar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
