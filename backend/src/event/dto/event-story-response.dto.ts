@@ -53,12 +53,12 @@ export class EventStoryResponseDto extends EventResponse {
       eventMembers: event.eventMembers.map((eventMember) =>
         Member.of(eventMember),
       ),
-      announcement: event.announcement,
+      announcement: event.announcement ?? null,
       authority: memberDetail.authority.displayName ?? null,
       repeatPolicyId: event.repeatPolicyId ?? null,
       isJoinable: event.isJoinable ? true : false,
       isVisible: memberDetail.detail.isVisible ? true : false,
-      memo: memberDetail.detail.memo ?? null,
+      memo: memberDetail.detail?.memo ?? null,
       feeds: event.feeds.map((feed) => EventFeed.of(feed)),
     };
   }
