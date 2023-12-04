@@ -90,11 +90,11 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Room DB
-    val room_version = "2.6.0"
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
+    val roomVersion = "2.6.0"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
 
     //KAKAO 로그인
     implementation("com.kakao.sdk:v2-user:2.18.0")
@@ -104,6 +104,6 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     //paging3
-    implementation("androidx.paging:paging-runtime:$3.2.1")
+    implementation("androidx.paging:paging-runtime-ktx:$3.2.1")
     implementation("androidx.paging:paging-common-ktx:3.2.1")
 }
