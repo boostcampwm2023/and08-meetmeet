@@ -63,7 +63,7 @@ export class FollowService {
       const user = {
         id: follower.user.id,
         nickname: follower.user.nickname,
-        profile: follower.user.profileId,
+        profile: follower.user.profile?.path ?? null,
         isFollowed: followings.some(
           (following) => following.follower.id === follower.user.id,
         )
@@ -90,7 +90,7 @@ export class FollowService {
       const user = {
         id: following.follower.id,
         nickname: following.follower.nickname,
-        profile: following.follower.profileId,
+        profile: following.follower.profile?.path ?? null,
         isFollowed: false,
       };
       result.push(user);
