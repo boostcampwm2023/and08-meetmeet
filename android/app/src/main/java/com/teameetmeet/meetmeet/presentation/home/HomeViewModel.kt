@@ -14,11 +14,7 @@ class HomeViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    init {
-        updateFcmToken()
-    }
-
-    private fun updateFcmToken() {
+    fun updateFcmToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) return@OnCompleteListener
 
