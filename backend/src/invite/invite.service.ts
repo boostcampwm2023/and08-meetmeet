@@ -3,7 +3,7 @@ import * as admin from 'firebase-admin';
 import { User } from '../user/entities/user.entity';
 import { Invite } from './entities/invite.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import { StatusEnum } from './entities/status.enum';
 import { Status } from './entities/status.entity';
 import { Event } from '../event/entities/event.entity';
@@ -127,6 +127,13 @@ export class InviteService {
   async getInviteById(inviteId: number) {
     return await this.inviteRepository.findOne({
       where: { id: inviteId },
+    });
+  }
+
+  async getInvitesByUser(user: User) {
+    return await this.inviteRepository.find({
+      where: { receiver: Equal(user.id) },
+      relations: ['sender', 'event', 'status'],
     });
   }
 }

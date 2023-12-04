@@ -159,4 +159,13 @@ export class UserController {
   logout(@GetUser() user: User) {
     return this.userService.logout(user);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('notification')
+  @ApiOperation({
+    summary: '사용자 알림 조회 API',
+  })
+  getUserNotification(@GetUser() user: User) {
+    return this.userService.getUserNotification(user);
+  }
 }

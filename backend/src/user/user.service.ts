@@ -11,6 +11,7 @@ import { User } from './entities/user.entity';
 import { OauthProvider } from './entities/oauthProvider.entity';
 import { ContentService } from 'src/content/content.service';
 import { FollowService } from '../follow/follow.service';
+import { InviteService } from '../invite/invite.service';
 
 const SALTROUND = 10;
 
@@ -22,6 +23,7 @@ export class UserService {
     private oauthProviderRepository: Repository<OauthProvider>,
     private readonly contentService: ContentService,
     private readonly followService: FollowService,
+    private readonly inviteService: InviteService,
   ) {}
 
   async localCreateUser(email: string, password: string, nickname: string) {
@@ -186,5 +188,10 @@ export class UserService {
 
   async logout(user: User) {
     await this.userRepository.update(user.id, { fcmToken: null });
+  }
+
+  async getUserNotification(user: User) {
+    const notifications = await this.inviteService.getInvitesByUser(user);
+    return notifications;
   }
 }
