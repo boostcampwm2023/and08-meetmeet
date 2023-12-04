@@ -324,12 +324,43 @@ export class EventController {
     return await this.eventService.joinSchedule(user, eventId);
   }
   @UseGuards(JwtAuthGuard)
-  @Post('/schedule/accept/:eventId')
-  async acceptSchedule(@Param('eventId', ParseIntPipe) eventId: number) {}
-
-  @UseGuards(JwtAuthGuard)
-  @Post('/schedule/decline/:eventId')
-  async declineSchedule(@Param('eventId', ParseIntPipe) eventId: number) {}
+  @Post('/schedule/accept')
+  @ApiOperation({
+    summary: '일정 참여 수락 API',
+    description: '',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        inviteId: {
+          type: 'number',
+        },
+        eventId: {
+          type: 'number',
+        },
+      },
+    },
+  })
+  @ApiQuery({
+    name: 'accept',
+    required: false,
+    description: 'true를 제외한 모든건 false로 처리됩니다.',
+  })
+  async acceptSchedule(
+    @Body('eventId', ParseIntPipe) eventId: number,
+    @Body('inviteId', ParseIntPipe) inviteId: number,
+    @GetUser() user: User,
+    @Query('accept', new DefaultValuePipe(false), ParseBoolPipe)
+    accept: boolean,
+  ) {
+    return await this.eventService.acceptSchedule(
+      user,
+      eventId,
+      inviteId,
+      accept,
+    );
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('/user/:userId')

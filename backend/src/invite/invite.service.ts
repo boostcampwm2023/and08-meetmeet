@@ -1,37 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { User } from '../user/entities/user.entity';
+import { Invite } from './entities/invite.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { StatusEnum } from './entities/status.enum';
+import { Status } from './entities/status.entity';
+import { Event } from '../event/entities/event.entity';
 @Injectable()
 export class InviteService {
-  constructor() {
+  constructor(
+    @InjectRepository(Invite)
+    private readonly inviteRepository: Repository<Invite>,
+    @InjectRepository(Status)
+    private readonly statusRepository: Repository<Status>,
+  ) {
     admin.initializeApp({
       credential: admin.credential.applicationDefault(),
     });
   }
-  // async sendInvite(user: User, word: string) {
-  //   const fcmToken = await this.userService.getFcmToken(user);
-  //   if (!fcmToken) {
-  //     throw new Error('fcmToken이 없습니다.');
-  //   }
-  //   const message = {
-  //     data: {
-  //       title: `${word}초대장이 도착했어요!`,
-  //       body: `${JSON.stringify(user)} 초대장이 도착했어요!`,
-  //     },
-  //     token: fcmToken,
-  //   };
-  //   await admin
-  //     .messaging()
-  //     .send(message)
-  //     .then((response) => {
-  //       console.log('Successfully sent message:', response);
-  //     })
-  //     .catch((error) => {
-  //       console.log('Error sending message:', error);
-  //     });
-  // }
-
-  async sendFollowMessage(user: User, fcmToken: string) {
+  async sendFollowMessage(user: User, follower: User, fcmToken: string) {
     const message: admin.messaging.Message = {
       data: {
         type: 'FOLLOW',
@@ -44,6 +32,32 @@ export class InviteService {
       token: fcmToken,
     };
     await this.sendFireBaseMessage(message);
+    await this.createInvite('FOLLOW', null, user, follower);
+  }
+
+  async sendInviteEventMessage(
+    user: User,
+    event: Event,
+    invitedUser: User,
+    fcmToken: string,
+  ) {
+    const message: admin.messaging.Message = {
+      data: {
+        type: 'EVENT_INVITATION',
+        body: JSON.stringify({
+          eventId: event.id,
+          title: event.title,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          eventOwner: event.eventMembers.find(
+            (eventMember) => eventMember.user.id === user.id,
+          ),
+        }),
+      },
+      token: fcmToken,
+    };
+    await this.sendFireBaseMessage(message);
+    await this.createInvite('INVITE', event.id, user, invitedUser);
   }
 
   async sendFireBaseMessage(message: admin.messaging.Message) {
@@ -57,5 +71,62 @@ export class InviteService {
     } catch (error) {
       console.log('Error sending message:', error);
     }
+  }
+
+  async createInvite(
+    type: string,
+    eventId: number | null,
+    sender: User,
+    receiver: User,
+  ) {
+    const invite = new Invite();
+    invite.sender = sender;
+    invite.receiver = receiver;
+    if (eventId) {
+      invite.event = { id: eventId } as any;
+    }
+
+    if (type === 'FOLLOW') {
+      const status = await this.statusRepository.findOne({
+        where: { displayName: StatusEnum.Accepted },
+      });
+      if (!status) {
+        throw new HttpException('Status not found', 404);
+      }
+      invite.status = status;
+    } else if (type === 'INVITE') {
+      const status = await this.statusRepository.findOne({
+        where: { displayName: StatusEnum.Pending },
+      });
+      if (!status) {
+        throw new HttpException('Status not found', 404);
+      }
+      invite.status = status;
+    }
+
+    await this.inviteRepository.save(invite);
+  }
+
+  async updateInvite(inviteId: number, status: StatusEnum) {
+    const invite = await this.inviteRepository.findOne({
+      where: { id: inviteId },
+    });
+    if (!invite) {
+      throw new HttpException('Invite not found', 404);
+    }
+    const statusEntity = await this.statusRepository.findOne({
+      where: { displayName: status },
+    });
+    if (!statusEntity) {
+      throw new HttpException('Status not found', 404);
+    }
+    invite.status = statusEntity;
+    await this.inviteRepository.save(invite);
+  }
+
+  async getInviteById(inviteId: number) {
+    return await this.inviteRepository.findOne({
+      where: { id: inviteId },
+    });
   }
 }

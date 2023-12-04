@@ -24,6 +24,8 @@ import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
 import { Detail } from '../detail/entities/detail.entity';
 import { UserService } from '../user/user.service';
+import { InviteService } from '../invite/invite.service';
+import { StatusEnum } from '../invite/entities/status.enum';
 
 @Injectable()
 export class EventService {
@@ -37,6 +39,7 @@ export class EventService {
     private eventMemberService: EventMemberService,
     private followService: FollowService,
     private userService: UserService,
+    private inviteService: InviteService,
   ) {}
 
   async getEvents(user: User, startDate: string, endDate: string) {
@@ -856,7 +859,7 @@ export class EventService {
     const result: any[] = [];
     rawFollowings.forEach((follower) => {
       const eventMember = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === follower.user.id,
+        (eventMember) => eventMember.user.id === follower.follower.id,
       );
       result.push({
         id: follower.follower.id,
@@ -929,7 +932,6 @@ export class EventService {
   }
 
   async inviteSchedule(user: User, userId: number, eventId: number) {
-    // 초대를 보내야 하지만 현재는 무조건 참여하도록 구현
     const event = await this.eventRepository.findOne({
       where: { id: eventId },
     });
@@ -954,28 +956,21 @@ export class EventService {
       }
     });
 
-    const detail = {
-      isVisible: true,
-      memo: '',
-      color: -39579,
-      alarmMinutes: 10,
-    } as Detail;
+    const invitedUser = await this.userService.findUserById(userId);
 
-    const savedDetail = await this.detailService.createDetailSingle(detail);
-
-    const authority = await this.eventMemberService.getAuthorityId('MEMBER');
-    if (!authority) {
-      throw new Error('authority is not valid');
+    if (!invitedUser || invitedUser.fcmToken === null) {
+      throw new HttpException(
+        '존재하지 않는 유저입니다.',
+        HttpStatus.NOT_FOUND,
+      );
     }
 
-    await this.eventMemberService.createEventMember(
-      event,
+    await this.inviteService.sendInviteEventMessage(
       user,
-      savedDetail,
-      authority,
+      event,
+      invitedUser,
+      invitedUser.fcmToken,
     );
-
-    // todo : 초대를 보내는 것으로 구현한다.
     return { result: '초대요청이 전송되었습니다.' };
   }
 
@@ -1017,6 +1012,69 @@ export class EventService {
       savedDetail,
       authority,
     );
-    return { result: '참여요청이 전송되었습니다.' };
+    return { result: '일정에 참가하였습니다.' };
+  }
+
+  async acceptSchedule(
+    user: User,
+    eventId: number,
+    inviteId: number,
+    isAccept: boolean,
+  ) {
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+    });
+
+    if (!event) {
+      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    const invite = await this.inviteService.getInviteById(inviteId);
+
+    if (!invite) {
+      throw new HttpException('초대가 없습니다.', HttpStatus.NOT_FOUND);
+    }
+
+    if (invite.status.displayName !== StatusEnum.Pending) {
+      throw new HttpException(
+        '이미 만료된 초대입니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (invite.receiver.id !== user.id) {
+      throw new HttpException(
+        '초대받은 유저가 아닙니다.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (isAccept) {
+      const detail = {
+        isVisible: true,
+        memo: '',
+        color: -39579,
+        alarmMinutes: 10,
+      } as Detail;
+
+      const savedDetail = await this.detailService.createDetailSingle(detail);
+
+      const authority = await this.eventMemberService.getAuthorityId('MEMBER');
+      if (!authority) {
+        throw new Error('authority is not valid');
+      }
+
+      await this.eventMemberService.createEventMember(
+        event,
+        user,
+        savedDetail,
+        authority,
+      );
+      await this.inviteService.updateInvite(invite.id, StatusEnum.Accepted);
+      return { result: '일정에 참가하였습니다.' };
+    } else {
+      await this.inviteService.updateInvite(invite.id, StatusEnum.Rejected);
+      return { result: '일정에 참가하지 않았습니다.' };
+    }
   }
 }

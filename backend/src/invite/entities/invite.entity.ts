@@ -1,13 +1,13 @@
-import { Entity, ManyToOne } from 'typeorm';
+import { Entity, ManyToOne, OneToOne } from 'typeorm';
 import { commonEntity } from 'src/common/common.entity';
 import { Event } from 'src/event/entities/event.entity';
 import { User } from 'src/user/entities/user.entity';
-import { InviteType } from './inviteType.entity';
+import { Status } from './status.entity';
 
 @Entity()
 export class Invite extends commonEntity {
-  @ManyToOne(() => InviteType, { nullable: false })
-  inviteType: InviteType;
+  @OneToOne(() => Status, { nullable: false, eager: true })
+  status: Status;
 
   @ManyToOne(() => User, { nullable: false })
   sender: User;
@@ -15,6 +15,6 @@ export class Invite extends commonEntity {
   @ManyToOne(() => User, { nullable: false })
   receiver: User;
 
-  @ManyToOne(() => Event, { nullable: false })
+  @ManyToOne(() => Event, { nullable: true })
   event: Event;
 }
