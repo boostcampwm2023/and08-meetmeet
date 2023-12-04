@@ -174,10 +174,16 @@ export class UserService {
   }
 
   async findUserByEmail(email: string) {
-    return await this.userRepository.findOne({ where: { email: email } });
+    return await this.userRepository.findOne({
+      where: { email: email },
+      withDeleted: true,
+    });
   }
 
   async findUserByNickname(nickname: string) {
-    return await this.userRepository.findOne({ where: { nickname: nickname } });
+    return await this.userRepository.findOne({
+      where: { nickname: nickname },
+      withDeleted: true,
+    });
   }
 }
