@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Follow } from './entities/follow.entity';
 import { Equal, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
+import { InviteService } from '../invite/invite.service';
 
 @Injectable()
 export class FollowService {
   constructor(
     @InjectRepository(Follow) private followRepository: Repository<Follow>,
     @InjectRepository(User) private userRepository: Repository<User>,
+    private readonly inviteService: InviteService,
   ) {}
 
   async getRawFollowers(user: User) {
@@ -129,6 +131,12 @@ export class FollowService {
       follower: followingUser,
     });
     await this.followRepository.save(follow);
+
+    if (followingUser.fcmToken) {
+      await this.inviteService.sendFollowMessage(user, followingUser.fcmToken);
+    }
+    // todo : fcm 알람을 디비에 저장해야하나 고민.
+
     return { message: '팔로우 성공' };
   }
 
