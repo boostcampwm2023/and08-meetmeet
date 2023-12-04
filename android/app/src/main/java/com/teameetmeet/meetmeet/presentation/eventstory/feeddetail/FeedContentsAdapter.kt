@@ -9,7 +9,7 @@ import com.teameetmeet.meetmeet.data.model.Content
 import com.teameetmeet.meetmeet.databinding.ItemFeedContentBinding
 
 class FeedContentsAdapter :
-    ListAdapter<Content, FeedContentsAdapter.FeedContentsViewHolder>(DIFF_CALLBACK) {
+    ListAdapter<Content, FeedContentsAdapter.FeedContentsViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedContentsViewHolder {
         return FeedContentsViewHolder(
             ItemFeedContentBinding.inflate(
@@ -32,7 +32,7 @@ class FeedContentsAdapter :
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Content>() {
+        private val diffCallback = object : DiffUtil.ItemCallback<Content>() {
             override fun areItemsTheSame(oldItem: Content, newItem: Content): Boolean {
                 return oldItem.id == newItem.id
             }
