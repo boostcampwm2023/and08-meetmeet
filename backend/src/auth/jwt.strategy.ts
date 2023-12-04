@@ -1,10 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
-import { TokenExpiredError } from '@nestjs/jwt';
+import {
+  ExpiredTokenException,
+  InvalidPayloadException,
+} from './exception/auth.exception';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -23,16 +26,16 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const { email, exp } = payload;
 
     if (!email) {
-      throw new UnauthorizedException();
+      throw new InvalidPayloadException();
     }
 
     if (exp < new Date().getTime() / 1000) {
-      throw new TokenExpiredError('Access token is expired.', new Date(exp));
+      throw new ExpiredTokenException();
     }
 
     const user: User | null = await this.userService.findUserByEmail(email);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new InvalidPayloadException();
     }
     return user;
   }
