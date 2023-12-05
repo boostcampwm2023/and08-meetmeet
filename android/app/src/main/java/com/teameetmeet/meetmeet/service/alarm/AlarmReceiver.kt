@@ -3,24 +3,13 @@ package com.teameetmeet.meetmeet.service.alarm
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
 import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_EVENT_NOTIFICATION
-import com.teameetmeet.meetmeet.service.alarm.model.EventAlarm
 import com.teameetmeet.meetmeet.service.notification.NotificationHelper
-import com.teameetmeet.meetmeet.util.date.getLocalDateTime
-import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
-
-    @Inject
-    lateinit var localCalendarDataSource: LocalCalendarDataSource
 
     @Inject
     lateinit var alarmHelper: AlarmHelper
@@ -37,7 +26,7 @@ class AlarmReceiver : BroadcastReceiver() {
             }
 
             AlarmHelper.INTENT_ACTION_ALARM_UPDATE -> {
-                setAlarms()
+                alarmHelper.setAlarms()
             }
 
             AlarmHelper.INTENT_ACTION_ALARM_EVENT -> {
@@ -50,30 +39,6 @@ class AlarmReceiver : BroadcastReceiver() {
                     id = intent.getIntExtra(AlarmHelper.INTENT_EXTRA_EVENT_ID, 0)
                 )
             }
-        }
-    }
-
-
-    private fun setAlarms() {
-        CoroutineScope(Dispatchers.IO).launch {
-            localCalendarDataSource.getEvents(
-                getLocalDateTime().toLong(),
-                getLocalDateTime().plusDays(AlarmHelper.UPDATE_DAY_UNIT).toLong()
-            )
-                .first().let { events ->
-                    events.filter {
-                        it.getTriggerTime() >= getLocalDateTime().toLong() && it.notification != -1
-                    }.map {
-                        EventAlarm(
-                            id = it.id,
-                            triggerTime = it.getTriggerTime(),
-                            it.notification,
-                            title = it.title
-                        )
-                    }.forEach { eventAlarm ->
-                        alarmHelper.registerEventAlarm(eventAlarm)
-                    }
-                }
         }
     }
 }

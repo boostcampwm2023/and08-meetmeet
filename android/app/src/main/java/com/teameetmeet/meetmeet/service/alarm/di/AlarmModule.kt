@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.service.alarm.di
 
 import android.content.Context
+import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
 import com.teameetmeet.meetmeet.service.alarm.AlarmHelper
 import dagger.Module
 import dagger.Provides
@@ -15,5 +16,8 @@ class AlarmModule {
 
     @Singleton
     @Provides
-    fun provideAlarmHelper(@ApplicationContext context: Context) = AlarmHelper(context)
+    fun provideAlarmHelper(
+        @ApplicationContext context: Context,
+        localCalendarDataSource: LocalCalendarDataSource
+    ) = AlarmHelper(context, localCalendarDataSource)
 }
