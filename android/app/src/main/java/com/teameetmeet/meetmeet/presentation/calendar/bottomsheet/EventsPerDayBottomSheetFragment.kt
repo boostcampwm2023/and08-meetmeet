@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.hilt.navigation.fragment.hiltNavGraphViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventsPerDayBottomSheetBinding
-import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarViewModel
+import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.MonthCalendarViewModel
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -22,7 +22,7 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemCl
     private var _binding: FragmentEventsPerDayBottomSheetBinding? = null
     private val binding get() = requireNotNull(_binding)
 
-    private val viewModel: MonthCalendarViewModel by hiltNavGraphViewModels(R.id.nav_graph_calendar)
+    private val viewModel: MonthCalendarViewModel by navGraphViewModels(R.id.nav_graph_calendar)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
