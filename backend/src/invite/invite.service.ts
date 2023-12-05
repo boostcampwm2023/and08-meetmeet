@@ -142,6 +142,7 @@ export class InviteService {
   async getInviteById(inviteId: number) {
     return await this.inviteRepository.findOne({
       where: { id: inviteId },
+      relations: ['sender', 'receiver'],
     });
   }
 
