@@ -83,7 +83,7 @@ class FeedContentFragment :
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             askWriteExternalStoragePermission(imageIndex)
         } else {
-            viewModel.saveImage(imageIndex, ImageDownloadWorker.TYPE_DOWNLOAD_MANAGER)
+            viewModel.saveImage(imageIndex, ImageDownloadWorker.TYPE_MEDIA_STORE)
 
         }
     }

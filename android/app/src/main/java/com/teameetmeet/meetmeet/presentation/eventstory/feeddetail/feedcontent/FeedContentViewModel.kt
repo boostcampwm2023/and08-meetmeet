@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -69,7 +70,7 @@ class FeedContentViewModel @Inject constructor(
                     )
                 )
                 _isLoading.update { false }
-            }.collect {
+            }.collectLatest {
                 if (it[0].state == WorkInfo.State.SUCCEEDED) {
                     println(it[0].outputData.getString(ImageDownloadWorker.KEY_DOWNLOAD_TYPE))
                     println(it[0])
@@ -87,7 +88,7 @@ class FeedContentViewModel @Inject constructor(
                         )
                     }
                     _isLoading.update { false }
-                    return@collect
+                    return@collectLatest
                 } else if (it[0].state == WorkInfo.State.FAILED) {
                     _event.emit(
                         FeedContentEvent.ShowMessage(
@@ -95,7 +96,7 @@ class FeedContentViewModel @Inject constructor(
                         )
                     )
                     _isLoading.update { false }
-                    return@collect
+                    return@collectLatest
                 }
             }
         }
