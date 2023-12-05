@@ -14,7 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import {
   ApiBearerAuth,
   ApiBody,
-  ApiConsumes,
+  ApiConsumes, ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
@@ -22,6 +22,7 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
+import {SearchResponseDto} from "../event/dto/search-response.dto";
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -126,6 +127,7 @@ export class UserController {
     summary: '사용자 검색 API',
     description: 'parameter의 nickname으로 검색합니다.',
   })
+  @ApiOkResponse({type: SearchResponseDto})
   searchUser(@GetUser() user: User, @Query('nickname') nickname: string) {
     return this.userService.searchUser(user, nickname);
   }

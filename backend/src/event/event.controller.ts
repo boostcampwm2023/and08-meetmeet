@@ -32,6 +32,7 @@ import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
+import {SearchResponseDto} from "./dto/search-response.dto";
 
 @ApiBearerAuth()
 @ApiTags('event')
@@ -266,6 +267,7 @@ export class EventController {
     required: true,
     example: 123,
   })
+  @ApiOkResponse({ type: SearchResponseDto })
   async searchUserEvents(
     @GetUser() user: User,
     @Param('eventId', ParseIntPipe) eventId: number,

@@ -12,6 +12,7 @@ import { OauthProvider } from './entities/oauthProvider.entity';
 import { ContentService } from 'src/content/content.service';
 import { FollowService } from '../follow/follow.service';
 import { InviteService } from '../invite/invite.service';
+import {SearchResponseDto} from "../event/dto/search-response.dto";
 
 const SALTROUND = 10;
 
@@ -152,15 +153,14 @@ export class UserService {
     const searchResult = await this.findUserByNickname(nickname);
 
     if (!searchResult) {
-      throw new BadRequestException('존재하지 않는 유저입니다.');
+      return SearchResponseDto.of([], [], []);
+    } else {
+      return SearchResponseDto.of(
+        [searchResult],
+        [await this.followService.isFollowed(user, searchResult.id)],
+        [],
+      );
     }
-
-    return {
-      id: searchResult.id,
-      nickname: searchResult.nickname,
-      profile: searchResult.profile?.path ?? null,
-      isFollowed: await this.followService.isFollowed(user, searchResult.id),
-    };
   }
 
   async findUserWithPasswordByEmail(email: string) {

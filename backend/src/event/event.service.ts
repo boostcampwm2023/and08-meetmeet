@@ -26,6 +26,7 @@ import { Detail } from '../detail/entities/detail.entity';
 import { UserService } from '../user/user.service';
 import { InviteService } from '../invite/invite.service';
 import { StatusEnum } from '../invite/entities/status.enum';
+import { SearchResponseDto } from './dto/search-response.dto';
 
 @Injectable()
 export class EventService {
@@ -910,25 +911,25 @@ export class EventService {
 
     const findByNickname = await this.userService.findUserByNickname(nickname);
     if (!findByNickname) {
-      throw new HttpException('유저가 없습니다.', HttpStatus.NOT_FOUND);
-    }
-    if (findByNickname.id === user.id) {
-      throw new HttpException(
-        '자기 자신은 검색할 수 없습니다.',
-        HttpStatus.BAD_REQUEST,
+      return SearchResponseDto.of([], [], []);
+    } else {
+      if (findByNickname.id === user.id) {
+        throw new HttpException(
+          '자기 자신은 검색할 수 없습니다.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      const eventMember = event.eventMembers.find(
+        (eventMember) => eventMember.user.id === findByNickname.id,
+      );
+      console.log(eventMember);
+      return SearchResponseDto.of(
+        [findByNickname],
+        [],
+        eventMember ? [true] : [false],
       );
     }
-
-    const eventMember = event.eventMembers.find(
-      (eventMember) => eventMember.user.id === findByNickname.id,
-    );
-
-    return {
-      id: findByNickname.id,
-      nickname: findByNickname.nickname,
-      profile: findByNickname.profile?.path ?? null,
-      isJoined: eventMember ? true : false,
-    };
   }
 
   async inviteSchedule(user: User, userId: number, eventId: number) {
