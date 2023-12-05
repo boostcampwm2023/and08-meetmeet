@@ -198,6 +198,8 @@ class EventStoryRepository @Inject constructor(
         return flowOf(true)
             .map {
                 eventStoryApi.acceptInviteEvent(accept, EventInviteAcceptRequest(inviteId, eventId))
+            }.catch {
+                throw it.toException()
             }
     }
 }

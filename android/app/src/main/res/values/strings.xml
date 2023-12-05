@@ -207,6 +207,8 @@
 
     <string name="notification_follow_message">%s님이 회원님을 팔로우 하였습니다.</string>
     <string name="notification_event_invitation_message">%1s님이 %2s에 회원님을 초대하였습니다.</string>
+    <string name="notification_event_invite_accept">수락</string>
+    <string name="notification_event_invite_reject">거절</string>
 
     <string name="alarm_description_alarm_minutes">일정 시작 %s 입니다.</string>
     <string name="alarm_notification_message_on_time">일정이 지금 시작됩니다!!</string>
