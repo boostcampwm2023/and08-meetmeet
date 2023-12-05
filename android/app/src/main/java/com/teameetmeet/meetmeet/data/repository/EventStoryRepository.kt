@@ -9,6 +9,7 @@ import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
 import com.teameetmeet.meetmeet.data.network.entity.AnnouncementRequest
+import com.teameetmeet.meetmeet.data.network.entity.EventInviteAcceptRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.toException
 import com.teameetmeet.meetmeet.presentation.model.EventColor
@@ -190,6 +191,13 @@ class EventStoryRepository @Inject constructor(
                 result
             }.catch {
                 throw it.toException()
+            }
+    }
+
+    fun acceptEventInvite(accept: Boolean, inviteId: Int, eventId: Int): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                eventStoryApi.acceptInviteEvent(accept, EventInviteAcceptRequest(inviteId, eventId))
             }
     }
 }

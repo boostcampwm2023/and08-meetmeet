@@ -3,10 +3,10 @@ package com.teameetmeet.meetmeet.data.network.api
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.FeedDetail
 import com.teameetmeet.meetmeet.data.model.UsersResponse
-import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
 import com.teameetmeet.meetmeet.data.network.entity.AnnouncementRequest
+import com.teameetmeet.meetmeet.data.network.entity.EventInviteAcceptRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventStoryDetailResponse
 import okhttp3.MultipartBody
@@ -84,4 +84,10 @@ interface EventStoryApi {
 
     @POST("event/schedule/invite")
     suspend fun inviteEvent(@Body eventInviteRequest: EventInviteRequest)
+
+    @POST("event/schedule/accept")
+    suspend fun acceptInviteEvent(
+        @Query("accept") accept: Boolean,
+        @Body eventInviteAcceptRequest: EventInviteAcceptRequest
+    )
 }
