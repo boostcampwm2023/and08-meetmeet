@@ -4,6 +4,8 @@ import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.api.UserApi
+import com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotification
+import com.teameetmeet.meetmeet.data.network.entity.FollowNotification
 import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.TokenRequest
@@ -152,5 +154,23 @@ class UserRepository @Inject constructor(
         } catch (e: Exception) {
             //todo: 예외처리
         }
+    }
+
+    fun getFollowNotification(): Flow<List<FollowNotification>> {
+        return flowOf(true)
+            .map {
+                userApi.getFollowNotification().map { it.body }
+            }.catch {
+                throw it.toException()
+            }
+    }
+
+    fun getEventInvitationNotification(): Flow<List<EventInvitationNotification>> {
+        return flowOf(true)
+            .map {
+                userApi.getEventInvitationNotification().map { it.body }
+            }.catch {
+                throw it.toException()
+            }
     }
 }
