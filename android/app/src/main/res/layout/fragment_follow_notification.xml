@@ -16,17 +16,16 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/notification_rcv"
+            sub_list="@{vm.followNotificationList}"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            sub_list="@{vm.followNotificationList}"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tool:listitem="@layout/item_follow_notification"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:orientation="vertical"
-            />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tool:listitem="@layout/item_follow_notification" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
