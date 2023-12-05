@@ -12,6 +12,10 @@
         <variable
             name="actionType"
             type="com.teameetmeet.meetmeet.presentation.follow.FollowActionType" />
+
+        <variable
+            name="id"
+            type="java.lang.Integer" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,7 +66,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:background="@null"
-                android:onClick="@{() -> vm.updateSearchedUser(actionType)}"
+                android:onClick="@{() -> vm.updateSearchedUser(actionType, id)}"
                 android:src="@drawable/ic_search"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
