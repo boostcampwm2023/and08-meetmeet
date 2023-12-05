@@ -28,7 +28,7 @@ class EventMemberViewModel @Inject constructor(
     fun fetchEventMember(nicknameList: List<String>) {
         viewModelScope.launch {
             _uiState.update {
-                nicknameList.map {
+                nicknameList.flatMap {
                     userRepository.getUserWithFollowStatus(it).catch {  exception ->
                         println(exception)
                         when(exception) {

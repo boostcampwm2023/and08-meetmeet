@@ -51,16 +51,18 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun getUserWithFollowStatus(nickname: String): Flow<UserStatus> {
+    fun getUserWithFollowStatus(nickname: String): Flow<List<UserStatus>> {
         return flowOf(true)
             .map {
                 val userNickname = dataStore.getUserProfile().first().nickname
-                val user = userApi.getUserWithFollowStatus(nickname)
-                if (user.nickname == userNickname) {
-                    user.copy(isMe = true)
-                } else {
-                    user
+                val result = userApi.getUserWithFollowStatus(nickname).users.map {
+                    if (it.nickname == userNickname) {
+                        it.copy(isMe = true)
+                    } else {
+                        it
+                    }
                 }
+                result
             }.catch {
                 throw it.toException()
             }
@@ -147,7 +149,7 @@ class UserRepository @Inject constructor(
     suspend fun updateFcmToken(token: String) {
         try {
             userApi.updateFcmToken(TokenRequest(token))
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             //todo: 예외처리
         }
     }

@@ -49,8 +49,8 @@ class FollowViewModel @Inject constructor(
                         _searchKeyword.value
                     ).catch {
                         _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
-                    }.collectLatest { user ->
-                        _searchedUser.update { listOf(user) }
+                    }.collectLatest { users ->
+                        _searchedUser.update { users }
                     }
                 }
 
@@ -59,8 +59,8 @@ class FollowViewModel @Inject constructor(
                         eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
                             .catch {
                                 _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
-                            }.collectLatest { user ->
-                                _searchedUser.update { listOf(user) }
+                            }.collectLatest { users ->
+                                _searchedUser.update { users }
                             }
                     }
                 }

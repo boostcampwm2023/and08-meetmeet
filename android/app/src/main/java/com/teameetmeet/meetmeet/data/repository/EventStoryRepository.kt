@@ -176,16 +176,18 @@ class EventStoryRepository @Inject constructor(
             }
     }
 
-    fun getUserWithEventStatus(eventId: Int, nickname: String): Flow<UserStatus> {
+    fun getUserWithEventStatus(eventId: Int, nickname: String): Flow<List<UserStatus>> {
         return flowOf(true)
             .map {
                 val userNickname = dataStore.getUserProfile().first().nickname
-                val user = eventStoryApi.getUserWithEventStatus(eventId, nickname)
-                if (user.nickname == userNickname) {
-                    user.copy(isMe = true)
-                } else {
-                    user
+                val result = eventStoryApi.getUserWithEventStatus(eventId, nickname).users.map {
+                    if (it.nickname == userNickname) {
+                        it.copy(isMe = true)
+                    } else {
+                        it
+                    }
                 }
+                result
             }.catch {
                 throw it.toException()
             }
