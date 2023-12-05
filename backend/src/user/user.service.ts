@@ -6,6 +6,8 @@ import { User } from './entities/user.entity';
 import { OauthProvider } from './entities/oauthProvider.entity';
 import { ContentService } from 'src/content/content.service';
 import { FollowService } from '../follow/follow.service';
+import { InviteService } from '../invite/invite.service';
+import { SearchResponseDto } from '../event/dto/search-response.dto';
 import {
   DuplicatedNicknameException,
   NoSuchOauthProviderException,
@@ -22,6 +24,7 @@ export class UserService {
     private oauthProviderRepository: Repository<OauthProvider>,
     private readonly contentService: ContentService,
     private readonly followService: FollowService,
+    private readonly inviteService: InviteService,
   ) {}
 
   async localCreateUser(email: string, password: string, nickname: string) {
@@ -78,13 +81,11 @@ export class UserService {
       throw new UserNotFoundException();
     }
 
-    const userInfo = {
+    return {
       email: result.oauthProvider?.displayName ?? result.email,
       nickname: result.nickname,
       profile: result.profile?.path ?? null,
     };
-
-    return userInfo;
   }
 
   async updateUserPassword(user: User, password: string) {
@@ -140,7 +141,7 @@ export class UserService {
   }
 
   async findUserByOAuth(email: string, oauthProvider: string) {
-    const result = await this.userRepository
+    return await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.oauthProvider', 'oauth')
       .addSelect('user.deletedAt')
@@ -148,23 +149,20 @@ export class UserService {
       .andWhere('user.email = :email', { email: email })
       .withDeleted()
       .getOne();
-
-    return result;
   }
 
   async searchUser(user: User, nickname: string) {
     const searchResult = await this.findUserByNickname(nickname);
 
     if (!searchResult) {
-      throw new UserNotFoundException();
+      return SearchResponseDto.of([], [], []);
+    } else {
+      return SearchResponseDto.of(
+        [searchResult],
+        [await this.followService.isFollowed(user, searchResult.id)],
+        [],
+      );
     }
-
-    return {
-      id: searchResult.id,
-      nickname: searchResult.nickname,
-      profile: searchResult.profile?.path ?? null,
-      isFollowed: await this.followService.isFollowed(user, searchResult.id),
-    };
   }
 
   async findUserWithPasswordByEmail(email: string) {
@@ -188,7 +186,63 @@ export class UserService {
     });
   }
 
+  async findUserById(id: number) {
+    return await this.userRepository.findOne({ where: { id: id } });
+  }
+
   async registerFCMToken(user: User, token: string) {
     await this.userRepository.update(user.id, { fcmToken: token });
+  }
+
+  async logout(user: User) {
+    await this.userRepository.update(user.id, { fcmToken: null });
+  }
+
+  async getUserNotification(user: User, page: string) {
+    const notifications = await this.inviteService.getInvitesByUser(user);
+    const result: any[] = [];
+    let type: string;
+    if (page === 'follow') {
+      type = 'FOLLOW';
+    } else if (page === 'invite') {
+      type = 'EVENT_INVITATION';
+    }
+    notifications.forEach((notification) => {
+      if (page === 'follow') {
+        if (notification.event?.id === undefined) {
+          const data = {
+            type: type,
+            body: {
+              inviteId: notification.id,
+              id: notification.sender.id,
+              nickname: notification.sender.nickname,
+              profile: notification.sender.profile?.path ?? null,
+              status: notification.status.displayName,
+            },
+          };
+          result.push(data);
+        }
+      } else if (page === 'invite') {
+        if (notification.event?.id === undefined) {
+          return;
+        }
+
+        if (notification.event.id) {
+          const data = {
+            type: type,
+            body: {
+              inviteId: notification.id,
+              eventId: notification.event?.id,
+              title: notification.event?.title,
+              startDate: notification.event?.startDate,
+              endDate: notification.event?.endDate,
+              status: notification.status.displayName,
+            },
+          };
+          result.push(data);
+        }
+      }
+    });
+    return result;
   }
 }
