@@ -36,7 +36,7 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
 
             FollowActionType.EVENT -> {
                 with(binding.followBtnAction) {
-                    if (!user.isJoined) {
+                    if (user.isJoined == UserStatus.JOIN_STATUS_JOINABLE) {
                         text = context.getString(R.string.event_story_invite)
                         setOnClickListener {
                             id?.let {
@@ -44,8 +44,13 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
                             }
                         }
                         isEnabled = true
-                    } else {
+                    } else if (user.isJoined == UserStatus.JOIN_STATUS_PENDING) {
+                        text = context.getString(R.string.event_story_pending)
+                        isEnabled = false
+                    } else if (user.isJoined == UserStatus.JOIN_STATUS_ACCEPTED) {
                         text = context.getString(R.string.event_story_participating)
+                        isEnabled = false
+                    } else {
                         isEnabled = false
                     }
                 }
