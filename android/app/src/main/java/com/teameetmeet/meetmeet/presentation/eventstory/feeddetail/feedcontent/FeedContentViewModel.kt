@@ -8,12 +8,14 @@ import com.teameetmeet.meetmeet.data.model.Content
 import com.teameetmeet.meetmeet.service.downloading.ImageDownloadHelper
 import com.teameetmeet.meetmeet.service.downloading.ImageDownloadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,7 +34,10 @@ class FeedContentViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val _event = MutableSharedFlow<FeedContentEvent>()
+    private val _event = MutableSharedFlow<FeedContentEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val event: SharedFlow<FeedContentEvent> = _event
 
     fun fetchContents(content: Array<Content>) {
@@ -70,25 +75,26 @@ class FeedContentViewModel @Inject constructor(
                     )
                 )
                 _isLoading.update { false }
-            }.collectLatest {
+            }.filter {
+                it[0].state.isFinished
+            }.first {
                 if (it[0].state == WorkInfo.State.SUCCEEDED) {
                     println(it[0].outputData.getString(ImageDownloadWorker.KEY_DOWNLOAD_TYPE))
                     println(it[0])
                     if (it[0].tags.contains(ImageDownloadWorker.TYPE_DOWNLOAD_MANAGER)) {
-                        _event.emit(
+                        _event.tryEmit(
                             FeedContentEvent.ShowMessage(
                                 R.string.feed_content_message_image_save_start
                             )
                         )
                     } else if (it[0].tags.contains(ImageDownloadWorker.TYPE_MEDIA_STORE)) {
-                        _event.emit(
+                        _event.tryEmit(
                             FeedContentEvent.ShowMessage(
                                 R.string.feed_content_message_image_save_success
                             )
                         )
                     }
                     _isLoading.update { false }
-                    return@collectLatest
                 } else if (it[0].state == WorkInfo.State.FAILED) {
                     _event.emit(
                         FeedContentEvent.ShowMessage(
@@ -96,11 +102,12 @@ class FeedContentViewModel @Inject constructor(
                         )
                     )
                     _isLoading.update { false }
-                    return@collectLatest
                 }
+                true
             }
         }
     }
+
 
     override fun onClick() {
         changeTouchedStatus()
