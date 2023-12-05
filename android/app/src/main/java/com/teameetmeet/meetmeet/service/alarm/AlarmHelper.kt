@@ -157,9 +157,13 @@ class AlarmHelper @Inject constructor(
 
         const val INTENT_ACTION_ALARM_UPDATE = "intentActionAlarmUpdate"
 
+        const val INTENT_ACTION_ACCEPT_INVITE_EVENT = "intentActionAcceptInviteEvent"
+
         const val INTENT_EXTRA_TITLE = "intentExtraTitle"
+        const val INTENT_EXTRA_INVITE_ID = "intentExtraInviteId"
         const val INTENT_EXTRA_EVENT_ID = "intentExtraEventId"
         const val INTENT_EXTRA_CONTENT = "intentExtraContent"
+        const val INTENT_EXTRA_ACCEPT = "intentExtraAccept"
 
         const val UPDATE_DAY_UNIT = 8L
         const val LAST_DATE = "2040-01-01"
