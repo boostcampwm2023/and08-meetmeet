@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.calendar
+package com.teameetmeet.meetmeet.presentation.calendar.monthcalendar
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.databinding.ItemCalendarBinding
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 
-class CalendarAdapter(
+class MonthCalendarAdapter(
     private val calendarItemClickListener: CalendarItemClickListener
-) : ListAdapter<CalendarItem, CalendarAdapter.CalendarViewHolder>(diffCallback) {
+) : ListAdapter<CalendarItem, MonthCalendarAdapter.CalendarViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarViewHolder {
         val binding = ItemCalendarBinding.inflate(

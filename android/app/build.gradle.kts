@@ -6,6 +6,7 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -70,6 +71,7 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+    implementation("androidx.hilt:hilt-navigation-fragment:1.1.0")
 
     // Di Hilt
     implementation("com.google.dagger:hilt-android:2.48")
@@ -89,11 +91,11 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     // Room DB
-    val room_version = "2.6.0"
-    implementation("androidx.room:room-runtime:$room_version")
-    annotationProcessor("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
+    val roomVersion = "2.6.0"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
 
     //KAKAO 로그인
     implementation("com.kakao.sdk:v2-user:2.18.0")
@@ -103,6 +105,11 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     //paging3
-    implementation("androidx.paging:paging-runtime:$3.2.1")
+    implementation("androidx.paging:paging-runtime-ktx:$3.2.1")
     implementation("androidx.paging:paging-common-ktx:3.2.1")
+
+    //firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
 }

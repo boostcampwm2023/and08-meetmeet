@@ -26,15 +26,15 @@ class DatabaseModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
-        val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL("ALTER TABLE `Event` MODIFY COLUMN `notification` INT NOT NULL")
+        val migration1To2 = object : Migration(1, 2) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `Event` MODIFY COLUMN `notification` INT NOT NULL")
             }
         }
 
         return Room
             .databaseBuilder(context, AppDatabase::class.java, "meetmeet-local.db")
-            .addMigrations(MIGRATION_1_2)
+            .addMigrations(migration1To2)
             .build()
     }
 }

@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.calendar
+package com.teameetmeet.meetmeet.presentation.calendar.monthcalendar
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

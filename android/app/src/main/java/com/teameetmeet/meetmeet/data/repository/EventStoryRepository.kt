@@ -7,8 +7,8 @@ import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
+import com.teameetmeet.meetmeet.data.network.entity.AnnouncementRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
-import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.toException
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
@@ -29,7 +29,7 @@ class EventStoryRepository @Inject constructor(
     fun getEventStory(id: Int): Flow<EventStory> {
         return flowOf(true)
             .map {
-                eventStoryApi.getStory(id.toString())
+                eventStoryApi.getStory(id)
             }.catch {
                 throw it.toException()
             }
@@ -38,7 +38,7 @@ class EventStoryRepository @Inject constructor(
     fun getEventStoryDetail(id: Int): Flow<EventDetail> {
         return flowOf(Unit)
             .map {
-                eventStoryApi.getStoryDetail(id.toString()).result
+                eventStoryApi.getStoryDetail(id).result
             }.catch {
                 throw it.toException()
             }
@@ -92,10 +92,10 @@ class EventStoryRepository @Inject constructor(
             }
     }
 
-    fun editNotification(message: String): Flow<Unit> {
+    fun editNotification(eventId: Int, message: String?): Flow<Unit> {
         return flowOf(true)
             .map {
-                eventStoryApi.editNotification(KakaoLoginRequest(message))
+                eventStoryApi.editNotification(eventId, AnnouncementRequest(message))
             }.catch {
                 throw it.toException()
             }

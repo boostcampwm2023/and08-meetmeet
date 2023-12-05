@@ -9,7 +9,7 @@ import com.teameetmeet.meetmeet.data.model.Comment
 import com.teameetmeet.meetmeet.databinding.ItemFeedCommentBinding
 
 class FeedCommentsAdapter :
-    ListAdapter<Comment, FeedCommentsAdapter.FeedCommentsViewHolder>(DIFF_CALLBACK) {
+    ListAdapter<Comment, FeedCommentsAdapter.FeedCommentsViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedCommentsViewHolder {
         return FeedCommentsViewHolder(
             ItemFeedCommentBinding.inflate(
@@ -32,7 +32,7 @@ class FeedCommentsAdapter :
     }
 
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Comment>() {
+        private val diffCallback = object : DiffUtil.ItemCallback<Comment>() {
             override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
                 return oldItem.id == newItem.id
             }

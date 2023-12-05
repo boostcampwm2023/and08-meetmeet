@@ -11,16 +11,22 @@ import com.teameetmeet.meetmeet.databinding.ActivitySplashBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.home.HomeActivity
 import com.teameetmeet.meetmeet.presentation.login.LoginActivity
+import com.teameetmeet.meetmeet.service.notification.NotificationHelper
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_splash) {
 
-    private val viewModel : SplashViewModel by viewModels()
+    @Inject
+    lateinit var notificationHelper: NotificationHelper
+
+    private val viewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        notificationHelper.createNotificationChannels()
         collectViewModelEvent()
     }
 
@@ -28,7 +34,7 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { event ->
-                    when(event) {
+                    when (event) {
                         is SplashEvent.NavigateToHomeActivity -> navigateToHomeActivity()
                         is SplashEvent.NavigateToLoginActivity -> navigateToLoginActivity()
                     }

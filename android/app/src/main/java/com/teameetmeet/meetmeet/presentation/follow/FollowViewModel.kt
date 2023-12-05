@@ -127,9 +127,7 @@ class FollowViewModel @Inject constructor(
                 }.collectLatest {
                     updateFollowing(FollowActionType.FOLLOW)
                     updateFollower(FollowActionType.FOLLOW)
-                    if (_searchKeyword.value == user.nickname) {
-                        _searchedUser.update { listOf() }
-                    }
+                    updateSearchedUser(FollowActionType.FOLLOW)
                 }
         }
     }
@@ -142,9 +140,7 @@ class FollowViewModel @Inject constructor(
                 }.collectLatest {
                     updateFollowing(FollowActionType.FOLLOW)
                     updateFollower(FollowActionType.FOLLOW)
-                    if (_searchKeyword.value == user.nickname) {
-                        _searchedUser.update { listOf() }
-                    }
+                    updateSearchedUser(FollowActionType.FOLLOW)
                 }
         }
     }

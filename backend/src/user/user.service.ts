@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hash } from 'bcrypt';
@@ -13,6 +8,11 @@ import { ContentService } from 'src/content/content.service';
 import { FollowService } from '../follow/follow.service';
 import { InviteService } from '../invite/invite.service';
 import {SearchResponseDto} from "../event/dto/search-response.dto";
+import {
+  DuplicatedNicknameException,
+  NoSuchOauthProviderException,
+  UserNotFoundException,
+} from './exception/user.exception';
 
 const SALTROUND = 10;
 
@@ -46,7 +46,7 @@ export class UserService {
     });
 
     if (!oauthProvider) {
-      throw new BadRequestException();
+      throw new NoSuchOauthProviderException();
     }
 
     const user = this.userRepository.create({
@@ -59,28 +59,33 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
+async getUserById(id: number) {
+    return await this.userRepository
+        .createQueryBuilder('user')
+        .select([
+            'user.email',
+            'user.nickname',
+            'profile.path',
+            'oauth.displayName',
+        ])
+        .leftJoin('user.profile', 'profile')
+        .leftJoin('user.oauthProvider', 'oauth')
+        .where('user.id = :id', { id })
+        .getOne();
+}
+
   async getUserInfo(user: User) {
-    const result = await this.userRepository
-      .createQueryBuilder('user')
-      .select([
-        'user.email',
-        'user.nickname',
-        'profile.path',
-        'oauth.displayName',
-      ])
-      .leftJoin('user.profile', 'profile')
-      .leftJoin('user.oauthProvider', 'oauth')
-      .where('user.id = :id', { id: user.id })
-      .getOne();
+      const result = await this.getUserById(user.id);
+
 
     if (!result) {
-      throw new NotFoundException('There is no such user.');
+      throw new UserNotFoundException();
     }
 
     const userInfo = {
       email: result.oauthProvider?.displayName ?? result.email,
       nickname: result.nickname,
-      profileUrl: result.profile?.path ?? null,
+      profile: result.profile?.path ?? null,
     };
 
     return userInfo;
@@ -95,7 +100,7 @@ export class UserService {
 
   async updateUserNickname(user: User, nickname: string) {
     if (await this.findUserByNickname(nickname)) {
-      throw new BadRequestException('중복된 닉네임입니다.');
+      throw new DuplicatedNicknameException();
     }
 
     await this.userRepository.update(user.id, { nickname: nickname });
@@ -142,26 +147,28 @@ export class UserService {
     const result = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.oauthProvider', 'oauth')
+      .addSelect('user.deletedAt')
       .where('oauth.displayName = :oauth', { oauth: oauthProvider })
       .andWhere('user.email = :email', { email: email })
+      .withDeleted()
       .getOne();
 
     return result;
   }
 
-  async searchUser(user: User, nickname: string) {
-    const searchResult = await this.findUserByNickname(nickname);
+    async searchUser(user: User, nickname: string) {
+        const searchResult = await this.findUserByNickname(nickname);
 
-    if (!searchResult) {
-      return SearchResponseDto.of([], [], []);
-    } else {
-      return SearchResponseDto.of(
-        [searchResult],
-        [await this.followService.isFollowed(user, searchResult.id)],
-        [],
-      );
+        if (!searchResult) {
+            return SearchResponseDto.of([], [], []);
+        } else {
+            return SearchResponseDto.of(
+                [searchResult],
+                [await this.followService.isFollowed(user, searchResult.id)],
+                [],
+            );
+        }
     }
-  }
 
   async findUserWithPasswordByEmail(email: string) {
     return await this.userRepository.findOne({
@@ -171,11 +178,17 @@ export class UserService {
   }
 
   async findUserByEmail(email: string) {
-    return await this.userRepository.findOne({ where: { email: email } });
+    return await this.userRepository.findOne({
+      where: { email: email },
+      withDeleted: true,
+    });
   }
 
   async findUserByNickname(nickname: string) {
-    return await this.userRepository.findOne({ where: { nickname: nickname } });
+    return await this.userRepository.findOne({
+      where: { nickname: nickname },
+      withDeleted: true,
+    });
   }
 
   async findUserById(id: number) {

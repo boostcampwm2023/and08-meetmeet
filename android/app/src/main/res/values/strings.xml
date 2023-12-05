@@ -125,6 +125,7 @@
     <string name="event_story_title_event_time">일정 시간</string>
     <string name="event_story_title_event_members">일정 멤버</string>
     <string name="event_story_title_event_notification">일정 공지</string>
+    <string name="event_story_delete_event_notification">공지 삭제</string>
     <string name="event_story_message_event_story_fail">스토리를 불러올 수 없습니다.\n%s</string>
     <string name="event_story_event_date">%1s - %2s</string>
     <string name="event_story_invite_fail">일정 초대 실패</string>
@@ -185,6 +186,27 @@
 
     <string name="notification_title_event_notification">일정 알림</string>
     <string name="notification_channel_description_event">일정에 대한 알림을 받을 수 있는 알림 채널입니다.</string>
+
+    <string name="notification_title_follow_notification">팔로우 알림</string>
+    <string name="notification_channel_description_follow">팔로우에 대한 알림을 받을 수 있는 알림 채널입니다.</string>
+
+    <string name="notification_title_event_invitation_notification">일정 초대 알림</string>
+    <string name="notification_channel_description_event_invitation">일정 초대에 대한 알림을 받을 수 있는 알림 채널입니다.</string>
+
+    <string name="notification_title_request_permission">알림 권한을 허용해 주세요</string>
+    <string name="notification_message_request_permission">권한을 허용하시면 일정, 팔로우, 일정 초대를 바로 알려 드릴 수 있습니다. 허용해 주실거죠?</string>
+    <string name="notification_positive_request_permission">네</string>
+    <string name="notification_negative_request_permission">아니오</string>
+    <string name="notification_message_permission_denied">앱이 알림을 보내지 않습니다</string>
+    <string name="notification_title_default">밋밋 알림</string>
+
+    <string name="notification_tab_follow">팔로우</string>
+    <string name="notification_tab_invite_event">일정 초대</string>
+    <string name="notification_tab_invite_group">그룹 초대</string>
+
+    <string name="notification_follow_message">%s님이 회원님을 팔로우 하였습니다.</string>
+    <string name="notification_event_invitation_message">%1s님이 %2s에 회원님을 초대하였습니다.</string>
+
     <string name="alarm_description_alarm_minutes">일정 시작 %s 입니다.</string>
     <string name="alarm_notification_message_on_time">일정이 지금 시작됩니다!!</string>
     <string name="alarm_notification_message_before_10_minutes">일정 시작 10분 전이에요!! 서두르세요~</string>
@@ -199,14 +221,9 @@
     <string name="event_member_title_app_bar">일정 멤버</string>
     <string name="event_member_follow">팔로우</string>
     <string name="event_member_unfollow">언팔로우</string>
-    <string name="notification_tab_follow">팔로우</string>
-    <string name="notification_tab_invite_event">일정 초대</string>
-    <string name="notification_tab_invite_group">그룹 초대</string>
-    <string name="notification_follow_message">%s님이 팔로우하였습니다.</string>
-    <string name="notification_event_message">%1s님이 %s에 회원님을 초대하였습니다.</string>
 
     <string name="feed_detail_comment_hint">댓글을 입력하세요</string>
     <string name="feed_detail_comment_amount">댓글 %d회</string>
     <string name="feed_detail_media_count">%d/%d</string>
-
+    <string name="event_story_message_notification_delete_success">일정 공지를 삭제하였습니다.</string>
 </resources>

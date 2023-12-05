@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class AccessTokenRequest(
-    @Json(name = "token")
-    val accessToken: String
+data class AnnouncementRequest(
+    @Json(name = "announcement")
+    val announcement: String?
 )

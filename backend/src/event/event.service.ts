@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOperator, Raw, Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
@@ -27,6 +20,18 @@ import { UserService } from '../user/user.service';
 import { InviteService } from '../invite/invite.service';
 import { StatusEnum } from '../invite/entities/status.enum';
 import { SearchResponseDto } from './dto/search-response.dto';
+import {
+  AlreadyJoinedException,
+  EventForbiddenException,
+  EventNotFoundException,
+  InvalidRepeatPolicyException,
+  InviteSelfException,
+  NotEventMemberException,
+  NotRepeatEventException,
+  SearchPeriodException,
+  SearchSelfException,
+} from './exception/event.exception';
+import { UserNotFoundException } from 'src/user/exception/user.exception';
 
 @Injectable()
 export class EventService {
@@ -63,7 +68,7 @@ export class EventService {
       );
 
       if (!event_detail) {
-        throw new Error('event detail is not valid');
+        throw new NotEventMemberException();
       }
 
       return EventsResponseDto.of(event, event_detail);
@@ -79,7 +84,7 @@ export class EventService {
     });
 
     if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+      throw new EventNotFoundException();
     }
 
     const authority = event.eventMembers.find(
@@ -87,7 +92,7 @@ export class EventService {
     )?.authority?.displayName;
 
     if (!authority || !['OWNER', 'MEMBER', 'ADMIN'].includes(authority)) {
-      throw new NotFoundException('이벤트에 참여하지 않았습니다.');
+      throw new NotEventMemberException();
     }
 
     const detail = event.eventMembers.find(
@@ -95,7 +100,7 @@ export class EventService {
     );
 
     if (!detail) {
-      throw new Error('Cannot find event detail');
+      throw new NotEventMemberException();
     }
 
     return {
@@ -154,7 +159,7 @@ export class EventService {
       ],
     });
     if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+      throw new EventNotFoundException();
     }
 
     return EventStoryResponseDto.of(event, user.id);
@@ -166,12 +171,12 @@ export class EventService {
 
     if (this.isReapeatPolicy(createScheduleDto)) {
       if (!this.isReapeatPolicyValid(createScheduleDto)) {
-        throw new Error('repeat policy is not valid');
+        throw new InvalidRepeatPolicyException();
       }
 
       const repeatPolicy = await this.createRepeatPolicy(createScheduleDto);
       if (!repeatPolicy) {
-        throw new Error('repeat policy is not valid');
+        throw new InvalidRepeatPolicyException();
       }
 
       const events = await this.createRepeatEvent(
@@ -186,7 +191,7 @@ export class EventService {
       );
       const authority = await this.eventMemberService.getAuthorityId('OWNER');
       if (!authority) {
-        throw new Error('authority is not valid');
+        throw new EventForbiddenException();
       }
       const savedEventMembers =
         await this.eventMemberService.createEventMemberBulk(
@@ -222,7 +227,7 @@ export class EventService {
       const detail = await this.detailService.createDetail(createScheduleDto);
       const authority = await this.eventMemberService.getAuthorityId('OWNER');
       if (!authority) {
-        throw new Error('authority is not valid');
+        throw new EventForbiddenException();
       }
       const savedEventMembers = await this.eventMemberService.createEventMember(
         savedEvent,
@@ -262,16 +267,13 @@ export class EventService {
     });
 
     if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+      throw new EventNotFoundException();
     }
     const isValidUser = event.eventMembers.find(
       (eventMember) => eventMember.user.id === user.id,
     );
     if (!isValidUser) {
-      throw new HttpException(
-        '이벤트에 참여하지 않았습니다.',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotEventMemberException();
     }
     const resultObject = event
       ? {
@@ -301,10 +303,7 @@ export class EventService {
       : null;
 
     if (!resultObject) {
-      throw new HttpException(
-        '반복되는 컨텐츠가 아닙니다.',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotRepeatEventException();
     }
 
     if (!isAll) {
@@ -358,7 +357,7 @@ export class EventService {
     });
 
     if (!event) {
-      throw new HttpException('컨텐츠가 없습니다.', HttpStatus.NOT_FOUND);
+      throw new EventNotFoundException();
     }
 
     const eventMember = event.eventMembers.find(
@@ -366,7 +365,7 @@ export class EventService {
     );
 
     if (!eventMember) {
-      throw new Error('detail is not valid');
+      throw new NotEventMemberException();
     }
 
     if (eventMember.authority.displayName === 'MEMBER') {
@@ -436,7 +435,7 @@ export class EventService {
                 await this.createRepeatPolicy(updateScheduleDto);
 
               if (!repeatPolicy) {
-                throw new Error('repeat policy is not valid');
+                throw new InvalidRepeatPolicyException();
               }
 
               const calendar = await this.calendarService.getCalendarByUserId(
@@ -457,7 +456,7 @@ export class EventService {
               const authority =
                 await this.eventMemberService.getAuthorityId('OWNER');
               if (!authority) {
-                throw new Error('authority is not valid');
+                throw new EventForbiddenException();
               }
 
               const savedEventMembers =
@@ -631,7 +630,7 @@ export class EventService {
     );
 
     if (!authority || authority !== 'OWNER') {
-      throw new UnauthorizedException('일정 공지 권한이 없습니다.');
+      throw new EventForbiddenException();
     }
 
     await this.eventRepository.update(eventId, {
@@ -646,7 +645,7 @@ export class EventService {
     const sixMonthsInMillis = 6 * 30 * 24 * 60 * 60 * 1000;
 
     if (endDate.getTime() - startDate.getTime() > sixMonthsInMillis) {
-      throw new BadRequestException('일정 검색 기간은 6개월 이내여야 합니다.');
+      throw new SearchPeriodException();
     }
 
     const whereClause: {
@@ -680,7 +679,7 @@ export class EventService {
       );
 
       if (!event_detail) {
-        throw new Error('event detail is not valid');
+        throw new NotEventMemberException();
       }
 
       return EventsResponseDto.of(event, event_detail);
@@ -753,7 +752,7 @@ export class EventService {
       endDate: createScheduleDto.endDate,
     });
     if (!createScheduleDto.repeatFrequency) {
-      throw new Error('repeat frequency is not valid');
+      throw new InvalidRepeatPolicyException();
     }
     switch (createScheduleDto.repeatTerm) {
       case 'DAY':
@@ -855,7 +854,7 @@ export class EventService {
       },
     });
     if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+      throw new EventNotFoundException();
     }
     const result: any[] = [];
     rawFollowings.forEach((follower) => {
@@ -880,7 +879,7 @@ export class EventService {
       },
     });
     if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+      throw new EventNotFoundException();
     }
 
     const result: any[] = [];
@@ -906,30 +905,27 @@ export class EventService {
       },
     });
     if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+      throw new EventNotFoundException();
     }
 
     const findByNickname = await this.userService.findUserByNickname(nickname);
     if (!findByNickname) {
       return SearchResponseDto.of([], [], []);
     } else {
-      if (findByNickname.id === user.id) {
-        throw new HttpException(
-          '자기 자신은 검색할 수 없습니다.',
-          HttpStatus.BAD_REQUEST,
-        );
+        if (findByNickname.id === user.id) {
+            throw new SearchSelfException();
+        }
       }
 
       const eventMember = event.eventMembers.find(
         (eventMember) => eventMember.user.id === findByNickname.id,
       );
-      console.log(eventMember);
       return SearchResponseDto.of(
         [findByNickname],
         [],
         eventMember ? [true] : [false],
       );
-    }
+
   }
 
   async inviteSchedule(user: User, userId: number, eventId: number) {
@@ -938,32 +934,23 @@ export class EventService {
     });
 
     if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+      throw new EventNotFoundException();
     }
 
     if (user.id === userId) {
-      throw new HttpException(
-        '자기 자신을 초대할 수 없습니다.',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new InviteSelfException();
     }
 
     event.eventMembers.forEach((eventMember) => {
       if (eventMember.user.id === userId) {
-        throw new HttpException(
-          '이미 참여한 유저입니다.',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new AlreadyJoinedException();
       }
     });
 
     const invitedUser = await this.userService.findUserById(userId);
 
     if (!invitedUser || invitedUser.fcmToken === null) {
-      throw new HttpException(
-        '존재하지 않는 유저입니다.',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new UserNotFoundException();
     }
 
     await this.inviteService.sendInviteEventMessage(
@@ -981,15 +968,12 @@ export class EventService {
     });
 
     if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+        throw new EventNotFoundException();
     }
 
     event.eventMembers.forEach((eventMember) => {
       if (eventMember.user.id === user.id) {
-        throw new HttpException(
-          '이미 참여한 유저입니다.',
-          HttpStatus.BAD_REQUEST,
-        );
+       throw new AlreadyJoinedException()
       }
     });
 
@@ -1004,7 +988,7 @@ export class EventService {
 
     const authority = await this.eventMemberService.getAuthorityId('MEMBER');
     if (!authority) {
-      throw new Error('authority is not valid');
+      throw new EventForbiddenException();
     }
 
     await this.eventMemberService.createEventMember(
@@ -1016,66 +1000,63 @@ export class EventService {
     return { result: '일정에 참가하였습니다.' };
   }
 
-  async acceptSchedule(
-    user: User,
-    eventId: number,
-    inviteId: number,
-    isAccept: boolean,
-  ) {
-    const event = await this.eventRepository.findOne({
-      where: { id: eventId },
-    });
+    async acceptSchedule(
+        user: User,
+        eventId: number,
+        inviteId: number,
+        isAccept: boolean,
+    ) {
+        const event = await this.eventRepository.findOne({
+            where: { id: eventId },
+        });
 
-    if (!event) {
-      throw new HttpException('이벤트가 없습니다.', HttpStatus.NOT_FOUND);
+        if (!event) {
+            throw new NotEventMemberException()
+        }
+
+        const invite = await this.inviteService.getInviteById(inviteId);
+
+        if (!invite) {
+            // todo : 초대가 없습니다.
+            throw new NotEventMemberException()
+        }
+
+        if (invite.status.displayName !== StatusEnum.Pending) {
+            // todo : 만료된 초대 에러
+            throw new NotEventMemberException()
+        }
+
+        if (invite.receiver.id !== user.id) {
+            // todo : 초대받은 유저가 아닌 에러
+            throw new EventNotFoundException()
+        }
+
+        if (isAccept) {
+            const detail = {
+                isVisible: true,
+                memo: '',
+                color: -39579,
+                alarmMinutes: 10,
+            } as Detail;
+
+            const savedDetail = await this.detailService.createDetailSingle(detail);
+
+            const authority = await this.eventMemberService.getAuthorityId('MEMBER');
+            if (!authority) {
+                throw new Error('authority is not valid');
+            }
+
+            await this.eventMemberService.createEventMember(
+                event,
+                user,
+                savedDetail,
+                authority,
+            );
+            await this.inviteService.updateInvite(invite.id, StatusEnum.Accepted);
+            return { result: '일정에 참가하였습니다.' };
+        } else {
+            await this.inviteService.updateInvite(invite.id, StatusEnum.Rejected);
+            return { result: '일정에 참가하지 않았습니다.' };
+        }
     }
-
-    const invite = await this.inviteService.getInviteById(inviteId);
-
-    if (!invite) {
-      throw new HttpException('초대가 없습니다.', HttpStatus.NOT_FOUND);
-    }
-
-    if (invite.status.displayName !== StatusEnum.Pending) {
-      throw new HttpException(
-        '이미 만료된 초대입니다.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (invite.receiver.id !== user.id) {
-      throw new HttpException(
-        '초대받은 유저가 아닙니다.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    if (isAccept) {
-      const detail = {
-        isVisible: true,
-        memo: '',
-        color: -39579,
-        alarmMinutes: 10,
-      } as Detail;
-
-      const savedDetail = await this.detailService.createDetailSingle(detail);
-
-      const authority = await this.eventMemberService.getAuthorityId('MEMBER');
-      if (!authority) {
-        throw new Error('authority is not valid');
-      }
-
-      await this.eventMemberService.createEventMember(
-        event,
-        user,
-        savedDetail,
-        authority,
-      );
-      await this.inviteService.updateInvite(invite.id, StatusEnum.Accepted);
-      return { result: '일정에 참가하였습니다.' };
-    } else {
-      await this.inviteService.updateInvite(invite.id, StatusEnum.Rejected);
-      return { result: '일정에 참가하지 않았습니다.' };
-    }
-  }
 }
