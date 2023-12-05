@@ -51,10 +51,10 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun getUserWithFollowStatus(nickname: String): Flow<UserStatus> {
-        val userNickname = dataStore.getUserProfile().first().nickname
+    fun getUserWithFollowStatus(nickname: String): Flow<UserStatus> {
         return flowOf(true)
             .map {
+                val userNickname = dataStore.getUserProfile().first().nickname
                 val user = userApi.getUserWithFollowStatus(nickname)
                 if (user.nickname == userNickname) {
                     user.copy(isMe = true)

@@ -141,7 +141,12 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     private fun showDialog(noti: String) {
         AlertDialog.Builder(requireContext()).apply {
-            setMessage(noti).create().show()
+            setTitle(R.string.event_story_title_event_notification)
+                .setMessage(noti)
+                .setNeutralButton(R.string.event_story_delete_event_notification) { _, _ ->
+                    viewModel.editNotification(null)
+                }
+                .create().show()
         }
     }
 

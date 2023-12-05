@@ -125,6 +125,7 @@
     <string name="event_story_title_event_time">일정 시간</string>
     <string name="event_story_title_event_members">일정 멤버</string>
     <string name="event_story_title_event_notification">일정 공지</string>
+    <string name="event_story_delete_event_notification">공지 삭제</string>
     <string name="event_story_message_event_story_fail">스토리를 불러올 수 없습니다.\n%s</string>
     <string name="event_story_event_date">%1s - %2s</string>
     <string name="event_story_invite_fail">일정 초대 실패</string>
@@ -224,4 +225,5 @@
     <string name="feed_detail_comment_hint">댓글을 입력하세요</string>
     <string name="feed_detail_comment_amount">댓글 %d회</string>
     <string name="feed_detail_media_count">%d/%d</string>
+    <string name="event_story_message_notification_delete_success">일정 공지를 삭제하였습니다.</string>
 </resources>

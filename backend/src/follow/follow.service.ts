@@ -133,7 +133,11 @@ export class FollowService {
     await this.followRepository.save(follow);
 
     if (followingUser.fcmToken) {
-      await this.inviteService.sendFollowMessage(user, followingUser.fcmToken);
+      await this.inviteService.sendFollowMessage(
+        user,
+        followingUser,
+        followingUser.fcmToken,
+      );
     }
     // todo : fcm 알람을 디비에 저장해야하나 고민.
 

@@ -32,6 +32,7 @@ import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
+import { SearchResponseDto } from './dto/search-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('event')
@@ -266,6 +267,7 @@ export class EventController {
     required: true,
     example: 123,
   })
+  @ApiOkResponse({ type: SearchResponseDto })
   async searchUserEvents(
     @GetUser() user: User,
     @Param('eventId', ParseIntPipe) eventId: number,
@@ -317,19 +319,50 @@ export class EventController {
       },
     },
   })
-  async cancelSchedule(
+  async joinSchedule(
     @GetUser() user: User,
     @Body('eventId', ParseIntPipe) eventId: number,
   ) {
     return await this.eventService.joinSchedule(user, eventId);
   }
   @UseGuards(JwtAuthGuard)
-  @Post('/schedule/accept/:eventId')
-  async acceptSchedule(@Param('eventId', ParseIntPipe) eventId: number) {}
-
-  @UseGuards(JwtAuthGuard)
-  @Post('/schedule/decline/:eventId')
-  async declineSchedule(@Param('eventId', ParseIntPipe) eventId: number) {}
+  @Post('/schedule/accept')
+  @ApiOperation({
+    summary: '일정 참여 수락 API',
+    description: '',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        inviteId: {
+          type: 'number',
+        },
+        eventId: {
+          type: 'number',
+        },
+      },
+    },
+  })
+  @ApiQuery({
+    name: 'accept',
+    required: false,
+    description: 'true를 제외한 모든건 false로 처리됩니다.',
+  })
+  async acceptSchedule(
+    @Body('eventId', ParseIntPipe) eventId: number,
+    @Body('inviteId', ParseIntPipe) inviteId: number,
+    @GetUser() user: User,
+    @Query('accept', new DefaultValuePipe(false), ParseBoolPipe)
+    accept: boolean,
+  ) {
+    return await this.eventService.acceptSchedule(
+      user,
+      eventId,
+      inviteId,
+      accept,
+    );
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('/user/:userId')

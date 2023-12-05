@@ -71,45 +71,24 @@ class AddEventViewModel @Inject constructor(
                     .toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
                 with(_uiState.value) {
-                    if (eventRepeat == EventRepeatTerm.NONE) {
-                        calendarRepository.addSingleEvent(
-                            title = eventName,
-                            startDate = startDateTime,
-                            endDate = endDateTime,
-                            isJoinable = isJoinable,
-                            isVisible = isOpen,
-                            memo = memo,
-                            repeatTerm = eventRepeat.value,
-                            repeatFrequency = eventRepeatFrequency,
-                            repeatEndDate = repeatEndDate,
-                            color = color,
-                            alarm = alarm,
-                        ).catch {
-                            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
-                            _showPlaceholder.update { false }
-                        }.collectLatest { event ->
+                    calendarRepository.addEvent(
+                        title = eventName,
+                        startDate = startDateTime,
+                        endDate = endDateTime,
+                        isJoinable = isJoinable,
+                        isVisible = isOpen,
+                        memo = memo,
+                        repeatTerm = eventRepeat.value,
+                        repeatFrequency = eventRepeatFrequency,
+                        repeatEndDate = repeatEndDate,
+                        color = color,
+                        alarm = alarm,
+                    ).catch {
+                        _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                        _showPlaceholder.update { false }
+                    }.collectLatest { events ->
+                        events.take(MAX_ALARM_COUNT).forEach { event ->
                             setAlarm(event)
-                        }
-                    } else {
-                        calendarRepository.addRepeatEvent(
-                            title = eventName,
-                            startDate = startDateTime,
-                            endDate = endDateTime,
-                            isJoinable = isJoinable,
-                            isVisible = isOpen,
-                            memo = memo,
-                            repeatTerm = eventRepeat.value,
-                            repeatFrequency = eventRepeatFrequency,
-                            repeatEndDate = repeatEndDate,
-                            color = color,
-                            alarm = alarm,
-                        ).catch {
-                            _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
-                            _showPlaceholder.update { false }
-                        }.collectLatest { events ->
-                            events.take(MAX_ALARM_COUNT).forEach { event ->
-                                setAlarm(event)
-                            }
                         }
                     }
                     _event.emit(AddEventUiEvent.FinishAddEventActivity)
@@ -123,7 +102,7 @@ class AddEventViewModel @Inject constructor(
         val currentTime = LocalDateTime.now().toLong()
         val triggerTime =
             event.startDate.toLocalDateTime(DateTimeFormat.ISO_DATE_TIME)
-                ?.minusMinutes(alarm.minutes.toLong())?.toLong()
+                ?.minusMinutes(alarm.minutes.toLong())?.toLong(ZoneId.of("UTC"))
         if (triggerTime != null && currentTime <= triggerTime && alarm != EventNotification.NONE) {
             alarmHelper.registerEventAlarm(
                 EventAlarm(

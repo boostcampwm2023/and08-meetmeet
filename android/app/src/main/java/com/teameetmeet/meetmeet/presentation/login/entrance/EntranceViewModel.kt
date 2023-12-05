@@ -7,6 +7,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.service.alarm.AlarmHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class EntranceViewModel @Inject constructor(
     private val loginRepository: LoginRepository,
     private val userRepository: UserRepository,
-    private val calendarRepository: CalendarRepository
+    private val calendarRepository: CalendarRepository,
+    private val alarmHelper: AlarmHelper
 ) : ViewModel() {
 
     private val _kakaoLoginEvent = MutableSharedFlow<KakaoLoginEvent>(
@@ -32,6 +34,7 @@ class EntranceViewModel @Inject constructor(
 
 
     init {
+        cancelAlarms()
         deleteLocalData()
     }
 
@@ -78,6 +81,12 @@ class EntranceViewModel @Inject constructor(
                     _kakaoLoginEvent.emit(KakaoLoginEvent.ShowMessage(R.string.login_kakao_message_no_user_data))
                 }
             }
+        }
+    }
+
+    private fun cancelAlarms() {
+        viewModelScope.launch {
+            alarmHelper.cancelAllAlarms()
         }
     }
 }
