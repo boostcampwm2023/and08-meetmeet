@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
+import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.FeedDetail
@@ -14,6 +15,7 @@ import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
@@ -23,7 +25,8 @@ import java.io.File
 import javax.inject.Inject
 
 class EventStoryRepository @Inject constructor(
-    private val eventStoryApi: EventStoryApi
+    private val eventStoryApi: EventStoryApi,
+    private val dataStore: DataStoreHelper
 ) {
 
     fun getEventStory(id: Int): Flow<EventStory> {
@@ -170,6 +173,21 @@ class EventStoryRepository @Inject constructor(
                 eventStoryApi.getFollowerWithEventStatus(eventId).users
             }.catch {
                 throw it
+            }
+    }
+
+    fun getUserWithEventStatus(eventId: Int, nickname: String): Flow<UserStatus> {
+        return flowOf(true)
+            .map {
+                val userNickname = dataStore.getUserProfile().first().nickname
+                val user = eventStoryApi.getUserWithEventStatus(eventId, nickname)
+                if (user.nickname == userNickname) {
+                    user.copy(isMe = true)
+                } else {
+                    user
+                }
+            }.catch {
+                throw it.toException()
             }
     }
 }
