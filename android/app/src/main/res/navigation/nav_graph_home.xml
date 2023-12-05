@@ -37,6 +37,9 @@
             android:name="id"
             android:defaultValue="0"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_follow_fragment_to_visit_calendar_activity"
+            app:destination="@id/visit_calendar_activity" />
     </fragment>
 
     <fragment
@@ -62,5 +65,18 @@
         android:name="com.teameetmeet.meetmeet.presentation.notification.NotificationActivity"
         android:label="Notification_activity"
         tools:layout="@layout/activity_notification" />
+
+    <activity
+        android:id="@+id/visit_calendar_activity"
+        tools:layout="@layout/activity_visit_calendar"
+        android:name="com.teameetmeet.meetmeet.presentation.visitcalendar.VisitCalendarActivity"
+        android:label="visit_calendar_activity" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <argument
+            android:name="userNickname"
+            app:argType="string" />
+    </activity>
 
 </navigation>
