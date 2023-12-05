@@ -1,9 +1,15 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Follow } from './entities/follow.entity';
 import { Equal, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { InviteService } from '../invite/invite.service';
+import {
+  AlreadyFollowException,
+  FollowSelfException,
+  NoSuchUserException,
+  NotFollowingException,
+} from './exception/follow.exception';
 
 @Injectable()
 export class FollowService {
@@ -40,25 +46,8 @@ export class FollowService {
   }
 
   async getFollowers(user: User) {
-    const followers = await this.followRepository.find({
-      relations: {
-        user: true,
-        follower: true,
-      },
-      where: {
-        follower: Equal(user.id),
-      },
-    });
-
-    const followings = await this.followRepository.find({
-      relations: {
-        user: true,
-        follower: true,
-      },
-      where: {
-        user: Equal(user.id),
-      },
-    });
+    const followers = await this.getRawFollowers(user);
+    const followings = await this.getRawFollowings(user);
 
     const result: any[] = [];
     followers.map((follower) => {
@@ -78,15 +67,8 @@ export class FollowService {
   }
 
   async getFollowings(user: User) {
-    const followings = await this.followRepository.find({
-      relations: {
-        user: true,
-        follower: true,
-      },
-      where: {
-        user: Equal(user.id),
-      },
-    });
+    const followings = await this.getRawFollowings(user);
+
     const result: any[] = [];
     followings.map((following) => {
       const user = {
@@ -101,6 +83,10 @@ export class FollowService {
   }
 
   async follow(user: User, userId: number) {
+    if (user.id === userId) {
+      throw new FollowSelfException();
+    }
+
     const followingUser = await this.userRepository.findOne({
       where: {
         id: userId,
@@ -108,11 +94,7 @@ export class FollowService {
     });
 
     if (!followingUser) {
-      throw new HttpException('존재하지 않는 유저입니다.', 400);
-    }
-
-    if (user.id === followingUser.id) {
-      throw new HttpException('자기 자신을 팔로우할 수 없습니다.', 400);
+      throw new NoSuchUserException();
     }
 
     const existingFollow = await this.followRepository.findOne({
@@ -123,7 +105,7 @@ export class FollowService {
     });
 
     if (existingFollow) {
-      throw new HttpException('이미 팔로우한 유저입니다.', 400);
+      throw new AlreadyFollowException();
     }
 
     const follow = this.followRepository.create({
@@ -152,7 +134,7 @@ export class FollowService {
     });
 
     if (!followingUser) {
-      throw new Error('존재하지 않는 유저입니다.');
+      throw new NoSuchUserException();
     }
 
     const existingFollow = await this.followRepository.findOne({
@@ -163,7 +145,7 @@ export class FollowService {
     });
 
     if (!existingFollow) {
-      throw new Error('팔로우되어 있지 않습니다.');
+      throw new NotFollowingException();
     }
 
     await this.followRepository.softRemove(existingFollow);
