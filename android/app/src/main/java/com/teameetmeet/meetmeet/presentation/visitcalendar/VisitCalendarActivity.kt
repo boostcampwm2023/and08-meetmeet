@@ -22,7 +22,14 @@ class VisitCalendarActivity : BaseActivity<ActivityVisitCalendarBinding>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setNavHost()
+        setTopAppBar()
         viewModel.fetchUserProfile(args.userNickname)
+    }
+
+    private fun setTopAppBar() {
+        binding.visitCalendarMtb.setNavigationOnClickListener {
+            finish()
+        }
     }
 
     private fun setNavHost() {

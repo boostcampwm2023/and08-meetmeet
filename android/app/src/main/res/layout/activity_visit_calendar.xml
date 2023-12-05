@@ -14,12 +14,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/visit_calendar_mtb"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintBottom_toBottomOf="@id/visit_calendar_cl_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/visit_calendar_cl_profile"
+            app:navigationIcon="@drawable/ic_nav_pre" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/visit_calendar_cl_profile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
             android:clipToPadding="false"
-            android:padding="16dp"
+            android:paddingVertical="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -27,6 +38,7 @@
                 android:id="@+id/calendar_cv_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 app:cardCornerRadius="100dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -64,6 +76,7 @@
             android:layout_marginEnd="16dp"
             android:onClick="@{v -> vm.onFollowButtonClick()}"
             android:text="@{vm.userProfile.followed?@string/follow_title_unfollow:@string/follow_title_follow}"
+            android:textAppearance="@style/small"
             app:layout_constraintBottom_toBottomOf="@id/visit_calendar_cl_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/visit_calendar_cl_profile"
@@ -74,6 +87,7 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             app:defaultNavHost="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
