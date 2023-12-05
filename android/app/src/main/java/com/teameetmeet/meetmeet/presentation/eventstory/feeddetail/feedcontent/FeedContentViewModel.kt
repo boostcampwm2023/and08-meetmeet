@@ -6,6 +6,7 @@ import androidx.work.WorkInfo
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.Content
 import com.teameetmeet.meetmeet.service.downloading.ImageDownloadHelper
+import com.teameetmeet.meetmeet.service.downloading.ImageDownloadWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +49,7 @@ class FeedContentViewModel @Inject constructor(
         _isTouched.update { false }
     }
 
-    fun saveImage(imageIndex: Int) {
+    fun saveImage(imageIndex: Int, type: String) {
         viewModelScope.launch {
             _isLoading.update { true }
             val content = contents.value.getOrNull(imageIndex)
@@ -61,7 +62,7 @@ class FeedContentViewModel @Inject constructor(
                 _isLoading.update { false }
                 return@launch
             }
-            imageDownloadHelper.saveImage(content).catch {
+            imageDownloadHelper.saveImage(content, type).catch {
                 _event.emit(
                     FeedContentEvent.ShowMessage(
                         R.string.feed_content_message_image_save_failure
@@ -69,16 +70,22 @@ class FeedContentViewModel @Inject constructor(
                 )
                 _isLoading.update { false }
             }.collect {
-                println("result: ${it.toString()}")
-                it.forEach { rr ->
-                    println(rr)
-                }
                 if (it[0].state == WorkInfo.State.SUCCEEDED) {
-                    _event.emit(
-                        FeedContentEvent.ShowMessage(
-                            R.string.feed_content_message_image_save_success
+                    println(it[0].outputData.getString(ImageDownloadWorker.KEY_DOWNLOAD_TYPE))
+                    println(it[0])
+                    if (it[0].tags.contains(ImageDownloadWorker.TYPE_DOWNLOAD_MANAGER)) {
+                        _event.emit(
+                            FeedContentEvent.ShowMessage(
+                                R.string.feed_content_message_image_save_start
+                            )
                         )
-                    )
+                    } else if (it[0].tags.contains(ImageDownloadWorker.TYPE_MEDIA_STORE)) {
+                        _event.emit(
+                            FeedContentEvent.ShowMessage(
+                                R.string.feed_content_message_image_save_success
+                            )
+                        )
+                    }
                     _isLoading.update { false }
                     return@collect
                 } else if (it[0].state == WorkInfo.State.FAILED) {

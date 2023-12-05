@@ -15,7 +15,7 @@ class ImageDownloadHelper @Inject constructor(
 ) {
     private val workManager =  WorkManager.getInstance(context)
 
-    fun saveImage(content: Content): Flow<List<WorkInfo>> {
+    fun saveImage(content: Content, type: String): Flow<List<WorkInfo>> {
         val data = Data.Builder()
             .putString(ImageDownloadWorker.KEY_IMAGE_URL, content.path)
             .putString(ImageDownloadWorker.KEY_MIME_TYPE, content.mimeType)
@@ -25,6 +25,7 @@ class ImageDownloadHelper @Inject constructor(
         val workRequest = OneTimeWorkRequestBuilder<ImageDownloadWorker>()
             .setConstraints(constraints)
             .addTag(ImageDownloadWorker.TAG_WORK_INFO)
+            .addTag(type)
             .setInputData(data)
             .build()
         workManager.enqueue(workRequest)
