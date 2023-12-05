@@ -2,7 +2,7 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.FeedDetail
-import com.teameetmeet.meetmeet.data.model.FollowUsers
+import com.teameetmeet.meetmeet.data.model.UsersResponse
 import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
@@ -71,16 +71,16 @@ interface EventStoryApi {
     )
 
     @GET("event/user/followings")
-    suspend fun getFollowingWithEventStatus(@Query("eventId") eventId: Int): FollowUsers
+    suspend fun getFollowingWithEventStatus(@Query("eventId") eventId: Int): UsersResponse
 
     @GET("event/user/followers")
-    suspend fun getFollowerWithEventStatus(@Query("eventId") eventId: Int): FollowUsers
+    suspend fun getFollowerWithEventStatus(@Query("eventId") eventId: Int): UsersResponse
 
     @GET("event/user/search/{eventId}")
     suspend fun getUserWithEventStatus(
         @Path("eventId") eventId: Int,
         @Query("nickname") nickname: String
-    ): UserStatus
+    ): UsersResponse
 
     @POST("event/schedule/invite")
     suspend fun inviteEvent(@Body eventInviteRequest: EventInviteRequest)

@@ -19,7 +19,7 @@ data class UserStatus(
 )
 
 @JsonClass(generateAdapter = true)
-data class FollowUsers(
+data class UsersResponse(
     @Json(name = "users")
     val users: List<UserStatus>
 )
