@@ -4,9 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotification
 import com.teameetmeet.meetmeet.databinding.ItemEventNotificationBinding
 
-class EventNotificationAdapter: ListAdapter<EventNotification, EventNotificationViewHolder>(diffCallback) {
+class EventNotificationAdapter :
+    ListAdapter<EventInvitationNotification, EventNotificationViewHolder>(diffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -24,17 +26,17 @@ class EventNotificationAdapter: ListAdapter<EventNotification, EventNotification
     }
 
     companion object {
-        private val diffCallback = object : DiffUtil.ItemCallback<EventNotification>() {
+        private val diffCallback = object : DiffUtil.ItemCallback<EventInvitationNotification>() {
             override fun areItemsTheSame(
-                oldItem: EventNotification,
-                newItem: EventNotification
+                oldItem: EventInvitationNotification,
+                newItem: EventInvitationNotification
             ): Boolean {
                 return oldItem.eventId == newItem.eventId
             }
 
             override fun areContentsTheSame(
-                oldItem: EventNotification,
-                newItem: EventNotification
+                oldItem: EventInvitationNotification,
+                newItem: EventInvitationNotification
             ): Boolean {
                 return oldItem == newItem
             }

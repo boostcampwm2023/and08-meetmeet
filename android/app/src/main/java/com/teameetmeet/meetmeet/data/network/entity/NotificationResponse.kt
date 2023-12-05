@@ -45,6 +45,8 @@ data class EventInvitationNotification(
     val startDate: String,
     @Json(name = "endDate")
     val endDate: String,
+    @Json(name = "nickname")
+    val nickname: String?,
     @Json(name = "profile")
     val profile: String?,
     @Json(name = "status")
