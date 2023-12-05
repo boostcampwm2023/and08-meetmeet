@@ -1,30 +1,30 @@
 package com.teameetmeet.meetmeet.presentation.notification.follow
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.data.network.entity.FollowNotification
+import com.teameetmeet.meetmeet.data.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FollowNotificationViewModel: ViewModel() {
+@HiltViewModel
+class FollowNotificationViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : ViewModel() {
 
     private val _followNotificationList = MutableStateFlow<List<FollowNotification>>(emptyList())
     val followNotificationList: StateFlow<List<FollowNotification>> = _followNotificationList
 
     fun fetchFollowNotificationList() {
-        _followNotificationList.update {
-            listOf(
-                FollowNotification(id =1, profile = "https://github.com/agfalcon.png", followerNickname = "K004"),
-                FollowNotification(id =2, profile = "https://github.com/p-chanmin.png", followerNickname = "K016"),
-                FollowNotification(id =3, profile = "https://github.com/LeeHaiLim.png", followerNickname = "K032"),
-                FollowNotification(id =4, profile = "https://github.com/chani1209.png", followerNickname = "J153"),
-                FollowNotification(id =5, profile = "https://github.com/cdj2073.png", followerNickname = "J156")
-            )
+        viewModelScope.launch {
+            userRepository.getFollowNotification().collectLatest { notifications ->
+                _followNotificationList.update { notifications }
+            }
         }
     }
 }
-
-data class FollowNotification(
-    val id: Int,
-    val profile: String,
-    val followerNickname: String
-)

@@ -1,22 +1,17 @@
 package com.teameetmeet.meetmeet.presentation.notification.follow
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.teameetmeet.meetmeet.databinding.ItemFollowNotificationBinding
+import com.teameetmeet.meetmeet.data.network.entity.FollowNotification
 
-class FollowNotificationAdapter: ListAdapter<FollowNotification, FollowNotificationViewHolder>(diffCallback) {
+class FollowNotificationAdapter :
+    ListAdapter<FollowNotification, FollowNotificationViewHolder>(diffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): FollowNotificationViewHolder {
-        val binding = ItemFollowNotificationBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return FollowNotificationViewHolder(binding)
+        return FollowNotificationViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: FollowNotificationViewHolder, position: Int) {
@@ -29,7 +24,7 @@ class FollowNotificationAdapter: ListAdapter<FollowNotification, FollowNotificat
                 oldItem: FollowNotification,
                 newItem: FollowNotification
             ): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.inviteId == newItem.inviteId
             }
 
             override fun areContentsTheSame(
@@ -38,8 +33,6 @@ class FollowNotificationAdapter: ListAdapter<FollowNotification, FollowNotificat
             ): Boolean {
                 return oldItem == newItem
             }
-
         }
     }
-
 }
