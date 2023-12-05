@@ -227,4 +227,8 @@
     <string name="feed_detail_media_count">%d/%d</string>
     <string name="event_story_message_notification_delete_success">일정 공지를 삭제하였습니다.</string>
     <string name="feed_content_description_save_image">이미지 저장</string>
+    <string name="common_app_name">MeetMeet</string>
+    <string name="feed_content_message_image_save_fail">해당 이미지를 참조할 수 없습니다.</string>
+    <string name="feed_content_message_image_save_failure">이미지 저장 실패</string>
+    <string name="feed_content_message_image_save_success">이미지 저장 성공</string>
 </resources>

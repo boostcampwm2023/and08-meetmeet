@@ -39,5 +39,17 @@
             app:menu="@menu/menu_top_app_bar_feed_content"
             app:navigationIcon="@drawable/ic_back_white" />
 
+        <ImageView
+            android:id="@+id/feed_content_iv_loading"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/event_story_description_loading_image"
+            android:src="@drawable/loading_animation"
+            android:visibility="@{vm.isLoading == true ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
