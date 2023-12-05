@@ -24,9 +24,13 @@ import {
   AlreadyJoinedException,
   EventForbiddenException,
   EventNotFoundException,
+  ExpiredInviteException,
+  InvalidAuthorityException,
   InvalidRepeatPolicyException,
+  InviteNotFoundException,
   InviteSelfException,
   NotEventMemberException,
+  NotInviteReceiverException,
   NotRepeatEventException,
   SearchPeriodException,
   SearchSelfException,
@@ -856,16 +860,33 @@ export class EventService {
     if (!event) {
       throw new EventNotFoundException();
     }
+    const invites = await this.inviteService.getInvitesByEvent(event);
     const result: any[] = [];
     rawFollowings.forEach((follower) => {
+      let isJoined;
       const eventMember = event.eventMembers.find(
         (eventMember) => eventMember.user.id === follower.follower.id,
       );
+      if (!eventMember) {
+        invites.find((invite) => {
+          if (invite.receiver.id === follower.follower.id) {
+            isJoined = this.inviteService.transformStatusEnumResponse(
+              invite.status.displayName,
+            );
+          }
+        });
+        if (!isJoined) {
+          isJoined = StatusEnum.Joinable;
+        }
+      } else {
+        isJoined = StatusEnum.Accepted;
+      }
       result.push({
         id: follower.follower.id,
         nickname: follower.follower.nickname,
         profile: follower.follower.profile?.path ?? null,
-        isJoined: eventMember ? true : false,
+        // isJoined: eventMember ? true : false,
+        isJoined: isJoined,
       });
     });
     return { users: result };
@@ -881,17 +902,32 @@ export class EventService {
     if (!event) {
       throw new EventNotFoundException();
     }
-
+    const invites = await this.inviteService.getInvitesByEvent(event);
     const result: any[] = [];
     rawFollowers.forEach((follower) => {
+      let isJoined;
       const eventMember = event.eventMembers.find(
         (eventMember) => eventMember.user.id === follower.user.id,
       );
+      if (!eventMember) {
+        invites.find((invite) => {
+          if (invite.receiver.id === follower.user.id) {
+            isJoined = this.inviteService.transformStatusEnumResponse(
+              invite.status.displayName,
+            );
+          }
+        });
+        if (!isJoined) {
+          isJoined = StatusEnum.Joinable;
+        }
+      } else {
+        isJoined = StatusEnum.Accepted;
+      }
       result.push({
         id: follower.user.id,
         nickname: follower.user.nickname,
         profile: follower.user.profile?.path ?? null,
-        isJoined: eventMember ? true : false,
+        isJoined: isJoined,
       });
     });
     return { users: result };
@@ -912,20 +948,31 @@ export class EventService {
     if (!findByNickname) {
       return SearchResponseDto.of([], [], []);
     } else {
-        if (findByNickname.id === user.id) {
-            throw new SearchSelfException();
-        }
+      if (findByNickname.id === user.id) {
+        throw new SearchSelfException();
       }
+    }
 
-      const eventMember = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === findByNickname.id,
-      );
-      return SearchResponseDto.of(
-        [findByNickname],
-        [],
-        eventMember ? [true] : [false],
-      );
-
+    const eventMember = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === findByNickname.id,
+    );
+    const invites = await this.inviteService.getInvitesByEvent(event);
+    let isJoined;
+    if (!eventMember) {
+      invites.find((invite) => {
+        if (invite.receiver.id === findByNickname.id) {
+          isJoined = this.inviteService.transformStatusEnumResponse(
+            invite.status.displayName,
+          );
+        }
+      });
+      if (!isJoined) {
+        isJoined = StatusEnum.Joinable;
+      }
+    } else {
+      isJoined = StatusEnum.Accepted;
+    }
+    return SearchResponseDto.of([findByNickname], [], [isJoined]);
   }
 
   async inviteSchedule(user: User, userId: number, eventId: number) {
@@ -968,12 +1015,12 @@ export class EventService {
     });
 
     if (!event) {
-        throw new EventNotFoundException();
+      throw new EventNotFoundException();
     }
 
     event.eventMembers.forEach((eventMember) => {
       if (eventMember.user.id === user.id) {
-       throw new AlreadyJoinedException()
+        throw new AlreadyJoinedException();
       }
     });
 
@@ -1000,63 +1047,60 @@ export class EventService {
     return { result: '일정에 참가하였습니다.' };
   }
 
-    async acceptSchedule(
-        user: User,
-        eventId: number,
-        inviteId: number,
-        isAccept: boolean,
-    ) {
-        const event = await this.eventRepository.findOne({
-            where: { id: eventId },
-        });
+  async acceptSchedule(
+    user: User,
+    eventId: number,
+    inviteId: number,
+    isAccept: boolean,
+  ) {
+    const event = await this.eventRepository.findOne({
+      where: { id: eventId },
+    });
 
-        if (!event) {
-            throw new NotEventMemberException()
-        }
-
-        const invite = await this.inviteService.getInviteById(inviteId);
-
-        if (!invite) {
-            // todo : 초대가 없습니다.
-            throw new NotEventMemberException()
-        }
-
-        if (invite.status.displayName !== StatusEnum.Pending) {
-            // todo : 만료된 초대 에러
-            throw new NotEventMemberException()
-        }
-
-        if (invite.receiver.id !== user.id) {
-            // todo : 초대받은 유저가 아닌 에러
-            throw new EventNotFoundException()
-        }
-
-        if (isAccept) {
-            const detail = {
-                isVisible: true,
-                memo: '',
-                color: -39579,
-                alarmMinutes: 10,
-            } as Detail;
-
-            const savedDetail = await this.detailService.createDetailSingle(detail);
-
-            const authority = await this.eventMemberService.getAuthorityId('MEMBER');
-            if (!authority) {
-                throw new Error('authority is not valid');
-            }
-
-            await this.eventMemberService.createEventMember(
-                event,
-                user,
-                savedDetail,
-                authority,
-            );
-            await this.inviteService.updateInvite(invite.id, StatusEnum.Accepted);
-            return { result: '일정에 참가하였습니다.' };
-        } else {
-            await this.inviteService.updateInvite(invite.id, StatusEnum.Rejected);
-            return { result: '일정에 참가하지 않았습니다.' };
-        }
+    if (!event) {
+      throw new NotEventMemberException();
     }
+
+    const invite = await this.inviteService.getInviteById(inviteId);
+
+    if (!invite) {
+      throw new InviteNotFoundException();
+    }
+
+    if (invite.status.displayName !== StatusEnum.Pending) {
+      throw new ExpiredInviteException();
+    }
+
+    if (invite.receiver.id !== user.id) {
+      throw new NotInviteReceiverException();
+    }
+
+    if (isAccept) {
+      const detail = {
+        isVisible: true,
+        memo: '',
+        color: -39579,
+        alarmMinutes: 10,
+      } as Detail;
+
+      const savedDetail = await this.detailService.createDetailSingle(detail);
+
+      const authority = await this.eventMemberService.getAuthorityId('MEMBER');
+      if (!authority) {
+        throw new InvalidAuthorityException();
+      }
+
+      await this.eventMemberService.createEventMember(
+        event,
+        user,
+        savedDetail,
+        authority,
+      );
+      await this.inviteService.updateInvite(invite.id, StatusEnum.Accepted);
+      return { result: '일정에 참가하였습니다.' };
+    } else {
+      await this.inviteService.updateInvite(invite.id, StatusEnum.Rejected);
+      return { result: '일정에 참가하지 않았습니다.' };
+    }
+  }
 }

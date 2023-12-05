@@ -1,10 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../../user/entities/user.entity';
+import { StatusEnum } from '../../invite/entities/status.enum';
 
 export class SearchResponseDto {
   @ApiProperty()
   users: SingleSearchUser[];
-  static of(users: User[], isFollowed: boolean[], isJoined: boolean[]) {
+  static of(users: User[], isFollowed: boolean[], isJoined: StatusEnum[]) {
     const res: SingleSearchUser[] = [];
     users.forEach((user, index) => {
       res.push({
@@ -33,5 +34,5 @@ class SingleSearchUser {
   isFollowed: boolean;
 
   @ApiProperty()
-  isJoined: boolean;
+  isJoined: StatusEnum;
 }

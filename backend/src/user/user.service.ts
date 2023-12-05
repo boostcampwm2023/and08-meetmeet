@@ -7,7 +7,7 @@ import { OauthProvider } from './entities/oauthProvider.entity';
 import { ContentService } from 'src/content/content.service';
 import { FollowService } from '../follow/follow.service';
 import { InviteService } from '../invite/invite.service';
-import {SearchResponseDto} from "../event/dto/search-response.dto";
+import { SearchResponseDto } from '../event/dto/search-response.dto';
 import {
   DuplicatedNicknameException,
   NoSuchOauthProviderException,
@@ -59,36 +59,33 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-async getUserById(id: number) {
+  async getUserById(id: number) {
     return await this.userRepository
-        .createQueryBuilder('user')
-        .select([
-            'user.email',
-            'user.nickname',
-            'profile.path',
-            'oauth.displayName',
-        ])
-        .leftJoin('user.profile', 'profile')
-        .leftJoin('user.oauthProvider', 'oauth')
-        .where('user.id = :id', { id })
-        .getOne();
-}
+      .createQueryBuilder('user')
+      .select([
+        'user.email',
+        'user.nickname',
+        'profile.path',
+        'oauth.displayName',
+      ])
+      .leftJoin('user.profile', 'profile')
+      .leftJoin('user.oauthProvider', 'oauth')
+      .where('user.id = :id', { id })
+      .getOne();
+  }
 
   async getUserInfo(user: User) {
-      const result = await this.getUserById(user.id);
-
+    const result = await this.getUserById(user.id);
 
     if (!result) {
       throw new UserNotFoundException();
     }
 
-    const userInfo = {
+    return {
       email: result.oauthProvider?.displayName ?? result.email,
       nickname: result.nickname,
       profile: result.profile?.path ?? null,
     };
-
-    return userInfo;
   }
 
   async updateUserPassword(user: User, password: string) {
@@ -144,7 +141,7 @@ async getUserById(id: number) {
   }
 
   async findUserByOAuth(email: string, oauthProvider: string) {
-    const result = await this.userRepository
+    return await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.oauthProvider', 'oauth')
       .addSelect('user.deletedAt')
@@ -152,23 +149,21 @@ async getUserById(id: number) {
       .andWhere('user.email = :email', { email: email })
       .withDeleted()
       .getOne();
-
-    return result;
   }
 
-    async searchUser(user: User, nickname: string) {
-        const searchResult = await this.findUserByNickname(nickname);
+  async searchUser(user: User, nickname: string) {
+    const searchResult = await this.findUserByNickname(nickname);
 
-        if (!searchResult) {
-            return SearchResponseDto.of([], [], []);
-        } else {
-            return SearchResponseDto.of(
-                [searchResult],
-                [await this.followService.isFollowed(user, searchResult.id)],
-                [],
-            );
-        }
+    if (!searchResult) {
+      return SearchResponseDto.of([], [], []);
+    } else {
+      return SearchResponseDto.of(
+        [searchResult],
+        [await this.followService.isFollowed(user, searchResult.id)],
+        [],
+      );
     }
+  }
 
   async findUserWithPasswordByEmail(email: string) {
     return await this.userRepository.findOne({
@@ -203,8 +198,51 @@ async getUserById(id: number) {
     await this.userRepository.update(user.id, { fcmToken: null });
   }
 
-  async getUserNotification(user: User) {
+  async getUserNotification(user: User, page: string) {
     const notifications = await this.inviteService.getInvitesByUser(user);
-    return notifications;
+    const result: any[] = [];
+    let type: string;
+    if (page === 'follow') {
+      type = 'FOLLOW';
+    } else if (page === 'invite') {
+      type = 'EVENT_INVITATION';
+    }
+    notifications.forEach((notification) => {
+      if (page === 'follow') {
+        if (notification.event?.id === undefined) {
+          const data = {
+            type: type,
+            body: {
+              inviteId: notification.id,
+              id: notification.sender.id,
+              nickname: notification.sender.nickname,
+              profile: notification.sender.profile?.path ?? null,
+              status: notification.status.displayName,
+            },
+          };
+          result.push(data);
+        }
+      } else if (page === 'invite') {
+        if (notification.event?.id === undefined) {
+          return;
+        }
+
+        if (notification.event.id) {
+          const data = {
+            type: type,
+            body: {
+              inviteId: notification.id,
+              eventId: notification.event?.id,
+              title: notification.event?.title,
+              startDate: notification.event?.startDate,
+              endDate: notification.event?.endDate,
+              status: notification.status.displayName,
+            },
+          };
+          result.push(data);
+        }
+      }
+    });
+    return result;
   }
 }

@@ -32,7 +32,7 @@ import { UpdateScheduleDto } from './dto/updateSchedule.dto';
 import { EventsResponseDto } from './dto/events-response.dto';
 import { EventResponseDto } from './dto/event-response.dto';
 import { EventStoryResponseDto } from './dto/event-story-response.dto';
-import {SearchResponseDto} from "./dto/search-response.dto";
+import { SearchResponseDto } from './dto/search-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('event')
@@ -319,7 +319,7 @@ export class EventController {
       },
     },
   })
-  async cancelSchedule(
+  async joinSchedule(
     @GetUser() user: User,
     @Body('eventId', ParseIntPipe) eventId: number,
   ) {

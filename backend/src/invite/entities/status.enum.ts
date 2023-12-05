@@ -5,4 +5,5 @@ export enum StatusEnum {
   Error = 'Error',
   Accepted = 'Accepted',
   Rejected = 'Rejected',
+  Joinable = 'Joinable',
 }

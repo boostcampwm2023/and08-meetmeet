@@ -42,12 +42,19 @@ export class InviteService {
     fcmToken: string,
   ) {
     const eventOwner = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === user.id,
-        )?.user;
+      (eventMember) => eventMember.user.id === user.id,
+    )?.user;
+    const invite = await this.createInvite(
+      'INVITE',
+      event.id,
+      user,
+      invitedUser,
+    );
     const message: admin.messaging.Message = {
       data: {
         type: 'EVENT_INVITATION',
         body: JSON.stringify({
+          inviteId: invite.id,
           eventId: event.id,
           title: event.title,
           startDate: event.startDate,
@@ -61,8 +68,9 @@ export class InviteService {
       },
       token: fcmToken,
     };
-    await this.sendFireBaseMessage(message);
-    // await this.createInvite('INVITE', event.id, user, invitedUser);
+    if (!(await this.sendFireBaseMessage(message))) {
+      await this.updateInvite(invite.id, StatusEnum.Error);
+    }
   }
 
   async sendFireBaseMessage(message: admin.messaging.Message) {
@@ -73,8 +81,10 @@ export class InviteService {
         .then((response) => {
           console.log('Successfully sent message:', response);
         });
+      return true;
     } catch (error) {
       console.log('Error sending message:', error);
+      return false;
     }
   }
 
@@ -109,7 +119,7 @@ export class InviteService {
       invite.status = status;
     }
 
-    await this.inviteRepository.save(invite);
+    return await this.inviteRepository.save(invite);
   }
 
   async updateInvite(inviteId: number, status: StatusEnum) {
@@ -140,5 +150,22 @@ export class InviteService {
       where: { receiver: Equal(user.id) },
       relations: ['sender', 'event', 'status'],
     });
+  }
+
+  async getInvitesByEvent(event: Event) {
+    return await this.inviteRepository.find({
+      where: { event: Equal(event.id) },
+      relations: ['sender', 'receiver'],
+    });
+  }
+
+  transformStatusEnumResponse(status: StatusEnum) {
+    if (status === StatusEnum.Accepted) {
+      return StatusEnum.Accepted;
+    } else if (status === StatusEnum.Pending) {
+      return StatusEnum.Pending;
+    } else {
+      return StatusEnum.Joinable;
+    }
   }
 }

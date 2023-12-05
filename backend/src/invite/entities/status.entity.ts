@@ -7,5 +7,5 @@ export class Status {
   id: number;
 
   @Column({ type: 'enum', enum: StatusEnum, default: StatusEnum.Pending })
-  displayName: string;
+  displayName: StatusEnum;
 }
