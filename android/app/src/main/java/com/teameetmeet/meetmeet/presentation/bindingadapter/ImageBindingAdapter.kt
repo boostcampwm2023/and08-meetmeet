@@ -23,3 +23,12 @@ fun ImageView.bindThumbnailImage(
         .centerCrop()
         .placeholder(R.drawable.ic_no_image_filled).into(this)
 }
+
+@BindingAdapter("center_inside_image")
+fun ImageView.bindThumbnailImageCenterInside(
+    thumbnailImage: String?
+) {
+    Glide.with(context).load(thumbnailImage)
+        .centerInside()
+        .placeholder(R.drawable.ic_no_image_filled).into(this)
+}

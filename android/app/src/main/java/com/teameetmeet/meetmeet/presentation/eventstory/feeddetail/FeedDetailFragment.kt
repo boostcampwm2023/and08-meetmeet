@@ -68,8 +68,8 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         }
     }
 
-    override fun onClick(index: Int) {
+    override fun onClick() {
         viewModel.feedDetailUiState.value.feedDetail?.contents?: return
-        findNavController().navigate(FeedDetailFragmentDirections.actionFeedDetailFragmentToFeedContentFragment(viewModel.feedDetailUiState.value.feedDetail!!.contents.toTypedArray(), index))
+        findNavController().navigate(FeedDetailFragmentDirections.actionFeedDetailFragmentToFeedContentFragment(viewModel.feedDetailUiState.value.feedDetail!!.contents.toTypedArray(), viewModel.feedDetailUiState.value.contentPage))
     }
 }
