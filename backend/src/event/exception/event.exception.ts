@@ -59,3 +59,30 @@ export class InviteSelfException extends HttpException {
     super('자기 자신은 초대할 수 없습니다.', HttpStatus.BAD_REQUEST);
   }
 }
+
+export class createEventFailException extends HttpException {
+  constructor() {
+    super(
+      '이벤트 생성 중 오류가 발생했습니다.',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}
+
+export class updateEventFailException extends HttpException {
+  constructor() {
+    super(
+      '이벤트 수정 중 오류가 발생했습니다.',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}
+
+export class deleteEventFailException extends HttpException {
+  constructor() {
+    super(
+      '이벤트 삭제 중 오류가 발생했습니다.',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
+}
