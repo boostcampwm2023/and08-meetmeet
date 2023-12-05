@@ -20,6 +20,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".presentation.visitcalendar.VisitCalendarActivity"
+            android:exported="false" />
+        <activity
             android:name=".presentation.eventstory.EventStoryActivity"
             android:exported="false" />
         <activity
