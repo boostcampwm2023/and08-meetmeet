@@ -21,6 +21,8 @@ data class UserStatus(
         const val JOIN_STATUS_JOINABLE = "Joinable"
         const val JOIN_STATUS_PENDING = "Pending"
         const val JOIN_STATUS_ACCEPTED = "Accepted"
+        const val JOIN_STATUS_REJECTED = "Rejected"
+        const val JOIN_STATUS_EXPIRED = "Expired"
     }
 }
 
