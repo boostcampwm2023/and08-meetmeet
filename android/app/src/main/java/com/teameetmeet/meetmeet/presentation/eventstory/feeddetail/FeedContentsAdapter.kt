@@ -8,26 +8,34 @@ import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.data.model.Content
 import com.teameetmeet.meetmeet.databinding.ItemFeedContentBinding
 
-class FeedContentsAdapter :
-    ListAdapter<Content, FeedContentsAdapter.FeedContentsViewHolder>(diffCallback) {
+class FeedContentsAdapter(
+    private val contentClickListener: ContentClickListener
+) : ListAdapter<Content, FeedContentsAdapter.FeedContentsViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedContentsViewHolder {
         return FeedContentsViewHolder(
             ItemFeedContentBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            contentClickListener
         )
     }
 
     override fun onBindViewHolder(holder: FeedContentsViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), position)
     }
 
-    class FeedContentsViewHolder(val binding: ItemFeedContentBinding) :
+    class FeedContentsViewHolder(
+        val binding: ItemFeedContentBinding,
+        private val contentClickListener: ContentClickListener
+    ) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(data: Content) {
+        fun bind(data: Content, position: Int) {
             binding.item = data
+            itemView.setOnClickListener {
+                contentClickListener.onClick(position)
+            }
         }
     }
 
