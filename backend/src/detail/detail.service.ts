@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Detail } from './entities/detail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateScheduleDto } from '../event/dto/createSchedule.dto';
 
 @Injectable()
@@ -24,14 +24,16 @@ export class DetailService {
   }
 
   async createDetailBulk(createScheduleDto: CreateScheduleDto, count: number) {
-    const detailArray = [];
-    for (let i = 0; i < count; i++) {
-      const detail = this.detailRepository.create({
+    const detailArray = [...new Array(count)].map(() =>
+      this.detailRepository.create({
         ...createScheduleDto,
-      });
-      detailArray.push(detail);
-    }
-    return await this.detailRepository.save(detailArray);
+      }),
+    );
+
+    const result = await this.detailRepository.insert(detailArray);
+    return await this.detailRepository.find({
+      where: { id: In(result.identifiers.map((identifier) => identifier.id)) },
+    });
   }
 
   async updateDetail(detail: Detail, createScheduleDto: CreateScheduleDto) {
