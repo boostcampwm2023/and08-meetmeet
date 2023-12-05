@@ -5,9 +5,9 @@ import com.teameetmeet.meetmeet.data.model.FeedDetail
 import com.teameetmeet.meetmeet.data.model.FollowUsers
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
+import com.teameetmeet.meetmeet.data.network.entity.AnnouncementRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventStoryDetailResponse
-import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -23,13 +23,13 @@ import retrofit2.http.Query
 interface EventStoryApi {
 
     @GET("/event/{event_id}/feeds")
-    suspend fun getStory(@Path("event_id") id: String): EventStory
+    suspend fun getStory(@Path("event_id") id: Int): EventStory
 
     @GET("/event/{eventId}")
-    suspend fun getStoryDetail(@Path("eventId") id: String): EventStoryDetailResponse
+    suspend fun getStoryDetail(@Path("eventId") id: Int): EventStoryDetailResponse
 
-    @POST()
-    suspend fun editNotification(@Body singleStringRequest: KakaoLoginRequest)
+    @PATCH("event/{eventId}/announcement")
+    suspend fun editNotification(@Path("eventId") eventId: Int, @Body announcementRequest: AnnouncementRequest)
 
     @POST("event/schedule/join/{eventId}")
     suspend fun joinEventStory(@Path("eventId") eventId: Int)
