@@ -47,4 +47,4 @@ const prodLogger = {
 
 const instanceLogger = process.env.NODE_ENV === 'prod' ? prodLogger : devLogger;
 
-export const instance = createLogger(instanceLogger);
+export const logger = createLogger(instanceLogger);

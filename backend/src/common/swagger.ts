@@ -25,7 +25,6 @@ export function setupSwagger(app: INestApplication): void {
     .setTitle(`MeetMeet's backend api`)
     .setDescription(`The MeetMeet's API description`)
     .setVersion('1.0')
-    .addTag('ssock')
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',

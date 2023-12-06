@@ -5,12 +5,12 @@ import { SlackInterceptor } from './common/slack.interceptor';
 import { MeetMeetExceptionFilter } from './common/exception/exception.filter';
 import { setupSwagger } from './common/swagger';
 import { WinstonModule } from 'nest-winston';
-import { instance } from './common/log/winston.logger';
+import { logger } from './common/log/winston.logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger({
-      instance: instance,
+      instance: logger,
     }),
   });
 

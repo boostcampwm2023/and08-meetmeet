@@ -33,7 +33,7 @@ import { LoggerMiddleware } from './common/log/logger.middleware';
         database: configService.get<string>('DB_DATABASE'),
         entities: ['dist/**/*.entity{.ts,.js}'],
         synchronize: false,
-        logging: true,
+        logging: configService.get<string>('NODE_ENV') !== 'prod',
         namingStrategy: new SnakeNamingStrategy(),
         charset: 'utf8mb4',
       }),

@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { instance } from './winston.logger';
+import { logger } from './winston.logger';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -14,15 +14,15 @@ export class LoggerMiddleware implements NestMiddleware {
       const { statusCode } = res;
 
       if (statusCode >= 400 && statusCode < 500)
-        instance.warn(
+        logger.warn(
           `[${method}]${originalUrl}(${statusCode}) ${ip} ${userAgent}`,
         );
       else if (statusCode >= 500)
-        instance.error(
+        logger.error(
           `[${method}]${originalUrl}(${statusCode}) ${ip} ${userAgent}`,
         );
       else
-        instance.info(
+        logger.info(
           `[${method}]${originalUrl}(${statusCode}) ${ip} ${userAgent}`,
         );
     });
