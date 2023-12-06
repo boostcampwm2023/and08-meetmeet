@@ -137,7 +137,7 @@ export class FeedService {
     }
 
     if (feed.feedContents.length) {
-      this.contentService.softDeleteContent(
+      await this.contentService.softDeleteContent(
         feed.feedContents.map((feedContent) => feedContent.contentId),
       );
     }
@@ -146,6 +146,44 @@ export class FeedService {
       feed.comments.map((comment) => comment.id),
     );
     await this.feedRepository.softDelete(feed.id);
+  }
+
+  async deleteEventFeeds(user: User, eventId: number) {
+    const feeds = await this.feedRepository
+      .createQueryBuilder('feed')
+      .select([
+        'feed.id',
+        'feed.authorId',
+        'feed.memo',
+        'fc.contentId',
+        'comment',
+      ])
+      .leftJoin('feed.feedContents', 'fc')
+      .leftJoin('feed.comments', 'comment')
+      .leftJoin('fc.content', 'content')
+      .where('feed.eventId = :id', { id: eventId })
+      .getMany();
+
+    const eventContents = feeds.reduce((acc, cur) => {
+      if (cur.feedContents.length) {
+        return [
+          ...acc,
+          ...cur.feedContents.map((feedContent) => feedContent.contentId),
+        ];
+      }
+      return acc;
+    }, []);
+
+    const eventComments = feeds.reduce((acc, cur) => {
+      if (cur.comments.length) {
+        return [...acc, ...cur.comments.map((comment) => comment.id)];
+      }
+      return acc;
+    }, []);
+
+    await this.contentService.softDeleteContent(eventContents);
+    await this.commentService.deleteComments(eventComments);
+    await this.feedRepository.softDelete(feeds.map((feed) => feed.id));
   }
 
   async createComment(user: User, feedId: number, memo: string) {

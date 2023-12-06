@@ -62,6 +62,9 @@ export class ContentService {
   }
 
   async softDeleteContent(idList: number[]) {
+    if (!idList.length) {
+      return;
+    }
     const files = await this.contentRepository.find({
       where: { id: In(idList) },
     });
