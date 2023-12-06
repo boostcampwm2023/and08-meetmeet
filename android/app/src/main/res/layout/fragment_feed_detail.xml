@@ -13,233 +13,238 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".presentation.story.createfeed.CreateFeedFragment">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/layout_app_bar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".presentation.story.createfeed.CreateFeedFragment">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/top_app_bar"
-                authority="@{vm.feedDetailUiState.authority}"
-                is_mine="@{vm.feedDetailUiState.feedDetail.mine}"
-                android:layout_width="match_parent"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/layout_app_bar"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                app:menu="@menu/menu_top_app_bar_feed_detail"
-                app:navigationIcon="@drawable/ic_nav_pre" />
-        </com.google.android.material.appbar.AppBarLayout>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/feed_detail_nsv"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_app_bar">
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/top_app_bar"
+                    authority="@{vm.feedDetailUiState.authority}"
+                    is_mine="@{vm.feedDetailUiState.feedDetail.mine}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="?attr/actionBarSize"
+                    app:menu="@menu/menu_top_app_bar_feed_detail"
+                    app:navigationIcon="@drawable/ic_nav_pre" />
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/feed_detail_nsv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_app_bar">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/feed_detail_cv_user"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        app:cardCornerRadius="100dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/feed_detail_iv_user"
+                            image="@{vm.feedDetailUiState.feedDetail.author.profile}"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:backgroundTint="@color/black"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:src="@drawable/ic_person" />
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:id="@+id/feed_detail_tv_user_name"
+                        style="@style/medium.bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@{vm.feedDetailUiState.feedDetail.author.nickname}"
+                        app:layout_constraintBottom_toBottomOf="@id/feed_detail_cv_user"
+                        app:layout_constraintStart_toEndOf="@id/feed_detail_cv_user"
+                        app:layout_constraintTop_toTopOf="@id/feed_detail_cv_user"
+                        tools:text="최소정" />
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/feed_detail_vp_media"
+                        sub_list="@{vm.feedDetailUiState.feedDetail.contents}"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_margin="16dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/feed_detail_cv_user" />
+
+                    <TextView
+                        android:id="@+id/feed_detail_tv_media_count"
+                        style="@style/small.bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:alpha="0.5"
+                        android:background="@drawable/background_paging_tv"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="2dp"
+                        android:text="@{@string/feed_detail_media_count(vm.feedDetailUiState.contentPage+1,vm.feedDetailUiState.feedDetail.contents.size())}"
+                        android:textColor="@color/white"
+                        app:layout_constraintEnd_toEndOf="@id/feed_detail_vp_media"
+                        app:layout_constraintTop_toTopOf="@id/feed_detail_vp_media"
+                        tools:text="1/2" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="feed_detail_vp_media, feed_detail_tv_media_count"
+                        tools:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/feed_detail_tv_content"
+                        style="@style/medium"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="30dp"
+                        android:text="@{vm.feedDetailUiState.feedDetail.memo}"
+                        android:visibility="@{vm.feedDetailUiState.feedDetail.memo==null?View.GONE:View.VISIBLE}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/feed_detail_vp_media"
+                        tools:text="오늘 같이 간 문기, 이리, 기정이 다 너무 재밌었어~!!" />
+
+                    <TextView
+                        android:id="@+id/feed_detail_tv_comment_title"
+                        style="@style/small.bold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="30dp"
+                        android:text="@{@string/feed_detail_comment_amount(vm.feedDetailUiState.feedDetail.comments.size())}"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/feed_detail_tv_content"
+                        tools:text="댓글 2회" />
+
+                    <com.google.android.material.divider.MaterialDivider
+                        android:id="@+id/feed_detail_divider_comment"
+                        android:layout_width="0dp"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="10dp"
+                        app:dividerColor="@color/grey3"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/feed_detail_tv_comment_title" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/feed_detail_rv_comment"
+                        add_divider="@{true}"
+                        sub_list="@{vm.feedDetailUiState.feedDetail.comments}"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/feed_detail_divider_comment"
+                        tools:listitem="@layout/item_feed_comment" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/feed_detail_rv_comment" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="feed_detail_tv_comment_title, feed_detail_divider_comment, feed_detail_rv_comment"
+                        tools:visibility="@{vm.feedDetailUiState.feedDetail.comments.isEmpty()?View.GONE:View.VISIBLE}" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="feed_detail_vp_media, feed_detail_tv_media_count"
+                        tools:visibility="@{vm.feedDetailUiState.feedDetail.contents.isEmpty()?View.GONE:View.VISIBLE}" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/grey3"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/feed_detail_cv_user"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    app:cardCornerRadius="100dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:id="@+id/feed_detail_iv_user"
-                        image="@{vm.feedDetailUiState.feedDetail.author.profile}"
-                        android:layout_width="45dp"
-                        android:layout_height="45dp"
-                        android:backgroundTint="@color/black"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:src="@drawable/ic_person" />
-                </androidx.cardview.widget.CardView>
-
-                <TextView
-                    android:id="@+id/feed_detail_tv_user_name"
-                    style="@style/medium.bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="@{vm.feedDetailUiState.feedDetail.author.nickname}"
-                    app:layout_constraintBottom_toBottomOf="@id/feed_detail_cv_user"
-                    app:layout_constraintStart_toEndOf="@id/feed_detail_cv_user"
-                    app:layout_constraintTop_toTopOf="@id/feed_detail_cv_user"
-                    tools:text="최소정" />
-
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/feed_detail_vp_media"
-                    sub_list="@{vm.feedDetailUiState.feedDetail.contents}"
+                <View
+                    android:id="@+id/feed_detail_view_comment_background"
+                    style="@style/medium"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_margin="16dp"
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginVertical="10dp"
+                    android:layout_marginStart="15dp"
+                    android:background="@drawable/background_comment_et"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/feed_detail_ib_comment_send"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/feed_detail_cv_user" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/feed_detail_tv_media_count"
-                    style="@style/small.bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:alpha="0.5"
-                    android:background="@drawable/background_paging_tv"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="2dp"
-                    android:text="@{@string/feed_detail_media_count(vm.feedDetailUiState.contentPage+1,vm.feedDetailUiState.feedDetail.contents.size())}"
-                    android:textColor="@color/white"
-                    app:layout_constraintEnd_toEndOf="@id/feed_detail_vp_media"
-                    app:layout_constraintTop_toTopOf="@id/feed_detail_vp_media"
-                    tools:text="1/2" />
-
-                <androidx.constraintlayout.widget.Group
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="feed_detail_vp_media, feed_detail_tv_media_count"
-                    tools:visibility="visible" />
-
-                <TextView
-                    android:id="@+id/feed_detail_tv_content"
+                <EditText
+                    android:id="@+id/feed_detail_et_comment"
                     style="@style/medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="30dp"
-                    android:text="@{vm.feedDetailUiState.feedDetail.memo}"
-                    android:visibility="@{vm.feedDetailUiState.feedDetail.memo==null?View.GONE:View.VISIBLE}"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="15dp"
+                    android:background="@null"
+                    android:hint="@string/feed_detail_comment_hint"
+                    android:maxLength="@integer/text_length_long"
+                    android:onTextChanged="@{(p1,p2,p3,p4)-> vm.onCommentTextChanged(p1)}"
+                    android:padding="15dp"
+                    android:text="@{vm.feedDetailUiState.typedComment}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/feed_detail_view_comment_background"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/feed_detail_vp_media"
-                    tools:text="오늘 같이 간 문기, 이리, 기정이 다 너무 재밌었어~!!" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/feed_detail_tv_comment_title"
-                    style="@style/small.bold"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="30dp"
-                    android:text="@{@string/feed_detail_comment_amount(vm.feedDetailUiState.feedDetail.comments.size())}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/feed_detail_tv_content"
-                    tools:text="댓글 2회" />
-
-                <com.google.android.material.divider.MaterialDivider
-                    android:id="@+id/feed_detail_divider_comment"
-                    android:layout_width="0dp"
-                    android:layout_height="2dp"
-                    android:layout_marginTop="10dp"
-                    app:dividerColor="@color/grey3"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/feed_detail_tv_comment_title" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/feed_detail_rv_comment"
-                    add_divider="@{true}"
-                    sub_list="@{vm.feedDetailUiState.feedDetail.comments}"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/feed_detail_divider_comment"
-                    tools:listitem="@layout/item_feed_comment" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
+                <ImageButton
+                    android:id="@+id/feed_detail_ib_comment_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:background="@null"
+                    android:paddingHorizontal="10dp"
+                    android:src="@drawable/ic_send"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/feed_detail_rv_comment" />
-
-                <androidx.constraintlayout.widget.Group
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="feed_detail_tv_comment_title, feed_detail_divider_comment, feed_detail_rv_comment"
-                    tools:visibility="@{vm.feedDetailUiState.feedDetail.comments.isEmpty()?View.GONE:View.VISIBLE}" />
-
-                <androidx.constraintlayout.widget.Group
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:constraint_referenced_ids="feed_detail_vp_media, feed_detail_tv_media_count"
-                    tools:visibility="@{vm.feedDetailUiState.feedDetail.contents.isEmpty()?View.GONE:View.VISIBLE}" />
+                    app:layout_constraintStart_toEndOf="@id/feed_detail_et_comment"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.core.widget.NestedScrollView>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@color/grey3"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <View
-                android:id="@+id/feed_detail_view_comment_background"
-                style="@style/medium"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginVertical="10dp"
-                android:layout_marginStart="15dp"
-                android:background="@drawable/background_comment_et"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/feed_detail_ib_comment_send"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/feed_detail_et_comment"
-                style="@style/medium"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:background="@null"
-                android:hint="@string/feed_detail_comment_hint"
-                android:maxLength="@integer/text_length_long"
-                android:onTextChanged="@{(p1,p2,p3,p4)-> vm.onCommentTextChanged(p1)}"
-                android:padding="15dp"
-                android:text="@{vm.feedDetailUiState.typedComment}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/feed_detail_view_comment_background"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/feed_detail_ib_comment_send"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:background="@null"
-                android:paddingHorizontal="10dp"
-                android:src="@drawable/ic_send"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/feed_detail_et_comment"
-                app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
