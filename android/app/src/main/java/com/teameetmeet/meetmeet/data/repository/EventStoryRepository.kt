@@ -11,6 +11,7 @@ import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
 import com.teameetmeet.meetmeet.data.network.entity.AnnouncementRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteAcceptRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
+import com.teameetmeet.meetmeet.data.network.entity.JoinRequest
 import com.teameetmeet.meetmeet.data.toException
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
@@ -123,7 +124,7 @@ class EventStoryRepository @Inject constructor(
 
     fun joinEventStory(eventId: Int): Flow<Unit> {
         return flowOf(true).map {
-            eventStoryApi.joinEventStory(eventId)
+            eventStoryApi.joinEventStory(JoinRequest(eventId))
         }.catch {
             throw it.toException()
         }

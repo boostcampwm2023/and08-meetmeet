@@ -84,6 +84,7 @@ class EventStoryViewModel @Inject constructor(
                     else -> _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_join_event_fail, exception.message.orEmpty()))
                 }
             }.collect {
+                getStory()
                 _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_join_event_success))
             }
         }
