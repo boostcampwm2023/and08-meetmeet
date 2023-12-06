@@ -23,8 +23,6 @@ data class EventStory(
     val repeatPolicyId: Int?,
     @Json(name = "isJoinable")
     val isJoin: Boolean,
-    @Json(name = "isVisible")
-    val isiVisible: Boolean,
     @Json(name = "feeds")
     val feeds: List<Feed>
 )

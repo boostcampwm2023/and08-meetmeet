@@ -250,4 +250,5 @@
     <string name="feed_detail_delete_event_confirm_dialog_message">정말로 삭제하시겠습니까? 삭제된 피드는 복구할 수 없습니다.</string>
     <string name="feed_detail_delete_comment_fail_message">댓글을 삭제할 수 없습니다.</string>
     <string name="feed_comment_delete_event_confirm_message">댓글을 삭제하시겠습니까?</string>
+    <string name="feed_comment_add_fail_message">댓글을 작성할 수 없습니다.</string>
 </resources>

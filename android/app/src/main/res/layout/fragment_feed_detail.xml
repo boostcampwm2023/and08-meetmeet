@@ -193,6 +193,7 @@
             </androidx.core.widget.NestedScrollView>
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/feed_detail_cl_comment"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@color/grey3"
