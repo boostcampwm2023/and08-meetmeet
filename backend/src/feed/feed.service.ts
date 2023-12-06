@@ -164,6 +164,10 @@ export class FeedService {
       .where('feed.eventId = :id', { id: eventId })
       .getMany();
 
+    if (!feeds.length) {
+      return;
+    }
+
     const eventContents = feeds.reduce((acc, cur) => {
       if (cur.feedContents.length) {
         return [
