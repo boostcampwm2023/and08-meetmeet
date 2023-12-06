@@ -9,6 +9,7 @@ import com.teameetmeet.meetmeet.data.network.entity.AnnouncementRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteAcceptRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventStoryDetailResponse
+import com.teameetmeet.meetmeet.data.network.entity.JoinRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -35,8 +36,8 @@ interface EventStoryApi {
         @Body announcementRequest: AnnouncementRequest
     )
 
-    @POST("event/schedule/join/{eventId}")
-    suspend fun joinEventStory(@Path("eventId") eventId: Int)
+    @POST("event/schedule/join")
+    suspend fun joinEventStory(@Body joinRequest: JoinRequest)
 
     @DELETE("event/{eventId}")
     suspend fun deleteEventStory(
