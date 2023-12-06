@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.eventstory.createfeed.CreateFeedViewModel" />
@@ -51,13 +53,13 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/create_feed_et"
                 style="@style/medium"
-                android:text="@{vm.feedText}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="top"
                 android:maxLength="@integer/text_length_long"
-                android:onTextChanged="@{(p1,p2,p3,p4) -> vm.setFeedText(p1)}" />
+                android:onTextChanged="@{(p1,p2,p3,p4) -> vm.setFeedText(p1)}"
+                android:text="@{vm.feedText}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -94,5 +96,33 @@
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/item_create_feed_media" />
         </LinearLayout>
+
+        <View
+            android:id="@+id/view_loading_background"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/loading_background"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{vm.showPlaceholder ?View.VISIBLE:View.GONE}"
+            app:constraint_referenced_ids="view_loading_background, progress_bar"
+            tools:visibility="gone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
