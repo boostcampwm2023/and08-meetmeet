@@ -15,6 +15,6 @@ data class MediaItem(
     companion object {
         const val KILO = 1024
         const val MEDIA_AMOUNT_CONSTRAINT = 10
-        const val MEDIA_VOLUME_CONSTRAINT = 1024 * 1024 * 50
+        const val MEDIA_VOLUME_CONSTRAINT = KILO * KILO * 50
     }
 }

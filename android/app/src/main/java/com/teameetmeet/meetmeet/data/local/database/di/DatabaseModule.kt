@@ -28,7 +28,18 @@ class DatabaseModule {
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
         val migration1To2 = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE `Event` MODIFY COLUMN `notification` INT NOT NULL")
+                db.execSQL("DROP TABLE `Event`")
+                db.execSQL(
+                    """CREATE TABLE `Event` (
+                        `id` INTEGER PRIMARY KEY NOT NULL,
+                        `title` TEXT NOT NULL,
+                        `startDateTime` INTEGER NOT NULL,
+                        `endDateTime` INTEGER NOT NULL,
+                        `isRepeat` INTEGER NOT NULL,
+                        `notification` INTEGER NOT NULL,
+                        `color` INTEGER NOT NULL
+                        )"""
+                )
             }
         }
 

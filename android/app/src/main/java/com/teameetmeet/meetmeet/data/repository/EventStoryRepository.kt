@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
+import android.net.Uri
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
@@ -14,11 +15,14 @@ import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.toException
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
+import com.teameetmeet.meetmeet.util.getMimeType
+import com.teameetmeet.meetmeet.util.toAbsolutePath
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -105,18 +109,22 @@ class EventStoryRepository @Inject constructor(
             }
     }
 
-    fun createFeed(eventId: Int, memo: String?, media: List<File>?): Flow<Unit> {
+    fun createFeed(eventId: Int, memo: String?, media: List<Uri>?): Flow<Unit> {
         return flowOf(true).map {
-            val contents = media?.map {
-                MultipartBody.Part.createFormData("contents", it.name, it.asRequestBody())
-            }
+            val contents = media?.map { uri ->
+                val file = uri.toAbsolutePath()?.let { File(it) } ?: return@map null
+                val type = uri.getMimeType() ?: return@map null
+                println(type.toMediaType().toString())
+                MultipartBody.Part.createFormData(
+                    "contents", file.name, file.asRequestBody(type.toMediaType())
+                )
+            }?.filterNotNull()
             eventStoryApi.createFeed(
                 eventId.toString().toRequestBody(),
                 memo?.toRequestBody(),
                 contents
             )
         }.catch {
-            //todo: 예외처리
             throw it
         }
     }

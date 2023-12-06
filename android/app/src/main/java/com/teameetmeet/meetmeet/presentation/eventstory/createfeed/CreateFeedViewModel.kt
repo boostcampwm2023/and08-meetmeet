@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.MediaItem
-import com.teameetmeet.meetmeet.util.toAbsolutePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -61,8 +59,7 @@ class CreateFeedViewModel @Inject constructor(
                 )
             } else {
                 mediaList.value
-                    .mapNotNull { it.uri.toAbsolutePath() }
-                    .map { File(it) }
+                    .map { it.uri }
                     .let {
                         _showPlaceholder.update { true }
                         eventStoryRepository.createFeed(

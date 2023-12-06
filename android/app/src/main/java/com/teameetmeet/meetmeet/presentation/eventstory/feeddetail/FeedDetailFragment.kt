@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +18,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.Comment
 import com.teameetmeet.meetmeet.databinding.FragmentFeedDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -68,6 +70,7 @@ class FeedDetailFragment :
             feedDetailVpMedia.adapter = FeedContentsAdapter(this@FeedDetailFragment)
             feedDetailRvComment.adapter =
                 FeedCommentsAdapter(navArgs.authority, this@FeedDetailFragment)
+            feedDetailClComment.isVisible = navArgs.authority != EventAuthority.GUEST
         }
     }
 
