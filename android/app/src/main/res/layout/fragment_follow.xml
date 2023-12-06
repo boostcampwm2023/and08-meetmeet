@@ -51,6 +51,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
                 android:background="@null"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
                 android:maxLength="12"
                 android:maxLines="1"
                 android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updateSearchKeyword(p0)}"
