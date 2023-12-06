@@ -1,27 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { SlackInterceptor } from './log/slack.interceptor';
+import { SlackInterceptor } from './common/slack.interceptor';
 import { MeetMeetExceptionFilter } from './common/exception/exception.filter';
+import { setupSwagger } from './common/swagger';
+import { WinstonModule } from 'nest-winston';
+import { instance } from './common/log/winston.logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger({
+      instance: instance,
+    }),
+  });
 
   app.useGlobalInterceptors(new SlackInterceptor());
-  const config = new DocumentBuilder()
-    .setTitle(`MeetMeet's backend api`)
-    .setDescription(`The MeetMeet's API description`)
-    .setVersion('1.0')
-    .addBearerAuth({
-      type: 'http',
-      scheme: 'bearer',
-      name: 'JWT',
-      in: 'header',
-    })
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  setupSwagger(app);
 
   app.useGlobalPipes(
     new ValidationPipe({
