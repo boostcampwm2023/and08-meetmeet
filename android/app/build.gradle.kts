@@ -71,7 +71,6 @@ dependencies {
     // Navigation
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
-    implementation("androidx.hilt:hilt-navigation-fragment:1.1.0")
 
     // Di Hilt
     implementation("com.google.dagger:hilt-android:2.48")
