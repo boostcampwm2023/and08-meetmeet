@@ -64,6 +64,11 @@ interface EventStoryApi {
         @Path("feedId") id: Int
     ): FeedDetail
 
+    @DELETE("feed/{feedId}")
+    suspend fun deleteFeed(
+        @Path("feedId") id: Int
+    )
+
     @POST("feed/{feedId}/comment")
     suspend fun addFeedComment(
         @Path("feedId") id: Int,

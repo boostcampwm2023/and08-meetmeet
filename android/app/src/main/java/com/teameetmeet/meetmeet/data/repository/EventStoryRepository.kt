@@ -148,6 +148,14 @@ class EventStoryRepository @Inject constructor(
         }
     }
 
+    fun deleteFeed(feedId: Int): Flow<Unit> {
+        return flowOf(true).map {
+            eventStoryApi.deleteFeed(feedId)
+        }.catch {
+            throw it.toException()
+        }
+    }
+
     fun addFeedComment(feedId: Int, memo: String): Flow<Unit> {
         return flowOf(true).map {
             eventStoryApi.addFeedComment(
