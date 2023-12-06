@@ -142,7 +142,10 @@ export class FeedService {
       );
     }
 
-    await this.feedRepository.softRemove(feed);
+    await this.commentService.deleteComments(
+      feed.comments.map((comment) => comment.id),
+    );
+    await this.feedRepository.softDelete(feed.id);
   }
 
   async createComment(user: User, feedId: number, memo: string) {
