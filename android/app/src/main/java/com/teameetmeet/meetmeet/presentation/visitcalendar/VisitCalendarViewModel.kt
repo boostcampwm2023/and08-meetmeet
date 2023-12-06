@@ -29,7 +29,7 @@ class VisitCalendarViewModel @Inject constructor(
             userRepository.getUserWithFollowStatus(userNickname)
                 .catch {}
                 .collect { userProfile ->
-                    _userProfile.update { userProfile }
+                    _userProfile.update { userProfile.first() }
                 }
         }
     }
