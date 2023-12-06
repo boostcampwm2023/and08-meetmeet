@@ -132,9 +132,11 @@ class FollowViewModel @Inject constructor(
 
     override fun onProfileClick(user: UserStatus) {
         viewModelScope.launch {
-            _event.emit(
-                FollowEvent.VisitProfile(user.id, user.nickname)
-            )
+            if (!user.isMe) {
+                _event.emit(
+                    FollowEvent.VisitProfile(user.id, user.nickname)
+                )
+            }
         }
     }
 

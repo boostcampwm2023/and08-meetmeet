@@ -14,5 +14,6 @@ data class FeedDetail(
     @Json(name = "contents")
     val contents: List<Content>,
     @Json(name = "comments")
-    val comments: List<Comment>
+    val comments: List<Comment>,
+    val isMine: Boolean = false
 )

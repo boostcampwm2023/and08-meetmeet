@@ -25,8 +25,7 @@ class NotificationActivity :
         onBackPressedDispatcher.addCallback(
             this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    if (!isTaskRoot) finish()
-                    else navigateToHomeActivity()
+                    navigateToPrev()
                 }
             }
         )
@@ -34,8 +33,13 @@ class NotificationActivity :
 
     private fun setTopAppBar() {
         binding.notificationMtb.setNavigationOnClickListener {
-            navigateToHomeActivity()
+            navigateToPrev()
         }
+    }
+
+    private fun navigateToPrev() {
+        if (!isTaskRoot) finish()
+        else navigateToHomeActivity()
     }
 
     private fun navigateToHomeActivity() {

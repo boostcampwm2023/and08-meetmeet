@@ -2,32 +2,45 @@ package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.data.model.Comment
 import com.teameetmeet.meetmeet.databinding.ItemFeedCommentBinding
+import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 
-class FeedCommentsAdapter :
+class FeedCommentsAdapter(
+    private val authority: EventAuthority,
+    private val commentDeleteClickListener: CommentDeleteClickListener
+) :
     ListAdapter<Comment, FeedCommentsAdapter.FeedCommentsViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedCommentsViewHolder {
-        return FeedCommentsViewHolder(
-            ItemFeedCommentBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+        val binding = ItemFeedCommentBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+        return FeedCommentsViewHolder(binding, authority, commentDeleteClickListener)
     }
 
     override fun onBindViewHolder(holder: FeedCommentsViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class FeedCommentsViewHolder(val binding: ItemFeedCommentBinding) :
+    class FeedCommentsViewHolder(
+        private val binding: ItemFeedCommentBinding,
+        private val authority: EventAuthority,
+        private val commentDeleteClickListener: CommentDeleteClickListener
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Comment) {
             binding.item = item
+            binding.feedCommentBtnDelete.isVisible =
+                item.isMine || authority == EventAuthority.OWNER
+            binding.feedCommentBtnDelete.setOnClickListener {
+                commentDeleteClickListener.onClick(item)
+            }
         }
     }
 

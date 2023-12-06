@@ -131,10 +131,28 @@ class EventStoryRepository @Inject constructor(
 
     fun getFeedDetail(feedId: Int): Flow<FeedDetail> {
         return flowOf(true).map {
-            eventStoryApi.getFeedDetail(feedId)
+            val userNickname = dataStore.getUserProfile().first().nickname
+            eventStoryApi.getFeedDetail(feedId).let { feed ->
+                feed.copy(
+                    isMine = userNickname == feed.author.nickname,
+                    comments = feed.comments.map { comment ->
+                        comment.copy(
+                            isMine = comment.author.nickname == userNickname
+                        )
+                    }
+                )
+            }
         }.catch {
             //todo: 예외처리
             throw it
+        }
+    }
+
+    fun deleteFeed(feedId: Int): Flow<Unit> {
+        return flowOf(true).map {
+            eventStoryApi.deleteFeed(feedId)
+        }.catch {
+            throw it.toException()
         }
     }
 
@@ -146,6 +164,14 @@ class EventStoryRepository @Inject constructor(
         }.catch {
             //todo: 예외처리
             throw it
+        }
+    }
+
+    fun deleteFeedComment(feedId: Int, commentId: Int): Flow<Unit> {
+        return flowOf(true).map {
+            eventStoryApi.deleteFeedComment(feedId, commentId)
+        }.catch {
+            throw it.toException()
         }
     }
 

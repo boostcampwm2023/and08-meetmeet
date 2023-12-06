@@ -64,10 +64,21 @@ interface EventStoryApi {
         @Path("feedId") id: Int
     ): FeedDetail
 
+    @DELETE("feed/{feedId}")
+    suspend fun deleteFeed(
+        @Path("feedId") id: Int
+    )
+
     @POST("feed/{feedId}/comment")
     suspend fun addFeedComment(
         @Path("feedId") id: Int,
         @Body addFeedCommentRequest: AddFeedCommentRequest
+    )
+
+    @DELETE("feed/{feedId}/comment/{commentId}")
+    suspend fun deleteFeedComment(
+        @Path("feedId") feedId: Int,
+        @Path("commentId") commentId: Int
     )
 
     @GET("event/user/followings")
