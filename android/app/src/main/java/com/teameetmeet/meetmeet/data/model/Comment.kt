@@ -12,5 +12,6 @@ data class Comment(
     @Json(name = "author")
     val author: EventMember,
     @Json(name = "updatedAt")
-    val updatedAt: String
+    val updatedAt: String,
+    val isMine: Boolean = false
 )
