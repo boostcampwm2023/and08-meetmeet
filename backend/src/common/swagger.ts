@@ -8,7 +8,6 @@ export function setupSwagger(app: INestApplication): void {
   if (!SWAGGER_ID || !SWAGGER_PASSWORD) {
     return;
   }
-  console.log(SWAGGER_ID, SWAGGER_PASSWORD);
   app.use(
     ['/docs'],
     expressBasicAuth({
