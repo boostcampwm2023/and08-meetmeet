@@ -89,6 +89,7 @@ class EventStoryDetailViewModel @Inject constructor(
                             DateTimeFormat.ISO_DATE_TIME,
                             ZoneId.of("UTC")
                         ).toLocalDateTime()
+                        val repeatEnd = repeatEndDate ?: "2099-01-01T00:00:00.000Z"
                         val endLocalDateTime =
                             endDate.toTimeStampLong(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
                                 .toLocalDateTime()
@@ -122,7 +123,7 @@ class EventStoryDetailViewModel @Inject constructor(
                             color = EventColor.entries.first { it.value == color },
                             alarm = EventNotification.entries.first { it.minutes == alarmMinutes },
                             memo = memo.orEmpty(),
-                            eventRepeatEndDate = repeatEndDate.orEmpty()
+                            eventRepeatEndDate = repeatEnd
                                 .toTimeStampLong(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
                                 .toDateString(DateTimeFormat.LOCAL_DATE),
                             isRepeatEvent = repeatTerm != null
