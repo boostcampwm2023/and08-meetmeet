@@ -60,7 +60,7 @@ jobs:
             sudo docker login meetmeet-container-registry.kr.ncr.ntruss.com -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
             
             sudo docker pull ${{ secrets.NCP_REGISTRY }}/nest:latest
-            
+            git pull origin dev
             sudo service nginx stop
             sudo docker compose down
             sudo docker compose up -d
