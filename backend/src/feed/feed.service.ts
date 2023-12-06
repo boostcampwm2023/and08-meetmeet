@@ -68,6 +68,7 @@ export class FeedService {
         'feed.id',
         'feed.memo',
         'feed.author',
+        'author.profile',
         'fc.contentId',
         'fc.content',
         'comment',
@@ -75,6 +76,7 @@ export class FeedService {
       .leftJoin('feed.feedContents', 'fc')
       .leftJoin('feed.comments', 'comment')
       .leftJoinAndSelect('feed.author', 'author')
+      .leftJoinAndSelect('author.profile', 'profile')
       .leftJoinAndSelect('fc.content', 'content')
       .where('feed.id = :id', { id })
       .getOne();
