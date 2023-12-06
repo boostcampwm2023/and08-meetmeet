@@ -32,7 +32,7 @@ class EventStoryViewModel @Inject constructor(
 
     fun setEventId(eventId: Int?) {
         _eventStoryUiState.update {
-            it.copy(eventId = eventId?:0)
+            it.copy(eventId = eventId?:-1)
         }
     }
 
