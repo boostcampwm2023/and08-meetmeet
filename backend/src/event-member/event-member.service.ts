@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EventMember } from './entities/eventMember.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Detail } from '../detail/entities/detail.entity';
 import { Authority } from './entities/authority.entity';
@@ -43,16 +43,23 @@ export class EventMemberService {
     details: Detail[],
     authority: Authority,
   ) {
-    const eventMembers = [];
+    const eventMembers: EventMember[] = [];
     for (let i = 0; i < events.length; i++) {
-      eventMembers.push({
-        user: user,
-        detail: details[i],
-        authority: authority,
-        event: events[i],
-      });
+      eventMembers.push(
+        this.eventMemberRepository.create({
+          user: user,
+          detail: details[i],
+          authority: authority,
+          event: events[i],
+        }),
+      );
     }
-    return await this.eventMemberRepository.save(eventMembers);
+
+    const result = await this.eventMemberRepository.insert(eventMembers);
+    return await this.eventMemberRepository.find({
+      relations: ['event'],
+      where: { id: In(result.identifiers.map((identifier) => identifier.id)) },
+    });
   }
 
   async getAuthorityOfUserByEventId(eventId: number, userId: number) {
@@ -60,7 +67,6 @@ export class EventMemberService {
       select: { authority: { displayName: true } },
       relations: ['authority'],
       where: { event: { id: eventId }, user: { id: userId } },
-      // where: { userId: userId, eventId: eventId },
     });
 
     return result?.authority?.displayName;

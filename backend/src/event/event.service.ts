@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOperator, Raw, Repository } from 'typeorm';
+import { FindOperator, In, Raw, Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateScheduleDto, RepeatTerm } from './dto/createSchedule.dto';
 import { CalendarService } from '../calendar/calendar.service';
-import { RepeatPolicy } from './entities/repeatPolicy.entity';
+import { RepeatType, RepeatPolicy } from './entities/repeatPolicy.entity';
 import { DetailService } from '../detail/detail.service';
 import { EventMemberService } from '../event-member/event-member.service';
 import { Calendar } from '../calendar/entities/calendar.entity';
@@ -22,6 +22,7 @@ import { StatusEnum } from '../invite/entities/status.enum';
 import { SearchResponseDto } from './dto/search-response.dto';
 import {
   AlreadyJoinedException,
+  createEventFailException,
   EventForbiddenException,
   EventNotFoundException,
   ExpiredInviteException,
@@ -36,6 +37,7 @@ import {
   SearchSelfException,
 } from './exception/event.exception';
 import { UserNotFoundException } from 'src/user/exception/user.exception';
+import { EventMember } from 'src/event-member/entities/eventMember.entity';
 
 @Injectable()
 export class EventService {
@@ -172,12 +174,19 @@ export class EventService {
   async createEvent(user: User, createScheduleDto: CreateScheduleDto) {
     // todo: calendar 어떻게 처리할지 의논
     const calendar = await this.calendarService.getCalendarByUserId(user.id);
+    const authority = await this.eventMemberService.getAuthorityId('OWNER');
+    if (!authority) {
+      throw new createEventFailException();
+    }
+
+    let savedEventMembers: EventMember[];
 
     if (this.isReapeatPolicy(createScheduleDto)) {
       if (!this.isReapeatPolicyValid(createScheduleDto)) {
         throw new InvalidRepeatPolicyException();
       }
 
+      // TODO: transaction
       const repeatPolicy = await this.createRepeatPolicy(createScheduleDto);
       if (!repeatPolicy) {
         throw new InvalidRepeatPolicyException();
@@ -189,75 +198,57 @@ export class EventService {
         calendar,
         repeatPolicy,
       );
+
       const details = await this.detailService.createDetailBulk(
         createScheduleDto,
         events.length,
       );
-      const authority = await this.eventMemberService.getAuthorityId('OWNER');
-      if (!authority) {
-        throw new EventForbiddenException();
+      if (events.length !== details.length) {
+        throw new createEventFailException();
       }
-      const savedEventMembers =
-        await this.eventMemberService.createEventMemberBulk(
-          events,
-          user,
-          details,
-          authority,
-        );
-      const results: any[] = [];
-      savedEventMembers.forEach((eventMember) => {
-        results.push({
-          id: eventMember.event.id,
-          startDate: eventMember.event.startDate,
-          endDate: eventMember.event.endDate,
-          title: eventMember.event.title,
-          repeatPolicyId: eventMember.event.repeatPolicyId,
-          isJoinable: eventMember.event.isJoinable ? true : false,
-          announcement: eventMember.event.announcement,
-          isVisible: eventMember.detail.isVisible ? true : false,
-          memo: eventMember.detail.memo,
-          color: eventMember.detail.color,
-          alarmMinutes: eventMember.detail.alarmMinutes,
-          authority: eventMember.authority.displayName,
-        });
-      });
-      return { events: results };
+
+      savedEventMembers = await this.eventMemberService.createEventMemberBulk(
+        events,
+        user,
+        details,
+        authority,
+      );
     } else {
-      const event = this.eventRepository.create({
+      const eventEntity = this.eventRepository.create({
         ...createScheduleDto,
         calendar,
       });
-      const savedEvent = await this.eventRepository.save(event);
+      const event = await this.eventRepository.save(eventEntity);
       const detail = await this.detailService.createDetail(createScheduleDto);
-      const authority = await this.eventMemberService.getAuthorityId('OWNER');
-      if (!authority) {
-        throw new EventForbiddenException();
-      }
-      const savedEventMembers = await this.eventMemberService.createEventMember(
-        savedEvent,
-        user,
-        detail,
-        authority,
-      );
-      return {
-        events: [
-          {
-            id: savedEventMembers.event.id,
-            startDate: savedEventMembers.event.startDate,
-            endDate: savedEventMembers.event.endDate,
-            title: savedEventMembers.event.title,
-            repeatPolicyId: savedEventMembers.event.repeatPolicyId,
-            isJoinable: savedEventMembers.event.isJoinable ? true : false,
-            announcement: savedEventMembers.event.announcement,
-            isVisible: savedEventMembers.detail.isVisible ? true : false,
-            memo: savedEventMembers.detail.memo,
-            color: savedEventMembers.detail.color,
-            alarmMinutes: savedEventMembers.detail.alarmMinutes,
-            authority: savedEventMembers.authority.displayName,
-          },
-        ],
-      };
+
+      savedEventMembers = [
+        await this.eventMemberService.createEventMember(
+          event,
+          user,
+          detail,
+          authority,
+        ),
+      ];
     }
+
+    const results = savedEventMembers.map((eventMember) => {
+      return {
+        id: eventMember.event.id,
+        startDate: eventMember.event.startDate,
+        endDate: eventMember.event.endDate,
+        title: eventMember.event.title,
+        repeatPolicyId: eventMember.event.repeatPolicyId,
+        isJoinable: eventMember.event.isJoinable ? true : false,
+        announcement: eventMember.event.announcement,
+        isVisible: eventMember.detail.isVisible ? true : false,
+        memo: eventMember.detail.memo,
+        color: eventMember.detail.color,
+        alarmMinutes: eventMember.detail.alarmMinutes,
+        authority: eventMember.authority.displayName,
+      };
+    });
+
+    return { events: results };
   }
 
   async deleteEvent(user: User, eventId: number, isAll: boolean) {
@@ -696,14 +687,16 @@ export class EventService {
   }
 
   isReapeatPolicyValid(createScheduleDto: CreateScheduleDto) {
-    if (!createScheduleDto.repeatTerm || !createScheduleDto.repeatFrequency) {
+    const { repeatTerm, repeatFrequency, repeatEndDate } = createScheduleDto;
+    if (!repeatTerm || !repeatFrequency) {
       return false;
     }
-    if (
-      createScheduleDto.repeatFrequency <= 0 ||
-      createScheduleDto.repeatFrequency > 7
-    ) {
+    // Q) repeatTerm이 DAY일 때만 적용되는 걸까요
+    if (repeatFrequency <= 0 || repeatFrequency > 7) {
       return false;
+    }
+    if (!repeatEndDate) {
+      createScheduleDto.repeatEndDate = new Date('2038-01-18');
     }
     return true;
   }
@@ -719,68 +712,37 @@ export class EventService {
     repeatPolicy: RepeatPolicy,
     createScheduleDto: CreateScheduleDto,
   ) {
-    if (repeatPolicy.startDate !== createScheduleDto.startDate) {
+    const { startDate, repeatEndDate, repeatTerm, repeatFrequency } =
+      createScheduleDto;
+
+    if (
+      repeatPolicy.startDate !== startDate ||
+      repeatPolicy.endDate !== repeatEndDate
+    ) {
       return false;
     }
-    if (repeatPolicy.endDate !== createScheduleDto.endDate) {
-      return false;
-    }
-    switch (createScheduleDto.repeatTerm) {
-      case 'DAY':
-        if (repeatPolicy.repeatDay !== createScheduleDto.repeatFrequency) {
-          return false;
-        }
-        break;
-      case 'WEEK':
-        if (repeatPolicy.repeatWeek !== createScheduleDto.repeatFrequency) {
-          return false;
-        }
-        break;
-      case 'MONTH':
-        if (repeatPolicy.repeatMonth !== createScheduleDto.repeatFrequency) {
-          return false;
-        }
-        break;
-      case 'YEAR':
-        if (repeatPolicy.repeatYear !== createScheduleDto.repeatFrequency) {
-          return false;
-        }
-        break;
-    }
-    return true;
+
+    return (
+      repeatPolicy[RepeatType[repeatTerm as keyof typeof RepeatType]] ===
+      repeatFrequency
+    );
   }
 
   async createRepeatPolicy(createScheduleDto: CreateScheduleDto) {
+    const { startDate, repeatEndDate, repeatTerm, repeatFrequency } =
+      createScheduleDto;
     const repeatPolicy = this.repeatPolicyRepository.create({
-      startDate: createScheduleDto.startDate,
-      endDate: createScheduleDto.endDate,
+      startDate: startDate,
+      endDate: repeatEndDate,
     });
-    if (!createScheduleDto.repeatFrequency) {
+    if (!repeatFrequency) {
       throw new InvalidRepeatPolicyException();
     }
-    switch (createScheduleDto.repeatTerm) {
-      case 'DAY':
-        repeatPolicy.repeatDay = createScheduleDto.repeatFrequency;
-        break;
-      case 'WEEK':
-        repeatPolicy.repeatWeek = createScheduleDto.repeatFrequency;
-        break;
-      case 'MONTH':
-        repeatPolicy.repeatMonth = createScheduleDto.repeatFrequency;
-        break;
-      case 'YEAR':
-        repeatPolicy.repeatYear = createScheduleDto.repeatFrequency;
-        break;
-    }
+
+    repeatPolicy[RepeatType[repeatTerm as keyof typeof RepeatType]] =
+      repeatFrequency;
+
     return await this.repeatPolicyRepository.save(repeatPolicy);
-  }
-
-  formatDateString(date: string) {
-    const year = date.substring(0, 4);
-    const month = date.substring(4, 6);
-    const day = date.substring(6, 8);
-
-    return `${year}-${month}-${day}`;
   }
 
   incrementDate(
@@ -812,16 +774,19 @@ export class EventService {
     calendar: Calendar,
     repeatPolicy: RepeatPolicy,
   ) {
-    if (!createScheduleDto.repeatEndDate) {
-      createScheduleDto.repeatEndDate = new Date('2038-01-18');
+    const repeatEndDate = new Date(
+      createScheduleDto.repeatEndDate ?? '2038-01-18',
+    );
+    const { repeatTerm, repeatFrequency } = createScheduleDto;
+    if (!repeatTerm || !repeatFrequency) {
+      throw new InvalidRepeatPolicyException();
     }
-    const endDate = new Date(createScheduleDto.repeatEndDate);
 
+    const events: Event[] = [];
     let startDateCursor = new Date(createScheduleDto.startDate);
     let endDateCursor = new Date(createScheduleDto.endDate);
-    const events = [];
 
-    while (endDateCursor < endDate) {
+    while (endDateCursor <= repeatEndDate) {
       const event = this.eventRepository.create({
         ...createScheduleDto,
         calendar,
@@ -829,24 +794,26 @@ export class EventService {
         startDate: new Date(startDateCursor), // 새로운 Date 객체 생성
         endDate: new Date(endDateCursor),
       });
+
       events.push(event);
-      if (
-        createScheduleDto.repeatTerm &&
-        createScheduleDto.repeatFrequency != null
-      ) {
-        startDateCursor = this.incrementDate(
-          startDateCursor,
-          createScheduleDto.repeatTerm,
-          createScheduleDto.repeatFrequency,
-        );
-        endDateCursor = this.incrementDate(
-          endDateCursor,
-          createScheduleDto.repeatTerm,
-          createScheduleDto.repeatFrequency,
-        );
-      }
+
+      startDateCursor = this.incrementDate(
+        startDateCursor,
+        repeatTerm,
+        repeatFrequency,
+      );
+      endDateCursor = this.incrementDate(
+        endDateCursor,
+        repeatTerm,
+        repeatFrequency,
+      );
     }
-    return await this.eventRepository.save(events);
+
+    const result = await this.eventRepository.insert(events);
+
+    return await this.eventRepository.find({
+      where: { id: In(result.identifiers.map((identifier) => identifier.id)) },
+    });
   }
 
   async getFollowingsEvents(user: User, eventId: number) {
