@@ -9,4 +9,5 @@ services:
     volumes:
       - .env:/var/app/.env
       - ./meetmeet-firebase.json:/var/app/meetmeet-firebase.json
+      - ./logs:/var/app/logs
     command: npm run start:dev
