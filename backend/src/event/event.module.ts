@@ -15,6 +15,7 @@ import { EventMember } from '../event-member/entities/eventMember.entity';
 import { FollowModule } from '../follow/follow.module';
 import { UserModule } from '../user/user.module';
 import { InviteModule } from '../invite/invite.module';
+import { FeedModule } from '../feed/feed.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { InviteModule } from '../invite/invite.module';
     FollowModule,
     UserModule,
     InviteModule,
+    FeedModule,
   ],
   controllers: [EventController],
   providers: [EventService, CalendarService, DetailService, EventMemberService],

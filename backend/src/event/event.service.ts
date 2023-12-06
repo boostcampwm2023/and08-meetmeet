@@ -38,6 +38,7 @@ import {
 } from './exception/event.exception';
 import { UserNotFoundException } from 'src/user/exception/user.exception';
 import { EventMember } from 'src/event-member/entities/eventMember.entity';
+import { FeedService } from '../feed/feed.service';
 
 @Injectable()
 export class EventService {
@@ -52,6 +53,7 @@ export class EventService {
     private followService: FollowService,
     private userService: UserService,
     private inviteService: InviteService,
+    private feedService: FeedService,
   ) {}
 
   async getEvents(user: User, startDate: string, endDate: string) {
@@ -253,6 +255,7 @@ export class EventService {
 
   async deleteEvent(user: User, eventId: number, isAll: boolean) {
     // todo : 연관된 모든 것을 삭제할 수 있도록 -> Invite
+    // todo : 권한에 따라 삭제가능한 것이 변경되도록
     const event = await this.eventRepository.findOne({
       relations: ['eventMembers', 'feeds'],
       where: {
@@ -270,6 +273,15 @@ export class EventService {
     if (!isValidUser) {
       throw new NotEventMemberException();
     }
+
+    const authority = event.eventMembers.find(
+      (eventMember) => eventMember.user.id === user.id,
+    )?.authority?.displayName;
+
+    if (!authority || !['OWNER', 'ADMIN'].includes(authority)) {
+      throw new EventForbiddenException();
+    }
+
     const resultObject = event
       ? {
           id: event.id,
@@ -302,36 +314,89 @@ export class EventService {
     }
 
     if (!isAll) {
-      if (!event.repeatPolicy) {
-        await this.eventRepository.softRemove(event);
-      } else {
-        const eventsWithRepeatPolicy = await this.eventRepository.findBy({
-          repeatPolicyId: event.repeatPolicyId,
-        });
-        if (eventsWithRepeatPolicy.length === 1) {
-          await this.repeatPolicyRepository.softRemove(event.repeatPolicy);
+      if (authority === 'OWNER') {
+        if (!event.repeatPolicy) {
+          await this.eventRepository.softRemove(event);
+          await this.feedService.deleteEventFeeds(user, event.id);
+        } else {
+          const eventsWithRepeatPolicy = await this.eventRepository.findBy({
+            repeatPolicyId: event.repeatPolicyId,
+          });
+          if (eventsWithRepeatPolicy.length === 1) {
+            await this.repeatPolicyRepository.softRemove(event.repeatPolicy);
+          }
+          await this.eventRepository.softRemove(event);
+          await this.feedService.deleteEventFeeds(user, event.id);
         }
-        await this.eventRepository.softRemove(event);
+      } else if (authority === 'MEMBER') {
+        const eventMember =
+          await this.eventMemberService.getEventMemberByUserIdAndEventId(
+            user.id,
+            eventId,
+          );
+        if (!eventMember) {
+          throw new NotEventMemberException();
+        }
+        await this.eventMemberService.deleteEventMemberByEventMemberId(
+          eventMember.id,
+        );
       }
     } else {
-      const eventsWithRepeatPolicyAndNoFeed = await this.eventRepository
-        .createQueryBuilder('event')
-        .leftJoinAndSelect('event.eventMembers', 'eventMember')
-        .leftJoinAndSelect('event.repeatPolicy', 'repeatPolicy')
-        .leftJoinAndSelect('eventMember.detail', 'detail')
-        .leftJoinAndSelect('eventMember.user', 'user')
-        .leftJoin('Feed', 'feed', 'feed.event = event.id')
-        .where('event.repeatPolicy IS NOT NULL')
-        .where('event.startDate >= :startDate', {
-          startDate: event.startDate,
-        })
-        .andWhere('feed.event IS NULL')
-        .andWhere('repeatPolicy.id = :repeatPolicyId', {
-          repeatPolicyId: event.repeatPolicyId,
-        })
-        .getMany();
+      if (authority === 'OWNER') {
+        const eventsWithRepeatPolicyAndNoFeed = await this.eventRepository
+          .createQueryBuilder('event')
+          .leftJoinAndSelect('event.eventMembers', 'eventMember')
+          .leftJoinAndSelect('event.repeatPolicy', 'repeatPolicy')
+          .leftJoinAndSelect('eventMember.detail', 'detail')
+          .leftJoinAndSelect('eventMember.user', 'user')
+          .leftJoin('Feed', 'feed', 'feed.event = event.id')
+          .where('event.repeatPolicy IS NOT NULL')
+          .where('event.startDate >= :startDate', {
+            startDate: event.startDate,
+          })
+          .andWhere('feed.event IS NULL')
+          .andWhere('repeatPolicy.id = :repeatPolicyId', {
+            repeatPolicyId: event.repeatPolicyId,
+          })
+          .getMany();
 
-      await this.eventRepository.softRemove(eventsWithRepeatPolicyAndNoFeed);
+        await this.eventRepository.softRemove(eventsWithRepeatPolicyAndNoFeed);
+        await Promise.all(
+          eventsWithRepeatPolicyAndNoFeed.map(async (event) => {
+            await this.feedService.deleteEventFeeds(user, event.id);
+          }),
+        );
+      } else if (authority === 'MEMBER') {
+        const events = await this.eventRepository.find({
+          relations: ['eventMembers'],
+          where: {
+            startDate: Raw((alias) => `${alias} >= :start`, {
+              start: event.startDate,
+            }),
+            eventMembers: { user: { id: user.id } },
+          },
+        });
+        const eventMembersIds = events.map(
+          (event) =>
+            event.eventMembers.find(
+              (eventMember) => eventMember.user.id === user.id,
+            )?.id,
+        );
+        await Promise.all(
+          eventMembersIds.map(async (eventMemberId) => {
+            try {
+              if (eventMemberId) {
+                await this.eventMemberService.deleteEventMemberByEventMemberId(
+                  eventMemberId,
+                );
+              }
+            } catch (err) {
+              // todo 어떻게 에러 처리할지
+              console.log(err);
+            }
+          }),
+        );
+      }
     }
   }
 

@@ -81,4 +81,14 @@ export class EventMemberService {
       await this.eventMemberRepository.softRemove(eventMember);
     }
   }
+
+  async getEventMemberByUserIdAndEventId(userId: number, eventId: number) {
+    return await this.eventMemberRepository.findOne({
+      where: { user: { id: userId }, event: { id: eventId } },
+    });
+  }
+
+  async deleteEventMemberByEventMemberId(eventMemberId: number) {
+    await this.eventMemberRepository.softDelete({ id: eventMemberId });
+  }
 }
