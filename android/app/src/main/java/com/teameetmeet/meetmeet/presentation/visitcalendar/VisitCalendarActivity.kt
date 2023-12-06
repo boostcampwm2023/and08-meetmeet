@@ -23,6 +23,7 @@ class VisitCalendarActivity : BaseActivity<ActivityVisitCalendarBinding>(
         super.onCreate(savedInstanceState)
         setNavHost()
         setTopAppBar()
+        binding.vm = viewModel
         viewModel.fetchUserProfile(args.userNickname)
     }
 
