@@ -20,7 +20,7 @@ import javax.inject.Inject
 class EventMemberViewModel @Inject constructor(
     private val userRepository: UserRepository,
     private val followRepository: FollowRepository
-): ViewModel(), EventMemberClickListener {
+) : ViewModel(), EventMemberClickListener {
 
     private val _uiState = MutableStateFlow<List<UserStatus>>(emptyList())
     val uiState: StateFlow<List<UserStatus>> = _uiState
@@ -29,9 +29,9 @@ class EventMemberViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update {
                 nicknameList.flatMap {
-                    userRepository.getUserWithFollowStatus(it).catch {  exception ->
+                    userRepository.getUserWithFollowStatus(it).catch { exception ->
                         println(exception)
-                        when(exception) {
+                        when (exception) {
                             is ExpiredRefreshTokenException -> {}
                             is UnknownHostException -> {}
                             else -> {}
@@ -46,17 +46,18 @@ class EventMemberViewModel @Inject constructor(
     override fun onClick(userStatus: UserStatus) {
         println("클릭")
         viewModelScope.launch {
-            if(userStatus.isFollowed) {
+            userStatus.isFollowed ?: return@launch
+            if (userStatus.isFollowed) {
                 followRepository.unFollow(userStatus.id).catch {
                     println("언팔로우 : $it")
-                }.collect{
-                    fetchEventMember(uiState.value.map{it.nickname})
+                }.collect {
+                    fetchEventMember(uiState.value.map { it.nickname })
                 }
             } else {
                 followRepository.follow(userStatus.id).catch {
                     println("팔로우 : $it")
-                }.collect{
-                    fetchEventMember(uiState.value.map{it.nickname})
+                }.collect {
+                    fetchEventMember(uiState.value.map { it.nickname })
                 }
             }
         }
