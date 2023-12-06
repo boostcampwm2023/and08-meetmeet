@@ -14,7 +14,7 @@ import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail) {
+class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail), ContentClickListener {
     private val viewModel: FeedDetailViewModel by viewModels()
     private val navArgs: FeedDetailFragmentArgs by navArgs()
 
@@ -35,7 +35,7 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
     private fun setBinding() {
         with(binding) {
             vm = viewModel
-            feedDetailVpMedia.adapter = FeedContentsAdapter()
+            feedDetailVpMedia.adapter = FeedContentsAdapter(this@FeedDetailFragment)
             feedDetailRvComment.adapter = FeedCommentsAdapter()
         }
     }
@@ -66,5 +66,10 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+    }
+
+    override fun onClick() {
+        viewModel.feedDetailUiState.value.feedDetail?.contents?: return
+        findNavController().navigate(FeedDetailFragmentDirections.actionFeedDetailFragmentToFeedContentFragment(viewModel.feedDetailUiState.value.feedDetail!!.contents.toTypedArray(), viewModel.feedDetailUiState.value.contentPage))
     }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Patch,
@@ -15,13 +16,16 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiConsumes,
+  ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
+import { SearchResponseDto } from '../event/dto/search-response.dto';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -126,6 +130,7 @@ export class UserController {
     summary: '사용자 검색 API',
     description: 'parameter의 nickname으로 검색합니다.',
   })
+  @ApiOkResponse({ type: SearchResponseDto })
   searchUser(@GetUser() user: User, @Query('nickname') nickname: string) {
     return this.userService.searchUser(user, nickname);
   }
@@ -149,5 +154,35 @@ export class UserController {
   })
   registerFCMToken(@GetUser() user: User, @Body('token') token: string) {
     return this.userService.registerFCMToken(user, token);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  @ApiOperation({
+    summary: '사용자 로그아웃 API',
+  })
+  logout(@GetUser() user: User) {
+    return this.userService.logout(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('notification')
+  @ApiOperation({
+    summary: '사용자 알림 조회 API',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    example: 'follow or invite',
+    description: 'follow: 팔로우 알림(디폴트), invite: 초대 알림',
+  })
+  getUserNotification(
+    @GetUser() user: User,
+    @Query('page', new DefaultValuePipe('follow')) page: string,
+  ) {
+    if (page !== 'follow' && page !== 'invite') {
+      page = 'follow';
+    }
+    return this.userService.getUserNotification(user, page);
   }
 }

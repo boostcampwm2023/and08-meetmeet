@@ -17,6 +17,11 @@ export class NotEventMemberException extends HttpException {
     super('이벤트에 참여하지 않았습니다.', HttpStatus.BAD_REQUEST);
   }
 }
+export class InvalidAuthorityException extends HttpException {
+  constructor() {
+    super('올바르지 않은 권한입니다.', HttpStatus.BAD_REQUEST);
+  }
+}
 
 export class AlreadyJoinedException extends HttpException {
   constructor() {
@@ -57,5 +62,23 @@ export class SearchSelfException extends HttpException {
 export class InviteSelfException extends HttpException {
   constructor() {
     super('자기 자신은 초대할 수 없습니다.', HttpStatus.BAD_REQUEST);
+  }
+}
+
+export class InviteNotFoundException extends HttpException {
+  constructor() {
+    super('존재하지 않는 초대입니다.', HttpStatus.NOT_FOUND);
+  }
+}
+
+export class ExpiredInviteException extends HttpException {
+  constructor() {
+    super('만료된 초대입니다.', HttpStatus.BAD_REQUEST);
+  }
+}
+
+export class NotInviteReceiverException extends HttpException {
+  constructor() {
+    super('초대 받은 사람이 아닙니다.', HttpStatus.BAD_REQUEST);
   }
 }

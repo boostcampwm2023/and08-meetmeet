@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
+package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontent
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,19 +6,19 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.data.model.Content
-import com.teameetmeet.meetmeet.databinding.ItemFeedContentBinding
+import com.teameetmeet.meetmeet.databinding.ItemFeedContentWithSaveBinding
 
-class FeedContentsAdapter(
-    private val contentClickListener: ContentClickListener
-) : ListAdapter<Content, FeedContentsAdapter.FeedContentsViewHolder>(diffCallback) {
+class FeedContentSlideAdapter(
+    private val imageClickListener: ImageClickListener
+) : ListAdapter<Content, FeedContentSlideAdapter.FeedContentsViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedContentsViewHolder {
         return FeedContentsViewHolder(
-            ItemFeedContentBinding.inflate(
+            ItemFeedContentWithSaveBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             ),
-            contentClickListener
+            imageClickListener
         )
     }
 
@@ -27,15 +27,17 @@ class FeedContentsAdapter(
     }
 
     class FeedContentsViewHolder(
-        val binding: ItemFeedContentBinding,
-        private val contentClickListener: ContentClickListener
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+        val binding: ItemFeedContentWithSaveBinding,
+        imageClickListener: ImageClickListener
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            itemView.setOnClickListener {
+                imageClickListener.onClick()
+            }
+        }
         fun bind(data: Content) {
             binding.item = data
-            itemView.setOnClickListener {
-                contentClickListener.onClick()
-            }
         }
     }
 

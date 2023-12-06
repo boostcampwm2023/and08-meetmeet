@@ -7,6 +7,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.service.alarm.AlarmHelper
+import com.teameetmeet.meetmeet.service.alarm.model.EventAlarm
 import com.teameetmeet.meetmeet.util.date.getLocalDateTime
 import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,8 +43,20 @@ class HomeViewModel @Inject constructor(
             calendarRepository.getEvents(
                 getLocalDateTime().toLong(),
                 getLocalDateTime().plusDays(AlarmHelper.UPDATE_DAY_UNIT).toLong()
-            ).catch {}.collect {
-                alarmHelper.registerRepeatAlarm()
+            ).catch {}
+                .collect { events ->
+                events.filter {
+                  getLocalDateTime().toLong() <= it.getTriggerTime()
+                }.forEach {
+                    alarmHelper.registerEventAlarm(
+                        EventAlarm(
+                            it.id,
+                            it.getTriggerTime(),
+                            it.notification,
+                            it.title
+                        )
+                    )
+                }
             }
         }
 
