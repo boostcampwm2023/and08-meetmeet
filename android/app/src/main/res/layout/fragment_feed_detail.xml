@@ -28,10 +28,12 @@
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/top_app_bar"
+                authority="@{vm.feedDetailUiState.authority}"
+                is_mine="@{vm.feedDetailUiState.feedDetail.mine}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
-                app:menu="@menu/menu_top_app_bar_event_story"
+                app:menu="@menu/menu_top_app_bar_feed_detail"
                 app:navigationIcon="@drawable/ic_nav_pre" />
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -96,11 +98,11 @@
                     style="@style/small.bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
                     android:alpha="0.5"
                     android:background="@drawable/background_paging_tv"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="2dp"
-                    android:layout_margin="4dp"
                     android:text="@{@string/feed_detail_media_count(vm.feedDetailUiState.contentPage+1,vm.feedDetailUiState.feedDetail.contents.size())}"
                     android:textColor="@color/white"
                     app:layout_constraintEnd_toEndOf="@id/feed_detail_vp_media"
@@ -121,10 +123,10 @@
                     android:layout_marginHorizontal="16dp"
                     android:layout_marginTop="30dp"
                     android:text="@{vm.feedDetailUiState.feedDetail.memo}"
+                    android:visibility="@{vm.feedDetailUiState.feedDetail.memo==null?View.GONE:View.VISIBLE}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/feed_detail_vp_media"
-                    android:visibility="@{vm.feedDetailUiState.feedDetail.memo==null?View.GONE:View.VISIBLE}"
                     tools:text="오늘 같이 간 문기, 이리, 기정이 다 너무 재밌었어~!!" />
 
                 <TextView

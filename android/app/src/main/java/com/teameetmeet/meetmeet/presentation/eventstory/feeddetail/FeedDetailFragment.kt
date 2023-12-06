@@ -14,7 +14,8 @@ import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail), ContentClickListener {
+class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail),
+    ContentClickListener {
     private val viewModel: FeedDetailViewModel by viewModels()
     private val navArgs: FeedDetailFragmentArgs by navArgs()
 
@@ -22,6 +23,7 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.setFeedId(navArgs.feedId)
+        viewModel.setFeedAuthority(navArgs.authority)
         setBinding()
         setCallBacks()
         setTopAppBar()
@@ -69,7 +71,12 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
     }
 
     override fun onClick() {
-        viewModel.feedDetailUiState.value.feedDetail?.contents?: return
-        findNavController().navigate(FeedDetailFragmentDirections.actionFeedDetailFragmentToFeedContentFragment(viewModel.feedDetailUiState.value.feedDetail!!.contents.toTypedArray(), viewModel.feedDetailUiState.value.contentPage))
+        viewModel.feedDetailUiState.value.feedDetail?.contents ?: return
+        findNavController().navigate(
+            FeedDetailFragmentDirections.actionFeedDetailFragmentToFeedContentFragment(
+                viewModel.feedDetailUiState.value.feedDetail!!.contents.toTypedArray(),
+                viewModel.feedDetailUiState.value.contentPage
+            )
+        )
     }
 }

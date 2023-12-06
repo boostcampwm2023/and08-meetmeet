@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
+import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,6 +27,10 @@ class FeedDetailViewModel @Inject constructor(
 
     fun setContentPage(page: Int) {
         _feedDetailUiState.update { it.copy(contentPage = page) }
+    }
+
+    fun setFeedAuthority(authority: EventAuthority) {
+        _feedDetailUiState.update { it.copy(authority = authority) }
     }
 
     fun onCommentTextChanged(charSequence: CharSequence) {
