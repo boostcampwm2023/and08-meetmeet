@@ -1,10 +1,14 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
@@ -12,6 +16,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentFeedDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail),
@@ -27,6 +32,25 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         setBinding()
         setCallBacks()
         setTopAppBar()
+        collectViewModelEvent()
+    }
+
+    private fun collectViewModelEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.feedDetailEvent.collect {
+                    when (it) {
+                        is FeedDetailEvent.ShowMessage -> {
+                            showMessage(it.messageId, it.extraMessage)
+                        }
+
+                        is FeedDetailEvent.FinishFeedDetail -> {
+                            findNavController().popBackStack()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun onResume() {
@@ -68,6 +92,26 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+        binding.topAppBar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_delete_feed_detail -> {
+                    showConfirmationDialog()
+                }
+            }
+            true
+        }
+    }
+
+    private fun showConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.feed_detail_delete_event_confirm_dialog_title))
+            .setMessage(getString(R.string.feed_detail_delete_event_confirm_dialog_message))
+            .setPositiveButton(R.string.story_detail_delete_event_confirm_dialog_description_delete) { _, _ ->
+                viewModel.deleteFeed()
+            }
+            .setNegativeButton(R.string.story_detail_delete_event_dialog_description_delete_cancel) { dialog, _ ->
+                dialog.dismiss()
+            }.show()
     }
 
     override fun onClick() {

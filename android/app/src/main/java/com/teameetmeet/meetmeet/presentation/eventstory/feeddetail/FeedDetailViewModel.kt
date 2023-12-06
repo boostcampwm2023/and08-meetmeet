@@ -2,10 +2,13 @@ package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -20,6 +23,9 @@ class FeedDetailViewModel @Inject constructor(
 ) : ViewModel() {
     private val _feedDetailUiState = MutableStateFlow<FeedDetailUiState>(FeedDetailUiState(0))
     val feedDetailUiState: StateFlow<FeedDetailUiState> = _feedDetailUiState
+
+    private val _feedDetailEvent = MutableSharedFlow<FeedDetailEvent>()
+    val feedDetailEvent: SharedFlow<FeedDetailEvent> = _feedDetailEvent
 
     fun setFeedId(feedId: Int) {
         _feedDetailUiState.update { it.copy(feedId = feedId) }
@@ -73,6 +79,19 @@ class FeedDetailViewModel @Inject constructor(
             }.collectLatest {
                 getFeedDetail()
             }
+        }
+    }
+
+    fun deleteFeed() {
+        viewModelScope.launch {
+            eventStoryRepository.deleteFeed(feedDetailUiState.value.feedId)
+                .catch {
+                    _feedDetailEvent.emit(
+                        FeedDetailEvent.ShowMessage(R.string.feed_detail_delete_fail_message)
+                    )
+                }.collectLatest {
+                    _feedDetailEvent.emit(FeedDetailEvent.FinishFeedDetail)
+                }
         }
     }
 }
