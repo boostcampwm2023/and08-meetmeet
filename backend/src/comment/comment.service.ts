@@ -35,4 +35,11 @@ export class CommentService {
   async deleteComment(id: number) {
     await this.commentRepository.softDelete(id);
   }
+
+  async deleteComments(idList: number[]) {
+    if (!idList.length) {
+      return;
+    }
+    await this.commentRepository.softDelete(idList);
+  }
 }

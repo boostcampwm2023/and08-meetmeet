@@ -25,8 +25,6 @@ export class Feed extends commonEntity {
   @OneToMany(() => FeedContent, (feedContent) => feedContent.feed)
   feedContents: FeedContent[];
 
-  @OneToMany(() => Comment, (comment) => comment.feed, {
-    cascade: ['soft-remove'],
-  })
+  @OneToMany(() => Comment, (comment) => comment.feed)
   comments: Comment[];
 }
