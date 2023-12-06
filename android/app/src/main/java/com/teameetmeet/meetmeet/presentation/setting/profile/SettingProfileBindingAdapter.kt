@@ -26,13 +26,7 @@ fun TextInputLayout.bindNickNameState(
 
 @BindingAdapter("update_profile_enabled")
 fun Button.bindUpdateProfileEnabled(state: SettingProfileUiState) {
-
-    val profileImageString = if (state.profileImage != null) {
-        state.profileImage.toString()
-    } else {
-        null
-    }
-    this.isEnabled = if (profileImageString != state.currentUserProfile.profileImage) {
+    this.isEnabled = if (state.profileImage?.path != state.currentUserProfile.profileImage) {
         when (state.nickNameState) {
             NickNameState.Same -> true
             NickNameState.Valid -> true
