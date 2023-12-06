@@ -106,7 +106,7 @@ export class UserService {
   async updateUserProfile(user: User, profileImage: Express.Multer.File) {
     if (!profileImage) {
       await this.userRepository.update(user.id, { profileId: null });
-      if (user.profile.id) {
+      if (user.profile?.id) {
         await this.contentService.softDeleteContent([user.profile.id]);
       }
       return;
