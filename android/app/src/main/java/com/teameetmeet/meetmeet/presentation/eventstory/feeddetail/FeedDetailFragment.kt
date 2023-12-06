@@ -12,15 +12,19 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.snackbar.Snackbar
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.model.Comment
 import com.teameetmeet.meetmeet.databinding.FragmentFeedDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail),
-    ContentClickListener {
+class FeedDetailFragment :
+    BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail),
+    ContentClickListener,
+    CommentDeleteClickListener {
     private val viewModel: FeedDetailViewModel by viewModels()
     private val navArgs: FeedDetailFragmentArgs by navArgs()
 
@@ -62,7 +66,8 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         with(binding) {
             vm = viewModel
             feedDetailVpMedia.adapter = FeedContentsAdapter(this@FeedDetailFragment)
-            feedDetailRvComment.adapter = FeedCommentsAdapter()
+            feedDetailRvComment.adapter =
+                FeedCommentsAdapter(navArgs.authority, this@FeedDetailFragment)
         }
     }
 
@@ -95,14 +100,14 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.menu_delete_feed_detail -> {
-                    showConfirmationDialog()
+                    showFeedDeleteConfirmationDialog()
                 }
             }
             true
         }
     }
 
-    private fun showConfirmationDialog() {
+    private fun showFeedDeleteConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle(getString(R.string.feed_detail_delete_event_confirm_dialog_title))
             .setMessage(getString(R.string.feed_detail_delete_event_confirm_dialog_message))
@@ -122,5 +127,13 @@ class FeedDetailFragment : BaseFragment<FragmentFeedDetailBinding>(R.layout.frag
                 viewModel.feedDetailUiState.value.contentPage
             )
         )
+    }
+
+    override fun onClick(comment: Comment) {
+        Snackbar
+            .make(binding.root,
+                getString(R.string.feed_comment_delete_event_confirm_message), Snackbar.LENGTH_SHORT)
+            .setAction(R.string.story_detail_delete_event_confirm_dialog_description_delete) { viewModel.deleteComment(comment) }
+            .show()
     }
 }

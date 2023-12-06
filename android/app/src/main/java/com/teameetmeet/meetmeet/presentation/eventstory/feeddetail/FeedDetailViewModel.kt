@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.model.Comment
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -91,6 +92,19 @@ class FeedDetailViewModel @Inject constructor(
                     )
                 }.collectLatest {
                     _feedDetailEvent.emit(FeedDetailEvent.FinishFeedDetail)
+                }
+        }
+    }
+
+    fun deleteComment(comment: Comment) {
+        viewModelScope.launch {
+            eventStoryRepository.deleteFeedComment(feedDetailUiState.value.feedId, comment.id)
+                .catch {
+                    _feedDetailEvent.emit(
+                        FeedDetailEvent.ShowMessage(R.string.feed_detail_delete_comment_fail_message)
+                    )
+                }.collectLatest {
+                    getFeedDetail()
                 }
         }
     }
