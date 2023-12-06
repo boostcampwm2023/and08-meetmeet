@@ -23,15 +23,17 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
         when (actionType) {
             FollowActionType.FOLLOW -> {
                 with(binding.followBtnAction) {
-                    if (user.isFollowed) {
-                        text = context.getString(R.string.follow_title_unfollow)
-                        setOnClickListener {
-                            userClickListener.onUnfollowClick(user)
-                        }
-                    } else {
-                        text = context.getString(R.string.follow_title_follow)
-                        setOnClickListener {
-                            userClickListener.onFollowClick(user)
+                    user.isFollowed?.let { followStatus ->
+                        if (followStatus) {
+                            text = context.getString(R.string.follow_title_unfollow)
+                            setOnClickListener {
+                                userClickListener.onUnfollowClick(user)
+                            }
+                        } else {
+                            text = context.getString(R.string.follow_title_follow)
+                            setOnClickListener {
+                                userClickListener.onFollowClick(user)
+                            }
                         }
                     }
                 }

@@ -35,8 +35,10 @@ class VisitCalendarViewModel @Inject constructor(
     }
 
     fun onFollowButtonClick() {
-        if (_userProfile.value.isFollowed) unFollowUser()
-        else followUser()
+        _userProfile.value.isFollowed?.let { followStatus ->
+            if (followStatus) unFollowUser()
+            else followUser()
+        }
     }
 
     private fun followUser() {
