@@ -27,7 +27,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         super.onViewCreated(view, savedInstanceState)
         setBinding()
         setClickListener()
-        setBadge()
+//        setBadge()
         setNavHost()
     }
 
