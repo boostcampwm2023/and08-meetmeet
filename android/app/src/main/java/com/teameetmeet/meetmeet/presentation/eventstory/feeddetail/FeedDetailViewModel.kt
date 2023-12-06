@@ -75,8 +75,9 @@ class FeedDetailViewModel @Inject constructor(
                 _feedDetailUiState.value.feedId,
                 _feedDetailUiState.value.typedComment
             ).catch {
-                //todo: 예외처리
-                throw it
+                _feedDetailEvent.emit(
+                    FeedDetailEvent.ShowMessage(R.string.feed_comment_add_fail_message)
+                )
             }.collectLatest {
                 getFeedDetail()
             }
