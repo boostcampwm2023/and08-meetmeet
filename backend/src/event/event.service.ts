@@ -368,6 +368,7 @@ export class EventService {
               start: event.startDate,
             }),
             eventMembers: { user: { id: user.id } },
+            repeatPolicy: { id: event.repeatPolicyId },
           },
         });
         const eventMembersIds = events.map(
