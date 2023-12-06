@@ -109,3 +109,9 @@ export class deleteEventFailException extends HttpException {
     );
   }
 }
+
+export class NotJoinEventException extends HttpException {
+  constructor() {
+    super('참여할 수 없는 이벤트입니다.', HttpStatus.BAD_REQUEST);
+  }
+}

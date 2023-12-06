@@ -32,6 +32,7 @@ import {
   InviteSelfException,
   NotEventMemberException,
   NotInviteReceiverException,
+  NotJoinEventException,
   NotRepeatEventException,
   SearchPeriodException,
   SearchSelfException,
@@ -994,6 +995,10 @@ export class EventService {
 
     if (!event) {
       throw new EventNotFoundException();
+    }
+
+    if (!event.isJoinable) {
+      throw new NotJoinEventException();
     }
 
     event.eventMembers.forEach((eventMember) => {
