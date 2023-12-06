@@ -85,16 +85,15 @@ class AddEventViewModel @Inject constructor(
                         alarm = alarm,
                     ).catch {
                         _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
-                        _showPlaceholder.update { false }
                     }.collectLatest { events ->
                         events.take(MAX_ALARM_COUNT).forEach { event ->
                             setAlarm(event)
                         }
                     }
                     _event.emit(AddEventUiEvent.FinishAddEventActivity)
-                    _showPlaceholder.update { false }
                 }
             }
+            _showPlaceholder.update { false }
         }
     }
 

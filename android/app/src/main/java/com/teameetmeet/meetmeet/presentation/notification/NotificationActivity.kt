@@ -8,7 +8,9 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivityNotificationBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.home.HomeActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NotificationActivity :
     BaseActivity<ActivityNotificationBinding>(R.layout.activity_notification) {
 

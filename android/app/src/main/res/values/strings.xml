@@ -132,6 +132,7 @@
     <string name="event_story_invite_fail">일정 초대 실패</string>
     <string name="event_story_invite">초대</string>
     <string name="event_story_participating">참여중</string>
+    <string name="event_story_pending">대기중</string>
 
     <string name="create_feed_text_hint">텍스트를 입력하세요</string>
     <string name="create_feed_media_constraint_volume">미디어를 50MB 초과로 업로드 할 수 없습니다.</string>
@@ -207,6 +208,13 @@
 
     <string name="notification_follow_message">%s님이 회원님을 팔로우 하였습니다.</string>
     <string name="notification_event_invitation_message">%1s님이 %2s에 회원님을 초대하였습니다.</string>
+    <string name="notification_event_invite_accept">수락</string>
+    <string name="notification_event_invite_reject">거절</string>
+    <string name="notification_message_invite_accepted">이미 수락한 알림 입니다</string>
+    <string name="notification_message_invite_rejected">이미 거절한 알림 입니다</string>
+    <string name="notification_message_invite_expired">이미 만료된 알림 입니다</string>
+    <string name="notification_dialog_invite_title">일정에 초대 받았습니다.</string>
+    <string name="notification_dialog_invite_description">%s님이 %s 일정에 초대 하였습니다.\n%s\n\n일정에 추가할까요?</string>
 
     <string name="alarm_description_alarm_minutes">일정 시작 %s 입니다.</string>
     <string name="alarm_notification_message_on_time">일정이 지금 시작됩니다!!</string>

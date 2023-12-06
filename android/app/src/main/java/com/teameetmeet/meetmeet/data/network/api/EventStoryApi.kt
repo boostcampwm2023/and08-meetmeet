@@ -2,10 +2,11 @@ package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.FeedDetail
-import com.teameetmeet.meetmeet.data.model.FollowUsers
+import com.teameetmeet.meetmeet.data.model.UsersResponse
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
 import com.teameetmeet.meetmeet.data.network.entity.AnnouncementRequest
+import com.teameetmeet.meetmeet.data.network.entity.EventInviteAcceptRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventStoryDetailResponse
 import okhttp3.MultipartBody
@@ -29,7 +30,10 @@ interface EventStoryApi {
     suspend fun getStoryDetail(@Path("eventId") id: Int): EventStoryDetailResponse
 
     @PATCH("event/{eventId}/announcement")
-    suspend fun editNotification(@Path("eventId") eventId: Int, @Body announcementRequest: AnnouncementRequest)
+    suspend fun editNotification(
+        @Path("eventId") eventId: Int,
+        @Body announcementRequest: AnnouncementRequest
+    )
 
     @POST("event/schedule/join/{eventId}")
     suspend fun joinEventStory(@Path("eventId") eventId: Int)
@@ -67,11 +71,23 @@ interface EventStoryApi {
     )
 
     @GET("event/user/followings")
-    suspend fun getFollowingWithEventStatus(@Query("eventId") eventId: Int): FollowUsers
+    suspend fun getFollowingWithEventStatus(@Query("eventId") eventId: Int): UsersResponse
 
     @GET("event/user/followers")
-    suspend fun getFollowerWithEventStatus(@Query("eventId") eventId: Int): FollowUsers
+    suspend fun getFollowerWithEventStatus(@Query("eventId") eventId: Int): UsersResponse
 
-    @POST("event/schedule/invite/{eventId}")
+    @GET("event/user/search/{eventId}")
+    suspend fun getUserWithEventStatus(
+        @Path("eventId") eventId: Int,
+        @Query("nickname") nickname: String
+    ): UsersResponse
+
+    @POST("event/schedule/invite")
     suspend fun inviteEvent(@Body eventInviteRequest: EventInviteRequest)
+
+    @POST("event/schedule/accept")
+    suspend fun acceptInviteEvent(
+        @Query("accept") accept: Boolean,
+        @Body eventInviteAcceptRequest: EventInviteAcceptRequest
+    )
 }

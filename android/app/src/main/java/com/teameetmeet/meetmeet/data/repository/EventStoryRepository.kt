@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
+import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.EventDetail
 import com.teameetmeet.meetmeet.data.model.EventStory
 import com.teameetmeet.meetmeet.data.model.FeedDetail
@@ -8,12 +9,14 @@ import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.AddFeedCommentRequest
 import com.teameetmeet.meetmeet.data.network.entity.AnnouncementRequest
+import com.teameetmeet.meetmeet.data.network.entity.EventInviteAcceptRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventInviteRequest
 import com.teameetmeet.meetmeet.data.toException
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import okhttp3.MultipartBody
@@ -23,7 +26,8 @@ import java.io.File
 import javax.inject.Inject
 
 class EventStoryRepository @Inject constructor(
-    private val eventStoryApi: EventStoryApi
+    private val eventStoryApi: EventStoryApi,
+    private val dataStore: DataStoreHelper
 ) {
 
     fun getEventStory(id: Int): Flow<EventStory> {
@@ -170,6 +174,32 @@ class EventStoryRepository @Inject constructor(
                 eventStoryApi.getFollowerWithEventStatus(eventId).users
             }.catch {
                 throw it
+            }
+    }
+
+    fun getUserWithEventStatus(eventId: Int, nickname: String): Flow<List<UserStatus>> {
+        return flowOf(true)
+            .map {
+                val userNickname = dataStore.getUserProfile().first().nickname
+                val result = eventStoryApi.getUserWithEventStatus(eventId, nickname).users.map {
+                    if (it.nickname == userNickname) {
+                        it.copy(isMe = true)
+                    } else {
+                        it
+                    }
+                }
+                result
+            }.catch {
+                throw it.toException()
+            }
+    }
+
+    fun acceptEventInvite(accept: Boolean, inviteId: Int, eventId: Int): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                eventStoryApi.acceptInviteEvent(accept, EventInviteAcceptRequest(inviteId, eventId))
+            }.catch {
+                throw it.toException()
             }
     }
 }

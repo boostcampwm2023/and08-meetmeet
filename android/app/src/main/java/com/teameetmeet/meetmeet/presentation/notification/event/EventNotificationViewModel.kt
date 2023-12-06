@@ -1,31 +1,74 @@
 package com.teameetmeet.meetmeet.presentation.notification.event
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.model.UserStatus
+import com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotification
+import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
+import com.teameetmeet.meetmeet.data.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class EventNotificationViewModel: ViewModel() {
+@HiltViewModel
+class EventNotificationViewModel @Inject constructor(
+    private val userRepository: UserRepository,
+    private val eventStoryRepository: EventStoryRepository
+) : ViewModel(), EventNotificationItemClickListener {
 
-    private val _eventNotificationList = MutableStateFlow<List<EventNotification>>(emptyList())
-    val eventNotificationList: StateFlow<List<EventNotification>> = _eventNotificationList
+    private val _eventNotificationList =
+        MutableStateFlow<List<EventInvitationNotification>>(emptyList())
+    val eventNotificationList: StateFlow<List<EventInvitationNotification>> = _eventNotificationList
+
+    private val _event: MutableSharedFlow<EventNotificationUiEvent> = MutableSharedFlow()
+    val event: SharedFlow<EventNotificationUiEvent> = _event
 
     fun fetchEventNotificationList() {
-        _eventNotificationList.update {
-            listOf(
-                EventNotification(eventId =1, inviterProfile = "https://github.com/agfalcon.png", inviterNickName = "K004", eventName = "밋밋 3차 오프라인 미팅"),
-                EventNotification(eventId =2, inviterProfile = "https://github.com/p-chanmin.png", inviterNickName = "K016", eventName = "밋밋 1차 오프라인 미팅"),
-                EventNotification(eventId =3, inviterProfile = "https://github.com/LeeHaiLim.png",inviterNickName = "K032", eventName = "천하제일 코딩 대회"),
-                EventNotification(eventId =4, inviterProfile = "https://github.com/chani1209.png", inviterNickName = "J153", eventName = "밋밋 2차 오프라인 미팅"),
-                EventNotification(eventId =5, inviterProfile = "https://github.com/cdj2073.png", inviterNickName = "J156", eventName = "보드게임 동호회")
-            )
+        viewModelScope.launch {
+            userRepository.getEventInvitationNotification().collectLatest { notifications ->
+                _eventNotificationList.update { notifications }
+            }
+        }
+    }
+
+    fun acceptEventInvite(accept: Boolean, event: EventInvitationNotification) {
+        viewModelScope.launch {
+            eventStoryRepository.acceptEventInvite(accept, event.inviteId, event.eventId)
+                .catch {
+                    // 예외 처리
+                }.first()
+            fetchEventNotificationList()
+        }
+    }
+
+    override fun onClick(event: EventInvitationNotification) {
+        viewModelScope.launch {
+            when (event.status) {
+                UserStatus.JOIN_STATUS_PENDING -> {
+                    _event.emit(EventNotificationUiEvent.ShowAcceptDialog(event))
+                }
+
+                UserStatus.JOIN_STATUS_ACCEPTED -> {
+                    _event.emit(EventNotificationUiEvent.ShowMessage(R.string.notification_message_invite_accepted))
+                }
+
+                UserStatus.JOIN_STATUS_REJECTED -> {
+                    _event.emit(EventNotificationUiEvent.ShowMessage(R.string.notification_message_invite_rejected))
+                }
+
+                UserStatus.JOIN_STATUS_EXPIRED -> {
+                    _event.emit(EventNotificationUiEvent.ShowMessage(R.string.notification_message_invite_expired))
+                }
+            }
         }
     }
 }
-
-data class EventNotification(
-    val eventId: Int,
-    val inviterProfile: String,
-    val inviterNickName: String,
-    val eventName: String,
-)
