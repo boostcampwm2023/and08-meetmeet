@@ -5,9 +5,11 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="vm"
-            type="com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarViewModel" />
+            type="com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.MonthCalendarViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -151,6 +153,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:contentDescription="@string/add_event_title"
+            android:visibility="@{vm.addButtonVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_plus" />

@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">MeetMeetApp</string>
 
-    <string name="common_local_date_format">yyyy년 MM월 dd일</string>
-    <string name="common_local_time_format">%1s시 %2분</string>
-    <string name="common_local_date_time_format">yyyy년 MM월 dd일 HH:mm</string>
+    <string name="common_local_date_format">yyyy년 M월 d일</string>
+    <string name="common_local_time_format">a h:mm</string>
+    <string name="common_local_date_time_format">yyyy년 M월 d일 a h:mm</string>
+    <string name="common_local_date_time_wo_year_format">M월 d일 a h:mm</string>
     <string name="common_iso_date_format">yyyy-MM-dd</string>
     <string name="common_iso_time_format">HH:mm</string>
     <string name="common_iso_date_time_format">yyyy-MM-dd\'T\'HH:mm:ss.SSSXXX</string>

@@ -119,6 +119,14 @@ class FollowViewModel @Inject constructor(
         _searchKeyword.update { keyword.toString() }
     }
 
+    override fun onProfileClick(user: UserStatus) {
+        viewModelScope.launch {
+            _event.emit(
+                FollowEvent.VisitProfile(user.id, user.nickname)
+            )
+        }
+    }
+
     override fun onFollowClick(user: UserStatus) {
         viewModelScope.launch {
             followRepository.follow(user.id)

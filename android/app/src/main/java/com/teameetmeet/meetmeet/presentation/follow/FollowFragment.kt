@@ -49,6 +49,14 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
                         is FollowEvent.ShowMessage -> {
                             showMessage(event.message, event.extraMessage)
                         }
+
+                        is FollowEvent.VisitProfile -> {
+                            findNavController().navigate(
+                                FollowFragmentDirections.actionFollowFragmentToVisitCalendarActivity(
+                                    event.userId, event.userNickname
+                                )
+                            )
+                        }
                     }
                 }
             }

@@ -11,5 +11,6 @@ enum class DateTimeFormat(val formatter: DateTimeFormatter) {
     LOCAL_DATE(DateTimeFormatter.ofPattern(MeetMeetApp.instance.getString(R.string.common_local_date_format))),
     LOCAL_TIME(DateTimeFormatter.ofPattern(MeetMeetApp.instance.getString(R.string.common_local_time_format))),
     LOCAL_DATE_TIME(DateTimeFormatter.ofPattern(MeetMeetApp.instance.getString(R.string.common_local_date_time_format))),
+    LOCAL_DATE_TIME_WO_YEAR(DateTimeFormatter.ofPattern(MeetMeetApp.instance.getString(R.string.common_local_date_time_wo_year_format))),
     GLOBAL_DATE_TIME(DateTimeFormatter.ofPattern(MeetMeetApp.instance.getString(R.string.common_global_date_time_format)))
 }

@@ -17,6 +17,9 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
         id: Int?
     ) {
         binding.user = user
+        itemView.setOnClickListener {
+            userClickListener.onProfileClick(user)
+        }
         when (actionType) {
             FollowActionType.FOLLOW -> {
                 with(binding.followBtnAction) {

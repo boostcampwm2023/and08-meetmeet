@@ -10,5 +10,7 @@ data class Comment(
     @Json(name = "memo")
     val memo: String,
     @Json(name = "author")
-    val authorId: EventMember
+    val author: EventMember,
+    @Json(name = "updatedAt")
+    val updatedAt: String
 )

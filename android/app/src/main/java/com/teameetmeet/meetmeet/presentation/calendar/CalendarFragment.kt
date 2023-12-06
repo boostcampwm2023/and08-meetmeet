@@ -3,7 +3,9 @@ package com.teameetmeet.meetmeet.presentation.calendar
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.badge.BadgeUtils
@@ -11,6 +13,8 @@ import com.google.android.material.badge.ExperimentalBadgeUtils
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentCalendarBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarFragment
+import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.OwnerMonthCalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalBadgeUtils
@@ -24,6 +28,15 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         setBinding()
         setClickListener()
         setBadge()
+        setNavHost()
+    }
+
+    private fun setNavHost() {
+        val bundle =
+            bundleOf(MonthCalendarFragment.TYPE_KEY to OwnerMonthCalendarViewModel.TYPE)
+        (binding.fragmentContainer.getFragment<NavHostFragment>()).navController.setGraph(
+            R.navigation.nav_graph_calendar, bundle
+        )
     }
 
     override fun onResume() {
@@ -48,9 +61,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
             binding.calendarFlNotification.foreground = it
             binding.calendarFlNotification.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
                 BadgeUtils.attachBadgeDrawable(
-                    it,
-                    binding.calendarIbNotification,
-                    binding.calendarFlNotification
+                    it, binding.calendarIbNotification, binding.calendarFlNotification
                 )
             }
         }

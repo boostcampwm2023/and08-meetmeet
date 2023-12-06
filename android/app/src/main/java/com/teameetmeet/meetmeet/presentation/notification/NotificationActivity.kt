@@ -23,7 +23,8 @@ class NotificationActivity :
         onBackPressedDispatcher.addCallback(
             this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    navigateToHomeActivity()
+                    if (!isTaskRoot) finish()
+                    else navigateToHomeActivity()
                 }
             }
         )
@@ -36,7 +37,7 @@ class NotificationActivity :
     }
 
     private fun navigateToHomeActivity() {
-        val intent = Intent(this@NotificationActivity, HomeActivity::class.java).apply {
+        val intent = Intent(this, HomeActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         startActivity(intent)
@@ -52,8 +53,7 @@ class NotificationActivity :
                 TAB_INDEX_GROUP_INVITATION -> tab.text = getString(R.string.notification_tab_invite_group)
             }
         }.attach()
-        binding.notificationVp.currentItem =
-            intent.getIntExtra(TAB_INDEX, TAB_INDEX_FOLLOW)
+        binding.notificationVp.currentItem = intent.getIntExtra(TAB_INDEX, TAB_INDEX_FOLLOW)
     }
 
     companion object {

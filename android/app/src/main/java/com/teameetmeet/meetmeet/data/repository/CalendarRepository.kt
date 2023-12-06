@@ -5,6 +5,7 @@ import com.teameetmeet.meetmeet.data.datasource.RemoteCalendarDataSource
 import com.teameetmeet.meetmeet.data.local.database.entity.Event
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
+import com.teameetmeet.meetmeet.data.network.entity.UserEventResponse
 import com.teameetmeet.meetmeet.data.toEvent
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
@@ -12,6 +13,7 @@ import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.toDateString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -24,6 +26,16 @@ class CalendarRepository @Inject constructor(
             syncEvents(startDate, endDate)
         } finally {
             return localCalendarDataSource.getEvents(startDate, endDate)
+        }
+    }
+
+    fun getEventsByUserId(userId: Int, startDate: Long, endDate: Long): Flow<List<Event>> {
+        return remoteCalendarDataSource.getEventsByUserId(
+            userId,
+            startDate.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")),
+            endDate.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+        ).map {
+            it.map(UserEventResponse::toEvent)
         }
     }
 

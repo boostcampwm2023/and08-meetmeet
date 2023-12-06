@@ -1,35 +1,26 @@
-package com.teameetmeet.meetmeet.presentation.calendar.monthcalendar
+package com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.teameetmeet.meetmeet.data.local.database.entity.Event
-import com.teameetmeet.meetmeet.data.repository.CalendarRepository
+import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.CalendarItemClickListener
+import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.DayClickEvent
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.EventBar
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
-import com.teameetmeet.meetmeet.presentation.model.toEventSimple
 import com.teameetmeet.meetmeet.util.date.getDayListInMonth
 import com.teameetmeet.meetmeet.util.date.getLocalDate
 import com.teameetmeet.meetmeet.util.date.toEndLong
 import com.teameetmeet.meetmeet.util.date.toLocalDate
 import com.teameetmeet.meetmeet.util.date.toStartLong
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.time.LocalDate
-import javax.inject.Inject
 
-@HiltViewModel
-class MonthCalendarViewModel @Inject constructor(
-    private val calendarRepository: CalendarRepository
-) : ViewModel(), CalendarItemClickListener {
+abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
 
     private val _currentDate = MutableStateFlow<CalendarItem>(CalendarItem(getLocalDate()))
     val currentDate: StateFlow<CalendarItem> = _currentDate
@@ -46,20 +37,11 @@ class MonthCalendarViewModel @Inject constructor(
 
     val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
 
-    fun fetchEvents() {
-        viewModelScope.launch {
-            val date = currentDate.value.date ?: return@launch
-            val startDateTime = date.withDayOfMonth(1).toStartLong()
-            val endDateTime = date.withDayOfMonth(date.lengthOfMonth()).toEndLong()
-            calendarRepository
-                .getEvents(startDateTime, endDateTime)
-                .collectLatest {
-                    setDaysInMonth(it.map(Event::toEventSimple))
-                }
-        }
-    }
+    abstract val isAddButtonVisible: Boolean
 
-    private fun setDaysInMonth(monthlyEvents: List<EventSimple>) {
+    abstract fun fetchEvents()
+
+    protected fun setDaysInMonth(monthlyEvents: List<EventSimple>) {
         _daysInMonth.update {
             allocateEventsPerDay(it, monthlyEvents)
         }
