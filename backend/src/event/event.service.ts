@@ -277,7 +277,7 @@ export class EventService {
       (eventMember) => eventMember.user.id === user.id,
     )?.authority?.displayName;
 
-    if (!authority || !['OWNER', 'ADMIN'].includes(authority)) {
+    if (!authority || !['OWNER', 'MEMBER'].includes(authority)) {
       throw new EventForbiddenException();
     }
 
