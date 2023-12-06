@@ -232,6 +232,9 @@ export class UserService {
             type: type,
             body: {
               inviteId: notification.id,
+              id: notification.sender.id,
+              nickname: notification.sender.nickname,
+              profile: notification.sender.profile?.path ?? null,
               eventId: notification.event?.id,
               title: notification.event?.title,
               startDate: notification.event?.startDate,

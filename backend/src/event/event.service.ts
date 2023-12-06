@@ -252,7 +252,7 @@ export class EventService {
   }
 
   async deleteEvent(user: User, eventId: number, isAll: boolean) {
-    // todo : 일정 삭제 멤버일때 잘 조회되는지 확인해야한다.
+    // todo : 연관된 모든 것을 삭제할 수 있도록 -> Invite
     const event = await this.eventRepository.findOne({
       relations: ['eventMembers', 'feeds'],
       where: {
