@@ -164,7 +164,7 @@ class EventStoryDetailFragment :
                     .setSelection(
                         Pair(
                             viewModel.uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC")),
-                            viewModel.uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                            viewModel.uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC"))
                         )
                     ).build()
 
@@ -182,7 +182,7 @@ class EventStoryDetailFragment :
                 .setSelection(
                     Pair(
                         viewModel.uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC")),
-                        viewModel.uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                        viewModel.uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE, ZoneId.of("UTC"))
                     )
                 ).build()
 
