@@ -21,7 +21,9 @@ class NotificationHelper @Inject constructor(private val context: Context) {
         title: String?,
         content: String,
         id: Int,
-        icon: String? = null
+        icon: String? = null,
+        acceptInviteEventAction: PendingIntent? = null,
+        rejectInviteEventAction: PendingIntent? = null,
     ) {
         val notificationIntent = when (channelId) {
             CHANNEL_ID_EVENT_NOTIFICATION -> {
@@ -46,7 +48,7 @@ class NotificationHelper @Inject constructor(private val context: Context) {
                 }
             }
         }.apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
 
         val pendingIntent: PendingIntent = PendingIntent.getActivity(
@@ -65,6 +67,23 @@ class NotificationHelper @Inject constructor(private val context: Context) {
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
+
+        if (channelId == CHANNEL_ID_EVENT_INVITATION_NOTIFICATION) {
+            acceptInviteEventAction?.let {
+                notificationBuilder.addAction(
+                    R.drawable.ic_check,
+                    context.getString(R.string.notification_event_invite_accept),
+                    it
+                )
+            }
+            rejectInviteEventAction?.let {
+                notificationBuilder.addAction(
+                    R.drawable.ic_cancel_two_tone,
+                    context.getString(R.string.notification_event_invite_reject),
+                    it
+                )
+            }
+        }
 
         icon?.let {
             try {

@@ -30,6 +30,9 @@ class CreateFeedViewModel @Inject constructor(
     private val _createFeedUiEvent = MutableSharedFlow<CreateFeedUiEvent>()
     val createFeedUiEvent: SharedFlow<CreateFeedUiEvent> = _createFeedUiEvent
 
+    private val _showPlaceholder = MutableStateFlow<Boolean>(false)
+    val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
+
     fun setFeedText(text: CharSequence) {
         _feedText.update { text.toString() }
     }
@@ -61,6 +64,7 @@ class CreateFeedViewModel @Inject constructor(
                     .mapNotNull { it.uri.toAbsolutePath() }
                     .map { File(it) }
                     .let {
+                        _showPlaceholder.update { true }
                         eventStoryRepository.createFeed(
                             eventId,
                             feedText.value.ifBlank { null },
@@ -70,8 +74,10 @@ class CreateFeedViewModel @Inject constructor(
                     .catch {
                         it.printStackTrace()
                         _createFeedUiEvent.emit(CreateFeedUiEvent.ShowMessage(R.string.create_feed_fail_message))
+                        _showPlaceholder.update { false }
                     }.collect {
                         _createFeedUiEvent.emit(CreateFeedUiEvent.CreateFeedSuccess)
+                        _showPlaceholder.update { false }
                     }
             }
         }

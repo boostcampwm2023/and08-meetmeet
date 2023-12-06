@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.presentation.follow
 
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,13 +32,28 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
 
         binding.vm = viewModel
         binding.actionType = args.actionType
+        binding.id = args.id
 
         setRecyclerViewAdapter()
         setPagerAdapter()
         collectViewModelEvent()
+        setSearch()
 
         binding.followSearchIbNavPre.setOnClickListener {
             findNavController().popBackStack()
+        }
+    }
+
+    private fun setSearch() {
+        with(binding) {
+            followEtSearch.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    viewModel.updateSearchedUser(args.actionType, args.id)
+                    true
+                } else {
+                    false
+                }
+            }
         }
     }
 
@@ -48,6 +64,14 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
                     when (event) {
                         is FollowEvent.ShowMessage -> {
                             showMessage(event.message, event.extraMessage)
+                        }
+
+                        is FollowEvent.VisitProfile -> {
+                            findNavController().navigate(
+                                FollowFragmentDirections.actionFollowFragmentToVisitCalendarActivity(
+                                    event.userId, event.userNickname
+                                )
+                            )
                         }
                     }
                 }

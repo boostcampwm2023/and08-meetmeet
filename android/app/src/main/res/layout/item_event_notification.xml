@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="item"
-            type="com.teameetmeet.meetmeet.presentation.notification.event.EventNotification" />
+            type="com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotification" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,9 +25,9 @@
 
             <ImageView
                 android:id="@+id/follow_notification_iv_profile"
+                image="@{item.profile}"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:image="@{item.inviterProfile}"
                 android:backgroundTint="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -40,12 +41,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/follow_notification_cv"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="@{@string/notification_event_invitation_message(item.inviterNickName, item.eventName)}"
-            android:maxLines="2"
             android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@{String.format(@string/notification_event_invitation_message, item.nickname, item.title)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/follow_notification_cv"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,9 +39,7 @@ class SplashViewModel @Inject constructor(
                     if (error != null) {
                         _event.tryEmit(SplashEvent.NavigateToLoginActivity)
                     } else {
-                        viewModelScope.launch {
-                            checkAppToken()
-                        }
+                        checkAppToken()
                     }
                 }
             } else {
@@ -50,14 +48,16 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    private suspend fun checkAppToken() {
-        userRepository.getToken().catch {
-            _event.tryEmit(SplashEvent.NavigateToLoginActivity)
-        }.collect { token ->
-            if (token.isNullOrEmpty()) {
+    private fun checkAppToken() {
+        viewModelScope.launch {
+            userRepository.getToken().catch {
                 _event.tryEmit(SplashEvent.NavigateToLoginActivity)
-            } else {
-                autoLoginApp(token)
+            }.collect { token ->
+                if (token.isNullOrEmpty()) {
+                    _event.tryEmit(SplashEvent.NavigateToLoginActivity)
+                } else {
+                    autoLoginApp(token)
+                }
             }
         }
     }
@@ -65,7 +65,7 @@ class SplashViewModel @Inject constructor(
     private fun autoLoginApp(token: String) {
         viewModelScope.launch {
             tokenRepository.autoLoginApp(token).catch {
-                when(it) {
+                when (it) {
                     is UnknownHostException -> _event.tryEmit(SplashEvent.NavigateToHomeActivity)
                     else -> _event.tryEmit(SplashEvent.NavigateToLoginActivity)
                 }

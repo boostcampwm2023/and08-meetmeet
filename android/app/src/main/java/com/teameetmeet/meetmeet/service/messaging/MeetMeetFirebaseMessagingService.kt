@@ -8,6 +8,7 @@ import com.teameetmeet.meetmeet.data.model.EventMember
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_EVENT_INVITATION_NOTIFICATION
 import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_FOLLOW_NOTIFICATION
+import com.teameetmeet.meetmeet.service.alarm.AlarmHelper
 import com.teameetmeet.meetmeet.service.messaging.model.EventInvitationMessage
 import com.teameetmeet.meetmeet.service.notification.NotificationHelper
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +28,9 @@ class MeetMeetFirebaseMessagingService : FirebaseMessagingService() {
 
     @Inject
     lateinit var userRepository: UserRepository
+
+    @Inject
+    lateinit var alarmHelper: AlarmHelper
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -67,7 +71,15 @@ class MeetMeetFirebaseMessagingService : FirebaseMessagingService() {
                         eventInvitationMessage.title
                     ),
                     id = eventInvitationMessage.eventId,
-                    icon = eventInvitationMessage.eventOwner.profile
+                    icon = eventInvitationMessage.eventOwner.profile,
+                    acceptInviteEventAction = alarmHelper.getInviteEventActionOf(
+                        eventInvitationMessage,
+                        true
+                    ),
+                    rejectInviteEventAction = alarmHelper.getInviteEventActionOf(
+                        eventInvitationMessage,
+                        false
+                    )
                 )
             }
         }

@@ -27,6 +27,7 @@
 
             <ImageView
                 android:id="@+id/feed_comment_iv_profile"
+                image="@{item.author.profile}"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:backgroundTint="@color/black"
@@ -42,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
+            android:text="@{item.author.nickname}"
             app:layout_constraintBottom_toTopOf="@id/feed_comment_tv_content"
             app:layout_constraintEnd_toStartOf="@id/feed_comment_btn_delete"
             app:layout_constraintStart_toEndOf="@id/feed_comment_cv"

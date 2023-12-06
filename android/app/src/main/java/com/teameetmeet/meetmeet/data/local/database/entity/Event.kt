@@ -10,7 +10,7 @@ data class Event(
     val title: String,
     val startDateTime: Long,
     val endDateTime: Long,
-    val isRepeat: Boolean,
+    val isRepeat: Boolean = false,
     val notification: Int = -1,
     val color: Int = -39579
 ) {

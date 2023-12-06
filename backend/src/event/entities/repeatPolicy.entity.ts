@@ -2,6 +2,13 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import { commonEntity } from 'src/common/common.entity';
 import { Event } from './event.entity';
 
+export const RepeatType = {
+  DAY: 'repeatDay',
+  WEEK: 'repeatWeek',
+  MONTH: 'repeatMonth',
+  YEAR: 'repeatYear',
+} as const;
+
 @Entity()
 export class RepeatPolicy extends commonEntity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

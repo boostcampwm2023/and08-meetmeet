@@ -34,7 +34,7 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
         binding.vm = viewModel
         binding.createFeedRvMedia.adapter = MediaAdapter(viewModel)
         setTopAppBar()
-        setKeyboard()
+        showKeyboard(true)
         setSelectMedia()
         collectViewModelEvent()
     }
@@ -62,6 +62,7 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
                 when (menuItem.itemId) {
                     R.id.menu_save -> {
                         viewModel.onSave(navArgs.storyId)
+                        showKeyboard(false)
                         true
                     }
 
@@ -74,12 +75,16 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
         }
     }
 
-    private fun setKeyboard() {
+    private fun showKeyboard(show: Boolean) {
         val imm =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        binding.createFeedEt.requestFocus()
-        binding.createFeedEt.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) imm.showSoftInput(v, 0)
+        if (show) {
+            binding.createFeedEt.requestFocus()
+            binding.createFeedEt.setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) imm.showSoftInput(v, 0)
+            }
+        } else {
+            imm.hideSoftInputFromWindow(binding.createFeedEt.windowToken, 0)
         }
     }
 

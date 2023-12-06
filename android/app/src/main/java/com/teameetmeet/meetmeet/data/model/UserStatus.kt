@@ -12,14 +12,22 @@ data class UserStatus(
     @Json(name = "profile")
     val profile: String?,
     @Json(name = "isFollowed")
-    val isFollowed: Boolean = true,
+    val isFollowed: Boolean? = false,
     @Json(name = "isJoined")
-    val isJoined: Boolean = false,
+    val isJoined: String? = null,
     val isMe: Boolean = false
-)
+) {
+    companion object {
+        const val JOIN_STATUS_JOINABLE = "Joinable"
+        const val JOIN_STATUS_PENDING = "Pending"
+        const val JOIN_STATUS_ACCEPTED = "Accepted"
+        const val JOIN_STATUS_REJECTED = "Rejected"
+        const val JOIN_STATUS_EXPIRED = "Expired"
+    }
+}
 
 @JsonClass(generateAdapter = true)
-data class FollowUsers(
+data class UsersResponse(
     @Json(name = "users")
     val users: List<UserStatus>
 )

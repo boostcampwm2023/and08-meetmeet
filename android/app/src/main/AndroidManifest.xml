@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MeetMeetApp"
@@ -19,6 +20,9 @@
         android:theme="@style/Theme.MeetMeetApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".presentation.visitcalendar.VisitCalendarActivity"
+            android:exported="false" />
         <activity
             android:name=".presentation.eventstory.EventStoryActivity"
             android:exported="false" />

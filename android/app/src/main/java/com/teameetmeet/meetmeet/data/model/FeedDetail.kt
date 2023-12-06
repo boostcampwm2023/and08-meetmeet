@@ -10,9 +10,10 @@ data class FeedDetail(
     @Json(name = "memo")
     val memo: String?,
     @Json(name = "author")
-    val author: Author,
+    val author: EventMember,
     @Json(name = "contents")
     val contents: List<Content>,
     @Json(name = "comments")
-    val comments: List<Comment>
+    val comments: List<Comment>,
+    val isMine: Boolean = false
 )

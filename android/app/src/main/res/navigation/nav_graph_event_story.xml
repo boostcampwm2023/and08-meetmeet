@@ -51,6 +51,12 @@
         <argument
             android:name="feedId"
             app:argType="integer" />
+        <argument
+            android:name="authority"
+            app:argType="com.teameetmeet.meetmeet.presentation.model.EventAuthority" />
+        <action
+            android:id="@+id/action_feed_detail_fragment_to_feedContentFragment"
+            app:destination="@id/feed_content_fragment" />
     </fragment>
     <fragment
         android:id="@+id/follow_fragment"
@@ -88,5 +94,16 @@
         <argument
             android:name="eventMember"
             app:argType="com.teameetmeet.meetmeet.data.model.EventMember[]" />
+    </fragment>
+    <fragment
+        android:id="@+id/feed_content_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontent.FeedContentFragment"
+        android:label="feed_content_fragment" >
+        <argument
+            android:name="contents"
+            app:argType="com.teameetmeet.meetmeet.data.model.Content[]" />
+        <argument
+            android:name="index"
+            app:argType="integer" />
     </fragment>
 </navigation>

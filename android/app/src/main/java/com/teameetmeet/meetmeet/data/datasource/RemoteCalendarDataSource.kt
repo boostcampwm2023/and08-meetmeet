@@ -3,6 +3,8 @@ package com.teameetmeet.meetmeet.data.datasource
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
+import com.teameetmeet.meetmeet.data.network.entity.UserEventResponse
+import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
@@ -19,6 +21,21 @@ class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi)
             .catch {
                 throw it
                 //todo: 예외 처리
+            }
+    }
+
+    fun getEventsByUserId(
+        userId: Int,
+        startDate: String,
+        endDate: String
+    ): Flow<List<UserEventResponse>> {
+        return flowOf(true)
+            .map {
+                val result = api.getEventsByUserId(userId, startDate, endDate).events
+                result
+            }
+            .catch {
+                throw it.toException()
             }
     }
 

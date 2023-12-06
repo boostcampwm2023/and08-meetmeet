@@ -144,7 +144,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
             setTitle(R.string.event_story_title_event_notification)
                 .setMessage(noti)
                 .setNeutralButton(R.string.event_story_delete_event_notification) { _, _ ->
-                    viewModel.editNotification(null)
+                    viewModel.editAnnouncement(null)
                 }
                 .create().show()
         }
@@ -152,7 +152,10 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     override fun onItemClick(feed: Feed) {
         findNavController().navigate(
-            EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment(feed.id)
+            EventStoryFragmentDirections.actionEventStoryFragmentToFeedDetailFragment(
+                feed.id,
+                viewModel.eventStoryUiState.value.authority
+            )
         )
     }
 }

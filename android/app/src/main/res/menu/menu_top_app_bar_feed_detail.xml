@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_delete_feed_detail"
+        android:title="@string/feed_detail_menu_title_delete"
+        app:showAsAction="never" />
+</menu>

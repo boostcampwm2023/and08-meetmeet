@@ -8,7 +8,10 @@ import android.os.SystemClock
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.datasource.LocalCalendarDataSource
 import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_ALARM_UPDATE
+import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_EVENT_INVITATION_ACCEPT_ACTION
+import com.teameetmeet.meetmeet.service.INTENT_REQUEST_ID_EVENT_INVITATION_REJECT_ACTION
 import com.teameetmeet.meetmeet.service.alarm.model.EventAlarm
+import com.teameetmeet.meetmeet.service.messaging.model.EventInvitationMessage
 import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.getLocalDateTime
 import com.teameetmeet.meetmeet.util.date.toLong
@@ -50,7 +53,7 @@ class AlarmHelper @Inject constructor(
         }
     }
 
-    private fun getNotiContentOf(event: EventAlarm) : Int {
+    private fun getNotiContentOf(event: EventAlarm): Int {
         return when (event.alarmMinutes) {
             0 -> {
                 R.string.alarm_notification_message_on_time
@@ -152,14 +155,43 @@ class AlarmHelper @Inject constructor(
         job.join()
     }
 
+    fun getInviteEventActionOf(
+        eventInviteMessage: EventInvitationMessage,
+        accept: Boolean
+    ): PendingIntent {
+        val actionIntent = Intent(context, AlarmReceiver::class.java).apply {
+            action = INTENT_ACTION_ACCEPT_INVITE_EVENT
+            putExtra(INTENT_EXTRA_INVITE_ID, eventInviteMessage.inviteId)
+            putExtra(INTENT_EXTRA_EVENT_ID, eventInviteMessage.eventId)
+            putExtra(INTENT_EXTRA_ACCEPT, accept)
+        }
+
+        val requestId = if (accept) {
+            INTENT_REQUEST_ID_EVENT_INVITATION_ACCEPT_ACTION
+        } else {
+            INTENT_REQUEST_ID_EVENT_INVITATION_REJECT_ACTION
+        }
+
+        return PendingIntent.getBroadcast(
+            context,
+            requestId,
+            actionIntent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_CANCEL_CURRENT
+        )
+    }
+
     companion object {
         const val INTENT_ACTION_ALARM_EVENT = "intentActionAlarmEvent"
 
         const val INTENT_ACTION_ALARM_UPDATE = "intentActionAlarmUpdate"
 
+        const val INTENT_ACTION_ACCEPT_INVITE_EVENT = "intentActionAcceptInviteEvent"
+
         const val INTENT_EXTRA_TITLE = "intentExtraTitle"
+        const val INTENT_EXTRA_INVITE_ID = "intentExtraInviteId"
         const val INTENT_EXTRA_EVENT_ID = "intentExtraEventId"
         const val INTENT_EXTRA_CONTENT = "intentExtraContent"
+        const val INTENT_EXTRA_ACCEPT = "intentExtraAccept"
 
         const val UPDATE_DAY_UNIT = 8L
         const val LAST_DATE = "2040-01-01"

@@ -8,7 +8,9 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivityNotificationBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.home.HomeActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class NotificationActivity :
     BaseActivity<ActivityNotificationBinding>(R.layout.activity_notification) {
 
@@ -23,7 +25,7 @@ class NotificationActivity :
         onBackPressedDispatcher.addCallback(
             this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    navigateToHomeActivity()
+                    navigateToPrev()
                 }
             }
         )
@@ -31,12 +33,17 @@ class NotificationActivity :
 
     private fun setTopAppBar() {
         binding.notificationMtb.setNavigationOnClickListener {
-            navigateToHomeActivity()
+            navigateToPrev()
         }
     }
 
+    private fun navigateToPrev() {
+        if (!isTaskRoot) finish()
+        else navigateToHomeActivity()
+    }
+
     private fun navigateToHomeActivity() {
-        val intent = Intent(this@NotificationActivity, HomeActivity::class.java).apply {
+        val intent = Intent(this, HomeActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         startActivity(intent)
@@ -52,8 +59,7 @@ class NotificationActivity :
                 TAB_INDEX_GROUP_INVITATION -> tab.text = getString(R.string.notification_tab_invite_group)
             }
         }.attach()
-        binding.notificationVp.currentItem =
-            intent.getIntExtra(TAB_INDEX, TAB_INDEX_FOLLOW)
+        binding.notificationVp.currentItem = intent.getIntExtra(TAB_INDEX, TAB_INDEX_FOLLOW)
     }
 
     companion object {

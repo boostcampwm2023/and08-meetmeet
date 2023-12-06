@@ -41,7 +41,7 @@ class FollowViewModel @Inject constructor(
     private val _event: MutableSharedFlow<FollowEvent> = MutableSharedFlow()
     val event: SharedFlow<FollowEvent> = _event
 
-    fun updateSearchedUser(actionType: FollowActionType) {
+    fun updateSearchedUser(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
             when (actionType) {
                 FollowActionType.FOLLOW -> {
@@ -49,8 +49,19 @@ class FollowViewModel @Inject constructor(
                         _searchKeyword.value
                     ).catch {
                         _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
-                    }.collectLatest { user ->
-                        _searchedUser.update { listOf(user) }
+                    }.collectLatest { users ->
+                        _searchedUser.update { users }
+                    }
+                }
+
+                FollowActionType.EVENT -> {
+                    id?.let {
+                        eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
+                            .catch {
+                                _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
+                            }.collectLatest { users ->
+                                _searchedUser.update { users }
+                            }
                     }
                 }
 
@@ -119,6 +130,16 @@ class FollowViewModel @Inject constructor(
         _searchKeyword.update { keyword.toString() }
     }
 
+    override fun onProfileClick(user: UserStatus) {
+        viewModelScope.launch {
+            if (!user.isMe) {
+                _event.emit(
+                    FollowEvent.VisitProfile(user.id, user.nickname)
+                )
+            }
+        }
+    }
+
     override fun onFollowClick(user: UserStatus) {
         viewModelScope.launch {
             followRepository.follow(user.id)
@@ -146,7 +167,6 @@ class FollowViewModel @Inject constructor(
     }
 
     override fun onInviteEventClick(user: UserStatus, id: Int) {
-        println("${user.nickname}님을 이벤트 $id 에 초대")
         viewModelScope.launch {
             eventStoryRepository.inviteEvent(id, user.id)
                 .catch {
@@ -154,6 +174,7 @@ class FollowViewModel @Inject constructor(
                 }.collectLatest {
                     updateFollowing(FollowActionType.EVENT, id)
                     updateFollower(FollowActionType.EVENT, id)
+                    updateSearchedUser(FollowActionType.EVENT, id)
                 }
         }
     }

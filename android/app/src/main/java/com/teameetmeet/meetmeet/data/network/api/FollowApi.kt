@@ -1,6 +1,6 @@
 package com.teameetmeet.meetmeet.data.network.api
 
-import com.teameetmeet.meetmeet.data.model.FollowUsers
+import com.teameetmeet.meetmeet.data.model.UsersResponse
 import com.teameetmeet.meetmeet.data.network.entity.FollowRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -17,8 +17,8 @@ interface FollowApi {
     suspend fun unFollow(@Query("userId") userId: Int)
 
     @GET("follow/followings")
-    suspend fun getFollowingWithFollowStatus(): FollowUsers
+    suspend fun getFollowingWithFollowStatus(): UsersResponse
 
     @GET("follow/followers")
-    suspend fun getFollowerWithFollowStatus(): FollowUsers
+    suspend fun getFollowerWithFollowStatus(): UsersResponse
 }

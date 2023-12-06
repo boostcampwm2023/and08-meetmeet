@@ -17,18 +17,23 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
         id: Int?
     ) {
         binding.user = user
+        itemView.setOnClickListener {
+            userClickListener.onProfileClick(user)
+        }
         when (actionType) {
             FollowActionType.FOLLOW -> {
                 with(binding.followBtnAction) {
-                    if (user.isFollowed) {
-                        text = context.getString(R.string.follow_title_unfollow)
-                        setOnClickListener {
-                            userClickListener.onUnfollowClick(user)
-                        }
-                    } else {
-                        text = context.getString(R.string.follow_title_follow)
-                        setOnClickListener {
-                            userClickListener.onFollowClick(user)
+                    user.isFollowed?.let { followStatus ->
+                        if (followStatus) {
+                            text = context.getString(R.string.follow_title_unfollow)
+                            setOnClickListener {
+                                userClickListener.onUnfollowClick(user)
+                            }
+                        } else {
+                            text = context.getString(R.string.follow_title_follow)
+                            setOnClickListener {
+                                userClickListener.onFollowClick(user)
+                            }
                         }
                     }
                 }
@@ -36,17 +41,30 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
 
             FollowActionType.EVENT -> {
                 with(binding.followBtnAction) {
-                    if (!user.isJoined) {
-                        text = context.getString(R.string.event_story_invite)
-                        setOnClickListener {
-                            id?.let {
-                                userClickListener.onInviteEventClick(user, id)
+                    when (user.isJoined) {
+                        UserStatus.JOIN_STATUS_JOINABLE -> {
+                            text = context.getString(R.string.event_story_invite)
+                            setOnClickListener {
+                                id?.let {
+                                    userClickListener.onInviteEventClick(user, id)
+                                }
                             }
+                            isEnabled = true
                         }
-                        isEnabled = true
-                    } else {
-                        text = context.getString(R.string.event_story_participating)
-                        isEnabled = false
+
+                        UserStatus.JOIN_STATUS_PENDING -> {
+                            text = context.getString(R.string.event_story_pending)
+                            isEnabled = false
+                        }
+
+                        UserStatus.JOIN_STATUS_ACCEPTED -> {
+                            text = context.getString(R.string.event_story_participating)
+                            isEnabled = false
+                        }
+
+                        else -> {
+                            isEnabled = false
+                        }
                     }
                 }
             }

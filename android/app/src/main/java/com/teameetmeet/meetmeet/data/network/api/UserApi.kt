@@ -1,8 +1,10 @@
 package com.teameetmeet.meetmeet.data.network.api
 
 import com.teameetmeet.meetmeet.data.model.UserProfile
-import com.teameetmeet.meetmeet.data.model.UserStatus
+import com.teameetmeet.meetmeet.data.model.UsersResponse
 import com.teameetmeet.meetmeet.data.network.entity.AvailableResponse
+import com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotificationResponse
+import com.teameetmeet.meetmeet.data.network.entity.FollowNotificationResponse
 import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.TokenRequest
@@ -28,7 +30,7 @@ interface UserApi {
     suspend fun checkNickNameDuplication(@Query("nickname") nickname: String): AvailableResponse
 
     @GET("user/search")
-    suspend fun getUserWithFollowStatus(@Query("nickname") nickname: String): UserStatus
+    suspend fun getUserWithFollowStatus(@Query("nickname") nickname: String): UsersResponse
 
     @PATCH("user/account")
     suspend fun patchPassword(@Body passwordChangeRequest: PasswordChangeRequest): UserProfile
@@ -46,4 +48,10 @@ interface UserApi {
     suspend fun updateFcmToken(
         @Body tokenRequest: TokenRequest
     )
+
+    @GET("user/notification")
+    suspend fun getFollowNotification(@Query("page") page: String = "follow"): List<FollowNotificationResponse>
+
+    @GET("user/notification")
+    suspend fun getEventInvitationNotification(@Query("page") page: String = "invite"): List<EventInvitationNotificationResponse>
 }

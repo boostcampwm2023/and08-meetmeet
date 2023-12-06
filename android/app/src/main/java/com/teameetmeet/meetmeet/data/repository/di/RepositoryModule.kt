@@ -50,8 +50,9 @@ class RepositoryModule {
     @Singleton
     @Provides
     fun provideEventStoryRepository(
-        eventStoryApi: EventStoryApi
-    ) = EventStoryRepository(eventStoryApi)
+        eventStoryApi: EventStoryApi,
+        dataStore: DataStoreHelper
+    ) = EventStoryRepository(eventStoryApi, dataStore)
 
     @Singleton
     @Provides
