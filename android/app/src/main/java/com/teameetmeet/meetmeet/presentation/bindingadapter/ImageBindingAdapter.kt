@@ -30,5 +30,6 @@ fun ImageView.bindThumbnailImageCenterInside(
 ) {
     Glide.with(context).load(thumbnailImage)
         .centerInside()
-        .placeholder(R.drawable.ic_no_image_filled).into(this)
+        .error(R.drawable.ic_no_image_filled)
+        .placeholder(R.drawable.loading_image).into(this)
 }

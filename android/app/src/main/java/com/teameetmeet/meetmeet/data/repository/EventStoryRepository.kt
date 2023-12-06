@@ -96,10 +96,10 @@ class EventStoryRepository @Inject constructor(
             }
     }
 
-    fun editNotification(eventId: Int, message: String?): Flow<Unit> {
+    fun editAnnouncement(eventId: Int, message: String?): Flow<Unit> {
         return flowOf(true)
             .map {
-                eventStoryApi.editNotification(eventId, AnnouncementRequest(message))
+                eventStoryApi.editAnnouncement(eventId, AnnouncementRequest(message))
             }.catch {
                 throw it.toException()
             }

@@ -18,7 +18,6 @@ class ImageDownloadHelper @Inject constructor(
     fun saveImage(content: Content, type: String): Flow<List<WorkInfo>> {
         val data = Data.Builder()
             .putString(ImageDownloadWorker.KEY_IMAGE_URL, content.path)
-            .putString(ImageDownloadWorker.KEY_MIME_TYPE, content.mimeType)
             .build()
 
         val constraints = Constraints.Builder().setRequiresStorageNotLow(true).build()

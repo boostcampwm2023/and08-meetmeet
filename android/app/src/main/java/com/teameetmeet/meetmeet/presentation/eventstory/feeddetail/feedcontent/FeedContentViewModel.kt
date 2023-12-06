@@ -79,16 +79,14 @@ class FeedContentViewModel @Inject constructor(
                 it[0].state.isFinished
             }.first {
                 if (it[0].state == WorkInfo.State.SUCCEEDED) {
-                    println(it[0].outputData.getString(ImageDownloadWorker.KEY_DOWNLOAD_TYPE))
-                    println(it[0])
                     if (it[0].tags.contains(ImageDownloadWorker.TYPE_DOWNLOAD_MANAGER)) {
-                        _event.tryEmit(
+                        _event.emit(
                             FeedContentEvent.ShowMessage(
                                 R.string.feed_content_message_image_save_start
                             )
                         )
                     } else if (it[0].tags.contains(ImageDownloadWorker.TYPE_MEDIA_STORE)) {
-                        _event.tryEmit(
+                        _event.emit(
                             FeedContentEvent.ShowMessage(
                                 R.string.feed_content_message_image_save_success
                             )
