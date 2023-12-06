@@ -9,6 +9,6 @@ data class Comment(
     val id: Int,
     @Json(name = "memo")
     val memo: String,
-    @Json(name = "authorId")
-    val authorId: Int
+    @Json(name = "author")
+    val authorId: EventMember
 )

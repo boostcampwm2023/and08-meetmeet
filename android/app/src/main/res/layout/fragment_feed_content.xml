@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontent.FeedContentViewModel" />
+        <import type="android.view.View"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        tools:context=".presentation.eventstory.feeddetail.feedcontent.FeedContentFragment">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/feed_content_vp_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:sub_list="@{vm.contents}" />
+
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/feed_content_mtb"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:visibility="@{vm.isTouched == true ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:menu="@menu/menu_top_app_bar_feed_content"
+            app:navigationIcon="@drawable/ic_back_white" />
+
+        <ImageView
+            android:id="@+id/feed_content_iv_loading"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/event_story_description_loading_image"
+            android:src="@drawable/loading_animation"
+            android:visibility="@{vm.isLoading == true ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
