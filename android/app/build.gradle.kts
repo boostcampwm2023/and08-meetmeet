@@ -7,6 +7,7 @@ plugins {
     id("com.google.dagger.hilt.android")
     id("androidx.navigation.safeargs")
     id("com.google.gms.google-services")
+    id("kotlin-parcelize")
 }
 
 android {
