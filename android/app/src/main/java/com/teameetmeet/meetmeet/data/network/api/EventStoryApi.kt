@@ -30,7 +30,7 @@ interface EventStoryApi {
     suspend fun getStoryDetail(@Path("eventId") id: Int): EventStoryDetailResponse
 
     @PATCH("event/{eventId}/announcement")
-    suspend fun editNotification(
+    suspend fun editAnnouncement(
         @Path("eventId") eventId: Int,
         @Body announcementRequest: AnnouncementRequest
     )
