@@ -75,6 +75,12 @@ interface EventStoryApi {
         @Body addFeedCommentRequest: AddFeedCommentRequest
     )
 
+    @DELETE("feed/{feedId}/comment/{commentId}")
+    suspend fun deleteFeedComment(
+        @Path("feedId") feedId: Int,
+        @Path("commentId") commentId: Int
+    )
+
     @GET("event/user/followings")
     suspend fun getFollowingWithEventStatus(@Query("eventId") eventId: Int): UsersResponse
 
