@@ -24,5 +24,7 @@
     <color name="grey4">#F5F5F7</color>
     <color name="grey5">#30828282</color>
 
+    <color name="notification_highlight">#FFFBE4</color>
+
     <color name="loading_background">#30000000</color>
 </resources>
