@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 
 import android.net.Uri
+import android.view.View
 import androidx.annotation.OptIn
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
@@ -32,6 +33,15 @@ class FeedContentsVideoViewHolder(
 
         with(player) {
             repeatMode = Player.REPEAT_MODE_ONE
+            addListener(object : Player.Listener {
+                override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                    if (playbackState == Player.STATE_BUFFERING) {
+                        binding.itemEventFeedPbContent.visibility = View.VISIBLE
+                    } else if (playbackState == Player.STATE_READY) {
+                        binding.itemEventFeedPbContent.visibility = View.GONE
+                    }
+                }
+            })
             setMediaSource(mediaSource)
             prepare()
         }
