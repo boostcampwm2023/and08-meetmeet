@@ -3,14 +3,22 @@ package com.teameetmeet.meetmeet.presentation.visitcalendar
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
+import androidx.core.view.children
+import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivityVisitCalendarBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarFragment
+import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarFragmentDirections
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.OthersMonthCalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class VisitCalendarActivity : BaseActivity<ActivityVisitCalendarBinding>(
@@ -25,6 +33,33 @@ class VisitCalendarActivity : BaseActivity<ActivityVisitCalendarBinding>(
         setTopAppBar()
         binding.vm = viewModel
         viewModel.fetchUserProfile(args.userNickname)
+        collectViewModelEvent()
+    }
+
+    private fun collectViewModelEvent() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collect { event ->
+                    when (event) {
+                        is VisitCalendarEvent.NavigateToProfileImageFragment -> {
+                            val navHostFragment =
+                                binding.fragmentContainer.getFragment<NavHostFragment>()
+                            val currentFragment =
+                                navHostFragment.childFragmentManager.primaryNavigationFragment
+                                    ?: return@collect
+                            if (currentFragment is MonthCalendarFragment) {
+                                changeProfileStatus(false)
+                                navHostFragment.navController.navigate(
+                                    MonthCalendarFragmentDirections.actionMonthCalendarFragmentToProfileImageFragment(
+                                        event.imageUrl
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun setTopAppBar() {
@@ -41,5 +76,9 @@ class VisitCalendarActivity : BaseActivity<ActivityVisitCalendarBinding>(
         (binding.fragmentContainer.getFragment<NavHostFragment>()).navController.setGraph(
             R.navigation.nav_graph_calendar, bundle
         )
+    }
+
+    fun changeProfileStatus(status: Boolean) {
+        viewModel.changeProfileStatus(status)
     }
 }

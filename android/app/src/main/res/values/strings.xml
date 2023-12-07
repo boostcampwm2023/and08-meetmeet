@@ -254,4 +254,6 @@
     <string name="feed_content_message_video_save_success">동영상 저장 성공</string>
     <string name="event_member_message_follow_fail">팔로우 실패</string>
     <string name="event_member_message_unfollow_fail">언팔로우 실패</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
