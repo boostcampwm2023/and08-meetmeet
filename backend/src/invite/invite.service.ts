@@ -45,7 +45,7 @@ export class InviteService {
     user: User,
     event: Event,
     invitedUser: User,
-    fcmToken: string,
+    // fcmToken: string,
   ) {
     const eventOwner = event.eventMembers.find(
       (eventMember) => eventMember.user.id === user.id,
@@ -56,25 +56,29 @@ export class InviteService {
       user,
       invitedUser,
     );
-    const message: admin.messaging.Message = {
-      data: {
-        type: 'EVENT_INVITATION',
-        body: JSON.stringify({
-          inviteId: invite.id,
-          eventId: event.id,
-          title: event.title,
-          startDate: event.startDate,
-          endDate: event.endDate,
-          eventOwner: {
-            id: eventOwner?.id,
-            nickname: eventOwner?.nickname,
-            profile: eventOwner?.profile?.path ?? null,
-          },
-        }),
-      },
-      token: fcmToken,
-    };
-    await this.sendFireBaseMessage(message);
+    if (!invitedUser.fcmToken) {
+      return;
+    } else {
+      const message: admin.messaging.Message = {
+        data: {
+          type: 'EVENT_INVITATION',
+          body: JSON.stringify({
+            inviteId: invite.id,
+            eventId: event.id,
+            title: event.title,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            eventOwner: {
+              id: eventOwner?.id,
+              nickname: eventOwner?.nickname,
+              profile: eventOwner?.profile?.path ?? null,
+            },
+          }),
+        },
+        token: invitedUser.fcmToken,
+      };
+      await this.sendFireBaseMessage(message);
+    }
   }
 
   async sendFireBaseMessage(message: admin.messaging.Message) {

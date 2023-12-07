@@ -850,41 +850,43 @@ export class EventService {
     }
     const invites = await this.inviteService.getInvitesByEvent(event);
     const result: any[] = [];
-    rawFollowings.forEach((follower) => {
-      let isJoined;
-      const eventMember = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === follower.follower.id,
-      );
-      if (!eventMember) {
-        invites.find(async (invite) => {
-          if (invite.receiver.id === follower.follower.id) {
-            const inviteByEventAndUserLimitOne =
-              await this.inviteService.getInviteByEventAndUser(
-                event,
-                follower.follower,
-              );
-            if (inviteByEventAndUserLimitOne) {
-              isJoined = this.inviteService.transformStatusEnumResponse(
-                inviteByEventAndUserLimitOne[0].status.displayName,
-              );
-            } else {
-              isJoined = StatusEnum.Joinable;
+    await Promise.all(
+      rawFollowings.map(async (follower) => {
+        let isJoined;
+        const eventMember = event.eventMembers.find(
+          (eventMember) => eventMember.user.id === follower.follower.id,
+        );
+        const inviteByEventAndUserLimitOne =
+          await this.inviteService.getInviteByEventAndUser(
+            event,
+            follower.follower,
+          );
+        if (!eventMember) {
+          invites.find((invite) => {
+            if (invite.receiver.id === follower.follower.id) {
+              if (inviteByEventAndUserLimitOne) {
+                isJoined = this.inviteService.transformStatusEnumResponse(
+                  inviteByEventAndUserLimitOne[0].status.displayName,
+                );
+              } else {
+                isJoined = StatusEnum.Joinable;
+              }
             }
+          });
+          if (!isJoined) {
+            isJoined = StatusEnum.Joinable;
           }
-        });
-        if (!isJoined) {
-          isJoined = StatusEnum.Joinable;
+        } else {
+          isJoined = StatusEnum.Accepted;
         }
-      } else {
-        isJoined = StatusEnum.Accepted;
-      }
-      result.push({
-        id: follower.follower.id,
-        nickname: follower.follower.nickname,
-        profile: follower.follower.profile?.path ?? null,
-        isJoined: isJoined,
-      });
-    });
+        result.push({
+          id: follower.follower.id,
+          nickname: follower.follower.nickname,
+          profile: follower.follower.profile?.path ?? null,
+          isJoined: isJoined,
+        });
+      }),
+    );
     return { users: result };
   }
   async getFollowersEvents(user: User, eventId: number) {
@@ -1001,16 +1003,11 @@ export class EventService {
 
     const invitedUser = await this.userService.findUserById(userId);
 
-    if (!invitedUser || invitedUser.fcmToken === null) {
+    if (!invitedUser) {
       throw new UserNotFoundException();
     }
 
-    await this.inviteService.sendInviteEventMessage(
-      user,
-      event,
-      invitedUser,
-      invitedUser.fcmToken,
-    );
+    await this.inviteService.sendInviteEventMessage(user, event, invitedUser);
     return { result: '초대요청이 전송되었습니다.' };
   }
 
