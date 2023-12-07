@@ -13,8 +13,8 @@ data class FeedMedia(
         else "${size / (KILO * KILO)}MB"
 
     companion object {
-        const val KILO = 1024
-        const val MEDIA_AMOUNT_CONSTRAINT = 10
-        const val MEDIA_VOLUME_CONSTRAINT = KILO * KILO * 50
+        const val KILO = 1024L
+        const val MEDIA_AMOUNT_CONSTRAINT = 10L
+        const val MEDIA_VOLUME_CONSTRAINT = KILO * KILO * 50L
     }
 }
