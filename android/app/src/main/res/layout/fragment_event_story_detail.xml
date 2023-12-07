@@ -398,7 +398,7 @@
                 android:layout_marginTop="24dp"
                 android:backgroundTint="@color/event_color_warning"
                 android:enabled="@{vm.uiState.authority == EventAuthority.GUEST ? false : true}"
-                android:text="@string/story_detail_remove_event"
+                android:text="@{vm.uiState.authority == EventAuthority.OWNER ? @string/story_detail_remove_event : @string/story_detail_exit_event}"
                 app:layout_constraintEnd_toEndOf="@id/story_detail_guideline_right"
                 app:layout_constraintStart_toStartOf="@id/story_detail_guideline_left"
                 app:layout_constraintTop_toBottomOf="@id/story_detail_tv_event_joinable" />
