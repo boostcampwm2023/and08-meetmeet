@@ -1,7 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.createfeed
 
-import com.teameetmeet.meetmeet.presentation.model.MediaItem
+import com.teameetmeet.meetmeet.presentation.model.FeedMedia
 
 interface MediaItemCancelClickListener {
-    fun onItemClick(mediaItem: MediaItem)
+    fun onItemClick(feedMedia: FeedMedia)
 }

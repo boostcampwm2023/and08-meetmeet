@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
-import com.teameetmeet.meetmeet.presentation.model.MediaItem
+import com.teameetmeet.meetmeet.presentation.model.FeedMedia
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +22,8 @@ class CreateFeedViewModel @Inject constructor(
     private val _feedText = MutableStateFlow<String>("")
     val feedText: StateFlow<String> = _feedText
 
-    private val _mediaList = MutableStateFlow<List<MediaItem>>(listOf())
-    val mediaList: StateFlow<List<MediaItem>> = _mediaList
+    private val _mediaList = MutableStateFlow<List<FeedMedia>>(listOf())
+    val mediaList: StateFlow<List<FeedMedia>> = _mediaList
 
     private val _createFeedUiEvent = MutableSharedFlow<CreateFeedUiEvent>()
     val createFeedUiEvent: SharedFlow<CreateFeedUiEvent> = _createFeedUiEvent
@@ -35,12 +35,12 @@ class CreateFeedViewModel @Inject constructor(
         _feedText.update { text.toString() }
     }
 
-    fun selectMedia(uris: List<MediaItem>) {
+    fun selectMedia(uris: List<FeedMedia>) {
         _mediaList.update { (it + uris).distinct() }
     }
 
-    override fun onItemClick(mediaItem: MediaItem) {
-        _mediaList.update { it.filter { item -> item != mediaItem } }
+    override fun onItemClick(feedMedia: FeedMedia) {
+        _mediaList.update { it.filter { item -> item != feedMedia } }
     }
 
     fun onSave(eventId: Int) {
@@ -49,11 +49,11 @@ class CreateFeedViewModel @Inject constructor(
                 _createFeedUiEvent.emit(
                     CreateFeedUiEvent.ShowMessage(R.string.create_feed_no_contents_message)
                 )
-            } else if (mediaList.value.size > MediaItem.MEDIA_AMOUNT_CONSTRAINT) {
+            } else if (mediaList.value.size > FeedMedia.MEDIA_AMOUNT_CONSTRAINT) {
                 _createFeedUiEvent.emit(
                     CreateFeedUiEvent.ShowMessage(R.string.create_feed_constraint_amount)
                 )
-            } else if (mediaList.value.sumOf { it.size } > MediaItem.MEDIA_VOLUME_CONSTRAINT) {
+            } else if (mediaList.value.sumOf { it.size } > FeedMedia.MEDIA_VOLUME_CONSTRAINT) {
                 _createFeedUiEvent.emit(
                     CreateFeedUiEvent.ShowMessage(R.string.create_feed_media_constraint_volume)
                 )
