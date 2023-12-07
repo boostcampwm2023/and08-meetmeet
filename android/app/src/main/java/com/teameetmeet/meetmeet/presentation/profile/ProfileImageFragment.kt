@@ -38,6 +38,6 @@ class ProfileImageFragment : BaseFragment<FragmentProfileImageBinding>(R.layout.
 
     override fun onDestroyView() {
         super.onDestroyView()
-        (requireActivity() as VisitCalendarActivity).changeProfileStatus(true)
+        (requireActivity() as? VisitCalendarActivity)?.changeProfileStatus(true)
     }
 }
