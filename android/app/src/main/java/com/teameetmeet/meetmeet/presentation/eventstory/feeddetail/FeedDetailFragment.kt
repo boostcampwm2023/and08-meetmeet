@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
@@ -25,10 +26,12 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class FeedDetailFragment :
     BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail),
-    ContentClickListener,
+    ContentEventListener,
     CommentDeleteClickListener {
     private val viewModel: FeedDetailViewModel by viewModels()
     private val navArgs: FeedDetailFragmentArgs by navArgs()
+
+    private val videoPlayers = hashMapOf<Int, ExoPlayer>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -62,6 +65,21 @@ class FeedDetailFragment :
     override fun onResume() {
         super.onResume()
         viewModel.getFeedDetail()
+        videoPlayers[viewModel.feedDetailUiState.value.contentPage]?.play()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        videoPlayers[viewModel.feedDetailUiState.value.contentPage]?.pause()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        videoPlayers.values.forEach {
+            it.stop()
+            it.clearMediaItems()
+            it.release()
+        }
     }
 
     private fun setBinding() {
@@ -80,6 +98,10 @@ class FeedDetailFragment :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+
+                    videoPlayers[viewModel.feedDetailUiState.value.contentPage]?.pause()
+                    videoPlayers[position]?.play()
+
                     viewModel.setContentPage(position)
                 }
             })
@@ -129,6 +151,10 @@ class FeedDetailFragment :
                 viewModel.feedDetailUiState.value.contentPage
             )
         )
+    }
+
+    override fun onVideoPrepared(player: ExoPlayer, position: Int) {
+        videoPlayers[position] = player
     }
 
     override fun onClick(comment: Comment) {
