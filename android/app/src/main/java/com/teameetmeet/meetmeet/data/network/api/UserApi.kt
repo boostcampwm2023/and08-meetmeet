@@ -26,6 +26,9 @@ interface UserApi {
     @DELETE("user")
     suspend fun deleteUser()
 
+    @POST("user/logout")
+    suspend fun logout()
+
     @GET("auth/check/nickname")
     suspend fun checkNickNameDuplication(@Query("nickname") nickname: String): AvailableResponse
 

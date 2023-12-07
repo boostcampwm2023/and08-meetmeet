@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.setting.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.user.UserApiClient
+import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,7 +41,11 @@ class SettingHomeViewModel @Inject constructor(
     fun logout() {
         UserApiClient.instance.logout {
             viewModelScope.launch {
-                _event.emit(SettingHomeEvent.NavigateToLoginActivity)
+                userRepository.logout().catch {
+                    _event.emit(SettingHomeEvent.ShowMessage(R.string.setting_home_message_logout_fail))
+                }.collect {
+                    _event.emit(SettingHomeEvent.NavigateToLoginActivity)
+                }
             }
         }
     }
