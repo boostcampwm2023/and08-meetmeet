@@ -5,7 +5,7 @@ import { Event } from './entities/event.entity';
 import { User } from '../user/entities/user.entity';
 import { CreateScheduleDto, RepeatTerm } from './dto/createSchedule.dto';
 import { CalendarService } from '../calendar/calendar.service';
-import { RepeatType, RepeatPolicy } from './entities/repeatPolicy.entity';
+import { RepeatPolicy, RepeatType } from './entities/repeatPolicy.entity';
 import { DetailService } from '../detail/detail.service';
 import { EventMemberService } from '../event-member/event-member.service';
 import { Calendar } from '../calendar/entities/calendar.entity';
@@ -865,9 +865,14 @@ export class EventService {
           invites.find((invite) => {
             if (invite.receiver.id === follower.follower.id) {
               if (inviteByEventAndUserLimitOne) {
-                isJoined = this.inviteService.transformStatusEnumResponse(
-                  inviteByEventAndUserLimitOne[0].status.displayName,
-                );
+                if (
+                  inviteByEventAndUserLimitOne[0].status.displayName ===
+                  StatusEnum.Pending
+                ) {
+                  isJoined = StatusEnum.Pending;
+                } else {
+                  isJoined = StatusEnum.Joinable;
+                }
               } else {
                 isJoined = StatusEnum.Joinable;
               }
@@ -887,6 +892,7 @@ export class EventService {
         });
       }),
     );
+
     return { users: result };
   }
   async getFollowersEvents(user: User, eventId: number) {
@@ -902,41 +908,48 @@ export class EventService {
     }
     const invites = await this.inviteService.getInvitesByEvent(event);
     const result: any[] = [];
-    rawFollowers.forEach((follower) => {
-      let isJoined;
-      const eventMember = event.eventMembers.find(
-        (eventMember) => eventMember.user.id === follower.user.id,
-      );
-      if (!eventMember) {
-        invites.find(async (invite) => {
-          if (invite.receiver.id === follower.user.id) {
-            const inviteByEventAndUserLimitOne =
-              await this.inviteService.getInviteByEventAndUser(
-                event,
-                follower.user,
-              );
-            if (inviteByEventAndUserLimitOne) {
-              isJoined = this.inviteService.transformStatusEnumResponse(
-                inviteByEventAndUserLimitOne[0].status.displayName,
-              );
-            } else {
-              isJoined = StatusEnum.Joinable;
+    await Promise.all(
+      rawFollowers.map(async (follower) => {
+        let isJoined;
+        const eventMember = event.eventMembers.find(
+          (eventMember) => eventMember.user.id === follower.user.id,
+        );
+        const inviteByEventAndUserLimitOne =
+          await this.inviteService.getInviteByEventAndUser(
+            event,
+            follower.user,
+          );
+        if (!eventMember) {
+          invites.find((invite) => {
+            if (invite.receiver.id === follower.user.id) {
+              if (inviteByEventAndUserLimitOne) {
+                if (
+                  inviteByEventAndUserLimitOne[0].status.displayName ===
+                  StatusEnum.Pending
+                ) {
+                  isJoined = StatusEnum.Pending;
+                } else {
+                  isJoined = StatusEnum.Joinable;
+                }
+              } else {
+                isJoined = StatusEnum.Joinable;
+              }
             }
+          });
+          if (!isJoined) {
+            isJoined = StatusEnum.Joinable;
           }
-        });
-        if (!isJoined) {
-          isJoined = StatusEnum.Joinable;
+        } else {
+          isJoined = StatusEnum.Accepted;
         }
-      } else {
-        isJoined = StatusEnum.Accepted;
-      }
-      result.push({
-        id: follower.user.id,
-        nickname: follower.user.nickname,
-        profile: follower.user.profile?.path ?? null,
-        isJoined: isJoined,
-      });
-    });
+        result.push({
+          id: follower.user.id,
+          nickname: follower.user.nickname,
+          profile: follower.user.profile?.path ?? null,
+          isJoined: isJoined,
+        });
+      }),
+    );
     return { users: result };
   }
 
@@ -964,13 +977,24 @@ export class EventService {
       (eventMember) => eventMember.user.id === findByNickname.id,
     );
     const invites = await this.inviteService.getInvitesByEvent(event);
+    const inviteByEventAndUserLimitOne =
+      await this.inviteService.getInviteByEventAndUser(event, findByNickname);
     let isJoined;
     if (!eventMember) {
       invites.find((invite) => {
         if (invite.receiver.id === findByNickname.id) {
-          isJoined = this.inviteService.transformStatusEnumResponse(
-            invite.status.displayName,
-          );
+          if (inviteByEventAndUserLimitOne) {
+            if (
+              inviteByEventAndUserLimitOne[0].status.displayName ===
+              StatusEnum.Pending
+            ) {
+              isJoined = StatusEnum.Pending;
+            } else {
+              isJoined = StatusEnum.Joinable;
+            }
+          } else {
+            isJoined = StatusEnum.Joinable;
+          }
         }
       });
       if (!isJoined) {
