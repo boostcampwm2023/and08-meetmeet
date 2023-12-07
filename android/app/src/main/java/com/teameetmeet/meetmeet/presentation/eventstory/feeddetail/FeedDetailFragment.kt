@@ -65,12 +65,18 @@ class FeedDetailFragment :
     override fun onResume() {
         super.onResume()
         viewModel.getFeedDetail()
-        videoPlayers[viewModel.feedDetailUiState.value.contentPage]?.play()
+        with(videoPlayers[viewModel.feedDetailUiState.value.contentPage]) {
+            this?.playWhenReady = true
+            this?.play()
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        videoPlayers[viewModel.feedDetailUiState.value.contentPage]?.pause()
+        with(videoPlayers[viewModel.feedDetailUiState.value.contentPage]) {
+            this?.pause()
+            this?.playWhenReady = false
+        }
     }
 
     override fun onDestroyView() {
@@ -99,7 +105,14 @@ class FeedDetailFragment :
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
 
-                    videoPlayers[viewModel.feedDetailUiState.value.contentPage]?.pause()
+                    with(videoPlayers[viewModel.feedDetailUiState.value.contentPage]) {
+                        this?.pause()
+                        this?.playWhenReady = false
+                    }
+                    with(videoPlayers[position]) {
+                        this?.playWhenReady = true
+                        this?.play()
+                    }
                     videoPlayers[position]?.play()
 
                     viewModel.setContentPage(position)
