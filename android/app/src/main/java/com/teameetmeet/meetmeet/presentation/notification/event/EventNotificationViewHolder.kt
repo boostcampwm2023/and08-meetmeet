@@ -17,21 +17,32 @@ class EventNotificationViewHolder(private val binding: ItemEventNotificationBind
         binding.item = item
         when (item.status) {
             UserStatus.JOIN_STATUS_PENDING -> {
-                itemView.setBackgroundColor(
+                binding.swipeView.setBackgroundColor(
                     ContextCompat.getColor(
-                        itemView.context,
-                        R.color.notification_highlight
+                        itemView.context, R.color.notification_highlight
                     )
                 )
             }
 
             else -> {
-                itemView.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.grey3))
+                binding.swipeView.setBackgroundColor(
+                    ContextCompat.getColor(
+                        itemView.context, R.color.grey3
+                    )
+                )
             }
         }
 
-        itemView.setOnClickListener {
+        binding.swipeView.setOnClickListener {
             eventNotificationItemClickListener.onClick(item)
         }
+        binding.tvRemove.setOnClickListener {
+            eventNotificationItemClickListener.onDelete(item)
+        }
+    }
+
+    fun resetSwipeState() {
+        itemView.animate().cancel()
+        binding.swipeView.translationX = 0f
     }
 }
