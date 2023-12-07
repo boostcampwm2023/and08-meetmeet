@@ -11,6 +11,7 @@ import { SearchResponseDto } from '../event/dto/search-response.dto';
 import {
   DuplicatedNicknameException,
   NoSuchOauthProviderException,
+  QueryIntException,
   UserNotFoundException,
 } from './exception/user.exception';
 
@@ -247,5 +248,24 @@ export class UserService {
       }
     });
     return result;
+  }
+
+  async deleteUserNotification(user: User, ids: string) {
+    const idList = this.parseNumberString(ids);
+    await Promise.all(
+      idList.map(async (id) => {
+        await this.inviteService.deleteInvite(id, user);
+      }),
+    );
+  }
+
+  private parseNumberString(numberString: string) {
+    return numberString.split(',').map((item) => {
+      const parsedNumber = parseInt(item.trim(), 10);
+      if (isNaN(parsedNumber)) {
+        throw new QueryIntException();
+      }
+      return parsedNumber;
+    });
   }
 }
