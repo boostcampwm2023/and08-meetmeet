@@ -88,7 +88,14 @@ class FeedContentViewModel @Inject constructor(
                     } else if (it[0].tags.contains(ImageDownloadWorker.TYPE_MEDIA_STORE)) {
                         _event.emit(
                             FeedContentEvent.ShowMessage(
-                                R.string.feed_content_message_image_save_success
+                                when(getContentType(content.mimeType)) {
+                                    "video" -> {
+                                        R.string.feed_content_message_video_save_success
+                                    }
+                                    else -> {
+                                        R.string.feed_content_message_image_save_success
+                                    }
+                                }
                             )
                         )
                     }
@@ -104,6 +111,10 @@ class FeedContentViewModel @Inject constructor(
                 true
             }
         }
+    }
+
+    private fun getContentType(mimeType: String): String {
+        return if(mimeType.contains("video")) "video" else "image"
     }
 
 
