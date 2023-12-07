@@ -94,6 +94,9 @@
         <argument
             android:name="eventMember"
             app:argType="com.teameetmeet.meetmeet.data.model.EventMember[]" />
+        <action
+            android:id="@+id/action_event_member_fragment_to_visitCalendarActivity"
+            app:destination="@id/visit_calendar_activity" />
     </fragment>
     <fragment
         android:id="@+id/feed_content_fragment"
@@ -106,4 +109,15 @@
             android:name="index"
             app:argType="integer" />
     </fragment>
+    <activity
+        android:id="@+id/visit_calendar_activity"
+        android:name="com.teameetmeet.meetmeet.presentation.visitcalendar.VisitCalendarActivity"
+        android:label="visit_calendar_activity" >
+        <argument
+            android:name="userId"
+            app:argType="integer" />
+        <argument
+            android:name="userNickname"
+            app:argType="string" />
+    </activity>
 </navigation>

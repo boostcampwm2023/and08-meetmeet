@@ -4,5 +4,7 @@ import com.teameetmeet.meetmeet.data.model.UserStatus
 
 interface EventMemberClickListener {
 
-    fun onClick(userStatus: UserStatus)
+    fun onButtonClick(userStatus: UserStatus)
+
+    fun onItemViewClick(userStatus: UserStatus)
 }
