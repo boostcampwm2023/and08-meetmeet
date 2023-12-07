@@ -8,6 +8,7 @@
         <variable
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.visitcalendar.VisitCalendarViewModel" />
+        <import type="android.view.View"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +22,7 @@
             app:layout_constraintBottom_toBottomOf="@id/visit_calendar_cl_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:visibility="@{vm.profileIsVisible ? View.VISIBLE : View.GONE}"
             app:layout_constraintTop_toTopOf="@id/visit_calendar_cl_profile"
             app:navigationIcon="@drawable/ic_nav_pre" />
 
@@ -31,6 +33,8 @@
             android:layout_marginStart="50dp"
             android:clipToPadding="false"
             android:paddingVertical="16dp"
+            android:visibility="@{vm.profileIsVisible ? View.VISIBLE : View.GONE}"
+            android:onClick="@{() -> vm.onProfileImageClick()}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -77,6 +81,7 @@
             android:onClick="@{v -> vm.onFollowButtonClick()}"
             android:text="@{vm.userProfile.followed?@string/follow_title_unfollow:@string/follow_title_follow}"
             android:textAppearance="@style/small"
+            android:visibility="@{vm.profileIsVisible ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/visit_calendar_cl_profile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/visit_calendar_cl_profile"
@@ -87,7 +92,6 @@
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
             app:defaultNavHost="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

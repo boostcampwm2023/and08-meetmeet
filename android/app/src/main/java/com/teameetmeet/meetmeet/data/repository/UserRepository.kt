@@ -46,6 +46,15 @@ class UserRepository @Inject constructor(
             }
     }
 
+    fun logout(): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.logout()
+            }.catch {
+                it.toException()
+            }
+    }
+
     private fun getLocalUserProfile(): Flow<UserProfile> {
         return dataStore.getUserProfile().catch {
             throw it

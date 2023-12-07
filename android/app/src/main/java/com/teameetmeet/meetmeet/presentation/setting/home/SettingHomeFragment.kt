@@ -61,15 +61,11 @@ class SettingHomeFragment :
                 viewModel.event.collect { event ->
                     when (event) {
                         is SettingHomeEvent.NavigateToLoginActivity -> navigateToLoginActivity()
-                        is SettingHomeEvent.ShowMessage -> showToastMessage(event.message)
+                        is SettingHomeEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
                     }
                 }
             }
         }
-    }
-
-    private fun showToastMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun navigateToLoginActivity() {
