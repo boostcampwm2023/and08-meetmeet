@@ -40,6 +40,7 @@ import {
 import { UserNotFoundException } from 'src/user/exception/user.exception';
 import { EventMember } from 'src/event-member/entities/eventMember.entity';
 import { FeedService } from '../feed/feed.service';
+import { logger } from '../common/log/winston.logger';
 
 @Injectable()
 export class EventService {
@@ -386,8 +387,15 @@ export class EventService {
                 );
               }
             } catch (err) {
-              // todo 어떻게 에러 처리할지
-              console.log(err);
+              logger.error(
+                JSON.stringify({
+                  message: err.message,
+                  userId: user.id,
+                  eventId: event.id,
+                  eventMemberId: eventMemberId,
+                  url: '/event/deleteEvent',
+                }),
+              );
             }
           }),
         );
@@ -848,11 +856,20 @@ export class EventService {
         (eventMember) => eventMember.user.id === follower.follower.id,
       );
       if (!eventMember) {
-        invites.find((invite) => {
+        invites.find(async (invite) => {
           if (invite.receiver.id === follower.follower.id) {
-            isJoined = this.inviteService.transformStatusEnumResponse(
-              invite.status.displayName,
-            );
+            const inviteByEventAndUserLimitOne =
+              await this.inviteService.getInviteByEventAndUser(
+                event,
+                follower.follower,
+              );
+            if (inviteByEventAndUserLimitOne) {
+              isJoined = this.inviteService.transformStatusEnumResponse(
+                inviteByEventAndUserLimitOne[0].status.displayName,
+              );
+            } else {
+              isJoined = StatusEnum.Joinable;
+            }
           }
         });
         if (!isJoined) {
@@ -865,7 +882,6 @@ export class EventService {
         id: follower.follower.id,
         nickname: follower.follower.nickname,
         profile: follower.follower.profile?.path ?? null,
-        // isJoined: eventMember ? true : false,
         isJoined: isJoined,
       });
     });
@@ -890,11 +906,20 @@ export class EventService {
         (eventMember) => eventMember.user.id === follower.user.id,
       );
       if (!eventMember) {
-        invites.find((invite) => {
+        invites.find(async (invite) => {
           if (invite.receiver.id === follower.user.id) {
-            isJoined = this.inviteService.transformStatusEnumResponse(
-              invite.status.displayName,
-            );
+            const inviteByEventAndUserLimitOne =
+              await this.inviteService.getInviteByEventAndUser(
+                event,
+                follower.user,
+              );
+            if (inviteByEventAndUserLimitOne) {
+              isJoined = this.inviteService.transformStatusEnumResponse(
+                inviteByEventAndUserLimitOne[0].status.displayName,
+              );
+            } else {
+              isJoined = StatusEnum.Joinable;
+            }
           }
         });
         if (!isJoined) {
@@ -1028,6 +1053,8 @@ export class EventService {
       savedDetail,
       authority,
     );
+
+    await this.inviteService.updateInviteWhenJoinEvent(user, event);
     return { result: '일정에 참가하였습니다.' };
   }
 
