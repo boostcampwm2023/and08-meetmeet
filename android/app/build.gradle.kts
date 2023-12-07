@@ -115,4 +115,9 @@ dependencies {
 
     //work manager
     implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    //ExoPlayer
+    implementation("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.media3:media3-ui:1.2.0")
+    implementation("androidx.media3:media3-common:1.2.0")
 }
