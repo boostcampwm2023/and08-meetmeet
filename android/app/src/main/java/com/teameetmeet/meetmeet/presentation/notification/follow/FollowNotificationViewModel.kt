@@ -15,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FollowNotificationViewModel @Inject constructor(
     private val userRepository: UserRepository
-) : ViewModel() {
+) : ViewModel(), FollowNotificationItemClickListener {
 
     private val _followNotificationList = MutableStateFlow<List<FollowNotification>>(emptyList())
     val followNotificationList: StateFlow<List<FollowNotification>> = _followNotificationList
@@ -24,6 +24,14 @@ class FollowNotificationViewModel @Inject constructor(
         viewModelScope.launch {
             userRepository.getFollowNotification().collectLatest { notifications ->
                 _followNotificationList.update { notifications }
+            }
+        }
+    }
+
+    override fun onDelete(event: FollowNotification) {
+        viewModelScope.launch {
+            userRepository.deleteUserNotification(event.inviteId.toString()).collectLatest {
+                fetchFollowNotificationList()
             }
         }
     }

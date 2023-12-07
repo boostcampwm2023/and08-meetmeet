@@ -177,4 +177,13 @@ class UserRepository @Inject constructor(
                 throw it.toException()
             }
     }
+
+    fun deleteUserNotification(ids: String): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.deleteUserNotification(ids)
+            }.catch {
+                throw it.toException()
+            }
+    }
 }

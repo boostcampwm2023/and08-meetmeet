@@ -54,4 +54,7 @@ interface UserApi {
 
     @GET("user/notification")
     suspend fun getEventInvitationNotification(@Query("page") page: String = "invite"): List<EventInvitationNotificationResponse>
+
+    @DELETE("user/notification")
+    suspend fun deleteUserNotification(@Query("ids") ids: String)
 }
