@@ -78,16 +78,16 @@ class FeedContentViewModel @Inject constructor(
                 )
                 _isLoading.update { false }
             }.filter {
-                it[0].state.isFinished
+                it.state.isFinished
             }.first {
-                if (it[0].state == WorkInfo.State.SUCCEEDED) {
-                    if (it[0].tags.contains(ImageDownloadWorker.TYPE_DOWNLOAD_MANAGER)) {
+                if (it.state == WorkInfo.State.SUCCEEDED) {
+                    if (it.tags.contains(ImageDownloadWorker.TYPE_DOWNLOAD_MANAGER)) {
                         _event.emit(
                             FeedContentEvent.ShowMessage(
                                 R.string.feed_content_message_image_save_start
                             )
                         )
-                    } else if (it[0].tags.contains(ImageDownloadWorker.TYPE_MEDIA_STORE)) {
+                    } else if (it.tags.contains(ImageDownloadWorker.TYPE_MEDIA_STORE)) {
                         _event.emit(
                             FeedContentEvent.ShowMessage(
                                 when(getContentType(content.mimeType)) {
@@ -102,7 +102,7 @@ class FeedContentViewModel @Inject constructor(
                         )
                     }
                     _isLoading.update { false }
-                } else if (it[0].state == WorkInfo.State.FAILED) {
+                } else if (it.state == WorkInfo.State.FAILED) {
                     _event.emit(
                         FeedContentEvent.ShowMessage(
                             R.string.feed_content_message_image_save_failure

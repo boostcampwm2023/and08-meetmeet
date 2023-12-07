@@ -14,7 +14,6 @@ import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.getLocalDateTime
 import com.teameetmeet.meetmeet.util.date.toDateString
 import com.teameetmeet.meetmeet.util.date.toLong
-import java.io.File
 import java.net.URL
 
 class ImageDownloadWorker(
@@ -51,15 +50,7 @@ class ImageDownloadWorker(
                     put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
                     put(
                         MediaStore.MediaColumns.RELATIVE_PATH,
-                        when(getContentTypeOf(mimeType)) {
-                            TYPE_VIDEO ->{
-                                "${Environment.DIRECTORY_MOVIES}/${context.getString(R.string.common_app_name)}"
-                            }
-                            else -> {
-                                "${Environment.DIRECTORY_PICTURES}/${context.getString(R.string.common_app_name)}"
-                            }
-                        }
-
+                        "${Environment.DIRECTORY_PICTURES}/${context.getString(R.string.common_app_name)}"
                     )
                 }
                 val resolver = context.contentResolver
