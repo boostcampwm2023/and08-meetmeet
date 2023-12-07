@@ -32,7 +32,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
         super.onViewCreated(view, savedInstanceState)
         setBinding()
         setClickListener()
-//        setBadge()
+        setBadge()
         setNavHost()
     }
 
@@ -57,20 +57,19 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
     }
 
     private fun setBadge() {
-        BadgeDrawable.create(requireContext()).apply {
-            number = 5
+        val badgeDrawable = BadgeDrawable.create(requireContext()).apply {
+            number = 0
             backgroundColor =
-                ContextCompat.getColor(requireContext(), R.color.calendar_background_purple)
+                ContextCompat.getColor(requireContext(), R.color.event_color_red)
             badgeTextColor = ContextCompat.getColor(requireContext(), R.color.black)
             badgeGravity = BadgeDrawable.TOP_END
-        }.also {
-            binding.calendarFlNotification.foreground = it
-            binding.calendarFlNotification.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-                BadgeUtils.attachBadgeDrawable(
-                    it, binding.calendarIbNotification, binding.calendarFlNotification
-                )
-            }
         }
+        binding.calendarFlNotification.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            BadgeUtils.attachBadgeDrawable(
+                badgeDrawable, binding.calendarIbNotification, null
+            )
+        }
+        binding.badgeDrawable = badgeDrawable
     }
 
     private fun setClickListener() {

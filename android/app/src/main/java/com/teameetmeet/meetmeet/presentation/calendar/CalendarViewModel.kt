@@ -43,7 +43,9 @@ class CalendarViewModel @Inject constructor(
     }
 
     fun fetchActiveNotificationCount() {
-        notificationHelper.emitActiveNotificationCount()
+        viewModelScope.launch {
+            notificationHelper.emitActiveNotificationCount()
+        }
     }
 
     fun fetchUserProfile() {
