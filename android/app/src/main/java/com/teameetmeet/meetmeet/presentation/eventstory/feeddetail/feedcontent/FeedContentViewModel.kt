@@ -30,8 +30,14 @@ class FeedContentViewModel @Inject constructor(
     private val _contents = MutableStateFlow<List<Content>>(emptyList())
     val contents: StateFlow<List<Content>> = _contents
 
+    private val _currentPage = MutableStateFlow<Int>(0)
+    val currentPage: StateFlow<Int> = _currentPage
+
     private val _isTouched = MutableStateFlow<Boolean>(false)
     val isTouched: StateFlow<Boolean> = _isTouched
+
+    private val _loadingStatus = MutableStateFlow<List<Boolean>>(emptyList())
+    private val loadingStatus: StateFlow<List<Boolean>> = _loadingStatus
 
     private val _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -46,6 +52,25 @@ class FeedContentViewModel @Inject constructor(
         _contents.update {
             content.toList()
         }
+        _loadingStatus.update{
+            content.map { false }
+        }
+    }
+
+    fun fetchIsLoading(position: Int) {
+        _isLoading.update {
+            loadingStatus.value[position]
+        }
+    }
+
+    fun fetchCurrentPage(page: Int) {
+        _currentPage.update {
+            page
+        }
+    }
+
+    fun resetIsLoading() {
+        _isLoading.update { false }
     }
 
     private fun changeTouchedStatus() {
@@ -57,9 +82,23 @@ class FeedContentViewModel @Inject constructor(
         _isTouched.update { false }
     }
 
+    private fun changeLoadingStatus(position: Int, status: Boolean) {
+        _loadingStatus.update {
+            it.mapIndexed { index, boolean ->
+                if (index == position) status
+                else boolean
+            }
+        }
+        if(position == currentPage.value) {
+            _isLoading.update {
+                status
+            }
+        }
+    }
+
     fun saveImage(imageIndex: Int, type: String) {
         viewModelScope.launch {
-            _isLoading.update { true }
+            changeLoadingStatus(imageIndex, true)
             val content = contents.value.getOrNull(imageIndex)
             if (content == null) {
                 _event.emit(
@@ -67,7 +106,7 @@ class FeedContentViewModel @Inject constructor(
                         R.string.feed_content_message_image_save_fail
                     )
                 )
-                _isLoading.update { false }
+                changeLoadingStatus(imageIndex, false)
                 return@launch
             }
             imageDownloadHelper.saveImage(content, type).catch {
@@ -76,7 +115,7 @@ class FeedContentViewModel @Inject constructor(
                         R.string.feed_content_message_image_save_failure
                     )
                 )
-                _isLoading.update { false }
+                changeLoadingStatus(imageIndex, false)
             }.filter {
                 it.state.isFinished
             }.first {
@@ -101,14 +140,14 @@ class FeedContentViewModel @Inject constructor(
                             )
                         )
                     }
-                    _isLoading.update { false }
+                    changeLoadingStatus(imageIndex, false)
                 } else if (it.state == WorkInfo.State.FAILED) {
                     _event.emit(
                         FeedContentEvent.ShowMessage(
                             R.string.feed_content_message_image_save_failure
                         )
                     )
-                    _isLoading.update { false }
+                    changeLoadingStatus(imageIndex, false)
                 }
                 true
             }

@@ -70,10 +70,14 @@ class FeedContentFragment :
         with(binding.feedContentVpContent) {
             adapter = FeedContentSlideAdapter(viewModel)
             post { setCurrentItem(args.index, false) }
+            viewModel.fetchCurrentPage(args.index)
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     viewModel.resetTouchStatus()
+                    viewModel.fetchIsLoading(position)
+                    viewModel.fetchCurrentPage(position)
                 }
             })
         }
@@ -84,7 +88,6 @@ class FeedContentFragment :
             askWriteExternalStoragePermission(imageIndex)
         } else {
             viewModel.saveImage(imageIndex, ImageDownloadWorker.TYPE_MEDIA_STORE)
-
         }
     }
 
