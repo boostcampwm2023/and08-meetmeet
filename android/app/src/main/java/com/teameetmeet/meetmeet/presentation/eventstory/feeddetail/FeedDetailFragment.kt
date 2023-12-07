@@ -83,6 +83,7 @@ class FeedDetailFragment :
                     viewModel.setContentPage(position)
                 }
             })
+
             feedDetailIbCommentSend.setOnClickListener {
                 viewModel.addComment()
                 val imm =
@@ -102,9 +103,7 @@ class FeedDetailFragment :
         }
         binding.topAppBar.setOnMenuItemClickListener {
             when (it.itemId) {
-                R.id.menu_delete_feed_detail -> {
-                    showFeedDeleteConfirmationDialog()
-                }
+                R.id.menu_delete_feed_detail -> showFeedDeleteConfirmationDialog()
             }
             true
         }
@@ -134,9 +133,12 @@ class FeedDetailFragment :
 
     override fun onClick(comment: Comment) {
         Snackbar
-            .make(binding.root,
-                getString(R.string.feed_comment_delete_event_confirm_message), Snackbar.LENGTH_SHORT)
-            .setAction(R.string.story_detail_delete_event_confirm_dialog_description_delete) { viewModel.deleteComment(comment) }
-            .show()
+            .make(
+                binding.root,
+                getString(R.string.feed_comment_delete_event_confirm_message),
+                Snackbar.LENGTH_SHORT
+            ).setAction(R.string.story_detail_delete_event_confirm_dialog_description_delete) {
+                viewModel.deleteComment(comment)
+            }.show()
     }
 }
