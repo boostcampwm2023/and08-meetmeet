@@ -11,6 +11,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.presentation.notification.NotificationActivity
 import com.teameetmeet.meetmeet.presentation.splash.SplashActivity
 import com.teameetmeet.meetmeet.util.toBitmap
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class NotificationHelper @Inject constructor(private val context: Context) {
@@ -134,6 +135,16 @@ class NotificationHelper @Inject constructor(private val context: Context) {
         val notificationManager: NotificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
+    }
+
+    private val notificationManager: NotificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    val activeNotificationCount: MutableStateFlow<Int> =
+        MutableStateFlow(notificationManager.activeNotifications.filter { it.tag == null }.size)
+
+    fun emitActiveNotificationCount() {
+        activeNotificationCount.tryEmit(notificationManager.activeNotifications.filter { it.tag == null }.size)
     }
 
     companion object {

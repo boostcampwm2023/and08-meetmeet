@@ -23,6 +23,11 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
 
     private val viewModel: CalendarViewModel by viewModels()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.setActiveNotificationCountFlow()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
@@ -42,6 +47,7 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
     override fun onResume() {
         super.onResume()
         viewModel.fetchUserProfile()
+        viewModel.fetchActiveNotificationCount()
     }
 
     private fun setBinding() {
