@@ -9,8 +9,19 @@ import com.teameetmeet.meetmeet.databinding.ItemFollowNotificationBinding
 class FollowNotificationViewHolder(private val binding: ItemFollowNotificationBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: FollowNotification) {
+    fun bind(
+        item: FollowNotification,
+        followNotificationItemClickListener: FollowNotificationItemClickListener
+    ) {
         binding.item = item
+        binding.tvRemove.setOnClickListener {
+            followNotificationItemClickListener.onDelete(item)
+        }
+    }
+
+    fun resetSwipeState() {
+        itemView.animate().cancel()
+        binding.swipeView.translationX = 0f
     }
 
     companion object {
