@@ -15,6 +15,7 @@ import com.teameetmeet.meetmeet.service.alarm.AlarmHelper
 import com.teameetmeet.meetmeet.service.alarm.model.EventAlarm
 import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.toDateString
+import com.teameetmeet.meetmeet.util.date.toLocalDate
 import com.teameetmeet.meetmeet.util.date.toLocalDateTime
 import com.teameetmeet.meetmeet.util.date.toLong
 import com.teameetmeet.meetmeet.util.date.toTimeStampLong
@@ -89,7 +90,6 @@ class EventStoryDetailViewModel @Inject constructor(
                             DateTimeFormat.ISO_DATE_TIME,
                             ZoneId.of("UTC")
                         ).toLocalDateTime()
-                        val repeatEnd = repeatEndDate ?: "2099-01-01T00:00:00.000Z"
                         val endLocalDateTime =
                             endDate.toTimeStampLong(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
                                 .toLocalDateTime()
@@ -123,9 +123,11 @@ class EventStoryDetailViewModel @Inject constructor(
                             color = EventColor.entries.first { it.value == color },
                             alarm = EventNotification.entries.first { it.minutes == alarmMinutes },
                             memo = memo.orEmpty(),
-                            eventRepeatEndDate = repeatEnd
-                                .toTimeStampLong(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
-                                .toDateString(DateTimeFormat.LOCAL_DATE),
+                            eventRepeatEndDate = repeatEndDate?.toTimeStampLong(
+                                DateTimeFormat.ISO_DATE_TIME,
+                                ZoneId.of("UTC")
+                            )
+                                ?.toDateString(DateTimeFormat.LOCAL_DATE),
                             isRepeatEvent = repeatTerm != null
                         )
                     }
@@ -168,6 +170,12 @@ class EventStoryDetailViewModel @Inject constructor(
 
     fun editEvent(isAll: Boolean = false) {
         viewModelScope.launch {
+            if (checkRepeatPolicyValid().not()) {
+                _event.emit(
+                    EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_no_repeat_policy_warning)
+                )
+                return@launch
+            }
             val startDateTime =
                 _uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
                     .toLocalDateTime()
@@ -184,6 +192,8 @@ class EventStoryDetailViewModel @Inject constructor(
 
             val repeatEndDate =
                 _uiState.value.eventRepeatEndDate?.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                    ?.toLocalDateTime()?.plusDays(1)?.minusMinutes(1)
+                    ?.toLong(ZoneId.systemDefault())
                     ?.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
 
             if (checkEvent()) {
@@ -216,6 +226,12 @@ class EventStoryDetailViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun checkRepeatPolicyValid(): Boolean {
+        with(uiState.value) {
+            return !(eventRepeat != EventRepeatTerm.NONE && (eventRepeatFrequency == null || eventRepeatEndDate == null))
         }
     }
 
@@ -300,6 +316,11 @@ class EventStoryDetailViewModel @Inject constructor(
         _uiState.update {
             it.copy(eventRepeat = EventRepeatTerm.values()[index])
         }
+        if (uiState.value.eventRepeat == EventRepeatTerm.NONE) {
+            _uiState.update {
+                it.copy(eventRepeatEndDate = null, eventRepeatFrequency = null)
+            }
+        }
     }
 
 
@@ -315,47 +336,19 @@ class EventStoryDetailViewModel @Inject constructor(
                 DateTimeFormat.LOCAL_DATE
             )
         ) {
-            _event.tryEmit(EventStoryDetailEvent.ShowMessage((R.string.story_detail_message_time_pick_end_time_fail_after_repeat_end)))
-            return
+            _uiState.update {
+                it.copy(
+                    eventRepeatEndDate = endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)
+                        .toLocalDate().plusYears(1).atStartOfDay().toLong()
+                        .toDateString(DateTimeFormat.LOCAL_DATE)
+                )
+            }
         }
         _uiState.update {
             it.copy(
                 startDate = startDate,
                 startTime = EventTime(0, 0),
                 endDate = endDate,
-                endTime = EventTime(0, 0)
-            )
-        }
-    }
-
-    fun setEventStartDate(time: Long) {
-        if (time > uiState.value.endDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
-            _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_start_time_fail))
-            return
-        }
-        _uiState.update {
-            it.copy(
-                startDate = time.toDateString(DateTimeFormat.LOCAL_DATE),
-                startTime = EventTime(0, 0)
-            )
-        }
-    }
-
-    fun setEventEndDate(time: Long) {
-        if (time < uiState.value.startDate.toTimeStampLong(DateTimeFormat.LOCAL_DATE)) {
-            _event.tryEmit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_message_time_pick_end_time_fail))
-            return
-        }
-        if (uiState.value.eventRepeatEndDate != null && time > uiState.value.eventRepeatEndDate!!.toTimeStampLong(
-                DateTimeFormat.LOCAL_DATE
-            )
-        ) {
-            _event.tryEmit(EventStoryDetailEvent.ShowMessage((R.string.story_detail_message_time_pick_end_time_fail_after_repeat_end)))
-            return
-        }
-        _uiState.update {
-            it.copy(
-                endDate = time.toDateString(DateTimeFormat.LOCAL_DATE),
                 endTime = EventTime(0, 0)
             )
         }
