@@ -14,6 +14,7 @@ import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.getLocalDateTime
 import com.teameetmeet.meetmeet.util.date.toDateString
 import com.teameetmeet.meetmeet.util.date.toLong
+import java.io.File
 import java.net.URL
 
 class ImageDownloadWorker(
@@ -90,7 +91,10 @@ class ImageDownloadWorker(
                 val uri = Uri.parse(imageUrl)
                 val request = DownloadManager.Request(uri)
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "${context.getString(R.string.common_app_name)}/${imageName}.${extension}")
+                    .setTitle(imageName)
+                    .setDescription(imageName)
+                    .setMimeType(mimeType)
+                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, "${context.getString(R.string.common_app_name)}/${imageName}.${extension}")
                 val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 downloadManager.enqueue(request)
                 return TYPE_DOWNLOAD_MANAGER
@@ -102,7 +106,7 @@ class ImageDownloadWorker(
     }
 
     private fun getContentTypeOf(mimeType: String): String {
-        return mimeType.dropLast(mimeType.lastIndexOf('/'))
+       return mimeType.dropLast(mimeType.length - mimeType.lastIndexOf('/'))
     }
 
 
