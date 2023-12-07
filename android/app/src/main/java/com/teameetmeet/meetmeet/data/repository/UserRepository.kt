@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.data.repository
 
+import android.net.Uri
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.model.UserStatus
@@ -10,6 +11,8 @@ import com.teameetmeet.meetmeet.data.network.entity.NicknameChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.PasswordChangeRequest
 import com.teameetmeet.meetmeet.data.network.entity.TokenRequest
 import com.teameetmeet.meetmeet.data.toException
+import com.teameetmeet.meetmeet.util.getMimeType
+import com.teameetmeet.meetmeet.util.toAbsolutePath
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -43,6 +46,15 @@ class UserRepository @Inject constructor(
             .catch {
                 throw it
                 //TODO("예외 처리 필요")
+            }
+    }
+
+    fun logout(): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.logout()
+            }.catch {
+                it.toException()
             }
     }
 
@@ -125,10 +137,11 @@ class UserRepository @Inject constructor(
             }
     }
 
-    fun patchProfileImage(image: File?): Flow<Unit> {
+    fun patchProfileImage(uri: Uri?): Flow<Boolean?> {
         return flowOf(true)
             .map {
-                val profileImageRequest = if (image == null) {
+                val imageFile = uri?.toAbsolutePath()?.let { File(it) }
+                val profileImageRequest = if (imageFile == null) {
                     MultipartBody.Part.createFormData(
                         "profile",
                         "",
@@ -137,11 +150,12 @@ class UserRepository @Inject constructor(
                 } else {
                     MultipartBody.Part.createFormData(
                         "profile",
-                        image.name,
-                        image.asRequestBody()
+                        imageFile.name,
+                        imageFile.asRequestBody(uri.getMimeType()?.toMediaType())
                     )
                 }
                 userApi.updateProfileImage(profileImageRequest)
+                imageFile?.delete()
             }.catch {
                 throw it
             }
@@ -168,6 +182,15 @@ class UserRepository @Inject constructor(
         return flowOf(true)
             .map {
                 userApi.getEventInvitationNotification().map { it.body }
+            }.catch {
+                throw it.toException()
+            }
+    }
+
+    fun deleteUserNotification(ids: String): Flow<Unit> {
+        return flowOf(true)
+            .map {
+                userApi.deleteUserNotification(ids)
             }.catch {
                 throw it.toException()
             }

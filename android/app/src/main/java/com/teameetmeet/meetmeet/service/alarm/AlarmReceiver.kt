@@ -57,6 +57,7 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
 
                 NotificationManagerCompat.from(context).cancel(eventId)
+                notificationHelper.emitActiveNotificationCount()
             }
         }
     }

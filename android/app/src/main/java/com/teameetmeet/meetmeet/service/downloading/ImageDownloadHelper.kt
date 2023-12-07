@@ -15,9 +15,10 @@ class ImageDownloadHelper @Inject constructor(
 ) {
     private val workManager =  WorkManager.getInstance(context)
 
-    fun saveImage(content: Content, type: String): Flow<List<WorkInfo>> {
+    fun saveImage(content: Content, type: String): Flow<WorkInfo> {
         val data = Data.Builder()
             .putString(ImageDownloadWorker.KEY_IMAGE_URL, content.path)
+            .putString(ImageDownloadWorker.KEY_MIME_TYPE, content.mimeType)
             .build()
 
         val constraints = Constraints.Builder().setRequiresStorageNotLow(true).build()
@@ -28,6 +29,6 @@ class ImageDownloadHelper @Inject constructor(
             .setInputData(data)
             .build()
         workManager.enqueue(workRequest)
-        return workManager.getWorkInfosByTagFlow(ImageDownloadWorker.TAG_WORK_INFO)
+        return workManager.getWorkInfoByIdFlow(workRequest.id)
     }
 }

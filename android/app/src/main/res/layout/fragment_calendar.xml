@@ -8,6 +8,9 @@
         <variable
             name="vm"
             type="com.teameetmeet.meetmeet.presentation.calendar.CalendarViewModel" />
+        <variable
+            name="badgeDrawable"
+            type="com.google.android.material.badge.BadgeDrawable" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -77,6 +80,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="8dp"
+            badge_count="@{vm.activeNotificationCount}"
+            badge_drawable="@{badgeDrawable}"
             app:layout_constraintBottom_toBottomOf="@id/calendar_cl_profile"
             app:layout_constraintEnd_toStartOf="@id/calendar_ib_search"
             app:layout_constraintTop_toTopOf="@id/calendar_cl_profile">

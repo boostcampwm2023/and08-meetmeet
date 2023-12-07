@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.notification
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivityNotificationBinding
@@ -13,6 +14,12 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class NotificationActivity :
     BaseActivity<ActivityNotificationBinding>(R.layout.activity_notification) {
+
+    private lateinit var notificationAdapter: NotificationAdapter
+
+    private val eventNotificationViewModel: EventNotificationViewModel by viewModels()
+    private val followNotificationViewModel: FollowNotificationViewModel by viewModels()
+    private val groupNotificationViewModel: GroupNotificationViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +42,25 @@ class NotificationActivity :
         binding.notificationMtb.setNavigationOnClickListener {
             navigateToPrev()
         }
+        binding.notificationMtb.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_delete_notification_all -> {
+                    when (binding.notificationVp.currentItem) {
+                        TAB_INDEX_FOLLOW -> {
+                            followNotificationViewModel.onDeleteAll()
+                        }
+
+                        TAB_INDEX_EVENT_INVITATION -> {
+                            eventNotificationViewModel.onDeleteAll()
+                        }
+
+                        TAB_INDEX_GROUP_INVITATION -> {
+                        }
+                    }
+                }
+            }
+            true
+        }
     }
 
     private fun navigateToPrev() {
@@ -51,12 +77,16 @@ class NotificationActivity :
     }
 
     private fun setTabLayout() {
-        binding.notificationVp.adapter = NotificationAdapter(this)
+        notificationAdapter = NotificationAdapter(this)
+        binding.notificationVp.adapter = notificationAdapter
         TabLayoutMediator(binding.notificationTl, binding.notificationVp) { tab, position ->
             when (position) {
                 TAB_INDEX_FOLLOW -> tab.text = getString(R.string.notification_tab_follow)
-                TAB_INDEX_EVENT_INVITATION -> tab.text = getString(R.string.notification_tab_invite_event)
-                TAB_INDEX_GROUP_INVITATION -> tab.text = getString(R.string.notification_tab_invite_group)
+                TAB_INDEX_EVENT_INVITATION -> tab.text =
+                    getString(R.string.notification_tab_invite_event)
+
+                TAB_INDEX_GROUP_INVITATION -> tab.text =
+                    getString(R.string.notification_tab_invite_group)
             }
         }.attach()
         binding.notificationVp.currentItem = intent.getIntExtra(TAB_INDEX, TAB_INDEX_FOLLOW)

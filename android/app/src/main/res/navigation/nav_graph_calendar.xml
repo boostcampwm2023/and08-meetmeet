@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_month_calendar_fragment_to_add_event_activity"
             app:destination="@id/add_event_activity" />
+        <action
+            android:id="@+id/action_month_calendar_fragment_to_profileImageFragment"
+            app:destination="@id/profile_image_fragment" />
     </fragment>
     <dialog
         android:id="@+id/events_per_day_bottom_sheet_fragment"
@@ -42,4 +45,13 @@
             android:name="eventId"
             app:argType="integer" />
     </activity>
+    <fragment
+        android:id="@+id/profile_image_fragment"
+        android:name="com.teameetmeet.meetmeet.presentation.profile.ProfileImageFragment"
+        android:label="profile_image_fragment" >
+        <argument
+            android:name="imageUrl"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>

@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.notification.event
+package com.teameetmeet.meetmeet.presentation.notification
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +7,8 @@ import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotification
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.presentation.notification.event.EventNotificationItemClickListener
+import com.teameetmeet.meetmeet.presentation.notification.event.EventNotificationUiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,6 +70,24 @@ class EventNotificationViewModel @Inject constructor(
                 UserStatus.JOIN_STATUS_EXPIRED -> {
                     _event.emit(EventNotificationUiEvent.ShowMessage(R.string.notification_message_invite_expired))
                 }
+            }
+        }
+    }
+
+    fun onDeleteAll() {
+        viewModelScope.launch {
+            userRepository.deleteUserNotification(
+                _eventNotificationList.value.map { it.inviteId }.joinToString(",")
+            ).collectLatest {
+                fetchEventNotificationList()
+            }
+        }
+    }
+
+    override fun onDelete(event: EventInvitationNotification) {
+        viewModelScope.launch {
+            userRepository.deleteUserNotification(event.inviteId.toString()).collectLatest {
+                fetchEventNotificationList()
             }
         }
     }

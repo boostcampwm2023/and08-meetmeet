@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="?attr/actionBarSize"
-                app:menu="@menu/top_app_bar_add_event"
+                app:menu="@menu/menu_top_app_bar_add_event"
                 app:navigationIcon="@drawable/ic_nav_pre"
                 app:title="@string/add_event_title" />
 

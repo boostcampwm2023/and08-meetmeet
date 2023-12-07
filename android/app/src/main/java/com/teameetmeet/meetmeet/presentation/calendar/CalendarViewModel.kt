@@ -5,17 +5,20 @@ import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.CalendarViewMode
+import com.teameetmeet.meetmeet.service.notification.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val notificationHelper: NotificationHelper
 ) : ViewModel() {
 
     private val _userProfileImage = MutableStateFlow<String>("")
@@ -26,6 +29,24 @@ class CalendarViewModel @Inject constructor(
 
     private val _calendarViewMode = MutableStateFlow<CalendarViewMode>(CalendarViewMode.MONTH)
     val calendarViewMode: StateFlow<CalendarViewMode> = _calendarViewMode
+
+    private val _activeNotificationCount = MutableStateFlow<Int>(0)
+    val activeNotificationCount: StateFlow<Int> = _activeNotificationCount
+
+    fun setActiveNotificationCountFlow() {
+        viewModelScope.launch {
+            notificationHelper.activeNotificationCount
+                .collectLatest { count ->
+                    _activeNotificationCount.update { count }
+                }
+        }
+    }
+
+    fun fetchActiveNotificationCount() {
+        viewModelScope.launch {
+            notificationHelper.emitActiveNotificationCount()
+        }
+    }
 
     fun fetchUserProfile() {
         viewModelScope.launch {

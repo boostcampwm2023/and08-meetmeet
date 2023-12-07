@@ -7,6 +7,12 @@ import { Equal, Repository } from 'typeorm';
 import { StatusEnum } from './entities/status.enum';
 import { Status } from './entities/status.entity';
 import { Event } from '../event/entities/event.entity';
+import { logger } from '../common/log/winston.logger';
+import {
+  InvalidInviteException,
+  NotExistInviteException,
+  NotExistStatusException,
+} from './exception/invite.exception';
 @Injectable()
 export class InviteService {
   constructor(
@@ -39,7 +45,7 @@ export class InviteService {
     user: User,
     event: Event,
     invitedUser: User,
-    fcmToken: string,
+    // fcmToken: string,
   ) {
     const eventOwner = event.eventMembers.find(
       (eventMember) => eventMember.user.id === user.id,
@@ -50,26 +56,28 @@ export class InviteService {
       user,
       invitedUser,
     );
-    const message: admin.messaging.Message = {
-      data: {
-        type: 'EVENT_INVITATION',
-        body: JSON.stringify({
-          inviteId: invite.id,
-          eventId: event.id,
-          title: event.title,
-          startDate: event.startDate,
-          endDate: event.endDate,
-          eventOwner: {
-            id: eventOwner?.id,
-            nickname: eventOwner?.nickname,
-            profile: eventOwner?.profile?.path ?? null,
-          },
-        }),
-      },
-      token: fcmToken,
-    };
-    if (!(await this.sendFireBaseMessage(message))) {
-      await this.updateInvite(invite.id, StatusEnum.Error);
+    if (!invitedUser.fcmToken) {
+      return;
+    } else {
+      const message: admin.messaging.Message = {
+        data: {
+          type: 'EVENT_INVITATION',
+          body: JSON.stringify({
+            inviteId: invite.id,
+            eventId: event.id,
+            title: event.title,
+            startDate: event.startDate,
+            endDate: event.endDate,
+            eventOwner: {
+              id: eventOwner?.id,
+              nickname: eventOwner?.nickname,
+              profile: eventOwner?.profile?.path ?? null,
+            },
+          }),
+        },
+        token: invitedUser.fcmToken,
+      };
+      await this.sendFireBaseMessage(message);
     }
   }
 
@@ -79,11 +87,19 @@ export class InviteService {
         .messaging()
         .send(message)
         .then((response) => {
-          console.log('Successfully sent message:', response);
+          logger.info(
+            'Successfully sent message:',
+            response,
+            `${JSON.stringify(message)}`,
+          );
         });
       return true;
     } catch (error) {
-      console.log('Error sending message:', error);
+      logger.error(
+        `sendInviteEventMessage error: ${JSON.stringify(
+          error,
+        )} / ${JSON.stringify(message)}`,
+      );
       return false;
     }
   }
@@ -120,6 +136,26 @@ export class InviteService {
     }
 
     return await this.inviteRepository.save(invite);
+  }
+
+  async updateInviteWhenJoinEvent(user: User, event: Event) {
+    const pendingStatus = await this.statusRepository.findOne({
+      where: { displayName: StatusEnum.Pending },
+    });
+    const acceptedStatus = await this.statusRepository.findOne({
+      where: { displayName: StatusEnum.Accepted },
+    });
+    if (!pendingStatus || !acceptedStatus) {
+      throw new NotExistStatusException();
+    }
+    await this.inviteRepository.update(
+      {
+        receiver: Equal(user.id),
+        event: Equal(event.id),
+        status: pendingStatus,
+      },
+      { status: { id: acceptedStatus.id } },
+    );
   }
 
   async updateInvite(inviteId: number, status: StatusEnum) {
@@ -160,6 +196,15 @@ export class InviteService {
     });
   }
 
+  async getInviteByEventAndUser(event: Event, user: User) {
+    return await this.inviteRepository.find({
+      where: { event: Equal(event.id), receiver: Equal(user.id) },
+      relations: ['sender', 'receiver'],
+      take: 1,
+      order: { id: 'DESC' },
+    });
+  }
+
   transformStatusEnumResponse(status: StatusEnum) {
     if (status === StatusEnum.Accepted) {
       return StatusEnum.Accepted;
@@ -168,5 +213,19 @@ export class InviteService {
     } else {
       return StatusEnum.Joinable;
     }
+  }
+
+  async deleteInvite(inviteId: number, user: User) {
+    const invite = await this.inviteRepository.findOne({
+      where: { id: inviteId },
+      relations: ['receiver'],
+    });
+    if (!invite) {
+      throw new NotExistInviteException();
+    }
+    if (invite.receiver.id !== user.id) {
+      throw new InvalidInviteException();
+    }
+    await this.inviteRepository.softDelete(inviteId);
   }
 }
