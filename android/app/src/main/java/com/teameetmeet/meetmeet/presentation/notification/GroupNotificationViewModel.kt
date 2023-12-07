@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.notification.group
+package com.teameetmeet.meetmeet.presentation.notification
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

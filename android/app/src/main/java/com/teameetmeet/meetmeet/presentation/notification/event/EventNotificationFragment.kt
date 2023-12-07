@@ -2,15 +2,18 @@ package com.teameetmeet.meetmeet.presentation.notification.event
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotification
 import com.teameetmeet.meetmeet.databinding.FragmentEventNotificationBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.notification.EventNotificationViewModel
+import com.teameetmeet.meetmeet.presentation.notification.SwipeHelperCallback
 import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.toDateString
 import com.teameetmeet.meetmeet.util.date.toTimeStampLong
@@ -23,7 +26,7 @@ import java.time.ZoneId
 class EventNotificationFragment :
     BaseFragment<FragmentEventNotificationBinding>(R.layout.fragment_event_notification) {
 
-    private val viewModel: EventNotificationViewModel by viewModels()
+    private val viewModel: EventNotificationViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,6 +60,11 @@ class EventNotificationFragment :
 
     private fun setBinding() {
         binding.vm = viewModel
+        binding.notificationRcv.adapter = EventNotificationAdapter(viewModel)
+        val swipeHelperCallback = SwipeHelperCallback().apply {
+            setClamp(resources.displayMetrics.widthPixels.toFloat() / 5)
+        }
+        ItemTouchHelper(swipeHelperCallback).attachToRecyclerView(binding.notificationRcv)
         binding.notificationRcv.adapter = EventNotificationAdapter(viewModel)
     }
 

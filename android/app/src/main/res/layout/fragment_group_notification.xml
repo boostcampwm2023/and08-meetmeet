@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.teameetmeet.meetmeet.presentation.notification.group.GroupNotificationViewModel" />
+            type="com.teameetmeet.meetmeet.presentation.notification.GroupNotificationViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

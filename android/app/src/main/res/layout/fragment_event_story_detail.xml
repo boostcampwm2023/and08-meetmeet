@@ -31,7 +31,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:menu="@menu/top_app_bar_add_event"
+                app:menu="@menu/menu_top_app_bar_add_event"
                 app:menu_enable="@{vm.uiState.authority}"
                 app:navigationIcon="@drawable/ic_nav_pre"
                 app:title="@string/story_detail_title_tool_bar"

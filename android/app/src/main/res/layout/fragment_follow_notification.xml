@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.teameetmeet.meetmeet.presentation.notification.follow.FollowNotificationViewModel" />
+            type="com.teameetmeet.meetmeet.presentation.notification.FollowNotificationViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

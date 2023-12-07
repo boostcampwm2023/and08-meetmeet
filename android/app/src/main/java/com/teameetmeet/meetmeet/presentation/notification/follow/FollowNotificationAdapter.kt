@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.teameetmeet.meetmeet.data.network.entity.FollowNotification
 
-class FollowNotificationAdapter :
+class FollowNotificationAdapter(private val followNotificationItemClickListener: FollowNotificationItemClickListener) :
     ListAdapter<FollowNotification, FollowNotificationViewHolder>(diffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -15,7 +15,12 @@ class FollowNotificationAdapter :
     }
 
     override fun onBindViewHolder(holder: FollowNotificationViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), followNotificationItemClickListener)
+    }
+
+    override fun onViewRecycled(holder: FollowNotificationViewHolder) {
+        super.onViewRecycled(holder)
+        holder.resetSwipeState()
     }
 
     companion object {

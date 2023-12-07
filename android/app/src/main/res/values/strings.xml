@@ -202,6 +202,8 @@
     <string name="notification_negative_request_permission">아니오</string>
     <string name="notification_message_permission_denied">앱이 알림을 보내지 않습니다</string>
     <string name="notification_title_default">밋밋 알림</string>
+    <string name="notification_delete_menu">삭제</string>
+    <string name="notification_delete_all_menu">전체 삭제</string>
 
     <string name="notification_tab_follow">팔로우</string>
     <string name="notification_tab_invite_event">일정 초대</string>

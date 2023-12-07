@@ -22,6 +22,11 @@ class EventNotificationAdapter(private val eventNotificationItemClickListener: E
         holder.bind(getItem(position), eventNotificationItemClickListener)
     }
 
+    override fun onViewRecycled(holder: EventNotificationViewHolder) {
+        super.onViewRecycled(holder)
+        holder.resetSwipeState()
+    }
+
     companion object {
         private val diffCallback = object : DiffUtil.ItemCallback<EventInvitationNotification>() {
             override fun areItemsTheSame(

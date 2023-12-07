@@ -83,6 +83,7 @@ class MeetMeetFirebaseMessagingService : FirebaseMessagingService() {
                 )
             }
         }
+        notificationHelper.emitActiveNotificationCount()
     }
 
     companion object {
