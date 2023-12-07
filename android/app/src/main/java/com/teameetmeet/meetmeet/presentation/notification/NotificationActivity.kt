@@ -35,6 +35,13 @@ class NotificationActivity :
         binding.notificationMtb.setNavigationOnClickListener {
             navigateToPrev()
         }
+        binding.notificationMtb.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_delete_notification_all -> {
+                }
+            }
+            true
+        }
     }
 
     private fun navigateToPrev() {
