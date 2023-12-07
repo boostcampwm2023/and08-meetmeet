@@ -2,15 +2,22 @@ package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail
 
 import android.app.AlertDialog
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.OptIn
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.common.MediaItem
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
@@ -22,12 +29,20 @@ import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class FeedDetailFragment :
     BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail),
     ContentEventListener,
     CommentDeleteClickListener {
+
+    @Inject
+    lateinit var mediaSourceFactory: DefaultMediaSourceFactory
+
+    @Inject
+    lateinit var progressiveMediaSourceFactory: ProgressiveMediaSource.Factory
+
     private val viewModel: FeedDetailViewModel by viewModels()
     private val navArgs: FeedDetailFragmentArgs by navArgs()
 
@@ -166,8 +181,22 @@ class FeedDetailFragment :
         )
     }
 
-    override fun onVideoPrepared(player: ExoPlayer, position: Int) {
-        videoPlayers[position] = player
+    override fun getPlayer(position: Int): ExoPlayer {
+        return ExoPlayer
+            .Builder(requireContext())
+            .setMediaSourceFactory(mediaSourceFactory)
+            .build().also {
+                videoPlayers[position] = it
+            }
+    }
+
+    @OptIn(UnstableApi::class)
+    override fun getMediaSource(path: String): MediaSource {
+        val mediaItem = MediaItem.Builder()
+            .setCustomCacheKey(path)
+            .setUri(Uri.parse(path))
+            .build()
+        return progressiveMediaSourceFactory.createMediaSource(mediaItem)
     }
 
     override fun onClick(comment: Comment) {
