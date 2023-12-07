@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.presentation.model.MediaItem
+import com.teameetmeet.meetmeet.util.getSize
 import com.teameetmeet.meetmeet.util.toAbsolutePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -75,7 +77,13 @@ class SettingProfileViewModel @Inject constructor(
     }
 
     fun updateUserProfileImage(uri: Uri) {
-        _uiState.update { it.copy(profileImage = uri) }
+        viewModelScope.launch {
+            if (uri.getSize() <= MediaItem.MEDIA_VOLUME_CONSTRAINT) {
+                _uiState.update { it.copy(profileImage = uri) }
+            } else {
+                _event.emit(SettingProfileUiEvent.ShowMessage(R.string.create_feed_media_constraint_volume))
+            }
+        }
     }
 
     fun updateEmptyUserProfileImage() {
