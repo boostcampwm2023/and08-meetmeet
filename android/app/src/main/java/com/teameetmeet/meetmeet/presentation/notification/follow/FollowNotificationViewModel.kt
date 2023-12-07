@@ -28,6 +28,16 @@ class FollowNotificationViewModel @Inject constructor(
         }
     }
 
+    fun onDeleteAll() {
+        viewModelScope.launch {
+            userRepository.deleteUserNotification(
+                _followNotificationList.value.map { it.inviteId }.joinToString(",")
+            ).collectLatest {
+                fetchFollowNotificationList()
+            }
+        }
+    }
+
     override fun onDelete(event: FollowNotification) {
         viewModelScope.launch {
             userRepository.deleteUserNotification(event.inviteId.toString()).collectLatest {

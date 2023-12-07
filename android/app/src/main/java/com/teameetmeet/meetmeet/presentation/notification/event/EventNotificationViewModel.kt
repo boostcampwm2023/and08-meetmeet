@@ -72,6 +72,16 @@ class EventNotificationViewModel @Inject constructor(
         }
     }
 
+    fun onDeleteAll() {
+        viewModelScope.launch {
+            userRepository.deleteUserNotification(
+                _eventNotificationList.value.map { it.inviteId }.joinToString(",")
+            ).collectLatest {
+                fetchEventNotificationList()
+            }
+        }
+    }
+
     override fun onDelete(event: EventInvitationNotification) {
         viewModelScope.launch {
             userRepository.deleteUserNotification(event.inviteId.toString()).collectLatest {
