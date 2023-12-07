@@ -8,7 +8,6 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.MediaItem
 import com.teameetmeet.meetmeet.util.getSize
-import com.teameetmeet.meetmeet.util.toAbsolutePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -118,17 +116,11 @@ class SettingProfileViewModel @Inject constructor(
     fun patchUserProfile() {
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            if (_uiState.value.currentUserProfile.profileImage != _uiState.value.profileImage?.path) {
-                val imageFile = if (_uiState.value.profileImage == null) {
-                    null
-                } else {
-                    _uiState.value.profileImage?.toAbsolutePath()?.let { File(it) }
-                }
-                userRepository.patchProfileImage(imageFile)
+            if (_uiState.value.currentUserProfile.profileImage?.toUri()?.path != _uiState.value.profileImage?.path) {
+                userRepository.patchProfileImage(_uiState.value.profileImage)
                     .catch {
                         _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_fail))
                     }.first()
-                imageFile?.delete()
             }
             if (_uiState.value.currentUserProfile.nickname != _uiState.value.nickname) {
                 userRepository.patchNickname(_uiState.value.nickname)
