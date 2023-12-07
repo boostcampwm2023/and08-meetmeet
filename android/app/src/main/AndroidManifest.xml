@@ -25,6 +25,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan"/>
         <activity
+            android:usesCleartextTraffic="true"
             android:name=".presentation.eventstory.EventStoryActivity"
             android:exported="false" />
         <activity
