@@ -23,11 +23,13 @@ class ImageDownloadWorker(
 
     override suspend fun doWork(): Result {
         val imageUrl = inputData.getString(KEY_IMAGE_URL) ?: return Result.failure()
+        val mimeType = inputData.getString(KEY_MIME_TYPE) ?: return Result.failure()
         val result = getFileUri(
             imageUrl,
             "${context.getString(R.string.common_app_name)}-${
                 getLocalDateTime().toLong().toDateString(DateTimeFormat.ISO_DATE_TIME)
             }"
+            ,mimeType
         )
         return if (result != null) {
             Result.success()
@@ -38,18 +40,18 @@ class ImageDownloadWorker(
 
     private fun getFileUri(
         imageUrl: String,
-        imageName: String
+        imageName: String,
+        mimeType: String
     ): String? {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val mimeType = getMimeTypeOf(imageUrl)
                 val contentValues = ContentValues().apply {
                     put(MediaStore.MediaColumns.DISPLAY_NAME, imageName)
                     put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
                     put(
                         MediaStore.MediaColumns.RELATIVE_PATH,
-                        when(mimeType) {
-                            VIDEO_MIME_TYPE ->{
+                        when(getContentTypeOf(mimeType)) {
+                            TYPE_VIDEO ->{
                                 "${Environment.DIRECTORY_MOVIES}/${context.getString(R.string.common_app_name)}"
                             }
                             else -> {
@@ -61,8 +63,8 @@ class ImageDownloadWorker(
                 }
                 val resolver = context.contentResolver
                 val uri = resolver.insert(
-                    when(mimeType) {
-                        VIDEO_MIME_TYPE ->{
+                    when(getContentTypeOf(mimeType)) {
+                        TYPE_VIDEO ->{
                             MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
                         }
                         else -> {
@@ -84,11 +86,11 @@ class ImageDownloadWorker(
                     null
                 }
             } else {
-                val extension = getExtensionOf(imageUrl)
+                val extension = getExtensionOf(mimeType)
                 val uri = Uri.parse(imageUrl)
                 val request = DownloadManager.Request(uri)
                     .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_MOVIES, "${context.getString(R.string.common_app_name)}/${imageName}.${extension}")
+                    .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, "${context.getString(R.string.common_app_name)}/${imageName}.${extension}")
                 val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 downloadManager.enqueue(request)
                 return TYPE_DOWNLOAD_MANAGER
@@ -99,49 +101,25 @@ class ImageDownloadWorker(
         }
     }
 
-    private fun getMimeTypeOf(imageUrl: String): String {
-        return when(getExtensionOf(imageUrl)) {
-            EXTENSION_VIDEO -> {
-                VIDEO_MIME_TYPE
-            }
-            EXTENSION_GIF -> {
-                IMAGE_MIME_TYPE_GIF
-            }
-            EXTENSION_JPEG -> {
-                IMAGE_MIME_TYPE_JPEG
-            }
-            else -> {
-                IMAGE_MIME_TYPE_PNG
-            }
-        }
+    private fun getContentTypeOf(mimeType: String): String {
+        return mimeType.dropLast(mimeType.lastIndexOf('/'))
     }
 
 
-
-    private fun getExtensionOf(imageUrl: String) : String {
-        return when(imageUrl.drop(imageUrl.lastIndexOf('.')+1)) {
-            "mp4","MP4","MOV","mov", "MPEG", "mpeg" -> {
-                EXTENSION_VIDEO
-            }
-            "gif" -> {
-                EXTENSION_GIF
-            }
-            "jpg", "jpeg", "JPG", "JPEG" -> {
-                EXTENSION_JPEG
-            }
-            else -> {
-                EXTENSION_PNG
-            }
-        }
+    private fun getExtensionOf(mimeType: String) : String {
+        return mimeType.drop(mimeType.lastIndexOf('/')+1)
     }
 
 
     companion object {
         const val KEY_IMAGE_URL = "keyImageUrl"
+        const val KEY_MIME_TYPE = "mimeType"
         const val IMAGE_MIME_TYPE_PNG = "image/png"
         const val IMAGE_MIME_TYPE_GIF = "image/gif"
         const val IMAGE_MIME_TYPE_JPEG = "image/jpeg"
         const val VIDEO_MIME_TYPE = "video/mp4"
+        const val TYPE_VIDEO = "video"
+        const val TYPE_IMAGE = "image"
         const val EXTENSION_PNG = "png"
         const val EXTENSION_GIF = "gif"
         const val EXTENSION_JPEG = "jpeg"

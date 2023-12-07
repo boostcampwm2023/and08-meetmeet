@@ -251,4 +251,5 @@
     <string name="feed_detail_delete_comment_fail_message">댓글을 삭제할 수 없습니다.</string>
     <string name="feed_comment_delete_event_confirm_message">댓글을 삭제하시겠습니까?</string>
     <string name="feed_comment_add_fail_message">댓글을 작성할 수 없습니다.</string>
+    <string name="feed_content_message_video_save_success">동영상 저장 성공</string>
 </resources>

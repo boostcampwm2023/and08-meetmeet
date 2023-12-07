@@ -7,6 +7,8 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.Content
 import com.teameetmeet.meetmeet.service.downloading.ImageDownloadHelper
 import com.teameetmeet.meetmeet.service.downloading.ImageDownloadWorker
+import com.teameetmeet.meetmeet.service.downloading.ImageDownloadWorker.Companion.TYPE_IMAGE
+import com.teameetmeet.meetmeet.service.downloading.ImageDownloadWorker.Companion.TYPE_VIDEO
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -89,7 +91,7 @@ class FeedContentViewModel @Inject constructor(
                         _event.emit(
                             FeedContentEvent.ShowMessage(
                                 when(getContentType(content.mimeType)) {
-                                    "video" -> {
+                                    TYPE_VIDEO -> {
                                         R.string.feed_content_message_video_save_success
                                     }
                                     else -> {
@@ -114,7 +116,7 @@ class FeedContentViewModel @Inject constructor(
     }
 
     private fun getContentType(mimeType: String): String {
-        return if(mimeType.contains("video")) "video" else "image"
+        return if(mimeType.contains(TYPE_VIDEO)) TYPE_VIDEO else TYPE_IMAGE
     }
 
 
