@@ -1,9 +1,10 @@
-package com.teameetmeet.meetmeet.presentation.notification.follow
+package com.teameetmeet.meetmeet.presentation.notification
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.data.network.entity.FollowNotification
 import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.presentation.notification.follow.FollowNotificationItemClickListener
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.teameetmeet.meetmeet.databinding.ItemGroupNotificationBinding
+import com.teameetmeet.meetmeet.presentation.notification.GroupNotification
 
 
 class GroupNotificationAdapter: ListAdapter<GroupNotification, GroupNotificationViewHolder>(diffCallback) {

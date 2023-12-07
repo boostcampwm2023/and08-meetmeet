@@ -3,11 +3,12 @@ package com.teameetmeet.meetmeet.presentation.notification.follow
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentFollowNotificationBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.notification.FollowNotificationViewModel
 import com.teameetmeet.meetmeet.presentation.notification.SwipeHelperCallback
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -15,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class FollowNotificationFragment :
     BaseFragment<FragmentFollowNotificationBinding>(R.layout.fragment_follow_notification) {
 
-    private val viewModel: FollowNotificationViewModel by viewModels()
+    private val viewModel: FollowNotificationViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
