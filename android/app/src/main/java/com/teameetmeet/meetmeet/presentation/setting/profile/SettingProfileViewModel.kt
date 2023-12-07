@@ -110,7 +110,7 @@ class SettingProfileViewModel @Inject constructor(
     fun patchUserProfile() {
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            if (_uiState.value.currentUserProfile.profileImage != _uiState.value.profileImage.toString()) {
+            if (_uiState.value.currentUserProfile.profileImage != _uiState.value.profileImage?.path) {
                 val imageFile = if (_uiState.value.profileImage == null) {
                     null
                 } else {

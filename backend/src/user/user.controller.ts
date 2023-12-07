@@ -185,4 +185,18 @@ export class UserController {
     }
     return this.userService.getUserNotification(user, page);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('notification')
+  @ApiOperation({
+    summary: '사용자 알림 삭제 API',
+  })
+  @ApiQuery({
+    name: 'ids',
+    required: true,
+    example: '1,2,3',
+  })
+  deleteUserNotification(@GetUser() user: User, @Query('ids') ids: string) {
+    return this.userService.deleteUserNotification(user, ids);
+  }
 }

@@ -23,3 +23,9 @@ export class UserNotFoundException extends HttpException {
     super('존재하지 않는 사용자입니다.', HttpStatus.NOT_FOUND);
   }
 }
+
+export class QueryIntException extends HttpException {
+  constructor() {
+    super('int 형식이 아닌 아이디가 들어왔습니다.', HttpStatus.BAD_REQUEST);
+  }
+}
