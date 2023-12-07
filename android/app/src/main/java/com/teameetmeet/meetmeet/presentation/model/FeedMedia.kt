@@ -2,7 +2,7 @@ package com.teameetmeet.meetmeet.presentation.model
 
 import android.net.Uri
 
-data class MediaItem(
+data class FeedMedia(
     val isVideo: Boolean,
     val uri: Uri,
     val size: Long

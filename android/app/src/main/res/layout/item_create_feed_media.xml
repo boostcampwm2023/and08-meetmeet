@@ -9,7 +9,7 @@
 
         <variable
             name="mediaItem"
-            type="com.teameetmeet.meetmeet.presentation.model.MediaItem" />
+            type="com.teameetmeet.meetmeet.presentation.model.FeedMedia" />
 
     </data>
 

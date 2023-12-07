@@ -16,7 +16,7 @@ import androidx.navigation.fragment.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentCreateFeedBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
-import com.teameetmeet.meetmeet.presentation.model.MediaItem
+import com.teameetmeet.meetmeet.presentation.model.FeedMedia
 import com.teameetmeet.meetmeet.util.getMimeType
 import com.teameetmeet.meetmeet.util.getSize
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,7 +43,7 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
         val pickMedia =
             registerForActivityResult(PickMultipleVisualMedia(10)) { uris ->
                 uris?.map { uri ->
-                    MediaItem(
+                    FeedMedia(
                         uri.getMimeType()?.startsWith("video") ?: false,
                         uri,
                         uri.getSize()
