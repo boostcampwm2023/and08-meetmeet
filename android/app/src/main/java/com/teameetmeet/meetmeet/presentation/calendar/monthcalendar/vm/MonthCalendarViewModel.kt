@@ -121,6 +121,15 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
                 eventBars[4] = EventBar(
                     id = -1, isStart = true, isEnd = true, hiddenCount = eventBars.size - 4
                 )
+                if (i % 7 != 0 && today.dayOfMonth != 1) {
+                    daysInMonth[i - 1] = daysInMonth[i - 1].copy(
+                        eventBars = daysInMonth[i - 1].eventBars
+                            .mapIndexed { index, eventBar ->
+                                if (index == 4) eventBar?.copy(isEnd = true)
+                                else eventBar
+                            }
+                    )
+                }
             }
 
             daysInMonth[i] =
