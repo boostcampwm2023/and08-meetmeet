@@ -9,7 +9,6 @@ import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.datasource.cache.LeastRecentlyUsedCacheEvictor
 import androidx.media3.datasource.cache.SimpleCache
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.exoplayer.source.ProgressiveMediaSource
 import com.teameetmeet.meetmeet.presentation.model.FeedMedia
 import dagger.Module
 import dagger.Provides
@@ -58,11 +57,4 @@ class MediaSourceFactoryModule {
         @ApplicationContext context: Context
     ): DefaultMediaSourceFactory =
         DefaultMediaSourceFactory(context).setDataSourceFactory(cacheDataSourceFactory)
-
-    @OptIn(UnstableApi::class)
-    @Singleton
-    @Provides
-    fun provideProgressiveMediaSourceFactory(
-        cacheDataSourceFactory: CacheDataSource.Factory
-    ): ProgressiveMediaSource.Factory = ProgressiveMediaSource.Factory(cacheDataSourceFactory)
 }
