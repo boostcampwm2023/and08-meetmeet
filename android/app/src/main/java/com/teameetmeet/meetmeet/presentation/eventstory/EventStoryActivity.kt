@@ -1,12 +1,10 @@
 package com.teameetmeet.meetmeet.presentation.eventstory
 
 import android.os.Bundle
-import androidx.navigation.findNavController
 import androidx.navigation.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivityEventStoryBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
-import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.EventStoryFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,7 +25,7 @@ class EventStoryActivity : BaseActivity<ActivityEventStoryBinding>(R.layout.acti
         eventStoryFragment?.arguments = bundle
     }
 
-    companion object{
+    companion object {
         const val EVENT_ID = "eventId"
     }
 }
