@@ -36,7 +36,6 @@ class MonthCalendarFragment : BaseFragment<FragmentCalendarMonthBinding>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        println(parentFragment?.javaClass)
         setBinding()
         setClickListener()
         collectViewModelEvent()
