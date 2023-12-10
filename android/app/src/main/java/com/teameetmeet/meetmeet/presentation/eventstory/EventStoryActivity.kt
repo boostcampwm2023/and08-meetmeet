@@ -1,6 +1,8 @@
 package com.teameetmeet.meetmeet.presentation.eventstory
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivityEventStoryBinding
@@ -18,11 +20,10 @@ class EventStoryActivity : BaseActivity<ActivityEventStoryBinding>(R.layout.acti
     }
 
     private fun deliverEventIdToCurrentFragment() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.event_story_fcv)
-        val eventStoryFragment = navHostFragment?.childFragmentManager?.fragments?.get(0)
-        val bundle = Bundle()
-        bundle.putInt(EVENT_ID, args.eventId)
-        eventStoryFragment?.arguments = bundle
+        val bundle = bundleOf(EVENT_ID to args.eventId)
+        (binding.eventStoryFcv.getFragment<NavHostFragment>()).navController.setGraph(
+            R.navigation.nav_graph_event_story, bundle
+        )
     }
 
     companion object {
