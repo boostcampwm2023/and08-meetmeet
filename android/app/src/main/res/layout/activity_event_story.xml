@@ -22,7 +22,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/nav_graph_event_story"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

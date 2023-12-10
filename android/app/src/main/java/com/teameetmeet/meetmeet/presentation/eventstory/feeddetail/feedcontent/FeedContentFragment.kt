@@ -18,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentFeedContentBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.temp.FeedContentAdapter
 import com.teameetmeet.meetmeet.service.downloading.ImageDownloadWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -68,7 +69,7 @@ class FeedContentFragment :
     private fun setBinding() {
         binding.vm = viewModel
         with(binding.feedContentVpContent) {
-            adapter = FeedContentSlideAdapter(viewModel)
+            adapter = FeedContentAdapter(this@FeedContentFragment)
             post { setCurrentItem(args.index, false) }
             viewModel.fetchCurrentPage(args.index)
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -81,6 +82,10 @@ class FeedContentFragment :
                 }
             })
         }
+    }
+
+    fun changeTouchedStatus() {
+        viewModel.changeTouchedStatus()
     }
 
     private fun saveImage(imageIndex: Int) {

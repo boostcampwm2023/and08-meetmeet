@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedContentViewModel @Inject constructor(
     private val imageDownloadHelper: ImageDownloadHelper
-) : ViewModel(), ImageClickListener {
+) : ViewModel() {
 
     private val _contents = MutableStateFlow<List<Content>>(emptyList())
     val contents: StateFlow<List<Content>> = _contents
@@ -73,7 +73,7 @@ class FeedContentViewModel @Inject constructor(
         _isLoading.update { false }
     }
 
-    private fun changeTouchedStatus() {
+    fun changeTouchedStatus() {
         _isTouched.update { it.not() }
     }
 
@@ -156,10 +156,5 @@ class FeedContentViewModel @Inject constructor(
 
     private fun getContentType(mimeType: String): String {
         return if(mimeType.contains(TYPE_VIDEO)) TYPE_VIDEO else TYPE_IMAGE
-    }
-
-
-    override fun onClick() {
-        changeTouchedStatus()
     }
 }
