@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.login.selflogin
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
@@ -62,7 +63,7 @@ class SelfLoginViewModel @Inject constructor(
         }
     }
 
-    private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
         when (e) {
             is UnknownHostException -> {
                 _event.emit(SelfLoginUiEvent.ShowMessage(R.string.common_message_no_internet))

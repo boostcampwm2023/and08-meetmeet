@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.setting.passwordchange
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
@@ -94,7 +95,7 @@ class SettingPasswordChangeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
         when (e) {
             is ExpiredRefreshTokenException -> {
                 _event.emit(SettingPasswordChangeUiEvent.ShowMessage(R.string.common_message_expired_login))

@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.notification
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
@@ -63,7 +64,7 @@ class FollowNotificationViewModel @Inject constructor(
         }
     }
 
-    private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
         when (e) {
             is ExpiredRefreshTokenException -> {
                 _event.emit(FollowNotificationUiEvent.ShowMessage(R.string.common_message_expired_login))

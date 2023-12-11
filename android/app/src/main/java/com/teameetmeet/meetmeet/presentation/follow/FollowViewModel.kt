@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.follow
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
@@ -221,7 +222,7 @@ class FollowViewModel @Inject constructor(
         println("${user.nickname}님을 그룹 $id 에 초대")
     }
 
-    private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
         when (e) {
             is ExpiredRefreshTokenException -> {
                 _event.emit(FollowUiEvent.ShowMessage(R.string.common_message_expired_login))

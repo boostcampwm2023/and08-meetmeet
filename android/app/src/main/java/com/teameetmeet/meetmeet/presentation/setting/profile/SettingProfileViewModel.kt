@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.setting.profile
 
 import android.net.Uri
+import androidx.annotation.StringRes
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -143,7 +144,7 @@ class SettingProfileViewModel @Inject constructor(
         }
     }
 
-    private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
         when (e) {
             is ExpiredRefreshTokenException -> {
                 _event.emit(SettingProfileUiEvent.ShowMessage(R.string.common_message_expired_login))

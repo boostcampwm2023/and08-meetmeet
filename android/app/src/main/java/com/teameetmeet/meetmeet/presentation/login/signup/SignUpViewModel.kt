@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.login.signup
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
@@ -123,7 +124,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
         when (e) {
             is UnknownHostException -> {
                 _event.emit(SignUpUiEvent.ShowMessage(R.string.common_message_no_internet))
