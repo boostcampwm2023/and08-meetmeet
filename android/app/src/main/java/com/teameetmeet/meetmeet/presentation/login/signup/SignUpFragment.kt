@@ -39,14 +39,14 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(R.layout.fragment_sig
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
                     when (event) {
-                        is SignUpEvent.NavigateToProfileSettingFragment -> {
+                        is SignUpUiEvent.NavigateToProfileSettingFragment -> {
                             findNavController().navigate(
                                 SignUpFragmentDirections.actionSignUpFragmentToSettingProfileFragment()
                                     .setIsFirstSignIn(true)
                             )
                         }
 
-                        is SignUpEvent.ShowMessage -> {
+                        is SignUpUiEvent.ShowMessage -> {
                             showMessage(event.message, event.extraMessage)
                         }
                     }

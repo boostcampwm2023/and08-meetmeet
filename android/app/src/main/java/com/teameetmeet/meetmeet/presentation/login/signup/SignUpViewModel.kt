@@ -25,8 +25,8 @@ class SignUpViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState
 
-    private val _event: MutableSharedFlow<SignUpEvent> = MutableSharedFlow()
-    val event: SharedFlow<SignUpEvent> = _event
+    private val _event: MutableSharedFlow<SignUpUiEvent> = MutableSharedFlow()
+    val event: SharedFlow<SignUpUiEvent> = _event
 
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
@@ -91,7 +91,7 @@ class SignUpViewModel @Inject constructor(
                 emitExceptionEvent(it, R.string.login_message_sign_up_fail)
                 _showPlaceholder.update { false }
             }.collectLatest {
-                _event.emit(SignUpEvent.NavigateToProfileSettingFragment)
+                _event.emit(SignUpUiEvent.NavigateToProfileSettingFragment)
                 _showPlaceholder.update { false }
             }
         }
@@ -126,11 +126,11 @@ class SignUpViewModel @Inject constructor(
     private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
         when (e) {
             is UnknownHostException -> {
-                _event.emit(SignUpEvent.ShowMessage(R.string.common_message_no_internet))
+                _event.emit(SignUpUiEvent.ShowMessage(R.string.common_message_no_internet))
             }
 
             else -> {
-                _event.emit(SignUpEvent.ShowMessage(message))
+                _event.emit(SignUpUiEvent.ShowMessage(message))
             }
         }
     }
