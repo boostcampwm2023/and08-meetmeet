@@ -68,11 +68,6 @@ class SettingHomeFragment :
         }
     }
 
-    private fun navigateToLoginActivity() {
-        findNavController().navigate(SettingHomeFragmentDirections.actionSettingHomeFragmentToLoginActivity())
-        requireActivity().finishAffinity()
-    }
-
     private fun setTopAppBar() {
         binding.topAppBar.setNavigationOnClickListener {
             requireActivity().finish()
