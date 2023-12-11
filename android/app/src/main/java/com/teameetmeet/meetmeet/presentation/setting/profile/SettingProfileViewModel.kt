@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.model.FeedMedia
 import com.teameetmeet.meetmeet.util.getSize
@@ -18,6 +19,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,7 +46,7 @@ class SettingProfileViewModel @Inject constructor(
             _showPlaceholder.update { true }
             userRepository.getUserProfile()
                 .catch {
-                    _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_network_error))
+                    emitExceptionEvent(it, R.string.setting_profile_network_error)
                 }.collect { userProfile ->
                     _uiState.update {
                         it.copy(
@@ -93,7 +95,7 @@ class SettingProfileViewModel @Inject constructor(
             _showPlaceholder.update { true }
             userRepository.checkNickNameDuplication(_uiState.value.nickname)
                 .catch {
-                    _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_nickname_duplicate_check_invalid))
+                    emitExceptionEvent(it, R.string.setting_nickname_duplicate_check_invalid)
                 }.collectLatest { isAvailable ->
                     _uiState.update {
                         if (isAvailable) {
@@ -119,17 +121,34 @@ class SettingProfileViewModel @Inject constructor(
             if (_uiState.value.currentUserProfile.profileImage?.toUri()?.path != _uiState.value.profileImage?.path) {
                 userRepository.patchProfileImage(_uiState.value.profileImage)
                     .catch {
-                        _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_fail))
+                        emitExceptionEvent(it, R.string.setting_profile_fail)
                     }.first()
             }
             if (_uiState.value.currentUserProfile.nickname != _uiState.value.nickname) {
                 userRepository.patchNickname(_uiState.value.nickname)
                     .catch {
-                        _event.emit(SettingProfileUiEvent.ShowMessage(R.string.setting_profile_fail))
+                        emitExceptionEvent(it, R.string.setting_profile_fail)
                     }.first()
             }
             _event.emit(SettingProfileUiEvent.NavigateToSettingHomeFragment)
             _showPlaceholder.update { false }
+        }
+    }
+
+    private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
+        when (e) {
+            is ExpiredRefreshTokenException -> {
+                _event.emit(SettingProfileUiEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(SettingProfileUiEvent.NavigateToLoginActivity)
+            }
+
+            is UnknownHostException -> {
+                _event.emit(SettingProfileUiEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(SettingProfileUiEvent.ShowMessage(message))
+            }
         }
     }
 }

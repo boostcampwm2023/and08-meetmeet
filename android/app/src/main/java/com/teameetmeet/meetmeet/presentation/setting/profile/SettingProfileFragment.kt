@@ -66,6 +66,10 @@ class SettingProfileFragment :
                         is SettingProfileUiEvent.ShowMessage -> {
                             showMessage(event.message, event.extraMessage)
                         }
+
+                        is SettingProfileUiEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
+                        }
                     }
                 }
             }
