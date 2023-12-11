@@ -18,7 +18,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.Comment
 import com.teameetmeet.meetmeet.databinding.FragmentFeedDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
-import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.temp.FeedContentAdapter
+import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontentmedia.FeedContentAdapter
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -63,7 +63,7 @@ class FeedDetailFragment :
         with(binding) {
             vm = viewModel
             feedDetailRvComment.adapter =
-                FeedCommentsAdapter(navArgs.authority, this@FeedDetailFragment)
+                FeedCommentAdapter(navArgs.authority, this@FeedDetailFragment)
             feedDetailVpMedia.adapter = FeedContentAdapter(this@FeedDetailFragment)
             feedDetailClComment.isVisible = navArgs.authority != EventAuthority.GUEST
         }
