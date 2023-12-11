@@ -55,10 +55,8 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
             val endToday1 = event1.endDateTime.toLocalDate() == today
             val endToday2 = event2.endDateTime.toLocalDate() == today
 
-            if (!endToday1 && endToday2) -1
-            else if (endToday1 && !endToday2) 1
-            else if (event1.startDateTime - event2.startDateTime <= 0) -1
-            else 1
+            if (endToday1 == endToday2) event1.startDateTime.compareTo(event2.startDateTime)
+            else endToday1.compareTo(endToday2)
         }
     }
 
@@ -92,7 +90,7 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
                             daysInMonth[i - 1].eventBars.any { it?.id == event.id }
                 }
 
-            var eventBars: MutableList<EventBar?> = (0..<5).map { null }.toMutableList()
+            val eventBars: MutableList<EventBar?> = (0..<5).map { null }.toMutableList()
 
             continuity[true]?.map { event ->
                 val index = daysInMonth[i - 1].eventBars.indexOfFirst { it?.id == event.id }
