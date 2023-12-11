@@ -15,7 +15,7 @@ export class CreateEventResponse {
   @ApiProperty()
   isJoinable: boolean;
   @ApiProperty()
-  repeatPolicyId: number;
+  repeatPolicyId: number | null;
   @ApiProperty()
   announcement: string | null;
   @ApiProperty()
