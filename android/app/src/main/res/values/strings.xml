@@ -11,6 +11,7 @@
     <string name="common_global_date_time_format">yyyy-MM-dd HH:mm:ss</string>
 
     <string name="common_message_no_internet">인터넷을 연결하고 다시 시도해주세요.</string>
+    <string name="common_message_expired_login">로그인이 만료되었습니다</string>
     <string name="common_none"> </string>
 
     <string name="menu_save">저장</string>

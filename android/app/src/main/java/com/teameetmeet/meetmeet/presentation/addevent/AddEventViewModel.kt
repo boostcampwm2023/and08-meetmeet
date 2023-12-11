@@ -4,6 +4,7 @@ import android.widget.RadioGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.presentation.model.EventColor
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
@@ -36,10 +38,6 @@ class AddEventViewModel @Inject constructor(
     private val calendarRepository: CalendarRepository,
     private val alarmHelper: AlarmHelper
 ) : ViewModel() {
-
-    companion object {
-        const val MAX_ALARM_COUNT = 2
-    }
 
     private val _uiState = MutableStateFlow(AddEventUiState())
     val uiState: StateFlow<AddEventUiState> = _uiState
@@ -84,16 +82,30 @@ class AddEventViewModel @Inject constructor(
                         color = color,
                         alarm = alarm,
                     ).catch {
-                        _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                        when (it) {
+                            is ExpiredRefreshTokenException -> {
+                                _event.emit(AddEventUiEvent.ShowMessage(R.string.common_message_expired_login))
+                                _event.emit(AddEventUiEvent.NavigateToLoginActivity)
+                            }
+
+                            is UnknownHostException -> {
+                                _event.emit(AddEventUiEvent.ShowMessage(R.string.common_message_no_internet))
+                            }
+
+                            else -> {
+                                _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
+                            }
+                        }
+                        _showPlaceholder.update { false }
                     }.collectLatest { events ->
                         events.take(MAX_ALARM_COUNT).forEach { event ->
                             setAlarm(event)
                         }
+                        _event.emit(AddEventUiEvent.FinishAddEventActivity)
+                        _showPlaceholder.update { false }
                     }
-                    _event.emit(AddEventUiEvent.FinishAddEventActivity)
                 }
             }
-            _showPlaceholder.update { false }
         }
     }
 
@@ -224,5 +236,9 @@ class AddEventViewModel @Inject constructor(
         _uiState.update {
             it.copy(color = EventColor.values()[index])
         }
+    }
+
+    companion object {
+        const val MAX_ALARM_COUNT = 2
     }
 }
