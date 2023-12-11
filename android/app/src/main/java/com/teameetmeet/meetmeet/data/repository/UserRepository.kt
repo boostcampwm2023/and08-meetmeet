@@ -37,7 +37,7 @@ class UserRepository @Inject constructor(
             }.onEach {
                 fetchUserProfile(it)
             }.catch {
-                getLocalUserProfile()
+                throw it.toException()
             }
     }
 
@@ -58,10 +58,9 @@ class UserRepository @Inject constructor(
             }
     }
 
-    private fun getLocalUserProfile(): Flow<UserProfile> {
+    fun getLocalUserProfile(): Flow<UserProfile> {
         return dataStore.getUserProfile().catch {
             throw it
-            //TODO(예외 처리 필요)
         }
     }
 
