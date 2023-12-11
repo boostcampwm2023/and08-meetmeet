@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.follow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.data.repository.FollowRepository
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,7 +57,7 @@ class FollowViewModel @Inject constructor(
                     userRepository.getUserWithFollowStatus(
                         _searchKeyword.value
                     ).catch {
-                        _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
+                        emitExceptionEvent(it, R.string.follow_search_fail)
                         _showPlaceholder.update { false }
                     }.collectLatest { users ->
                         _searchedUser.update { users }
@@ -67,7 +69,7 @@ class FollowViewModel @Inject constructor(
                     id?.let {
                         eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
                             .catch {
-                                _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
+                                emitExceptionEvent(it, R.string.follow_search_fail)
                                 _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _searchedUser.update { users }
@@ -90,7 +92,7 @@ class FollowViewModel @Inject constructor(
                 FollowActionType.FOLLOW -> {
                     followRepository.getFollowingWithFollowState()
                         .catch {
-                            _event.emit(FollowEvent.ShowMessage(R.string.follow_search_following_fail))
+                            emitExceptionEvent(it, R.string.follow_search_following_fail)
                             _showPlaceholder.update { false }
                         }.collectLatest { users ->
                             _following.update { users }
@@ -102,7 +104,7 @@ class FollowViewModel @Inject constructor(
                     id?.let { id ->
                         eventStoryRepository.getFollowingWithEventState(id)
                             .catch {
-                                _event.emit(FollowEvent.ShowMessage(R.string.follow_search_following_fail))
+                                emitExceptionEvent(it, R.string.follow_search_following_fail)
                                 _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _following.update { users }
@@ -125,7 +127,7 @@ class FollowViewModel @Inject constructor(
                 FollowActionType.FOLLOW -> {
                     followRepository.getFollowerWithFollowState()
                         .catch {
-                            _event.emit(FollowEvent.ShowMessage(R.string.follow_search_follower_fail))
+                            emitExceptionEvent(it, R.string.follow_search_follower_fail)
                             _showPlaceholder.update { false }
                         }.collectLatest { users ->
                             _follower.update { users }
@@ -137,7 +139,7 @@ class FollowViewModel @Inject constructor(
                     id?.let { id ->
                         eventStoryRepository.getFollowerWithEventState(id)
                             .catch {
-                                _event.emit(FollowEvent.ShowMessage(R.string.follow_search_follower_fail))
+                                emitExceptionEvent(it, R.string.follow_search_follower_fail)
                                 _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _follower.update { users }
@@ -172,7 +174,7 @@ class FollowViewModel @Inject constructor(
             _showPlaceholder.update { true }
             followRepository.follow(user.id)
                 .catch {
-                    _event.emit(FollowEvent.ShowMessage(R.string.follow_follow_fail))
+                    emitExceptionEvent(it, R.string.follow_follow_fail)
                     _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.FOLLOW)
@@ -188,7 +190,7 @@ class FollowViewModel @Inject constructor(
             _showPlaceholder.update { true }
             followRepository.unFollow(user.id)
                 .catch {
-                    _event.emit(FollowEvent.ShowMessage(R.string.follow_unfollow_fail))
+                    emitExceptionEvent(it, R.string.follow_unfollow_fail)
                     _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.FOLLOW)
@@ -204,7 +206,7 @@ class FollowViewModel @Inject constructor(
             _showPlaceholder.update { true }
             eventStoryRepository.inviteEvent(id, user.id)
                 .catch {
-                    _event.emit(FollowEvent.ShowMessage(R.string.event_story_invite_fail))
+                    emitExceptionEvent(it, R.string.event_story_invite_fail)
                     _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.EVENT, id)
@@ -217,5 +219,22 @@ class FollowViewModel @Inject constructor(
 
     override fun onInviteGroupClick(user: UserStatus, id: Int) {
         println("${user.nickname}님을 그룹 $id 에 초대")
+    }
+
+    private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
+        when (e) {
+            is ExpiredRefreshTokenException -> {
+                _event.emit(FollowEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(FollowEvent.NavigateToLoginActivity)
+            }
+
+            is UnknownHostException -> {
+                _event.emit(FollowEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(FollowEvent.ShowMessage(message))
+            }
+        }
     }
 }

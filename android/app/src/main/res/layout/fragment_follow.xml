@@ -126,7 +126,6 @@
             android:id="@+id/view_loading_background"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/loading_background"
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintBottom_toBottomOf="parent"

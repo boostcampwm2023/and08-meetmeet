@@ -73,6 +73,10 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
                                 )
                             )
                         }
+
+                        is FollowEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
+                        }
                     }
                 }
             }
