@@ -7,6 +7,7 @@ import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.AuthApi
 import com.teameetmeet.meetmeet.data.network.entity.RefreshAccessTokenRequest
 import com.teameetmeet.meetmeet.data.network.entity.TokenRequest
+import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -41,10 +42,10 @@ class TokenRepository @Inject constructor(
                             val token = refreshAccessToken()
                             autoLoginApp(token)
                         } else {
-                            throw it
+                            throw it.toException()
                         }
                     }
-                    else -> throw it
+                    else -> throw it.toException()
                 }
             }
     }
