@@ -15,7 +15,6 @@ export class EventMember extends commonEntity {
 
   @OneToOne(() => Detail, {
     nullable: false,
-    cascade: ['soft-remove'],
     eager: true,
   })
   @JoinColumn()
