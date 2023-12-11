@@ -1,20 +1,13 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstory.eventmember
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.teameetmeet.meetmeet.data.model.UserStatus
-import com.teameetmeet.meetmeet.databinding.ItemEventJoinMemberBinding
 
 class EventMemberAdapter(private val eventMemberClickListener: EventMemberClickListener) : ListAdapter<UserStatus, EventMemberViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventMemberViewHolder {
-        val binding = ItemEventJoinMemberBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return EventMemberViewHolder(binding, eventMemberClickListener)
+        return EventMemberViewHolder.from(parent, eventMemberClickListener)
     }
 
     override fun onBindViewHolder(holder: EventMemberViewHolder, position: Int) {
