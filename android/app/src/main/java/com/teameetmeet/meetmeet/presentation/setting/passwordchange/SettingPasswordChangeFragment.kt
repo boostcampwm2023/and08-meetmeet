@@ -47,6 +47,10 @@ class SettingPasswordChangeFragment :
                         is SettingPasswordChangeUiEvent.ShowMessage -> {
                             showMessage(event.message, event.extraMessage)
                         }
+
+                        is SettingPasswordChangeUiEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
+                        }
                     }
                 }
             }
