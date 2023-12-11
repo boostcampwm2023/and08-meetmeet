@@ -19,7 +19,7 @@ fun Throwable.toException(): Throwable {
 
 fun HttpException.toException(): Throwable {
     return when(this.code()) {
-        418 -> {
+        STATUS_CODE_NO_AUTHORIZATION -> {
             ExpiredRefreshTokenException()
         }
         else -> {
@@ -27,3 +27,7 @@ fun HttpException.toException(): Throwable {
         }
     }
 }
+
+const val STATUS_CODE_OK = 200
+const val STATUS_CODE_DELETE_SUCCESS = 204
+const val STATUS_CODE_NO_AUTHORIZATION = 418

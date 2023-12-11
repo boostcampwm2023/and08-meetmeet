@@ -2,6 +2,9 @@ package com.teameetmeet.meetmeet.data.network.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.teameetmeet.meetmeet.data.STATUS_CODE_DELETE_SUCCESS
+import com.teameetmeet.meetmeet.data.STATUS_CODE_NO_AUTHORIZATION
+import com.teameetmeet.meetmeet.data.STATUS_CODE_OK
 import com.teameetmeet.meetmeet.data.network.api.AuthApi
 import com.teameetmeet.meetmeet.data.network.api.CalendarApi
 import com.teameetmeet.meetmeet.data.network.api.EventStoryApi
@@ -84,7 +87,7 @@ class NetworkModule {
                     .build()
                 val response = chain.proceed(tokenAddedRequest)
 
-                if (response.code == 418) {
+                if (response.code == STATUS_CODE_NO_AUTHORIZATION) {
                     response.close()
                     val accessToken = runBlocking {
                         tokenRepository.refreshAccessToken()
@@ -92,8 +95,8 @@ class NetworkModule {
                     val refreshedRequest = chain.request().putTokenHeader(accessToken)
                     return chain.proceed(refreshedRequest)
                 }
-                return if (response.code == 204) {
-                    response.newBuilder().code(200).build()
+                return if (response.code == STATUS_CODE_DELETE_SUCCESS) {
+                    response.newBuilder().code(STATUS_CODE_OK).build()
                 } else {
                     response
                 }
