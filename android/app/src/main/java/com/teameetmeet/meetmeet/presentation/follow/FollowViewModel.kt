@@ -8,6 +8,7 @@ import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.data.repository.FollowRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -38,19 +39,27 @@ class FollowViewModel @Inject constructor(
         MutableStateFlow(listOf())
     val searchedUser: StateFlow<List<UserStatus>> = _searchedUser
 
-    private val _event: MutableSharedFlow<FollowEvent> = MutableSharedFlow()
+    private val _event: MutableSharedFlow<FollowEvent> = MutableSharedFlow(
+        extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val event: SharedFlow<FollowEvent> = _event
+
+    private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
 
     fun updateSearchedUser(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             when (actionType) {
                 FollowActionType.FOLLOW -> {
                     userRepository.getUserWithFollowStatus(
                         _searchKeyword.value
                     ).catch {
                         _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
+                        _showPlaceholder.update { false }
                     }.collectLatest { users ->
                         _searchedUser.update { users }
+                        _showPlaceholder.update { false }
                     }
                 }
 
@@ -59,26 +68,33 @@ class FollowViewModel @Inject constructor(
                         eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
                             .catch {
                                 _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
+                                _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _searchedUser.update { users }
+                                _showPlaceholder.update { false }
                             }
                     }
                 }
 
-                else -> {}
+                else -> {
+                    _showPlaceholder.update { false }
+                }
             }
         }
     }
 
     fun updateFollowing(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             when (actionType) {
                 FollowActionType.FOLLOW -> {
                     followRepository.getFollowingWithFollowState()
                         .catch {
                             _event.emit(FollowEvent.ShowMessage(R.string.follow_search_following_fail))
+                            _showPlaceholder.update { false }
                         }.collectLatest { users ->
                             _following.update { users }
+                            _showPlaceholder.update { false }
                         }
                 }
 
@@ -87,26 +103,33 @@ class FollowViewModel @Inject constructor(
                         eventStoryRepository.getFollowingWithEventState(id)
                             .catch {
                                 _event.emit(FollowEvent.ShowMessage(R.string.follow_search_following_fail))
+                                _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _following.update { users }
+                                _showPlaceholder.update { false }
                             }
                     }
                 }
 
-                else -> {}
+                else -> {
+                    _showPlaceholder.update { false }
+                }
             }
         }
     }
 
     fun updateFollower(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             when (actionType) {
                 FollowActionType.FOLLOW -> {
                     followRepository.getFollowerWithFollowState()
                         .catch {
                             _event.emit(FollowEvent.ShowMessage(R.string.follow_search_follower_fail))
+                            _showPlaceholder.update { false }
                         }.collectLatest { users ->
                             _follower.update { users }
+                            _showPlaceholder.update { false }
                         }
                 }
 
@@ -115,13 +138,17 @@ class FollowViewModel @Inject constructor(
                         eventStoryRepository.getFollowerWithEventState(id)
                             .catch {
                                 _event.emit(FollowEvent.ShowMessage(R.string.follow_search_follower_fail))
+                                _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _follower.update { users }
+                                _showPlaceholder.update { false }
                             }
                     }
                 }
 
-                else -> {}
+                else -> {
+                    _showPlaceholder.update { false }
+                }
             }
         }
     }
@@ -142,39 +169,48 @@ class FollowViewModel @Inject constructor(
 
     override fun onFollowClick(user: UserStatus) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             followRepository.follow(user.id)
                 .catch {
                     _event.emit(FollowEvent.ShowMessage(R.string.follow_follow_fail))
+                    _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.FOLLOW)
                     updateFollower(FollowActionType.FOLLOW)
                     updateSearchedUser(FollowActionType.FOLLOW)
+                    _showPlaceholder.update { false }
                 }
         }
     }
 
     override fun onUnfollowClick(user: UserStatus) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             followRepository.unFollow(user.id)
                 .catch {
                     _event.emit(FollowEvent.ShowMessage(R.string.follow_unfollow_fail))
+                    _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.FOLLOW)
                     updateFollower(FollowActionType.FOLLOW)
                     updateSearchedUser(FollowActionType.FOLLOW)
+                    _showPlaceholder.update { false }
                 }
         }
     }
 
     override fun onInviteEventClick(user: UserStatus, id: Int) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             eventStoryRepository.inviteEvent(id, user.id)
                 .catch {
                     _event.emit(FollowEvent.ShowMessage(R.string.event_story_invite_fail))
+                    _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.EVENT, id)
                     updateFollower(FollowActionType.EVENT, id)
                     updateSearchedUser(FollowActionType.EVENT, id)
+                    _showPlaceholder.update { false }
                 }
         }
     }
