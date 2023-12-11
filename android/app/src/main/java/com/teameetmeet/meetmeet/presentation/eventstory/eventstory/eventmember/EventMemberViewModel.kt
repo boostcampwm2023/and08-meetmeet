@@ -8,6 +8,7 @@ import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.repository.FollowRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -28,7 +29,10 @@ class EventMemberViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<List<UserStatus>>(emptyList())
     val uiState: StateFlow<List<UserStatus>> = _uiState
 
-    private val _event = MutableSharedFlow<EventMemberEvent>()
+    private val _event = MutableSharedFlow<EventMemberEvent>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val event: SharedFlow<EventMemberEvent> = _event
 
     fun fetchEventMember(nicknameList: List<String>) {
@@ -36,16 +40,22 @@ class EventMemberViewModel @Inject constructor(
             _uiState.update {
                 nicknameList.flatMap {
                     userRepository.getUserWithFollowStatus(it).catch { exception ->
-                        println(exception)
                         when (exception) {
-                            is ExpiredRefreshTokenException -> {}
-                            is UnknownHostException -> {}
-                            else -> {}
+                            is ExpiredRefreshTokenException -> {
+                                _event.emit(EventMemberEvent.NavigateToLoginActivity)
+                            }
+
+                            is UnknownHostException -> {
+                                _event.emit(EventMemberEvent.ShowMessage(R.string.common_message_no_internet))
+                            }
+
+                            else -> {
+                                _event.emit(EventMemberEvent.ShowMessage(R.string.event_member_message_fetch_fail))
+                            }
                         }
                     }.first()
                 }
             }
-            println(uiState.value.toString())
         }
     }
 

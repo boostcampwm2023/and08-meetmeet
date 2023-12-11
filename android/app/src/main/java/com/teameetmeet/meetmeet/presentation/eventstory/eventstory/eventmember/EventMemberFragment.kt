@@ -12,7 +12,6 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventMemberBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -61,6 +60,12 @@ class EventMemberFragment :
                                     event.userId,
                                     event.userNickname
                                 )
+                            )
+                        }
+
+                        is EventMemberEvent.NavigateToLoginActivity -> {
+                            findNavController().navigate(
+                                EventMemberFragmentDirections.actionEventMemberFragmentToLoginActivity()
                             )
                         }
                     }
