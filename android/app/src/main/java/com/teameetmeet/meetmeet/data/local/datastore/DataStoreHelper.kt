@@ -2,7 +2,6 @@ package com.teameetmeet.meetmeet.data.local.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.teameetmeet.meetmeet.data.NoDataException
@@ -25,7 +24,7 @@ class DataStoreHelper @Inject constructor(
 
     fun getAppToken(): Flow<String?> = dataStore.data.map { it[ACCESS_TOKEN] }
 
-    fun getRefreshToken(): Flow<String?> = dataStore.data.map {it[REFRESH_TOKEN]}
+    fun getRefreshToken(): Flow<String?> = dataStore.data.map { it[REFRESH_TOKEN] }
 
     suspend fun fetchUserProfile(userProfile: UserProfile) {
         dataStore.edit {
@@ -50,23 +49,6 @@ class DataStoreHelper @Inject constructor(
         }
     }
 
-    fun getAlarmState(): Flow<Boolean> {
-        return dataStore.data
-            .map { it[IS_PUSH_ALARM_ON] ?: true }
-    }
-
-    suspend fun storeAlarmState(isOn: Boolean) {
-        dataStore.edit {
-            it[IS_PUSH_ALARM_ON] = isOn
-        }
-    }
-
-    suspend fun resetAlarmState() {
-        dataStore.edit {
-            it[IS_PUSH_ALARM_ON] = true
-        }
-    }
-
     suspend fun deleteAppToken() {
         dataStore.edit {
             it[ACCESS_TOKEN] = ""
@@ -88,6 +70,5 @@ class DataStoreHelper @Inject constructor(
         val USER_PROFILE_IMAGE = stringPreferencesKey("userProfileImage")
         val USER_NICKNAME = stringPreferencesKey("userNickName")
         val USER_EMAIL = stringPreferencesKey("userEmail")
-        val IS_PUSH_ALARM_ON = booleanPreferencesKey("isPushAlarmOn")
     }
 }
