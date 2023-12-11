@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.addevent
 
 import android.widget.RadioGroup
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
@@ -82,20 +83,7 @@ class AddEventViewModel @Inject constructor(
                         color = color,
                         alarm = alarm,
                     ).catch {
-                        when (it) {
-                            is ExpiredRefreshTokenException -> {
-                                _event.emit(AddEventUiEvent.ShowMessage(R.string.common_message_expired_login))
-                                _event.emit(AddEventUiEvent.NavigateToLoginActivity)
-                            }
-
-                            is UnknownHostException -> {
-                                _event.emit(AddEventUiEvent.ShowMessage(R.string.common_message_no_internet))
-                            }
-
-                            else -> {
-                                _event.emit(AddEventUiEvent.ShowMessage(R.string.add_event_err_fail))
-                            }
-                        }
+                        emitExceptionEvent(it, R.string.add_event_err_fail)
                         _showPlaceholder.update { false }
                     }.collectLatest { events ->
                         events.take(MAX_ALARM_COUNT).forEach { event ->
@@ -171,7 +159,23 @@ class AddEventViewModel @Inject constructor(
                 )
             }
         }
+    }
 
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
+        when (e) {
+            is ExpiredRefreshTokenException -> {
+                _event.emit(AddEventUiEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(AddEventUiEvent.NavigateToLoginActivity)
+            }
+
+            is UnknownHostException -> {
+                _event.emit(AddEventUiEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(AddEventUiEvent.ShowMessage(message))
+            }
+        }
     }
 
     fun setEventMemo(memo: CharSequence) {
