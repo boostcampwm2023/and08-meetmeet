@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.login.signup
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,8 +26,8 @@ class SignUpViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<SignUpUiState> = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState
 
-    private val _event: MutableSharedFlow<SignUpEvent> = MutableSharedFlow()
-    val event: SharedFlow<SignUpEvent> = _event
+    private val _event: MutableSharedFlow<SignUpUiEvent> = MutableSharedFlow()
+    val event: SharedFlow<SignUpUiEvent> = _event
 
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
@@ -67,34 +69,32 @@ class SignUpViewModel @Inject constructor(
     fun checkDuplicate() {
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            loginRepository.checkEmailDuplication(_uiState.value.email)
-                .catch {
-                    _event.emit(SignUpEvent.ShowMessage(R.string.login_app_duplicate_check_fail))
-                }.collectLatest { isAvailable ->
-                    _uiState.update {
-                        if (isAvailable) {
-                            it.copy(emailState = EmailState.Valid)
-                        } else {
-                            it.copy(emailState = EmailState.Invalid)
-                        }
+            loginRepository.checkEmailDuplication(_uiState.value.email).catch {
+                emitExceptionEvent(it, R.string.login_app_duplicate_check_fail)
+                _showPlaceholder.update { false }
+            }.collectLatest { isAvailable ->
+                _uiState.update {
+                    if (isAvailable) {
+                        it.copy(emailState = EmailState.Valid)
+                    } else {
+                        it.copy(emailState = EmailState.Invalid)
                     }
                 }
-            _showPlaceholder.update { false }
+                _showPlaceholder.update { false }
+            }
         }
     }
 
     fun signUp() {
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            loginRepository.signUp(_uiState.value.email, _uiState.value.password)
-                .catch {
-                    _event.emit(SignUpEvent.ShowMessage(R.string.login_message_sign_up_fail))
-                    _showPlaceholder.update { false }
-                }
-                .collectLatest {
-                    _event.emit(SignUpEvent.NavigateToProfileSettingFragment)
-                    _showPlaceholder.update { false }
-                }
+            loginRepository.signUp(_uiState.value.email, _uiState.value.password).catch {
+                emitExceptionEvent(it, R.string.login_message_sign_up_fail)
+                _showPlaceholder.update { false }
+            }.collectLatest {
+                _event.emit(SignUpUiEvent.NavigateToProfileSettingFragment)
+                _showPlaceholder.update { false }
+            }
         }
     }
 
@@ -115,13 +115,24 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun getPasswordConfirmStateOf(
-        password: String,
-        passwordConfirm: String
+        password: String, passwordConfirm: String
     ): PasswordState {
         return when {
             passwordConfirm.isEmpty() -> PasswordState.None
             password == passwordConfirm -> PasswordState.Valid
             else -> PasswordState.Invalid
+        }
+    }
+
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
+        when (e) {
+            is UnknownHostException -> {
+                _event.emit(SignUpUiEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(SignUpUiEvent.ShowMessage(message))
+            }
         }
     }
 }

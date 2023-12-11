@@ -62,16 +62,20 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
                     when (event) {
-                        is FollowEvent.ShowMessage -> {
+                        is FollowUiEvent.ShowMessage -> {
                             showMessage(event.message, event.extraMessage)
                         }
 
-                        is FollowEvent.VisitProfile -> {
+                        is FollowUiEvent.VisitProfile -> {
                             findNavController().navigate(
                                 FollowFragmentDirections.actionFollowFragmentToVisitCalendarActivity(
                                     event.userId, event.userNickname
                                 )
                             )
+                        }
+
+                        is FollowUiEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
                         }
                     }
                 }

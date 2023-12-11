@@ -130,11 +130,6 @@ class EventStoryDetailFragment :
         binding.vm = viewModel
     }
 
-    private fun navigateToLoginActivity() {
-        findNavController().navigate(EventStoryDetailFragmentDirections.actionEventStoryDetailFragmentToLoginActivity())
-        requireActivity().finishAffinity()
-    }
-
     private fun setRepeatOptions() {
         binding.storyDetailEtEventRepeat.setOnItemClickListener { _, _, index, _ ->
             viewModel.setEventRepeat(index)

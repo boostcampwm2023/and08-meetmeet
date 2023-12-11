@@ -11,6 +11,7 @@
     <string name="common_global_date_time_format">yyyy-MM-dd HH:mm:ss</string>
 
     <string name="common_message_no_internet">인터넷을 연결하고 다시 시도해주세요.</string>
+    <string name="common_message_expired_login">로그인이 만료되었습니다</string>
     <string name="common_none"> </string>
 
     <string name="menu_save">저장</string>
@@ -204,6 +205,9 @@
     <string name="notification_title_default">밋밋 알림</string>
     <string name="notification_delete_menu">삭제</string>
     <string name="notification_delete_all_menu">전체 삭제</string>
+    <string name="notification_delete_fail">알림 삭제 실패</string>
+    <string name="notification_load_fail">알림 불러오기 실패</string>
+    <string name="notification_accept_event_fail">일정 초대 응답 실패</string>
 
     <string name="notification_tab_follow">팔로우</string>
     <string name="notification_tab_invite_event">일정 초대</string>

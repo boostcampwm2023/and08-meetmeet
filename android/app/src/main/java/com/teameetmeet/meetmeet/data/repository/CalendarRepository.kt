@@ -7,6 +7,7 @@ import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.network.entity.UserEventResponse
 import com.teameetmeet.meetmeet.data.toEvent
+import com.teameetmeet.meetmeet.data.toException
 import com.teameetmeet.meetmeet.presentation.model.EventColor
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.util.date.DateTimeFormat
@@ -71,7 +72,7 @@ class CalendarRepository @Inject constructor(
         )
         return remoteCalendarDataSource.addEvent(request)
             .catch {
-                throw it
+                throw it.toException()
             }
     }
 

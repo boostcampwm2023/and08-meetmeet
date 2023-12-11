@@ -125,12 +125,6 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         }
     }
 
-    private fun navigateToLoginActivity() {
-        findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToLoginActivity())
-        requireActivity().finishAffinity()
-    }
-
-
     private fun navigateToEventDetailFragment() {
         findNavController().navigate(
             EventStoryFragmentDirections.actionEventStoryFragmentToEventStoryDetailFragment(

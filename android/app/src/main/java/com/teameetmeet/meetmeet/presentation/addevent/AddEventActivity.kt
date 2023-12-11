@@ -73,12 +73,15 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
                 viewModel.event.collect { event ->
                     when (event) {
                         is AddEventUiEvent.ShowMessage -> showMessage(
-                            event.messageId,
-                            event.extraMessage
+                            event.messageId, event.extraMessage
                         )
 
                         is AddEventUiEvent.FinishAddEventActivity -> {
                             finish()
+                        }
+
+                        is AddEventUiEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
                         }
                     }
                 }
@@ -120,15 +123,13 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
     }
 
     private fun setDateTimePicker() {
-        val dateRangePicker =
-            MaterialDatePicker.Builder.dateRangePicker()
-                .setTitleText(getString(R.string.add_event_title))
-                .setSelection(
-                    Pair(
-                        viewModel.uiState.value.startDate.toLong(ZoneId.of("UTC")),
-                        viewModel.uiState.value.endDate.toLong(ZoneId.of("UTC"))
-                    )
-                ).build()
+        val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText(getString(R.string.add_event_title)).setSelection(
+                Pair(
+                    viewModel.uiState.value.startDate.toLong(ZoneId.of("UTC")),
+                    viewModel.uiState.value.endDate.toLong(ZoneId.of("UTC"))
+                )
+            ).build()
 
         dateRangePicker.addOnPositiveButtonClickListener {
             viewModel.setEventDate(
@@ -157,8 +158,7 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
         val startTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(viewModel.uiState.value.startTime.hour)
             .setMinute(viewModel.uiState.value.startTime.minute)
-            .setTitleText(getString(R.string.add_event_err_start_time))
-            .build()
+            .setTitleText(getString(R.string.add_event_err_start_time)).build()
 
         startTimePicker.addOnPositiveButtonClickListener {
             viewModel.setEventStartTime(startTimePicker.hour, startTimePicker.minute)

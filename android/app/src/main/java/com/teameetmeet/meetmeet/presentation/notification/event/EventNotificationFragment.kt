@@ -52,6 +52,10 @@ class EventNotificationFragment :
                         is EventNotificationUiEvent.ShowMessage -> {
                             showMessage(event.message, event.extraMessage)
                         }
+
+                        is EventNotificationUiEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
+                        }
                     }
                 }
             }

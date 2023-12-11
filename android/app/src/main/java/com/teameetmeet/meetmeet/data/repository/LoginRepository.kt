@@ -4,6 +4,7 @@ import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.LoginApi
 import com.teameetmeet.meetmeet.data.network.entity.KakaoLoginRequest
 import com.teameetmeet.meetmeet.data.network.entity.SelfSignRequest
+import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
@@ -33,7 +34,7 @@ class LoginRepository @Inject constructor(
                 val response = loginApi.loginSelf(request)
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -43,7 +44,7 @@ class LoginRepository @Inject constructor(
                 val response = loginApi.checkEmailDuplication(email)
                 response.isAvailable
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -55,7 +56,7 @@ class LoginRepository @Inject constructor(
                 val response = loginApi.loginSelf(request)
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 

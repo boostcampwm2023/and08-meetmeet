@@ -1,5 +1,6 @@
 package com.teameetmeet.meetmeet.presentation.login.selflogin
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,11 +28,11 @@ class SelfLoginViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<SelfLoginUiState> = MutableStateFlow(SelfLoginUiState())
     val uiState: StateFlow<SelfLoginUiState> = _uiState
 
-    private val _event: MutableSharedFlow<SelfLoginEvent> = MutableSharedFlow(
+    private val _event: MutableSharedFlow<SelfLoginUiEvent> = MutableSharedFlow(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val event: SharedFlow<SelfLoginEvent> = _event
+    val event: SharedFlow<SelfLoginUiEvent> = _event
 
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
@@ -52,12 +54,24 @@ class SelfLoginViewModel @Inject constructor(
             _showPlaceholder.update { true }
             loginRepository.loginSelf(_uiState.value.email, _uiState.value.password)
                 .catch {
-                    _event.emit(SelfLoginEvent.ShowMessage(R.string.login_message_self_login_fail))
+                    emitExceptionEvent(it, R.string.login_message_self_login_fail)
                     _showPlaceholder.update { false }
                 }.collectLatest {
-                    _event.emit(SelfLoginEvent.NavigateToHomeActivity)
+                    _event.emit(SelfLoginUiEvent.NavigateToHomeActivity)
                     _showPlaceholder.update { false }
                 }
+        }
+    }
+
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
+        when (e) {
+            is UnknownHostException -> {
+                _event.emit(SelfLoginUiEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(SelfLoginUiEvent.ShowMessage(message))
+            }
         }
     }
 }

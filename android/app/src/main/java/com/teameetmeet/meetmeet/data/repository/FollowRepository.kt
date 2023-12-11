@@ -37,7 +37,7 @@ class FollowRepository @Inject constructor(
             .map {
                 followApi.getFollowingWithFollowStatus().users
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -46,7 +46,7 @@ class FollowRepository @Inject constructor(
             .map {
                 followApi.getFollowerWithFollowStatus().users
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 }

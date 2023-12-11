@@ -105,7 +105,7 @@ class UserRepository @Inject constructor(
                 dataStore.deleteUserProfile()
                 dataStore.deleteAppToken()
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -115,7 +115,7 @@ class UserRepository @Inject constructor(
                 val response = userApi.checkNickNameDuplication(nickname)
                 response.isAvailable
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -124,7 +124,7 @@ class UserRepository @Inject constructor(
             .map {
                 userApi.patchPassword(PasswordChangeRequest(password))
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -133,7 +133,7 @@ class UserRepository @Inject constructor(
             .map {
                 userApi.patchNickname(NicknameChangeRequest(nickname))
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -157,7 +157,7 @@ class UserRepository @Inject constructor(
                 userApi.updateProfileImage(profileImageRequest)
                 imageFile?.delete()
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
