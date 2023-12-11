@@ -46,14 +46,17 @@ class CalendarRepository @Inject constructor(
             }
     }
 
-    fun getEventsByUserId(userId: Int, startDate: Long, endDate: Long): Flow<List<Event>> {
-        return remoteCalendarDataSource.getEventsByUserId(
-            userId,
-            startDate.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")),
-            endDate.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
-        ).map {
-            it.map(UserEventResponse::toEvent)
-        }
+    fun getEventsByUserId(userId: Int, startDateTime: Long, endDateTime: Long): Flow<List<Event>> {
+        return remoteCalendarDataSource
+            .getEventsByUserId(
+                userId,
+                startDateTime.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")),
+                endDateTime.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+            ).map {
+                it.map(UserEventResponse::toEvent)
+            }.catch {
+                throw it.toException()
+            }
     }
 
     suspend fun deleteEvents() {
