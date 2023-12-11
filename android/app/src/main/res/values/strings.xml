@@ -261,4 +261,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="setting_home_message_logout_fail">로그아웃 실패</string>
     <string name="story_detail_message_no_repeat_policy_warning">반복 주기와 종료일을 모두 선택해주세요.</string>
+    <string name="group_noti">2024.01.01 Coming Soon!!</string>
 </resources>
