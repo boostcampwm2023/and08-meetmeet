@@ -41,10 +41,10 @@ class FollowViewModel @Inject constructor(
         MutableStateFlow(listOf())
     val searchedUser: StateFlow<List<UserStatus>> = _searchedUser
 
-    private val _event: MutableSharedFlow<FollowEvent> = MutableSharedFlow(
+    private val _event: MutableSharedFlow<FollowUiEvent> = MutableSharedFlow(
         extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val event: SharedFlow<FollowEvent> = _event
+    val event: SharedFlow<FollowUiEvent> = _event
 
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
@@ -163,7 +163,7 @@ class FollowViewModel @Inject constructor(
         viewModelScope.launch {
             if (!user.isMe) {
                 _event.emit(
-                    FollowEvent.VisitProfile(user.id, user.nickname)
+                    FollowUiEvent.VisitProfile(user.id, user.nickname)
                 )
             }
         }
@@ -224,16 +224,16 @@ class FollowViewModel @Inject constructor(
     private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
         when (e) {
             is ExpiredRefreshTokenException -> {
-                _event.emit(FollowEvent.ShowMessage(R.string.common_message_expired_login))
-                _event.emit(FollowEvent.NavigateToLoginActivity)
+                _event.emit(FollowUiEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(FollowUiEvent.NavigateToLoginActivity)
             }
 
             is UnknownHostException -> {
-                _event.emit(FollowEvent.ShowMessage(R.string.common_message_no_internet))
+                _event.emit(FollowUiEvent.ShowMessage(R.string.common_message_no_internet))
             }
 
             else -> {
-                _event.emit(FollowEvent.ShowMessage(message))
+                _event.emit(FollowUiEvent.ShowMessage(message))
             }
         }
     }
