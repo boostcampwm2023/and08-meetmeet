@@ -12,157 +12,162 @@
             type="com.teameetmeet.meetmeet.presentation.setting.profile.SettingProfileViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/layout_app_bar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/top_app_bar"
-                android:layout_width="match_parent"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/layout_app_bar"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:minHeight="?attr/actionBarSize"
-                app:navigationIcon="@drawable/ic_nav_pre"
-                app:title="@string/setting_profile" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        </com.google.android.material.appbar.AppBarLayout>
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/top_app_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="?attr/actionBarSize"
+                    app:navigationIcon="@drawable/ic_nav_pre"
+                    app:title="@string/setting_profile" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/setting_profile_cv_profile"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:layout_marginTop="30dp"
-            app:cardBackgroundColor="@color/grey3"
-            app:cardCornerRadius="100dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_app_bar">
+            </com.google.android.material.appbar.AppBarLayout>
 
-            <ImageView
-                android:id="@+id/setting_home_iv_profile"
-                image="@{vm.uiState.profileImage.toString()}"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:src="@drawable/ic_launcher_foreground" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/setting_profile_cv_profile"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginTop="30dp"
+                app:cardBackgroundColor="@color/grey3"
+                app:cardCornerRadius="100dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_app_bar">
 
-        </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/setting_home_iv_profile"
+                    image="@{vm.uiState.profileImage.toString()}"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:src="@drawable/ic_launcher_foreground" />
 
-        <TextView
-            android:id="@+id/setting_profile_tv_profile_title"
-            style="@style/medium.bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/setting_profile"
-            android:textColor="@color/grey1"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/setting_profile_cv_profile" />
+            </androidx.cardview.widget.CardView>
 
-        <TextView
-            style="@style/caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:onClick="@{() -> vm.updateEmptyUserProfileImage()}"
-            android:text="@string/setting_profile_set_default"
-            android:textColor="@color/grey2"
-            android:visibility="@{vm.uiState.profileImage != null? View.VISIBLE:View.GONE}"
-            app:layout_constraintEnd_toEndOf="@id/setting_profile_tv_profile_title"
-            app:layout_constraintStart_toStartOf="@id/setting_profile_tv_profile_title"
-            app:layout_constraintTop_toBottomOf="@id/setting_profile_tv_profile_title" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/setting_profile_tf_nickname"
-            invalid_text="@{@string/setting_nickname_duplicate_check_invalid}"
-            setting_profile_nickname_state="@{vm.uiState.nickNameState}"
-            valid_text="@{@string/setting_nickname_duplicate_check_complete}"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="90dp"
-            android:hint="@string/setting_nickname"
-            app:helperTextTextColor="@color/green"
-            app:layout_constraintEnd_toStartOf="@id/sign_up_btn_email_check"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/setting_profile_tv_profile_title"
-            app:layout_constraintVertical_chainStyle="packed">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/setting_profile_et_nickname"
-                style="@style/medium"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/setting_profile_tv_profile_title"
+                style="@style/medium.bold"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLength="12"
-                android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updateUserNickName(p0)}"
-                android:text="@{vm.uiState.nickname}" />
+                android:layout_marginTop="18dp"
+                android:text="@string/setting_profile"
+                android:textColor="@color/grey1"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_profile_cv_profile" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                style="@style/caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:onClick="@{() -> vm.updateEmptyUserProfileImage()}"
+                android:text="@string/setting_profile_set_default"
+                android:textColor="@color/grey2"
+                android:visibility="@{vm.uiState.profileImage != null? View.VISIBLE:View.GONE}"
+                app:layout_constraintEnd_toEndOf="@id/setting_profile_tv_profile_title"
+                app:layout_constraintStart_toStartOf="@id/setting_profile_tv_profile_title"
+                app:layout_constraintTop_toBottomOf="@id/setting_profile_tv_profile_title" />
 
-        <Button
-            android:id="@+id/sign_up_btn_email_check"
-            style="@style/Widget.Material3.Button.TonalButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="16dp"
-            android:enabled="@{vm.uiState.duplicatedEnable}"
-            android:onClick="@{() -> vm.checkDuplicate()}"
-            android:text="@string/setting_duplicate_check"
-            app:layout_constraintBottom_toBottomOf="@id/setting_profile_tf_nickname"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/setting_profile_tf_nickname"
-            app:layout_constraintTop_toTopOf="@id/setting_profile_tf_nickname" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/setting_profile_tf_nickname"
+                invalid_text="@{@string/setting_nickname_duplicate_check_invalid}"
+                setting_profile_nickname_state="@{vm.uiState.nickNameState}"
+                valid_text="@{@string/setting_nickname_duplicate_check_complete}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="90dp"
+                android:hint="@string/setting_nickname"
+                app:helperTextTextColor="@color/green"
+                app:layout_constraintEnd_toStartOf="@id/sign_up_btn_email_check"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_profile_tv_profile_title"
+                app:layout_constraintVertical_chainStyle="packed">
 
-        <Button
-            android:id="@+id/setting_profile_submit"
-            update_profile_enabled="@{vm.uiState}"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="66dp"
-            android:onClick="@{() -> vm.patchUserProfile()}"
-            android:text="@string/setting_complete"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/setting_profile_tf_nickname" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/setting_profile_et_nickname"
+                    style="@style/medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="12"
+                    android:onTextChanged="@{(p0, p1, p2, p3) -> vm.updateUserNickName(p0)}"
+                    android:text="@{vm.uiState.nickname}" />
 
-        <View
-            android:id="@+id/view_loading_background"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@color/loading_background"
-            android:clickable="true"
-            android:elevation="2dp"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <Button
+                android:id="@+id/sign_up_btn_email_check"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="16dp"
+                android:enabled="@{vm.uiState.duplicatedEnable}"
+                android:onClick="@{() -> vm.checkDuplicate()}"
+                android:text="@string/setting_duplicate_check"
+                app:layout_constraintBottom_toBottomOf="@id/setting_profile_tf_nickname"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/setting_profile_tf_nickname"
+                app:layout_constraintTop_toTopOf="@id/setting_profile_tf_nickname" />
 
-        <androidx.constraintlayout.widget.Group
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="@{vm.showPlaceholder ?View.VISIBLE:View.GONE}"
-            app:constraint_referenced_ids="view_loading_background, progress_bar"
-            tools:visibility="gone" />
+            <Button
+                android:id="@+id/setting_profile_submit"
+                update_profile_enabled="@{vm.uiState}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="66dp"
+                android:onClick="@{() -> vm.patchUserProfile()}"
+                android:text="@string/setting_complete"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/setting_profile_tf_nickname" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:id="@+id/view_loading_background"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/loading_background"
+                android:clickable="true"
+                android:elevation="2dp"
+                android:focusable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_app_bar" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Group
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{vm.showPlaceholder ?View.VISIBLE:View.GONE}"
+                app:constraint_referenced_ids="view_loading_background, progress_bar"
+                tools:visibility="gone" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>
