@@ -26,8 +26,8 @@ class SettingHomeViewModel @Inject constructor(
     private val _user: MutableStateFlow<UserProfile> = MutableStateFlow(UserProfile(null, "", ""))
     val user: StateFlow<UserProfile> = _user
 
-    private val _event: MutableSharedFlow<SettingHomeEvent> = MutableSharedFlow()
-    val event: SharedFlow<SettingHomeEvent> = _event
+    private val _event: MutableSharedFlow<SettingHomeUiEvent> = MutableSharedFlow()
+    val event: SharedFlow<SettingHomeUiEvent> = _event
 
     fun fetchUserProfile() {
         viewModelScope.launch {
@@ -46,7 +46,7 @@ class SettingHomeViewModel @Inject constructor(
                 userRepository.logout().catch {
                     emitExceptionEvent(it, R.string.setting_home_message_logout_fail)
                 }.collect {
-                    _event.emit(SettingHomeEvent.NavigateToLoginActivity)
+                    _event.emit(SettingHomeUiEvent.NavigateToLoginActivity)
                 }
             }
         }
@@ -55,16 +55,16 @@ class SettingHomeViewModel @Inject constructor(
     private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
         when (e) {
             is ExpiredRefreshTokenException -> {
-                _event.emit(SettingHomeEvent.ShowMessage(R.string.common_message_expired_login))
-                _event.emit(SettingHomeEvent.NavigateToLoginActivity)
+                _event.emit(SettingHomeUiEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(SettingHomeUiEvent.NavigateToLoginActivity)
             }
 
             is UnknownHostException -> {
-                _event.emit(SettingHomeEvent.ShowMessage(R.string.common_message_no_internet))
+                _event.emit(SettingHomeUiEvent.ShowMessage(R.string.common_message_no_internet))
             }
 
             else -> {
-                _event.emit(SettingHomeEvent.ShowMessage(message))
+                _event.emit(SettingHomeUiEvent.ShowMessage(message))
             }
         }
     }

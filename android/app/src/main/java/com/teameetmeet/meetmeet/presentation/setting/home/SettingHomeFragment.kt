@@ -2,7 +2,6 @@ package com.teameetmeet.meetmeet.presentation.setting.home
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -60,8 +59,8 @@ class SettingHomeFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { event ->
                     when (event) {
-                        is SettingHomeEvent.NavigateToLoginActivity -> navigateToLoginActivity()
-                        is SettingHomeEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
+                        is SettingHomeUiEvent.NavigateToLoginActivity -> navigateToLoginActivity()
+                        is SettingHomeUiEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
                     }
                 }
             }
