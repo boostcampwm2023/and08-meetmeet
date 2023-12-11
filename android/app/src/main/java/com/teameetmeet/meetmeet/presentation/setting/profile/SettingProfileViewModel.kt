@@ -16,7 +16,8 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
@@ -118,20 +119,27 @@ class SettingProfileViewModel @Inject constructor(
     fun patchUserProfile() {
         viewModelScope.launch {
             _showPlaceholder.update { true }
-            if (_uiState.value.currentUserProfile.profileImage?.toUri()?.path != _uiState.value.profileImage?.path) {
-                userRepository.patchProfileImage(_uiState.value.profileImage)
-                    .catch {
-                        emitExceptionEvent(it, R.string.setting_profile_fail)
-                    }.first()
-            }
-            if (_uiState.value.currentUserProfile.nickname != _uiState.value.nickname) {
-                userRepository.patchNickname(_uiState.value.nickname)
-                    .catch {
-                        emitExceptionEvent(it, R.string.setting_profile_fail)
-                    }.first()
-            }
-            _event.emit(SettingProfileUiEvent.NavigateToSettingHomeFragment)
-            _showPlaceholder.update { false }
+            val profileFlow =
+                if (_uiState.value.currentUserProfile.profileImage?.toUri()?.path != _uiState.value.profileImage?.path) {
+                    userRepository.patchProfileImage(_uiState.value.profileImage)
+                } else {
+                    flowOf(true)
+                }
+            val nicknameFlow =
+                if (_uiState.value.currentUserProfile.nickname != _uiState.value.nickname) {
+                    userRepository.patchNickname(_uiState.value.nickname)
+                } else {
+                    flowOf(true)
+                }
+            val combineFlow = profileFlow.combine(nicknameFlow) { _, _ -> }
+            combineFlow
+                .catch {
+                    emitExceptionEvent(it, R.string.setting_profile_fail)
+                    _showPlaceholder.update { false }
+                }.collectLatest {
+                    _event.emit(SettingProfileUiEvent.NavigateToSettingHomeFragment)
+                    _showPlaceholder.update { false }
+                }
         }
     }
 
