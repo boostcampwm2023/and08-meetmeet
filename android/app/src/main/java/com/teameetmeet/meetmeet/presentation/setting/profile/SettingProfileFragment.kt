@@ -15,6 +15,7 @@ import androidx.navigation.fragment.navArgs
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentSettingProfileBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -91,7 +92,7 @@ class SettingProfileFragment :
                 }
             }
 
-        binding.settingProfileCvProfile.setOnClickListener {
+        binding.settingProfileCvProfile.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
