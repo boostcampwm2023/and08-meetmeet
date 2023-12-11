@@ -190,7 +190,7 @@ class EventStoryRepository @Inject constructor(
                 val request = EventInviteRequest(userId = userId, eventId = eventId)
                 eventStoryApi.inviteEvent(request)
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -199,7 +199,7 @@ class EventStoryRepository @Inject constructor(
             .map {
                 eventStoryApi.getFollowingWithEventStatus(eventId).users
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -208,7 +208,7 @@ class EventStoryRepository @Inject constructor(
             .map {
                 eventStoryApi.getFollowerWithEventStatus(eventId).users
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
