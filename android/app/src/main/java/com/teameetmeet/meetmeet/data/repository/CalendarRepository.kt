@@ -14,7 +14,10 @@ import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.toDateString
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import java.net.UnknownHostException
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -22,12 +25,25 @@ class CalendarRepository @Inject constructor(
     private val localCalendarDataSource: LocalCalendarDataSource,
     private val remoteCalendarDataSource: RemoteCalendarDataSource
 ) {
-    suspend fun getEvents(startDate: Long, endDate: Long): Flow<List<Event>> {
-        try {
-            syncEvents(startDate, endDate)
-        } finally {
-            return localCalendarDataSource.getEvents(startDate, endDate)
-        }
+    fun getSyncedEvents(startDateTime: Long, endDateTime: Long): Flow<List<Event>> {
+        return remoteCalendarDataSource
+            .getEvents(
+                startDateTime.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")),
+                endDateTime.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
+            ).onEach {
+                localCalendarDataSource.deleteEvents(startDateTime, endDateTime)
+                localCalendarDataSource.insertEvents(it.map(EventResponse::toEvent))
+            }.map {
+                localCalendarDataSource.getEvents(startDateTime, endDateTime).first()
+            }.catch {
+                when (it) {
+                    is UnknownHostException -> {
+                        emit(localCalendarDataSource.getEvents(startDateTime, endDateTime).first())
+                    }
+
+                    else -> throw it.toException()
+                }
+            }
     }
 
     fun getEventsByUserId(userId: Int, startDate: Long, endDate: Long): Flow<List<Event>> {
@@ -82,19 +98,8 @@ class CalendarRepository @Inject constructor(
         endDate: String
     ): Flow<List<EventResponse>> {
         return remoteCalendarDataSource.searchEvents(keyword, startDate, endDate)
-    }
-
-    private suspend fun syncEvents(startDateTime: Long, endDateTime: Long) {
-        remoteCalendarDataSource
-            .getEvents(
-                startDateTime.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC")),
-                endDateTime.toDateString(DateTimeFormat.ISO_DATE_TIME, ZoneId.of("UTC"))
-            ).catch {
-                //todo: 예외처리
-                throw it
-            }.collect {
-                localCalendarDataSource.deleteEvents(startDateTime, endDateTime)
-                localCalendarDataSource.insertEvents(it.map(EventResponse::toEvent))
+            .catch {
+                throw it.toException()
             }
     }
 }
