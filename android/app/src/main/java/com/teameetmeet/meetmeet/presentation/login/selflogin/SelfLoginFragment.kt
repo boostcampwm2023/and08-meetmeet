@@ -39,14 +39,14 @@ class SelfLoginFragment : BaseFragment<FragmentSelfLoginBinding>(R.layout.fragme
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
                     when (event) {
-                        is SelfLoginEvent.NavigateToHomeActivity -> {
+                        is SelfLoginUiEvent.NavigateToHomeActivity -> {
                             findNavController().navigate(
                                 SelfLoginFragmentDirections.actionSelfLoginFragmentToHomeActivity()
                             )
                             requireActivity().finishAffinity()
                         }
 
-                        is SelfLoginEvent.ShowMessage -> {
+                        is SelfLoginUiEvent.ShowMessage -> {
                             showMessage(event.message, event.extraMessage)
                         }
                     }

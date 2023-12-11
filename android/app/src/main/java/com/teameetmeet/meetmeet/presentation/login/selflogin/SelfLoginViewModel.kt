@@ -27,11 +27,11 @@ class SelfLoginViewModel @Inject constructor(
     private val _uiState: MutableStateFlow<SelfLoginUiState> = MutableStateFlow(SelfLoginUiState())
     val uiState: StateFlow<SelfLoginUiState> = _uiState
 
-    private val _event: MutableSharedFlow<SelfLoginEvent> = MutableSharedFlow(
+    private val _event: MutableSharedFlow<SelfLoginUiEvent> = MutableSharedFlow(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val event: SharedFlow<SelfLoginEvent> = _event
+    val event: SharedFlow<SelfLoginUiEvent> = _event
 
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
@@ -56,7 +56,7 @@ class SelfLoginViewModel @Inject constructor(
                     emitExceptionEvent(it, R.string.login_message_self_login_fail)
                     _showPlaceholder.update { false }
                 }.collectLatest {
-                    _event.emit(SelfLoginEvent.NavigateToHomeActivity)
+                    _event.emit(SelfLoginUiEvent.NavigateToHomeActivity)
                     _showPlaceholder.update { false }
                 }
         }
@@ -65,11 +65,11 @@ class SelfLoginViewModel @Inject constructor(
     private suspend fun emitExceptionEvent(e: Throwable, message: Int) {
         when (e) {
             is UnknownHostException -> {
-                _event.emit(SelfLoginEvent.ShowMessage(R.string.common_message_no_internet))
+                _event.emit(SelfLoginUiEvent.ShowMessage(R.string.common_message_no_internet))
             }
 
             else -> {
-                _event.emit(SelfLoginEvent.ShowMessage(message))
+                _event.emit(SelfLoginUiEvent.ShowMessage(message))
             }
         }
     }
