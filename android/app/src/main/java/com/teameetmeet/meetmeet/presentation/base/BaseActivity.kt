@@ -1,10 +1,12 @@
 package com.teameetmeet.meetmeet.presentation.base
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import com.teameetmeet.meetmeet.presentation.login.LoginActivity
 
 abstract class BaseActivity<T : ViewDataBinding>(private val layoutResId: Int) :
     AppCompatActivity() {
@@ -27,5 +29,10 @@ abstract class BaseActivity<T : ViewDataBinding>(private val layoutResId: Int) :
         } else {
             Toast.makeText(this, getString(messageId), Toast.LENGTH_SHORT).show()
         }
+    }
+
+    protected fun navigateToLoginActivity() {
+        startActivity(Intent(this, LoginActivity::class.java))
+        finishAffinity()
     }
 }
