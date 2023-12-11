@@ -6,4 +6,6 @@ sealed class EventNotificationUiEvent {
     data class ShowAcceptDialog(val event: EventInvitationNotification) : EventNotificationUiEvent()
     data class ShowMessage(val message: Int, val extraMessage: String = "") :
         EventNotificationUiEvent()
+
+    data object NavigateToLoginActivity : EventNotificationUiEvent()
 }

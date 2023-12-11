@@ -20,6 +20,7 @@ class NotificationAdapter(
             1 -> {
                 EventNotificationFragment()
             }
+
             else -> {
                 GroupNotificationFragment()
             }
