@@ -42,7 +42,7 @@ class FollowSearchFragment :
         binding.state = followState
 
         followAdapter = FollowAdapter(
-            actionType = actionType, userClickListener = followViewModel, id = id
+            actionType = actionType, userClickListener = followViewModel, eventId = id
         )
         binding.followListRv.adapter = followAdapter
     }

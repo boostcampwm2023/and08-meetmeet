@@ -7,8 +7,12 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.databinding.ItemFollowBinding
 
-class FollowViewHolder private constructor(private val binding: ItemFollowBinding) :
-    RecyclerView.ViewHolder(binding.root) {
+class FollowViewHolder private constructor(
+    private val binding: ItemFollowBinding,
+    private val actionType: FollowActionType,
+    private val userClickListener: OnUserClickListener,
+    private val eventId: Int?
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(
         user: UserStatus,
@@ -81,9 +85,19 @@ class FollowViewHolder private constructor(private val binding: ItemFollowBindin
     }
 
     companion object {
-        fun from(parent: ViewGroup): FollowViewHolder {
+        fun from(
+            parent: ViewGroup,
+            actionType: FollowActionType,
+            userClickListener: OnUserClickListener,
+            eventId: Int?
+        ): FollowViewHolder {
             val inflater = LayoutInflater.from(parent.context)
-            return FollowViewHolder(ItemFollowBinding.inflate(inflater, parent, false))
+            return FollowViewHolder(
+                ItemFollowBinding.inflate(inflater, parent, false),
+                actionType,
+                userClickListener,
+                eventId
+            )
         }
     }
 }
