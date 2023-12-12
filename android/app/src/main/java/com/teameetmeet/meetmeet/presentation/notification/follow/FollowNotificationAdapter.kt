@@ -11,11 +11,11 @@ class FollowNotificationAdapter(private val followNotificationItemClickListener:
         parent: ViewGroup,
         viewType: Int
     ): FollowNotificationViewHolder {
-        return FollowNotificationViewHolder.from(parent)
+        return FollowNotificationViewHolder.from(parent, followNotificationItemClickListener)
     }
 
     override fun onBindViewHolder(holder: FollowNotificationViewHolder, position: Int) {
-        holder.bind(getItem(position), followNotificationItemClickListener)
+        holder.bind(getItem(position))
     }
 
     override fun onViewRecycled(holder: FollowNotificationViewHolder) {
