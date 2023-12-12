@@ -197,7 +197,7 @@ class EventStoryRepository @Inject constructor(
     fun getFollowingWithEventState(eventId: Int): Flow<List<UserStatus>> {
         return flowOf(true)
             .map {
-                eventStoryApi.getFollowingWithEventStatus(eventId).users
+                eventStoryApi.getFollowingWithEventStatus(eventId).users.sortedBy { it.nickname }
             }.catch {
                 throw it.toException()
             }
@@ -206,7 +206,7 @@ class EventStoryRepository @Inject constructor(
     fun getFollowerWithEventState(eventId: Int): Flow<List<UserStatus>> {
         return flowOf(true)
             .map {
-                eventStoryApi.getFollowerWithEventStatus(eventId).users
+                eventStoryApi.getFollowerWithEventStatus(eventId).users.sortedBy { it.nickname }
             }.catch {
                 throw it.toException()
             }

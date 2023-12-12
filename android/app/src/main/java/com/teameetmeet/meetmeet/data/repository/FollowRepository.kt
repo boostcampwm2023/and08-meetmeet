@@ -35,7 +35,7 @@ class FollowRepository @Inject constructor(
     fun getFollowingWithFollowState(): Flow<List<UserStatus>> {
         return flowOf(true)
             .map {
-                followApi.getFollowingWithFollowStatus().users
+                followApi.getFollowingWithFollowStatus().users.sortedBy { it.nickname }
             }.catch {
                 throw it.toException()
             }
@@ -44,7 +44,7 @@ class FollowRepository @Inject constructor(
     fun getFollowerWithFollowState(): Flow<List<UserStatus>> {
         return flowOf(true)
             .map {
-                followApi.getFollowerWithFollowStatus().users
+                followApi.getFollowerWithFollowStatus().users.sortedBy { it.nickname }
             }.catch {
                 throw it.toException()
             }
