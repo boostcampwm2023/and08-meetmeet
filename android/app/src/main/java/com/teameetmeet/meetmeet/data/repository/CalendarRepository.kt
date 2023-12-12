@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import java.net.UnknownHostException
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -36,13 +35,7 @@ class CalendarRepository @Inject constructor(
             }.map {
                 localCalendarDataSource.getEvents(startDateTime, endDateTime).first()
             }.catch {
-                when (it) {
-                    is UnknownHostException -> {
-                        emit(localCalendarDataSource.getEvents(startDateTime, endDateTime).first())
-                    }
-
-                    else -> throw it.toException()
-                }
+                emit(localCalendarDataSource.getEvents(startDateTime, endDateTime).first())
             }
     }
 
