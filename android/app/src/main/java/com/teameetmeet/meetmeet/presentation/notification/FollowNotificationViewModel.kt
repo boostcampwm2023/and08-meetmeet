@@ -44,12 +44,14 @@ class FollowNotificationViewModel @Inject constructor(
 
     fun onDeleteAll() {
         viewModelScope.launch {
-            userRepository.deleteUserNotification(
-                _followNotificationList.value.map { it.inviteId }.joinToString(",")
-            ).catch {
-                emitExceptionEvent(it, R.string.notification_delete_fail)
-            }.collectLatest {
-                fetchFollowNotificationList()
+            if (_followNotificationList.value.isNotEmpty()) {
+                userRepository.deleteUserNotification(
+                    _followNotificationList.value.map { it.inviteId }.joinToString(",")
+                ).catch {
+                    emitExceptionEvent(it, R.string.notification_delete_fail)
+                }.collectLatest {
+                    fetchFollowNotificationList()
+                }
             }
         }
     }
