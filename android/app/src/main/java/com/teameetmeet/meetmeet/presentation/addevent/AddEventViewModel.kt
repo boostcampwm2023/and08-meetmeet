@@ -53,8 +53,8 @@ class AddEventViewModel @Inject constructor(
 
     fun eventSave() {
         viewModelScope.launch {
-            _showPlaceholder.update { true }
             if (checkEvent()) {
+                _showPlaceholder.update { true }
                 val startDateTime =
                     _uiState.value.startDate.plusHours(_uiState.value.startTime.hour.toLong())
                         .plusMinutes(_uiState.value.startTime.minute.toLong())
