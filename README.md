@@ -83,30 +83,13 @@
 
 ### 백엔드
 
-#### Infra
-
-<img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white">
-<img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
-
-#### Server
-
-<img src="https://img.shields.io/badge/Nest-E0234E?style=for-the-badge&logo=Nestjs&logoColor=white">
-<img src="https://img.shields.io/badge/letsencrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white">
-<img src="https://img.shields.io/badge/typeform-262627?style=for-the-badge&logo=typeform&logoColor=white">
-<img src="https://img.shields.io/badge/jsonwebtokens-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white">
-
-#### DB
-
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
-
-#### CI/CD
-
-<img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white">
-<img src="https://img.shields.io/badge/NCP-03C75A?style=for-the-badge&logo=naver&logoColor=white">
-
-#### ETC
-
-<img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
+| 분류       | Stack                                                                                                    |
+|------------|----------------------------------------------------------------------------------------------------------|
+| **Infra**  | <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white"><img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white"> |
+| **Server** | <img src="https://img.shields.io/badge/Nest-E0234E?style=for-the-badge&logo=Nestjs&logoColor=white"><img src="https://img.shields.io/badge/letsencrypt-003A70?style=for-the-badge&logo=letsencrypt&logoColor=white"><img src="https://img.shields.io/badge/typeform-262627?style=for-the-badge&logo=typeform&logoColor=white"><img src="https://img.shields.io/badge/jsonwebtokens-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white"> |
+| **DB**     | <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"> |
+| **CI/CD**  | <img src="https://img.shields.io/badge/githubactions-2088FF?style=for-the-badge&logo=githubactions&logoColor=white"><img src="https://img.shields.io/badge/NCP-03C75A?style=for-the-badge&logo=naver&logoColor=white"> |
+| **ETC**    | <img src="https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=slack&logoColor=white"> |
 
 ## 협업 툴
 
