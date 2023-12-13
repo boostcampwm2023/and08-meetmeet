@@ -108,8 +108,11 @@ class EventStoryViewModel @Inject constructor(
 
     fun editAnnouncement(message: String?) {
         viewModelScope.launch {
-            eventStoryRepository.editAnnouncement(eventStoryUiState.value.eventId, message).catch {
-                _event.emit(EventStoryUiEvent.ShowMessage(R.string.event_story_message_edit_noti_fail, it.message.orEmpty()))
+            eventStoryRepository.editAnnouncement(eventStoryUiState.value.eventId, message).catch {exception ->
+                when(exception) {
+                    is ExpiredRefreshTokenException -> _event.emit(EventStoryUiEvent.NavigateToLoginActivity)
+                    else -> _event.emit(EventStoryUiEvent.ShowMessage(R.string.event_story_message_edit_noti_fail, exception.message.orEmpty()))
+                }
             }.collect {
                 _eventStoryUiState.update {
                     it.copy(eventStory = eventStoryUiState.value.eventStory?.copy(announcement = message))
