@@ -115,7 +115,6 @@ class EventStoryRepository @Inject constructor(
             val contents = media?.map { uri ->
                 val file = uri.toAbsolutePath()?.let { File(it) } ?: return@map null
                 val type = uri.getMimeType() ?: return@map null
-                println(type.toMediaType().toString())
                 MultipartBody.Part.createFormData(
                     "contents", file.name, file.asRequestBody(type.toMediaType())
                 )
@@ -126,7 +125,7 @@ class EventStoryRepository @Inject constructor(
                 contents
             )
         }.catch {
-            throw it
+            throw it.toException()
         }
     }
 
@@ -139,49 +138,49 @@ class EventStoryRepository @Inject constructor(
     }
 
     fun getFeedDetail(feedId: Int): Flow<FeedDetail> {
-        return flowOf(true).map {
-            val userNickname = dataStore.getUserProfile().first().nickname
-            eventStoryApi.getFeedDetail(feedId).let { feed ->
-                feed.copy(
-                    isMine = userNickname == feed.author.nickname,
-                    comments = feed.comments.map { comment ->
-                        comment.copy(
-                            isMine = comment.author.nickname == userNickname
-                        )
-                    }
-                )
+        return flowOf(true)
+            .map {
+                val userNickname = dataStore.getUserProfile().first().nickname
+                eventStoryApi.getFeedDetail(feedId).let { feed ->
+                    feed.copy(
+                        isMine = userNickname == feed.author.nickname,
+                        comments = feed.comments.map { comment ->
+                            comment.copy(isMine = comment.author.nickname == userNickname)
+                        }
+                    )
+                }
+            }.catch {
+                throw it.toException()
             }
-        }.catch {
-            //todo: 예외처리
-            throw it
-        }
     }
 
     fun deleteFeed(feedId: Int): Flow<Unit> {
-        return flowOf(true).map {
-            eventStoryApi.deleteFeed(feedId)
-        }.catch {
-            throw it.toException()
-        }
+        return flowOf(true)
+            .map {
+                eventStoryApi.deleteFeed(feedId)
+            }.catch {
+                throw it.toException()
+            }
     }
 
     fun addFeedComment(feedId: Int, memo: String): Flow<Unit> {
-        return flowOf(true).map {
-            eventStoryApi.addFeedComment(
-                feedId, AddFeedCommentRequest(memo)
-            )
-        }.catch {
-            //todo: 예외처리
-            throw it
-        }
+        return flowOf(true)
+            .map {
+                eventStoryApi.addFeedComment(
+                    feedId, AddFeedCommentRequest(memo)
+                )
+            }.catch {
+                throw it.toException()
+            }
     }
 
     fun deleteFeedComment(feedId: Int, commentId: Int): Flow<Unit> {
-        return flowOf(true).map {
-            eventStoryApi.deleteFeedComment(feedId, commentId)
-        }.catch {
-            throw it.toException()
-        }
+        return flowOf(true)
+            .map {
+                eventStoryApi.deleteFeedComment(feedId, commentId)
+            }.catch {
+                throw it.toException()
+            }
     }
 
     fun inviteEvent(eventId: Int, userId: Int): Flow<Unit> {

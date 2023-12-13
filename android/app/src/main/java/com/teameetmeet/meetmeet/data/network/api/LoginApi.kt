@@ -17,7 +17,6 @@ interface LoginApi {
     @POST("/auth/login")
     suspend fun loginSelf(@Body selfSignRequest: SelfSignRequest): LoginResponse
 
-
     @GET("auth/check/email")
     suspend fun checkEmailDuplication(@Query("email") email: String): AvailableResponse
 

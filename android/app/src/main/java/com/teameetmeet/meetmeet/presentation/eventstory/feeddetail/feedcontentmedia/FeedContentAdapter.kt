@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.temp
+package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontentmedia
 
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DiffUtil

@@ -8,9 +8,6 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
-    fun get(id: Int): Flow<Event> {
-        return dao.get(id)
-    }
 
     fun getEvents(startDateTime: Long, endDateTime: Long): Flow<List<Event>> {
         return flowOf(true).map { dao.getEvents(startDateTime, endDateTime) }
@@ -40,18 +37,4 @@ class LocalCalendarDataSource @Inject constructor(private val dao: EventDao) {
         dao.deleteEvents(startDateTime, endDateTime)
     }
 
-    suspend fun updateEventAttr(
-        id: Int,
-        title: String? = null,
-        startDateTime: Long? = null,
-        endDateTime: Long? = null,
-        color: String? = null,
-        notification: String? = null
-    ) {
-        title?.let { title -> dao.updateTitle(id, title) }
-        startDateTime?.let { startDateLong -> dao.updateStartDateTime(id, startDateLong) }
-        endDateTime?.let { endDateLong -> dao.updateEndDateTime(id, endDateLong) }
-        color?.let { color -> dao.updateTitle(id, color) }
-        notification?.let { notification -> dao.updateTitle(id, notification) }
-    }
 }

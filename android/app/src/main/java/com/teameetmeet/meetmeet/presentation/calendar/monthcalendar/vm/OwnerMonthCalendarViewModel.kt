@@ -21,7 +21,7 @@ class OwnerMonthCalendarViewModel(
             val startDateTime = date.withDayOfMonth(1).toStartLong()
             val endDateTime = date.withDayOfMonth(date.lengthOfMonth()).toEndLong()
             calendarRepository
-                .getEvents(startDateTime, endDateTime)
+                .getSyncedEvents(startDateTime, endDateTime)
                 .collectLatest {
                     setDaysInMonth(it.map(Event::toEventSimple))
                 }

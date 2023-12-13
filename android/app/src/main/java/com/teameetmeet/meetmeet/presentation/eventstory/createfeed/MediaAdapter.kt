@@ -1,22 +1,15 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.createfeed
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.teameetmeet.meetmeet.databinding.ItemCreateFeedMediaBinding
 import com.teameetmeet.meetmeet.presentation.model.FeedMedia
 
 class MediaAdapter(
     private val listener: MediaItemCancelClickListener
 ) : ListAdapter<FeedMedia, MediaViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
-        val binding = ItemCreateFeedMediaBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
-        return MediaViewHolder(binding, listener)
+        return MediaViewHolder.from(parent, listener)
     }
 
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
