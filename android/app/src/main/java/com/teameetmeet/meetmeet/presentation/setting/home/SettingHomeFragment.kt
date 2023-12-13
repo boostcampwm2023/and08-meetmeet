@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentSettingHomeBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -39,17 +40,19 @@ class SettingHomeFragment :
     }
 
     private fun setNavigation() {
-        binding.settingHomeBtnAccountSetting.setOnClickListener {
+        binding.settingHomeBtnAccountSetting.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(
                 SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingAccountFragment()
             )
         }
-        binding.settingHomeBtnProfileSetting.setOnClickListener {
+        
+        binding.settingHomeBtnProfileSetting.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(
                 SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingProfileFragment()
             )
         }
-        binding.settingHomeBtnAlarmSetting.setOnClickListener {
+
+        binding.settingHomeBtnAlarmSetting.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             navigateToNotificationSetting()
         }
     }
@@ -72,7 +75,10 @@ class SettingHomeFragment :
                 viewModel.event.collect { event ->
                     when (event) {
                         is SettingHomeUiEvent.NavigateToLoginActivity -> navigateToLoginActivity()
-                        is SettingHomeUiEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
+                        is SettingHomeUiEvent.ShowMessage -> showMessage(
+                            event.messageId,
+                            event.extraMessage
+                        )
                     }
                 }
             }

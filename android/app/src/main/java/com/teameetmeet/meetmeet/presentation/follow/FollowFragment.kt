@@ -87,7 +87,7 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
         followAdapter = FollowAdapter(
             actionType = args.actionType,
             userClickListener = viewModel,
-            id = args.id
+            eventId = args.id
         )
         binding.followSearchResultRv.adapter = followAdapter
     }

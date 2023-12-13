@@ -1,6 +1,7 @@
 package com.teameetmeet.meetmeet.presentation.util
 
 import android.view.View
+import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,14 @@ fun View.clicks(): Flow<Unit> = callbackFlow {
         this.trySend(Unit)
     }
     awaitClose { setOnClickListener(null) }
+}
+
+fun MaterialToolbar.menuClicks(): Flow<Int> = callbackFlow {
+    setOnMenuItemClickListener { menuItem ->
+        this.trySend(menuItem.itemId)
+        true
+    }
+    awaitClose { setOnMenuItemClickListener(null) }
 }
 
 fun <T> Flow<T>.throttleFirst(windowDuration: Long): Flow<T> = flow {
@@ -37,5 +46,16 @@ fun View.setClickEvent(
     clicks()
         .throttleFirst(windowDuration)
         .onEach { onClick.invoke() }
+        .launchIn(uiScope)
+}
+
+fun MaterialToolbar.setMenuClickEvent(
+    uiScope: CoroutineScope,
+    windowDuration: Long = THROTTLE_DURATION,
+    onMenuClick: (menuId: Int) -> Unit,
+) {
+    menuClicks()
+        .throttleFirst(windowDuration)
+        .onEach { onMenuClick.invoke(it) }
         .launchIn(uiScope)
 }

@@ -82,12 +82,14 @@ class EventNotificationViewModel @Inject constructor(
 
     fun onDeleteAll() {
         viewModelScope.launch {
-            userRepository.deleteUserNotification(
-                _eventNotificationList.value.map { it.inviteId }.joinToString(",")
-            ).catch {
-                emitExceptionEvent(it, R.string.notification_delete_fail)
-            }.collectLatest {
-                fetchEventNotificationList()
+            if (_eventNotificationList.value.isNotEmpty()) {
+                userRepository.deleteUserNotification(
+                    _eventNotificationList.value.map { it.inviteId }.joinToString(",")
+                ).catch {
+                    emitExceptionEvent(it, R.string.notification_delete_fail)
+                }.collectLatest {
+                    fetchEventNotificationList()
+                }
             }
         }
     }
