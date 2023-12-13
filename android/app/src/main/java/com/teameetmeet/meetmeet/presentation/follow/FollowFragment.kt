@@ -1,8 +1,10 @@
 package com.teameetmeet.meetmeet.presentation.follow
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -31,8 +33,6 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
         super.onViewCreated(view, savedInstanceState)
 
         binding.vm = viewModel
-        binding.actionType = args.actionType
-        binding.id = args.id
 
         setRecyclerViewAdapter()
         setPagerAdapter()
@@ -48,13 +48,24 @@ class FollowFragment : BaseFragment<FragmentFollowBinding>(R.layout.fragment_fol
         with(binding) {
             followEtSearch.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    viewModel.updateSearchedUser(args.actionType, args.id)
+                    performSearch()
                     true
                 } else {
                     false
                 }
             }
+            followSearchIbSearch.setOnClickListener {
+                performSearch()
+                followSearchIbSearch.clearFocus()
+            }
         }
+    }
+
+    private fun performSearch() {
+        val imm =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.followSearchIbSearch.windowToken, 0)
+        viewModel.updateSearchedUser(args.actionType, args.id)
     }
 
     private fun collectViewModelEvent() {
