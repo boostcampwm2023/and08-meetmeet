@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.presentation.notification.follow
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.data.network.entity.FollowNotification
 import com.teameetmeet.meetmeet.databinding.ItemFollowNotificationBinding
@@ -19,6 +20,7 @@ class FollowNotificationViewHolder private constructor(
         binding.tvRemove.setOnClickListener {
             followNotificationItemClickListener.onDeleteClick(item)
         }
+        NotificationManagerCompat.from(itemView.context).cancel(item.id)
     }
 
     fun resetSwipeState() {

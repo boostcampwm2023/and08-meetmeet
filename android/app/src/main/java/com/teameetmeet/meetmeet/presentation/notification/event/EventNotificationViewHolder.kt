@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.presentation.notification.event
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.R
@@ -42,6 +43,7 @@ class EventNotificationViewHolder private constructor(
         binding.tvRemove.setOnClickListener {
             eventNotificationItemClickListener.onDeleteClick(item)
         }
+        NotificationManagerCompat.from(itemView.context).cancel(item.eventId)
     }
 
     fun resetSwipeState() {
