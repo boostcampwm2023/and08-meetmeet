@@ -12,7 +12,7 @@
 
 |                         캘린더 화면                          |                          일정 추가                           |                        일정 수정/삭제                        |                          일정 알림                           |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/69cf24fd-2ebd-4a71-9558-738afd5aa330" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/9e65e63d-9049-433f-8408-53f58ba50c96" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/65765257-0992-4c1d-9440-7f3b9ec85927" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/2b5469e5-121e-4dfb-8df7-3a0b6de5ae73" width="140" height="300" > |
+| <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/69cf24fd-2ebd-4a71-9558-738afd5aa330" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/9e65e63d-9049-433f-8408-53f58ba50c96" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/65765257-0992-4c1d-9440-7f3b9ec85927" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/2b5469e5-121e-4dfb-8df7-3a0b6de5ae73" width="200" height="430" > |
 
 
 
@@ -22,11 +22,11 @@
 
 |                            팔로우                            |                         팔로우 알림                          |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/d449fd64-580b-4ec5-853b-bca44f56c110" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8e700bda-d4ee-4bd4-877f-54d69e6bb52c" width="140" height="300" > |
+| <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/d449fd64-580b-4ec5-853b-bca44f56c110" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8e700bda-d4ee-4bd4-877f-54d69e6bb52c" width="200" height="430" > |
 
 |                          일정 초대                           |                        일정 초대 알림                        |                      친구 달력 놀러가기                      |                          일정 참가                           |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/909176f3-8801-4a0c-a0b5-08250eeb1c1d" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8a1e67ec-586a-4448-82e0-79a220ddcaaa" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/038c07b1-dad8-4959-add8-8e73b9fddd9b" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/406ea09d-7e74-42ad-bcfa-bfd5c8ca372b" width="140" height="300" > |
+| <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/909176f3-8801-4a0c-a0b5-08250eeb1c1d" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8a1e67ec-586a-4448-82e0-79a220ddcaaa" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/038c07b1-dad8-4959-add8-8e73b9fddd9b" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/406ea09d-7e74-42ad-bcfa-bfd5c8ca372b" width="200" height="430" > |
 
 
 
@@ -36,7 +36,7 @@
 
 |                         피드 올리기                          |                       피드 댓글 남기기                       |               미디어 파일 크게 보기 & 다운로드               |
 | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/c138b653-cc45-4071-881f-4858dc9d5acc" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8d5e7dea-6512-4d50-a204-3647b87fd64f" width="140" height="300" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/a1eb6d9d-bf29-4240-a65c-02f3c067b28c" width="140" height="300" > |
+| <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/c138b653-cc45-4071-881f-4858dc9d5acc" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8d5e7dea-6512-4d50-a204-3647b87fd64f" width="200" height="430" > | <img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/a1eb6d9d-bf29-4240-a65c-02f3c067b28c" width="200" height="430" > |
 
 
 
