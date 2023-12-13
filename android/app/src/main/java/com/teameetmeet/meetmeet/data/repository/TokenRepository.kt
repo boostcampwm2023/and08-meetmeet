@@ -38,7 +38,7 @@ class TokenRepository @Inject constructor(
                     is HttpException -> {
                         if(it.code() == 418) {
                             val token = refreshAccessToken()
-                            autoLoginApp(token)
+                            emit(autoLoginApp(token).first())
                         } else {
                             throw it
                         }

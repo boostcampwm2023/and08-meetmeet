@@ -12,7 +12,6 @@ import com.teameetmeet.meetmeet.data.repository.CalendarRepository
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.data.repository.FollowRepository
 import com.teameetmeet.meetmeet.data.repository.LoginRepository
-import com.teameetmeet.meetmeet.data.repository.SettingRepository
 import com.teameetmeet.meetmeet.data.repository.TokenRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.Module
@@ -53,12 +52,6 @@ class RepositoryModule {
         eventStoryApi: EventStoryApi,
         dataStore: DataStoreHelper
     ) = EventStoryRepository(eventStoryApi, dataStore)
-
-    @Singleton
-    @Provides
-    fun provideSettingRepository(
-        dataStore: DataStoreHelper
-    ) = SettingRepository(dataStore)
 
     @Singleton
     @Provides

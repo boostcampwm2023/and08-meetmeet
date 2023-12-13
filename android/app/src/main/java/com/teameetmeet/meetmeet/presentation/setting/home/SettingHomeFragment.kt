@@ -1,6 +1,8 @@
 package com.teameetmeet.meetmeet.presentation.setting.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -43,15 +45,27 @@ class SettingHomeFragment :
                 SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingAccountFragment()
             )
         }
+        
         binding.settingHomeBtnProfileSetting.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(
                 SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingProfileFragment()
             )
         }
+
         binding.settingHomeBtnAlarmSetting.setClickEvent(viewLifecycleOwner.lifecycleScope) {
-            findNavController().navigate(
-                SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingAlarmFragment()
-            )
+            navigateToNotificationSetting()
+        }
+    }
+
+    private fun navigateToNotificationSetting() {
+        val intent = Intent().apply {
+            action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+        }
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            showMessage(R.string.setting_notification_navigate_fail, e.message.orEmpty())
         }
     }
 

@@ -18,7 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentFeedContentBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
-import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.temp.FeedContentAdapter
+import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontentmedia.FeedContentAdapter
 import com.teameetmeet.meetmeet.service.downloading.ImageDownloadWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
