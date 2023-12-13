@@ -9,6 +9,8 @@ import com.teameetmeet.meetmeet.data.network.entity.FollowNotification
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.notification.follow.FollowNotificationItemClickListener
 import com.teameetmeet.meetmeet.presentation.notification.follow.FollowNotificationUiEvent
+import com.teameetmeet.meetmeet.presentation.util.THROTTLE_DURATION
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +33,12 @@ class FollowNotificationViewModel @Inject constructor(
 
     private val _event: MutableSharedFlow<FollowNotificationUiEvent> = MutableSharedFlow()
     val event: SharedFlow<FollowNotificationUiEvent> = _event
+
+    private val _deleteClickEvent = MutableSharedFlow<FollowNotification>()
+
+    init {
+        setDeleteRequestFlow()
+    }
 
     fun fetchFollowNotificationList() {
         viewModelScope.launch {
@@ -56,13 +64,19 @@ class FollowNotificationViewModel @Inject constructor(
         }
     }
 
-    override fun onDelete(event: FollowNotification) {
-        viewModelScope.launch {
+    private fun setDeleteRequestFlow() {
+        _deleteClickEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) { event ->
             userRepository.deleteUserNotification(event.inviteId.toString()).catch {
                 emitExceptionEvent(it, R.string.notification_delete_fail)
             }.collectLatest {
                 fetchFollowNotificationList()
             }
+        }
+    }
+
+    override fun onDeleteClick(event: FollowNotification) {
+        viewModelScope.launch {
+            _deleteClickEvent.emit(event)
         }
     }
 
