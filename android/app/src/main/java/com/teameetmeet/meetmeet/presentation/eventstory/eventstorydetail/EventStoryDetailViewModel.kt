@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
+import com.teameetmeet.meetmeet.data.NoIsAllTrueException
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 import com.teameetmeet.meetmeet.presentation.model.EventColor
@@ -212,13 +213,18 @@ class EventStoryDetailViewModel @Inject constructor(
                         repeatEndDate = repeatEndDate,
                         color = color,
                         alarm = alarm,
-                    ).catch {
-                        _event.emit(
-                            EventStoryDetailEvent.ShowMessage(
-                                R.string.story_detail_message_edit_message_fail,
-                                extraMessage = it.message.orEmpty()
+                    ).catch {exception ->
+                        _event.emit(when(exception) {
+                            is ExpiredRefreshTokenException -> EventStoryDetailEvent.NavigateToLoginActivity
+                            is UnknownHostException -> EventStoryDetailEvent.ShowMessage(R.string.common_message_no_internet)
+                            is NoIsAllTrueException -> EventStoryDetailEvent.ShowMessage(
+                                    R.string.story_detail_message_repeat_edit_fail
+                                )
+                            else -> EventStoryDetailEvent.ShowMessage(
+                                    R.string.story_detail_message_edit_message_fail,
+                                    extraMessage = exception.message.orEmpty()
                             )
-                        )
+                        })
                     }.collect {
                         setAlarm()
                         _event.emit(EventStoryDetailEvent.ShowMessage(R.string.story_detail_success_edit_event))
