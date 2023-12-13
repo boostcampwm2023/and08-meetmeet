@@ -49,18 +49,18 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     private fun setClickListener() {
         with(binding) {
-            eventStoryIvChangeNotification.setClickEvent(lifecycleScope) {
+            eventStoryIvChangeNotification.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 val dialog =
                     NotificationChangeDialog(requireContext(), viewModel, viewModel.getNoti())
                 dialog.show()
             }
-            eventStoryTvValueEventNotification.setClickEvent(lifecycleScope) {
+            eventStoryTvValueEventNotification.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 showDialog(viewModel.getNoti())
             }
-            eventStoryIbSeeMoreMember.setClickEvent(lifecycleScope) {
+            eventStoryIbSeeMoreMember.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventMemberFragment(viewModel.eventStoryUiState.value.eventStory?.eventMembers?.toTypedArray().orEmpty()))
             }
-            eventStoryCvInviteMember.setClickEvent(lifecycleScope) {
+            eventStoryCvInviteMember.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 when (viewModel.eventStoryUiState.value.authority) {
                     EventAuthority.GUEST -> {
                         viewModel.joinEventStory()
@@ -76,7 +76,7 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                     else -> return@setClickEvent
                 }
             }
-            eventStoryFabMakeFeed.setClickEvent(lifecycleScope) {
+            eventStoryFabMakeFeed.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 findNavController().navigate(
                     EventStoryFragmentDirections.actionEventStoryFragmentToCreateFeedFragment(
                         viewModel.eventStoryUiState.value.eventId
@@ -90,8 +90,8 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         binding.eventStoryTbl.setNavigationOnClickListener {
             requireActivity().finish()
         }
-        binding.eventStoryTbl.setMenuClickEvent(lifecycleScope) {
-            when (it) {
+        binding.eventStoryTbl.setMenuClickEvent(viewLifecycleOwner.lifecycleScope) {itemId ->
+            when (itemId) {
                 R.id.menu_see_more_event_story -> {
                     navigateToEventDetailFragment()
                 }
