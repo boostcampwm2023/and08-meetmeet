@@ -1,9 +1,11 @@
 package com.teameetmeet.meetmeet.presentation.setting.home
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.model.UserProfile
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,14 +27,14 @@ class SettingHomeViewModel @Inject constructor(
     private val _user: MutableStateFlow<UserProfile> = MutableStateFlow(UserProfile(null, "", ""))
     val user: StateFlow<UserProfile> = _user
 
-    private val _event: MutableSharedFlow<SettingHomeEvent> = MutableSharedFlow()
-    val event: SharedFlow<SettingHomeEvent> = _event
+    private val _event: MutableSharedFlow<SettingHomeUiEvent> = MutableSharedFlow()
+    val event: SharedFlow<SettingHomeUiEvent> = _event
 
     fun fetchUserProfile() {
         viewModelScope.launch {
             userRepository.getUserProfile()
                 .catch {
-                    // 예외 처리
+                    emitExceptionEvent(it, R.string.setting_profile_network_error)
                 }.collect { userProfile ->
                     _user.update { userProfile }
                 }
@@ -42,10 +45,27 @@ class SettingHomeViewModel @Inject constructor(
         UserApiClient.instance.logout {
             viewModelScope.launch {
                 userRepository.logout().catch {
-                    _event.emit(SettingHomeEvent.ShowMessage(R.string.setting_home_message_logout_fail))
+                    emitExceptionEvent(it, R.string.setting_home_message_logout_fail)
                 }.collect {
-                    _event.emit(SettingHomeEvent.NavigateToLoginActivity)
+                    _event.emit(SettingHomeUiEvent.NavigateToLoginActivity)
                 }
+            }
+        }
+    }
+
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
+        when (e) {
+            is ExpiredRefreshTokenException -> {
+                _event.emit(SettingHomeUiEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(SettingHomeUiEvent.NavigateToLoginActivity)
+            }
+
+            is UnknownHostException -> {
+                _event.emit(SettingHomeUiEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(SettingHomeUiEvent.ShowMessage(message))
             }
         }
     }

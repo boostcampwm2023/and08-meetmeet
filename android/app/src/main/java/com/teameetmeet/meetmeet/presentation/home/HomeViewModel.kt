@@ -40,13 +40,13 @@ class HomeViewModel @Inject constructor(
 
     private fun setAlarm() {
         viewModelScope.launch {
-            calendarRepository.getEvents(
+            calendarRepository.getSyncedEvents(
                 getLocalDateTime().toLong(),
                 getLocalDateTime().plusDays(AlarmHelper.UPDATE_DAY_UNIT).toLong()
-            ).catch {}
-                .collect { events ->
+            ).catch {
+            }.collect { events ->
                 events.filter {
-                  getLocalDateTime().toLong() <= it.getTriggerTime()
+                    getLocalDateTime().toLong() <= it.getTriggerTime()
                 }.forEach {
                     alarmHelper.registerEventAlarm(
                         EventAlarm(

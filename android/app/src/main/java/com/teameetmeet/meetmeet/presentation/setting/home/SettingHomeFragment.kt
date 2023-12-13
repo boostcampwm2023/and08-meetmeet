@@ -1,8 +1,9 @@
 package com.teameetmeet.meetmeet.presentation.setting.home
 
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentSettingHomeBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -38,20 +40,32 @@ class SettingHomeFragment :
     }
 
     private fun setNavigation() {
-        binding.settingHomeBtnAccountSetting.setOnClickListener {
+        binding.settingHomeBtnAccountSetting.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(
                 SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingAccountFragment()
             )
         }
-        binding.settingHomeBtnProfileSetting.setOnClickListener {
+        
+        binding.settingHomeBtnProfileSetting.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(
                 SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingProfileFragment()
             )
         }
-        binding.settingHomeBtnAlarmSetting.setOnClickListener {
-            findNavController().navigate(
-                SettingHomeFragmentDirections.actionSettingHomeFragmentToSettingAlarmFragment()
-            )
+
+        binding.settingHomeBtnAlarmSetting.setClickEvent(viewLifecycleOwner.lifecycleScope) {
+            navigateToNotificationSetting()
+        }
+    }
+
+    private fun navigateToNotificationSetting() {
+        val intent = Intent().apply {
+            action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().packageName)
+        }
+        try {
+            startActivity(intent)
+        } catch (e: Exception) {
+            showMessage(R.string.setting_notification_navigate_fail, e.message.orEmpty())
         }
     }
 
@@ -60,17 +74,15 @@ class SettingHomeFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { event ->
                     when (event) {
-                        is SettingHomeEvent.NavigateToLoginActivity -> navigateToLoginActivity()
-                        is SettingHomeEvent.ShowMessage -> showMessage(event.messageId, event.extraMessage)
+                        is SettingHomeUiEvent.NavigateToLoginActivity -> navigateToLoginActivity()
+                        is SettingHomeUiEvent.ShowMessage -> showMessage(
+                            event.messageId,
+                            event.extraMessage
+                        )
                     }
                 }
             }
         }
-    }
-
-    private fun navigateToLoginActivity() {
-        findNavController().navigate(SettingHomeFragmentDirections.actionSettingHomeFragmentToLoginActivity())
-        requireActivity().finishAffinity()
     }
 
     private fun setTopAppBar() {

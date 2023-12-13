@@ -48,12 +48,23 @@ class AlarmReceiver : BroadcastReceiver() {
             }
 
             AlarmHelper.INTENT_ACTION_ACCEPT_INVITE_EVENT -> {
-                val accept = intent.getBooleanExtra(AlarmHelper.INTENT_EXTRA_ACCEPT, false)
                 val inviteId = intent.getIntExtra(AlarmHelper.INTENT_EXTRA_INVITE_ID, 0)
                 val eventId = intent.getIntExtra(AlarmHelper.INTENT_EXTRA_EVENT_ID, 0)
 
                 CoroutineScope(Dispatchers.IO).launch {
-                    eventStoryRepository.acceptEventInvite(accept, inviteId, eventId).first()
+                    eventStoryRepository.acceptEventInvite(true, inviteId, eventId).first()
+                }
+
+                NotificationManagerCompat.from(context).cancel(eventId)
+                notificationHelper.emitActiveNotificationCount()
+            }
+
+            AlarmHelper.INTENT_ACTION_REJECT_INVITE_EVENT -> {
+                val inviteId = intent.getIntExtra(AlarmHelper.INTENT_EXTRA_INVITE_ID, 0)
+                val eventId = intent.getIntExtra(AlarmHelper.INTENT_EXTRA_EVENT_ID, 0)
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    eventStoryRepository.acceptEventInvite(false, inviteId, eventId).first()
                 }
 
                 NotificationManagerCompat.from(context).cancel(eventId)

@@ -49,9 +49,4 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>(R.layout.activity_spl
         })
         finish()
     }
-
-    private fun navigateToLoginActivity() {
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
-    }
 }

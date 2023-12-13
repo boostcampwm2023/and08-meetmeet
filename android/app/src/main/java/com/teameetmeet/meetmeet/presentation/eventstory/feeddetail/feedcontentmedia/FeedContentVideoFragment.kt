@@ -1,4 +1,4 @@
-package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.temp
+package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontentmedia
 
 import android.os.Bundle
 import android.view.View

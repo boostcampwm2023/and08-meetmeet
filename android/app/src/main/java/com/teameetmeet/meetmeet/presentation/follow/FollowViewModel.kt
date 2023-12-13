@@ -1,13 +1,16 @@
 package com.teameetmeet.meetmeet.presentation.follow
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.data.repository.FollowRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,6 +19,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,19 +42,27 @@ class FollowViewModel @Inject constructor(
         MutableStateFlow(listOf())
     val searchedUser: StateFlow<List<UserStatus>> = _searchedUser
 
-    private val _event: MutableSharedFlow<FollowEvent> = MutableSharedFlow()
-    val event: SharedFlow<FollowEvent> = _event
+    private val _event: MutableSharedFlow<FollowUiEvent> = MutableSharedFlow(
+        extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val event: SharedFlow<FollowUiEvent> = _event
+
+    private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
 
     fun updateSearchedUser(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             when (actionType) {
                 FollowActionType.FOLLOW -> {
                     userRepository.getUserWithFollowStatus(
                         _searchKeyword.value
                     ).catch {
-                        _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
+                        emitExceptionEvent(it, R.string.follow_search_fail)
+                        _showPlaceholder.update { false }
                     }.collectLatest { users ->
                         _searchedUser.update { users }
+                        _showPlaceholder.update { false }
                     }
                 }
 
@@ -58,27 +70,34 @@ class FollowViewModel @Inject constructor(
                     id?.let {
                         eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
                             .catch {
-                                _event.emit(FollowEvent.ShowMessage(R.string.follow_search_fail))
+                                emitExceptionEvent(it, R.string.follow_search_fail)
+                                _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _searchedUser.update { users }
+                                _showPlaceholder.update { false }
                             }
                     }
                 }
 
-                else -> {}
+                else -> {
+                    _showPlaceholder.update { false }
+                }
             }
         }
     }
 
     fun updateFollowing(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             when (actionType) {
                 FollowActionType.FOLLOW -> {
                     followRepository.getFollowingWithFollowState()
                         .catch {
-                            _event.emit(FollowEvent.ShowMessage(R.string.follow_search_following_fail))
+                            emitExceptionEvent(it, R.string.follow_search_following_fail)
+                            _showPlaceholder.update { false }
                         }.collectLatest { users ->
                             _following.update { users }
+                            _showPlaceholder.update { false }
                         }
                 }
 
@@ -86,27 +105,34 @@ class FollowViewModel @Inject constructor(
                     id?.let { id ->
                         eventStoryRepository.getFollowingWithEventState(id)
                             .catch {
-                                _event.emit(FollowEvent.ShowMessage(R.string.follow_search_following_fail))
+                                emitExceptionEvent(it, R.string.follow_search_following_fail)
+                                _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _following.update { users }
+                                _showPlaceholder.update { false }
                             }
                     }
                 }
 
-                else -> {}
+                else -> {
+                    _showPlaceholder.update { false }
+                }
             }
         }
     }
 
     fun updateFollower(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             when (actionType) {
                 FollowActionType.FOLLOW -> {
                     followRepository.getFollowerWithFollowState()
                         .catch {
-                            _event.emit(FollowEvent.ShowMessage(R.string.follow_search_follower_fail))
+                            emitExceptionEvent(it, R.string.follow_search_follower_fail)
+                            _showPlaceholder.update { false }
                         }.collectLatest { users ->
                             _follower.update { users }
+                            _showPlaceholder.update { false }
                         }
                 }
 
@@ -114,14 +140,18 @@ class FollowViewModel @Inject constructor(
                     id?.let { id ->
                         eventStoryRepository.getFollowerWithEventState(id)
                             .catch {
-                                _event.emit(FollowEvent.ShowMessage(R.string.follow_search_follower_fail))
+                                emitExceptionEvent(it, R.string.follow_search_follower_fail)
+                                _showPlaceholder.update { false }
                             }.collectLatest { users ->
                                 _follower.update { users }
+                                _showPlaceholder.update { false }
                             }
                     }
                 }
 
-                else -> {}
+                else -> {
+                    _showPlaceholder.update { false }
+                }
             }
         }
     }
@@ -134,7 +164,7 @@ class FollowViewModel @Inject constructor(
         viewModelScope.launch {
             if (!user.isMe) {
                 _event.emit(
-                    FollowEvent.VisitProfile(user.id, user.nickname)
+                    FollowUiEvent.VisitProfile(user.id, user.nickname)
                 )
             }
         }
@@ -142,44 +172,70 @@ class FollowViewModel @Inject constructor(
 
     override fun onFollowClick(user: UserStatus) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             followRepository.follow(user.id)
                 .catch {
-                    _event.emit(FollowEvent.ShowMessage(R.string.follow_follow_fail))
+                    emitExceptionEvent(it, R.string.follow_follow_fail)
+                    _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.FOLLOW)
                     updateFollower(FollowActionType.FOLLOW)
                     updateSearchedUser(FollowActionType.FOLLOW)
+                    _showPlaceholder.update { false }
                 }
         }
     }
 
     override fun onUnfollowClick(user: UserStatus) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             followRepository.unFollow(user.id)
                 .catch {
-                    _event.emit(FollowEvent.ShowMessage(R.string.follow_unfollow_fail))
+                    emitExceptionEvent(it, R.string.follow_unfollow_fail)
+                    _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.FOLLOW)
                     updateFollower(FollowActionType.FOLLOW)
                     updateSearchedUser(FollowActionType.FOLLOW)
+                    _showPlaceholder.update { false }
                 }
         }
     }
 
     override fun onInviteEventClick(user: UserStatus, id: Int) {
         viewModelScope.launch {
+            _showPlaceholder.update { true }
             eventStoryRepository.inviteEvent(id, user.id)
                 .catch {
-                    _event.emit(FollowEvent.ShowMessage(R.string.event_story_invite_fail))
+                    emitExceptionEvent(it, R.string.event_story_invite_fail)
+                    _showPlaceholder.update { false }
                 }.collectLatest {
                     updateFollowing(FollowActionType.EVENT, id)
                     updateFollower(FollowActionType.EVENT, id)
                     updateSearchedUser(FollowActionType.EVENT, id)
+                    _showPlaceholder.update { false }
                 }
         }
     }
 
     override fun onInviteGroupClick(user: UserStatus, id: Int) {
         println("${user.nickname}님을 그룹 $id 에 초대")
+    }
+
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
+        when (e) {
+            is ExpiredRefreshTokenException -> {
+                _event.emit(FollowUiEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(FollowUiEvent.NavigateToLoginActivity)
+            }
+
+            is UnknownHostException -> {
+                _event.emit(FollowUiEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(FollowUiEvent.ShowMessage(message))
+            }
+        }
     }
 }

@@ -1,8 +1,10 @@
 package com.teameetmeet.meetmeet.presentation.setting.passwordchange
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.login.signup.PasswordState
 import com.teameetmeet.meetmeet.util.Verification
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -64,7 +67,7 @@ class SettingPasswordChangeViewModel @Inject constructor(
             _showPlaceholder.update { true }
             userRepository.patchPassword(_uiState.value.password)
                 .catch {
-                    _event.emit(SettingPasswordChangeUiEvent.ShowMessage(R.string.setting_password_change_fail))
+                    emitExceptionEvent(it, R.string.setting_password_change_fail)
                     _showPlaceholder.update { false }
                 }.collectLatest {
                     _event.emit(SettingPasswordChangeUiEvent.NavigateToSettingHomeFragment)
@@ -89,6 +92,23 @@ class SettingPasswordChangeViewModel @Inject constructor(
             passwordConfirm.isEmpty() -> PasswordState.None
             password == passwordConfirm -> PasswordState.Valid
             else -> PasswordState.Invalid
+        }
+    }
+
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
+        when (e) {
+            is ExpiredRefreshTokenException -> {
+                _event.emit(SettingPasswordChangeUiEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(SettingPasswordChangeUiEvent.NavigateToLoginActivity)
+            }
+
+            is UnknownHostException -> {
+                _event.emit(SettingPasswordChangeUiEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(SettingPasswordChangeUiEvent.ShowMessage(message))
+            }
         }
     }
 }

@@ -11,6 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentSettingAccountBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -52,7 +53,7 @@ class SettingAccountFragment :
     }
 
     private fun setDialog() {
-        binding.settingAccountBtnAccountDelete.setOnClickListener {
+        binding.settingAccountBtnAccountDelete.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             MaterialAlertDialogBuilder(requireActivity())
                 .setTitle(resources.getString(R.string.setting_account_delete_title))
                 .setIcon(R.drawable.ic_warning)
@@ -74,7 +75,7 @@ class SettingAccountFragment :
     }
 
     private fun setNavigation() {
-        binding.settingAccountBtnPasswordChange.setOnClickListener {
+        binding.settingAccountBtnPasswordChange.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(
                 SettingAccountFragmentDirections.actionSettingAccountFragmentToSettingPasswordChangeFragment()
             )

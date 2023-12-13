@@ -11,7 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.appbar.MaterialToolbar
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.Content
-import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.temp.FeedContentAdapter
+import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontentmedia.FeedContentAdapter
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
 
 @BindingAdapter("sub_list")

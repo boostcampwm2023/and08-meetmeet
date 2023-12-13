@@ -34,7 +34,7 @@ class LoginRepository @Inject constructor(
                 val response = loginApi.loginSelf(request)
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -44,7 +44,7 @@ class LoginRepository @Inject constructor(
                 val response = loginApi.checkEmailDuplication(email)
                 response.isAvailable
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 
@@ -56,7 +56,7 @@ class LoginRepository @Inject constructor(
                 val response = loginApi.loginSelf(request)
                 storeAppToken(response.accessToken, response.refreshToken)
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 

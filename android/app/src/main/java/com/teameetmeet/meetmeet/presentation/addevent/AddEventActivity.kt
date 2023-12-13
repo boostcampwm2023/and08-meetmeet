@@ -17,6 +17,8 @@ import com.teameetmeet.meetmeet.databinding.ActivityAddEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
 import com.teameetmeet.meetmeet.presentation.model.EventRepeatTerm
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
+import com.teameetmeet.meetmeet.presentation.util.setMenuClickEvent
 import com.teameetmeet.meetmeet.util.date.toLocalDateTime
 import com.teameetmeet.meetmeet.util.date.toLong
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,14 +53,11 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
 
     private fun setTopAppBar() {
         with(binding.topAppBar) {
-            setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
+            setMenuClickEvent(lifecycleScope) { menuItemId ->
+                when (menuItemId) {
                     R.id.menu_save -> {
                         viewModel.eventSave()
-                        true
                     }
-
-                    else -> false
                 }
             }
             setNavigationOnClickListener {
@@ -73,12 +72,15 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
                 viewModel.event.collect { event ->
                     when (event) {
                         is AddEventUiEvent.ShowMessage -> showMessage(
-                            event.messageId,
-                            event.extraMessage
+                            event.messageId, event.extraMessage
                         )
 
                         is AddEventUiEvent.FinishAddEventActivity -> {
                             finish()
+                        }
+
+                        is AddEventUiEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
                         }
                     }
                 }
@@ -120,15 +122,13 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
     }
 
     private fun setDateTimePicker() {
-        val dateRangePicker =
-            MaterialDatePicker.Builder.dateRangePicker()
-                .setTitleText(getString(R.string.add_event_title))
-                .setSelection(
-                    Pair(
-                        viewModel.uiState.value.startDate.toLong(ZoneId.of("UTC")),
-                        viewModel.uiState.value.endDate.toLong(ZoneId.of("UTC"))
-                    )
-                ).build()
+        val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
+            .setTitleText(getString(R.string.add_event_title)).setSelection(
+                Pair(
+                    viewModel.uiState.value.startDate.toLong(ZoneId.of("UTC")),
+                    viewModel.uiState.value.endDate.toLong(ZoneId.of("UTC"))
+                )
+            ).build()
 
         dateRangePicker.addOnPositiveButtonClickListener {
             viewModel.setEventDate(
@@ -137,13 +137,13 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
             )
         }
 
-        binding.addEventTvValueStartDate.setOnClickListener {
+        binding.addEventTvValueStartDate.setClickEvent(lifecycleScope) {
             dateRangePicker.show(supportFragmentManager, "DateRangePicker")
         }
-        binding.addEventTvValueEndDate.setOnClickListener {
+        binding.addEventTvValueEndDate.setClickEvent(lifecycleScope) {
             dateRangePicker.show(supportFragmentManager, "DateRangePicker")
         }
-        binding.eventStoryTvValueEventRepeatEndDate.setOnClickListener {
+        binding.eventStoryTvValueEventRepeatEndDate.setClickEvent(lifecycleScope) {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText(getString(R.string.story_detail_description_event_repeat_end_date))
                 .build()
@@ -157,8 +157,7 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
         val startTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
             .setHour(viewModel.uiState.value.startTime.hour)
             .setMinute(viewModel.uiState.value.startTime.minute)
-            .setTitleText(getString(R.string.add_event_err_start_time))
-            .build()
+            .setTitleText(getString(R.string.add_event_err_start_time)).build()
 
         startTimePicker.addOnPositiveButtonClickListener {
             viewModel.setEventStartTime(startTimePicker.hour, startTimePicker.minute)
@@ -173,10 +172,10 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
             viewModel.setEventEndTime(endTimePicker.hour, endTimePicker.minute)
         }
 
-        binding.addEventTvValueStartTime.setOnClickListener {
+        binding.addEventTvValueStartTime.setClickEvent(lifecycleScope) {
             startTimePicker.show(supportFragmentManager, "StartTimePicker")
         }
-        binding.addEventTvValueEndTime.setOnClickListener {
+        binding.addEventTvValueEndTime.setClickEvent(lifecycleScope) {
             endTimePicker.show(supportFragmentManager, "EndTimePicker")
         }
     }

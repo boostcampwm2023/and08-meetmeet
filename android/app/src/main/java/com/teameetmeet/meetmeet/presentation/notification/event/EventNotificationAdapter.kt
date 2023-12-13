@@ -1,25 +1,20 @@
 package com.teameetmeet.meetmeet.presentation.notification.event
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotification
-import com.teameetmeet.meetmeet.databinding.ItemEventNotificationBinding
 
 class EventNotificationAdapter(private val eventNotificationItemClickListener: EventNotificationItemClickListener) :
     ListAdapter<EventInvitationNotification, EventNotificationViewHolder>(diffCallback) {
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
     ): EventNotificationViewHolder {
-        val binding = ItemEventNotificationBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
-        )
-        return EventNotificationViewHolder(binding)
+        return EventNotificationViewHolder.from(parent, eventNotificationItemClickListener)
     }
 
     override fun onBindViewHolder(holder: EventNotificationViewHolder, position: Int) {
-        holder.bind(getItem(position), eventNotificationItemClickListener)
+        holder.bind(getItem(position))
     }
 
     override fun onViewRecycled(holder: EventNotificationViewHolder) {

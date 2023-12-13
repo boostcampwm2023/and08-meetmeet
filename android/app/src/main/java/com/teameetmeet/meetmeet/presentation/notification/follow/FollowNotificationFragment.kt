@@ -4,6 +4,9 @@ package com.teameetmeet.meetmeet.presentation.notification.follow
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentFollowNotificationBinding
@@ -11,6 +14,8 @@ import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.notification.FollowNotificationViewModel
 import com.teameetmeet.meetmeet.presentation.notification.SwipeHelperCallback
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FollowNotificationFragment :
@@ -21,6 +26,7 @@ class FollowNotificationFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setBinding()
+        collectViewModelEvent()
     }
 
     override fun onResume() {
@@ -35,5 +41,23 @@ class FollowNotificationFragment :
         }
         ItemTouchHelper(swipeHelperCallback).attachToRecyclerView(binding.notificationRcv)
         binding.notificationRcv.adapter = FollowNotificationAdapter(viewModel)
+    }
+
+    private fun collectViewModelEvent() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.event.collectLatest { event ->
+                    when (event) {
+                        is FollowNotificationUiEvent.ShowMessage -> {
+                            showMessage(event.message, event.extraMessage)
+                        }
+
+                        is FollowNotificationUiEvent.NavigateToLoginActivity -> {
+                            navigateToLoginActivity()
+                        }
+                    }
+                }
+            }
+        }
     }
 }

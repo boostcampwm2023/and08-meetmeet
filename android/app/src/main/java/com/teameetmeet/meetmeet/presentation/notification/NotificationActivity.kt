@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayoutMediator
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.ActivityNotificationBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.home.HomeActivity
+import com.teameetmeet.meetmeet.presentation.util.setMenuClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -42,8 +44,8 @@ class NotificationActivity :
         binding.notificationMtb.setNavigationOnClickListener {
             navigateToPrev()
         }
-        binding.notificationMtb.setOnMenuItemClickListener {
-            when (it.itemId) {
+        binding.notificationMtb.setMenuClickEvent(lifecycleScope) { menuItemId ->
+            when (menuItemId) {
                 R.id.menu_delete_notification_all -> {
                     when (binding.notificationVp.currentItem) {
                         TAB_INDEX_FOLLOW -> {
@@ -59,7 +61,6 @@ class NotificationActivity :
                     }
                 }
             }
-            true
         }
     }
 

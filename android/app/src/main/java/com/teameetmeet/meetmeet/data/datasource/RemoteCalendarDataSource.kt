@@ -4,24 +4,14 @@ import com.teameetmeet.meetmeet.data.network.api.CalendarApi
 import com.teameetmeet.meetmeet.data.network.entity.AddEventRequest
 import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.data.network.entity.UserEventResponse
-import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi) {
     fun getEvents(startDate: String, endDate: String): Flow<List<EventResponse>> {
-        return flowOf(true)
-            .map {
-                val result = api.getEvents(startDate, endDate).events
-                result
-            }
-            .catch {
-                throw it
-                //todo: 예외 처리
-            }
+        return flowOf(true).map { api.getEvents(startDate, endDate).events }
     }
 
     fun getEventsByUserId(
@@ -29,14 +19,7 @@ class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi)
         startDate: String,
         endDate: String
     ): Flow<List<UserEventResponse>> {
-        return flowOf(true)
-            .map {
-                val result = api.getEventsByUserId(userId, startDate, endDate).events
-                result
-            }
-            .catch {
-                throw it.toException()
-            }
+        return flowOf(true).map { api.getEventsByUserId(userId, startDate, endDate).events }
     }
 
     fun searchEvents(
@@ -44,20 +27,10 @@ class RemoteCalendarDataSource @Inject constructor(private val api: CalendarApi)
         startDate: String,
         endDate: String
     ): Flow<List<EventResponse>> {
-        return flowOf(true)
-            .map { api.searchEvents(keyword, startDate, endDate).events }
-            .catch {
-                throw it
-                //todo: 예외 처리
-            }
+        return flowOf(true).map { api.searchEvents(keyword, startDate, endDate).events }
     }
 
     fun addEvent(addEventRequest: AddEventRequest): Flow<List<EventResponse>> {
-        return flowOf(true)
-            .map {
-                api.addEvent(addEventRequest).events
-            }.catch {
-                throw it
-            }
+        return flowOf(true).map { api.addEvent(addEventRequest).events }
     }
 }

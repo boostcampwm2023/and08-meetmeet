@@ -1,8 +1,10 @@
 package com.teameetmeet.meetmeet.presentation.notification
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
+import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.network.entity.EventInvitationNotification
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,9 +39,12 @@ class EventNotificationViewModel @Inject constructor(
 
     fun fetchEventNotificationList() {
         viewModelScope.launch {
-            userRepository.getEventInvitationNotification().collectLatest { notifications ->
-                _eventNotificationList.update { notifications }
-            }
+            userRepository.getEventInvitationNotification()
+                .catch {
+                    emitExceptionEvent(it, R.string.notification_load_fail)
+                }.collectLatest { notifications ->
+                    _eventNotificationList.update { notifications }
+                }
         }
     }
 
@@ -46,7 +52,7 @@ class EventNotificationViewModel @Inject constructor(
         viewModelScope.launch {
             eventStoryRepository.acceptEventInvite(accept, event.inviteId, event.eventId)
                 .catch {
-                    // 예외 처리
+                    emitExceptionEvent(it, R.string.notification_accept_event_fail)
                 }.first()
             fetchEventNotificationList()
         }
@@ -76,18 +82,42 @@ class EventNotificationViewModel @Inject constructor(
 
     fun onDeleteAll() {
         viewModelScope.launch {
-            userRepository.deleteUserNotification(
-                _eventNotificationList.value.map { it.inviteId }.joinToString(",")
-            ).collectLatest {
-                fetchEventNotificationList()
+            if (_eventNotificationList.value.isNotEmpty()) {
+                userRepository.deleteUserNotification(
+                    _eventNotificationList.value.map { it.inviteId }.joinToString(",")
+                ).catch {
+                    emitExceptionEvent(it, R.string.notification_delete_fail)
+                }.collectLatest {
+                    fetchEventNotificationList()
+                }
             }
         }
     }
 
     override fun onDelete(event: EventInvitationNotification) {
         viewModelScope.launch {
-            userRepository.deleteUserNotification(event.inviteId.toString()).collectLatest {
-                fetchEventNotificationList()
+            userRepository.deleteUserNotification(event.inviteId.toString())
+                .catch {
+                    emitExceptionEvent(it, R.string.notification_delete_fail)
+                }.collectLatest {
+                    fetchEventNotificationList()
+                }
+        }
+    }
+
+    private suspend fun emitExceptionEvent(e: Throwable, @StringRes message: Int) {
+        when (e) {
+            is ExpiredRefreshTokenException -> {
+                _event.emit(EventNotificationUiEvent.ShowMessage(R.string.common_message_expired_login))
+                _event.emit(EventNotificationUiEvent.NavigateToLoginActivity)
+            }
+
+            is UnknownHostException -> {
+                _event.emit(EventNotificationUiEvent.ShowMessage(R.string.common_message_no_internet))
+            }
+
+            else -> {
+                _event.emit(EventNotificationUiEvent.ShowMessage(message))
             }
         }
     }

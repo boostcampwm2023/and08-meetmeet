@@ -40,7 +40,7 @@ class TokenRepository @Inject constructor(
                     is HttpException -> {
                         if(it.code() == STATUS_CODE_NO_AUTHORIZATION) {
                             val token = refreshAccessToken()
-                            autoLoginApp(token)
+                            emit(autoLoginApp(token).first())
                         } else {
                             throw it.toException()
                         }
