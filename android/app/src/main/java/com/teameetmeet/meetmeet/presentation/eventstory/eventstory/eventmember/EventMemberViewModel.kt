@@ -7,12 +7,18 @@ import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.repository.FollowRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.presentation.util.THROTTLE_DURATION
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
+import com.teameetmeet.meetmeet.presentation.util.throttleFirst
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
@@ -26,6 +32,7 @@ class EventMemberViewModel @Inject constructor(
     private val followRepository: FollowRepository
 ) : ViewModel(), EventMemberClickListener {
 
+
     private val _uiState = MutableStateFlow<List<UserStatus>>(emptyList())
     val uiState: StateFlow<List<UserStatus>> = _uiState
 
@@ -34,6 +41,13 @@ class EventMemberViewModel @Inject constructor(
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val event: SharedFlow<EventMemberEvent> = _event
+
+    private val _clickEvent = MutableSharedFlow<UserStatus>()
+    private val clickEvent: SharedFlow<UserStatus> = _clickEvent
+
+    init {
+        requestChangeFollowStatus()
+    }
 
     fun fetchEventMember(nicknameList: List<String>) {
         viewModelScope.launch {
@@ -61,7 +75,13 @@ class EventMemberViewModel @Inject constructor(
 
     override fun onButtonClick(userStatus: UserStatus) {
         viewModelScope.launch {
-            userStatus.isFollowed ?: return@launch
+            _clickEvent.emit(userStatus)
+        }
+    }
+
+    private fun requestChangeFollowStatus() {
+        clickEvent.setClickEvent(viewModelScope, 2000L) { userStatus ->
+            userStatus.isFollowed ?: return@setClickEvent
             if (userStatus.isFollowed) {
                 followRepository.unFollow(userStatus.id).catch {
                     _event.emit(EventMemberEvent.ShowMessage(R.string.event_member_message_unfollow_fail))
