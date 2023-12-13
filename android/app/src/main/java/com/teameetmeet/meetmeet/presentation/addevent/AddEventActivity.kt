@@ -122,8 +122,44 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
     }
 
     private fun setDateTimePicker() {
+        binding.addEventTvValueStartDate.setClickEvent(lifecycleScope) {
+            showDateRangePicker()
+        }
+        binding.addEventTvValueEndDate.setClickEvent(lifecycleScope) {
+            showDateRangePicker()
+        }
+        binding.eventStoryTvValueEventRepeatEndDate.setClickEvent(lifecycleScope) {
+            showDatePicker()
+        }
+
+        binding.addEventTvValueStartTime.setClickEvent(lifecycleScope) {
+            val startTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
+                .setHour(viewModel.uiState.value.startTime.hour)
+                .setMinute(viewModel.uiState.value.startTime.minute)
+                .setTitleText(getString(R.string.add_event_err_start_time)).build()
+
+            startTimePicker.addOnPositiveButtonClickListener {
+                viewModel.setEventStartTime(startTimePicker.hour, startTimePicker.minute)
+            }
+            startTimePicker.show(supportFragmentManager, "StartTimePicker")
+        }
+        binding.addEventTvValueEndTime.setClickEvent(lifecycleScope) {
+            val endTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
+                .setHour(viewModel.uiState.value.endTime.hour)
+                .setMinute(viewModel.uiState.value.endTime.minute)
+                .setTitleText(getString(R.string.add_event_err_end_time)).build()
+
+            endTimePicker.addOnPositiveButtonClickListener {
+                viewModel.setEventEndTime(endTimePicker.hour, endTimePicker.minute)
+            }
+            endTimePicker.show(supportFragmentManager, "EndTimePicker")
+        }
+    }
+
+    private fun showDateRangePicker() {
         val dateRangePicker = MaterialDatePicker.Builder.dateRangePicker()
-            .setTitleText(getString(R.string.add_event_title)).setSelection(
+            .setTitleText(getString(R.string.add_event_title))
+            .setSelection(
                 Pair(
                     viewModel.uiState.value.startDate.toLong(ZoneId.of("UTC")),
                     viewModel.uiState.value.endDate.toLong(ZoneId.of("UTC"))
@@ -136,47 +172,18 @@ class AddEventActivity : BaseActivity<ActivityAddEventBinding>(R.layout.activity
                 it.second.toLocalDateTime(ZoneId.of("UTC"))
             )
         }
+        dateRangePicker.show(supportFragmentManager, "DateRangePicker")
+    }
 
-        binding.addEventTvValueStartDate.setClickEvent(lifecycleScope) {
-            dateRangePicker.show(supportFragmentManager, "DateRangePicker")
-        }
-        binding.addEventTvValueEndDate.setClickEvent(lifecycleScope) {
-            dateRangePicker.show(supportFragmentManager, "DateRangePicker")
-        }
-        binding.eventStoryTvValueEventRepeatEndDate.setClickEvent(lifecycleScope) {
-            val datePicker = MaterialDatePicker.Builder.datePicker()
-                .setTitleText(getString(R.string.story_detail_description_event_repeat_end_date))
-                .build()
+    private fun showDatePicker() {
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText(getString(R.string.story_detail_description_event_repeat_end_date))
+            .setSelection(viewModel.uiState.value.eventRepeatEndDate.toLong(ZoneId.of("UTC")))
+            .build()
 
-            datePicker.addOnPositiveButtonClickListener {
-                viewModel.setRepeatEndDate(it.toLocalDateTime(ZoneId.of("UTC")))
-            }
-            datePicker.show(supportFragmentManager, "DatePicker")
+        datePicker.addOnPositiveButtonClickListener {
+            viewModel.setRepeatEndDate(it.toLocalDateTime(ZoneId.of("UTC")))
         }
-
-        val startTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
-            .setHour(viewModel.uiState.value.startTime.hour)
-            .setMinute(viewModel.uiState.value.startTime.minute)
-            .setTitleText(getString(R.string.add_event_err_start_time)).build()
-
-        startTimePicker.addOnPositiveButtonClickListener {
-            viewModel.setEventStartTime(startTimePicker.hour, startTimePicker.minute)
-        }
-
-        val endTimePicker = MaterialTimePicker.Builder().setTimeFormat(TimeFormat.CLOCK_12H)
-            .setHour(viewModel.uiState.value.endTime.hour)
-            .setMinute(viewModel.uiState.value.endTime.minute)
-            .setTitleText(getString(R.string.add_event_err_end_time)).build()
-
-        endTimePicker.addOnPositiveButtonClickListener {
-            viewModel.setEventEndTime(endTimePicker.hour, endTimePicker.minute)
-        }
-
-        binding.addEventTvValueStartTime.setClickEvent(lifecycleScope) {
-            startTimePicker.show(supportFragmentManager, "StartTimePicker")
-        }
-        binding.addEventTvValueEndTime.setClickEvent(lifecycleScope) {
-            endTimePicker.show(supportFragmentManager, "EndTimePicker")
-        }
+        datePicker.show(supportFragmentManager, "DatePicker")
     }
 }
