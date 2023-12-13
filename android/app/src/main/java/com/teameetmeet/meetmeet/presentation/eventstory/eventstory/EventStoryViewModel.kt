@@ -111,6 +111,7 @@ class EventStoryViewModel @Inject constructor(
             eventStoryRepository.editAnnouncement(eventStoryUiState.value.eventId, message).catch {exception ->
                 when(exception) {
                     is ExpiredRefreshTokenException -> _event.emit(EventStoryUiEvent.NavigateToLoginActivity)
+                    is UnknownHostException -> _event.emit(EventStoryUiEvent.ShowMessage(R.string.common_message_no_internet))
                     else -> _event.emit(EventStoryUiEvent.ShowMessage(R.string.event_story_message_edit_noti_fail, exception.message.orEmpty()))
                 }
             }.collect {
