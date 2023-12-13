@@ -5,10 +5,13 @@ import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 const val THROTTLE_DURATION = 1000L
 
@@ -59,3 +62,14 @@ fun MaterialToolbar.setMenuClickEvent(
         .onEach { onMenuClick.invoke(it) }
         .launchIn(uiScope)
 }
+
+fun <T> SharedFlow<T>.setClickEvent(
+    uiScope: CoroutineScope,
+    windowDuration: Long = THROTTLE_DURATION,
+    onClick: suspend (value: T) -> Unit
+) {
+    throttleFirst(windowDuration)
+        .onEach { onClick.invoke(it) }
+        .launchIn(uiScope)
+}
+
