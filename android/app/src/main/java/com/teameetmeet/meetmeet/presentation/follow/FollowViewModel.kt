@@ -52,35 +52,37 @@ class FollowViewModel @Inject constructor(
 
     fun updateSearchedUser(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
-            _showPlaceholder.update { true }
-            when (actionType) {
-                FollowActionType.FOLLOW -> {
-                    userRepository.getUserWithFollowStatus(
-                        _searchKeyword.value
-                    ).catch {
-                        emitExceptionEvent(it, R.string.follow_search_fail)
-                        _showPlaceholder.update { false }
-                    }.collectLatest { users ->
-                        _searchedUser.update { users }
+            if (_searchKeyword.value.isNotEmpty()) {
+                _showPlaceholder.update { true }
+                when (actionType) {
+                    FollowActionType.FOLLOW -> {
+                        userRepository.getUserWithFollowStatus(
+                            _searchKeyword.value
+                        ).catch {
+                            emitExceptionEvent(it, R.string.follow_search_fail)
+                            _showPlaceholder.update { false }
+                        }.collectLatest { users ->
+                            _searchedUser.update { users }
+                            _showPlaceholder.update { false }
+                        }
+                    }
+
+                    FollowActionType.EVENT -> {
+                        id?.let {
+                            eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
+                                .catch {
+                                    emitExceptionEvent(it, R.string.follow_search_fail)
+                                    _showPlaceholder.update { false }
+                                }.collectLatest { users ->
+                                    _searchedUser.update { users }
+                                    _showPlaceholder.update { false }
+                                }
+                        }
+                    }
+
+                    else -> {
                         _showPlaceholder.update { false }
                     }
-                }
-
-                FollowActionType.EVENT -> {
-                    id?.let {
-                        eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
-                            .catch {
-                                emitExceptionEvent(it, R.string.follow_search_fail)
-                                _showPlaceholder.update { false }
-                            }.collectLatest { users ->
-                                _searchedUser.update { users }
-                                _showPlaceholder.update { false }
-                            }
-                    }
-                }
-
-                else -> {
-                    _showPlaceholder.update { false }
                 }
             }
         }
