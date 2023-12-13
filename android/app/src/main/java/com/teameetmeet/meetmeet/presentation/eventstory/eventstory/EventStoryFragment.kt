@@ -112,11 +112,11 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
                     when (event) {
-                        is EventStoryEvent.ShowMessage -> showMessage(
+                        is EventStoryUiEvent.ShowMessage -> showMessage(
                             event.messageId, event.extraMessage
                         )
 
-                        is EventStoryEvent.NavigateToLoginActivity -> {
+                        is EventStoryUiEvent.NavigateToLoginActivity -> {
                             navigateToLoginActivity()
                         }
                     }
