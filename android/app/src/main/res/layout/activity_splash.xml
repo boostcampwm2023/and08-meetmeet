@@ -10,13 +10,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/ic_launcher_background"
         tools:context=".presentation.splash.SplashActivity">
 
         <ImageView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:src="@mipmap/ic_launcher_foreground"
+            android:src="@mipmap/ic_launcher"
+            android:padding="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
