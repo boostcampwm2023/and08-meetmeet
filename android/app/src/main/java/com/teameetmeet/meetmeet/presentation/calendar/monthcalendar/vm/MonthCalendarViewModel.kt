@@ -2,29 +2,24 @@ package com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.CalendarItemClickListener
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.DayClickEvent
-import com.teameetmeet.meetmeet.presentation.follow.FollowActionType
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.EventBar
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
 import com.teameetmeet.meetmeet.presentation.util.THROTTLE_DURATION
 import com.teameetmeet.meetmeet.presentation.util.setClickEvent
-import com.teameetmeet.meetmeet.presentation.util.throttleFirst
 import com.teameetmeet.meetmeet.util.date.getLocalDate
 import com.teameetmeet.meetmeet.util.date.toEndLong
 import com.teameetmeet.meetmeet.util.date.toLocalDate
 import com.teameetmeet.meetmeet.util.date.toStartLong
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
@@ -37,12 +32,11 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
     )
     val daysInMonth: StateFlow<List<CalendarItem>> = _daysInMonth
 
-    private val _dayClickEvent = MutableSharedFlow<DayClickEvent>(
-        extraBufferCapacity = 1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val _dayClickEvent = MutableSharedFlow<CalendarItem>()
 
-    val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
+    private val _showBottomSheetEvent = MutableSharedFlow<DayClickEvent>()
+
+    val showBottomSheetEvent: SharedFlow<DayClickEvent> = _showBottomSheetEvent.asSharedFlow()
 
     init {
         setDayClickRequestFlow()
@@ -161,7 +155,9 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
     override fun onItemClick(calendarItem: CalendarItem) {
         calendarItem.date ?: return
         if (calendarItem.events.isNotEmpty()) {
-            _dayClickEvent.tryEmit(DayClickEvent(calendarItem.date, calendarItem.events))
+            viewModelScope.launch {
+                _dayClickEvent.emit(calendarItem)
+            }
         }
         if (currentDate.value.date == calendarItem.date) return
         _daysInMonth.update { list ->
@@ -176,6 +172,10 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
     }
 
     private fun setDayClickRequestFlow() {
-        _dayClickEvent.throttleFirst(THROTTLE_DURATION)
+        _dayClickEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) { calendarItem ->
+            calendarItem.date?.let {
+                _showBottomSheetEvent.emit(DayClickEvent(it, calendarItem.events))
+            }
+        }
     }
 }

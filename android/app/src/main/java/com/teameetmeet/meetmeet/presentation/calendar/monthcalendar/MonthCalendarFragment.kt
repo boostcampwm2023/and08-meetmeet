@@ -67,7 +67,7 @@ class MonthCalendarFragment : BaseFragment<FragmentCalendarMonthBinding>(
     private fun collectViewModelEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.dayClickEvent.collect {
+                viewModel.showBottomSheetEvent.collect {
                     findNavController().navigate(
                         MonthCalendarFragmentDirections
                             .actionMonthCalendarFragmentToEventsPerDayBottomSheetFragment()

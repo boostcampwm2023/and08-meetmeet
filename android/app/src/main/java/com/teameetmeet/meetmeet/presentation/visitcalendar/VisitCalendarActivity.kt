@@ -3,12 +3,9 @@ package com.teameetmeet.meetmeet.presentation.visitcalendar
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
-import androidx.core.view.children
-import androidx.fragment.app.FragmentContainerView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.navArgs
 import com.teameetmeet.meetmeet.R
@@ -17,6 +14,7 @@ import com.teameetmeet.meetmeet.presentation.base.BaseActivity
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarFragment
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarFragmentDirections
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.OthersMonthCalendarViewModel
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -32,6 +30,9 @@ class VisitCalendarActivity : BaseActivity<ActivityVisitCalendarBinding>(
         setNavHost()
         setTopAppBar()
         binding.vm = viewModel
+        binding.followBtnAction.setClickEvent(lifecycleScope) {
+            viewModel.onProfileImageClick()
+        }
         viewModel.fetchUserProfile(args.userNickname)
         collectViewModelEvent()
     }
