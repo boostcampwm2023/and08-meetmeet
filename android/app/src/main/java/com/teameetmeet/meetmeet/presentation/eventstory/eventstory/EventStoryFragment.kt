@@ -16,6 +16,8 @@ import com.teameetmeet.meetmeet.presentation.eventstory.EventStoryActivity
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventFeedListAdapter
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter.EventMemberListAdapter
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
+import com.teameetmeet.meetmeet.presentation.util.setMenuClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -47,18 +49,18 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
 
     private fun setClickListener() {
         with(binding) {
-            eventStoryIvChangeNotification.setOnClickListener {
+            eventStoryIvChangeNotification.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 val dialog =
                     NotificationChangeDialog(requireContext(), viewModel, viewModel.getNoti())
                 dialog.show()
             }
-            eventStoryTvValueEventNotification.setOnClickListener {
+            eventStoryTvValueEventNotification.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 showDialog(viewModel.getNoti())
             }
-            eventStoryIbSeeMoreMember.setOnClickListener {
+            eventStoryIbSeeMoreMember.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 findNavController().navigate(EventStoryFragmentDirections.actionEventStoryFragmentToEventMemberFragment(viewModel.eventStoryUiState.value.eventStory?.eventMembers?.toTypedArray().orEmpty()))
             }
-            eventStoryCvInviteMember.setOnClickListener {
+            eventStoryCvInviteMember.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 when (viewModel.eventStoryUiState.value.authority) {
                     EventAuthority.GUEST -> {
                         viewModel.joinEventStory()
@@ -71,10 +73,10 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
                             )
                         }
                     }
-                    else -> return@setOnClickListener
+                    else -> return@setClickEvent
                 }
             }
-            eventStoryFabMakeFeed.setOnClickListener {
+            eventStoryFabMakeFeed.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 findNavController().navigate(
                     EventStoryFragmentDirections.actionEventStoryFragmentToCreateFeedFragment(
                         viewModel.eventStoryUiState.value.eventId
@@ -88,8 +90,8 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
         binding.eventStoryTbl.setNavigationOnClickListener {
             requireActivity().finish()
         }
-        binding.eventStoryTbl.setOnMenuItemClickListener {
-            when (it.itemId) {
+        binding.eventStoryTbl.setMenuClickEvent(viewLifecycleOwner.lifecycleScope) {itemId ->
+            when (itemId) {
                 R.id.menu_see_more_event_story -> {
                     navigateToEventDetailFragment()
                 }
@@ -112,11 +114,11 @@ class EventStoryFragment : BaseFragment<FragmentEventStoryBinding>(R.layout.frag
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collectLatest { event ->
                     when (event) {
-                        is EventStoryEvent.ShowMessage -> showMessage(
+                        is EventStoryUiEvent.ShowMessage -> showMessage(
                             event.messageId, event.extraMessage
                         )
 
-                        is EventStoryEvent.NavigateToLoginActivity -> {
+                        is EventStoryUiEvent.NavigateToLoginActivity -> {
                             navigateToLoginActivity()
                         }
                     }

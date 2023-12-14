@@ -18,6 +18,8 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventStoryDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.model.EventNotification
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
+import com.teameetmeet.meetmeet.presentation.util.setMenuClickEvent
 import com.teameetmeet.meetmeet.util.date.DateTimeFormat
 import com.teameetmeet.meetmeet.util.date.toDateString
 import com.teameetmeet.meetmeet.util.date.toTimeStampLong
@@ -53,8 +55,8 @@ class EventStoryDetailFragment :
         binding.storyDetailMtb.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-        binding.storyDetailMtb.setOnMenuItemClickListener { menu ->
-            when (menu.itemId) {
+        binding.storyDetailMtb.setMenuClickEvent(viewLifecycleOwner.lifecycleScope) { itemId ->
+            when (itemId) {
                 R.id.menu_save -> {
                     if (viewModel.uiState.value.isRepeatEvent) {
                         AlertDialog.Builder(requireContext())
@@ -74,12 +76,11 @@ class EventStoryDetailFragment :
                     }
                 }
             }
-            true
         }
     }
 
     private fun setClickListener() {
-        binding.storyDetailBtnRemoveEvent.setOnClickListener {
+        binding.storyDetailBtnRemoveEvent.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             if (viewModel.uiState.value.isRepeatEvent) {
                 AlertDialog.Builder(requireContext())
                     .setTitle(R.string.story_detail_delete_event_dialog_title)
@@ -152,7 +153,7 @@ class EventStoryDetailFragment :
     private fun setDateTimePicker() {
 
 
-        binding.storyDetailTvValueStartDate.setOnClickListener {
+        binding.storyDetailTvValueStartDate.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             val dateRangePicker =
                 MaterialDatePicker.Builder.dateRangePicker()
                     .setTitleText(getString(R.string.add_event_title))
@@ -171,7 +172,7 @@ class EventStoryDetailFragment :
             }
             dateRangePicker.show(requireActivity().supportFragmentManager, "DateRangePicker")
         }
-        binding.storyDetailTvValueEndDate.setOnClickListener {val dateRangePicker =
+        binding.storyDetailTvValueEndDate.setClickEvent(viewLifecycleOwner.lifecycleScope) {val dateRangePicker =
             MaterialDatePicker.Builder.dateRangePicker()
                 .setTitleText(getString(R.string.add_event_title))
                 .setSelection(
@@ -191,7 +192,7 @@ class EventStoryDetailFragment :
 
         }
 
-        binding.eventStoryTvValueEventRepeatEndDate.setOnClickListener {
+        binding.eventStoryTvValueEventRepeatEndDate.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             val datePicker = MaterialDatePicker.Builder.datePicker()
                 .setTitleText(getString(R.string.story_detail_description_event_repeat_end_date))
                 .setSelection(viewModel.uiState.value.eventRepeatEndDate?.toTimeStampLong(DateTimeFormat.LOCAL_DATE))
@@ -201,7 +202,7 @@ class EventStoryDetailFragment :
                 viewModel.setRepeatEndDate(it)
             }
         }
-        binding.storyDetailTvValueStartTime.setOnClickListener {
+        binding.storyDetailTvValueStartTime.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(TimeFormat.CLOCK_12H)
                 .setHour(viewModel.uiState.value.startTime.hour)
@@ -213,7 +214,7 @@ class EventStoryDetailFragment :
                 viewModel.setEventStartTime(picker.hour, picker.minute)
             }
         }
-        binding.storyDetailTvValueEndTime.setOnClickListener {
+        binding.storyDetailTvValueEndTime.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             val picker = MaterialTimePicker.Builder()
                 .setTimeFormat(TimeFormat.CLOCK_12H)
                 .setHour(viewModel.uiState.value.endTime.hour)

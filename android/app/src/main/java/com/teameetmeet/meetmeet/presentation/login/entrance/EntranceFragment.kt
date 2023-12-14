@@ -14,6 +14,7 @@ import com.kakao.sdk.user.UserApiClient
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEntranceBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -29,17 +30,17 @@ class EntranceFragment : BaseFragment<FragmentEntranceBinding>(R.layout.fragment
     }
 
     private fun setClickListener() {
-        binding.loginIbKakaoLogin.setOnClickListener {
+        binding.loginIbKakaoLogin.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             loginKakao()
         }
 
-        binding.loginTvAppLogin.setOnClickListener {
+        binding.loginTvAppLogin.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(
                 EntranceFragmentDirections.actionEntranceFragmentToSelfLoginFragment()
             )
         }
 
-        binding.loginTvAppSignUp.setOnClickListener {
+        binding.loginTvAppSignUp.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(
                 EntranceFragmentDirections.actionEntranceFragmentToSignUpFragment()
             )

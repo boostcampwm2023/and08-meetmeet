@@ -37,15 +37,14 @@ class UserRepository @Inject constructor(
             }.onEach {
                 fetchUserProfile(it)
             }.catch {
-                getLocalUserProfile()
+                throw it.toException()
             }
     }
 
     fun getToken(): Flow<String?> {
         return dataStore.getAppToken()
             .catch {
-                throw it
-                //TODO("예외 처리 필요")
+                throw it.toException()
             }
     }
 
@@ -58,10 +57,9 @@ class UserRepository @Inject constructor(
             }
     }
 
-    private fun getLocalUserProfile(): Flow<UserProfile> {
+    fun getLocalUserProfile(): Flow<UserProfile> {
         return dataStore.getUserProfile().catch {
-            throw it
-            //TODO(예외 처리 필요)
+            throw it.toException()
         }
     }
 
@@ -92,7 +90,7 @@ class UserRepository @Inject constructor(
                 dataStore.deleteUserProfile()
                 dataStore.deleteAppToken()
             }.catch {
-                throw it
+                throw it.toException()
             }
 
     }

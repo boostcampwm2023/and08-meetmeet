@@ -2,10 +2,12 @@ package com.teameetmeet.meetmeet.data.repository
 
 import com.teameetmeet.meetmeet.data.ExpiredRefreshTokenException
 import com.teameetmeet.meetmeet.data.NoDataException
+import com.teameetmeet.meetmeet.data.STATUS_CODE_NO_AUTHORIZATION
 import com.teameetmeet.meetmeet.data.local.datastore.DataStoreHelper
 import com.teameetmeet.meetmeet.data.network.api.AuthApi
-import com.teameetmeet.meetmeet.data.network.entity.TokenRequest
 import com.teameetmeet.meetmeet.data.network.entity.RefreshAccessTokenRequest
+import com.teameetmeet.meetmeet.data.network.entity.TokenRequest
+import com.teameetmeet.meetmeet.data.toException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -36,14 +38,14 @@ class TokenRepository @Inject constructor(
             }.catch {
                 when(it) {
                     is HttpException -> {
-                        if(it.code() == 418) {
+                        if(it.code() == STATUS_CODE_NO_AUTHORIZATION) {
                             val token = refreshAccessToken()
                             emit(autoLoginApp(token).first())
                         } else {
-                            throw it
+                            throw it.toException()
                         }
                     }
-                    else -> throw it
+                    else -> throw it.toException()
                 }
             }
     }

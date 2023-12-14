@@ -36,10 +36,10 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             if (AuthApiClient.instance.hasToken()) {
                 UserApiClient.instance.accessTokenInfo { _, error ->
-                    if (error != null) {
-                        _event.tryEmit(SplashEvent.NavigateToLoginActivity)
-                    } else {
-                        checkAppToken()
+                    when(error) {
+                        null -> checkAppToken()
+                        is UnknownHostException -> _event.tryEmit(SplashEvent.NavigateToHomeActivity)
+                        else -> _event.tryEmit(SplashEvent.NavigateToLoginActivity)
                     }
                 }
             } else {

@@ -27,8 +27,8 @@ class EventStoryViewModel @Inject constructor(
     private val _eventStoryUiState = MutableStateFlow<EventStoryUiState>(EventStoryUiState())
     val eventStoryUiState: StateFlow<EventStoryUiState> = _eventStoryUiState
 
-    private val _event = MutableSharedFlow<EventStoryEvent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
-    val event : SharedFlow<EventStoryEvent> = _event
+    private val _event = MutableSharedFlow<EventStoryUiEvent>(extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    val event : SharedFlow<EventStoryUiEvent> = _event
 
     fun setEventId(eventId: Int?) {
         _eventStoryUiState.update {
@@ -48,13 +48,13 @@ class EventStoryViewModel @Inject constructor(
                 }
                 when(it) {
                     is ExpiredRefreshTokenException -> {
-                        _event.emit(EventStoryEvent.NavigateToLoginActivity)
+                        _event.emit(EventStoryUiEvent.NavigateToLoginActivity)
                     }
                     is UnknownHostException -> {
-                        _event.emit(EventStoryEvent.ShowMessage(R.string.common_message_no_internet))
+                        _event.emit(EventStoryUiEvent.ShowMessage(R.string.common_message_no_internet))
                     }
                     else -> {
-                        _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_event_story_fail, it.message.orEmpty()))
+                        _event.emit(EventStoryUiEvent.ShowMessage(R.string.event_story_message_event_story_fail, it.message.orEmpty()))
                     }
                 }
             }.collect { eventStory ->
@@ -79,13 +79,13 @@ class EventStoryViewModel @Inject constructor(
         viewModelScope.launch {
             eventStoryRepository.joinEventStory(eventStoryUiState.value.eventId).catch { exception ->
                 when(exception) {
-                    is ExpiredRefreshTokenException -> _event.emit(EventStoryEvent.NavigateToLoginActivity)
-                    is UnknownHostException -> _event.emit(EventStoryEvent.ShowMessage(R.string.common_message_no_internet))
-                    else -> _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_join_event_fail, exception.message.orEmpty()))
+                    is ExpiredRefreshTokenException -> _event.emit(EventStoryUiEvent.NavigateToLoginActivity)
+                    is UnknownHostException -> _event.emit(EventStoryUiEvent.ShowMessage(R.string.common_message_no_internet))
+                    else -> _event.emit(EventStoryUiEvent.ShowMessage(R.string.event_story_message_join_event_fail, exception.message.orEmpty()))
                 }
             }.collect {
                 getStory()
-                _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_join_event_success))
+                _event.emit(EventStoryUiEvent.ShowMessage(R.string.event_story_message_join_event_success))
             }
         }
     }
@@ -108,14 +108,18 @@ class EventStoryViewModel @Inject constructor(
 
     fun editAnnouncement(message: String?) {
         viewModelScope.launch {
-            eventStoryRepository.editAnnouncement(eventStoryUiState.value.eventId, message).catch {
-                _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_edit_noti_fail, it.message.orEmpty()))
+            eventStoryRepository.editAnnouncement(eventStoryUiState.value.eventId, message).catch {exception ->
+                when(exception) {
+                    is ExpiredRefreshTokenException -> _event.emit(EventStoryUiEvent.NavigateToLoginActivity)
+                    is UnknownHostException -> _event.emit(EventStoryUiEvent.ShowMessage(R.string.common_message_no_internet))
+                    else -> _event.emit(EventStoryUiEvent.ShowMessage(R.string.event_story_message_edit_noti_fail, exception.message.orEmpty()))
+                }
             }.collect {
                 _eventStoryUiState.update {
                     it.copy(eventStory = eventStoryUiState.value.eventStory?.copy(announcement = message))
                 }
                 if(message == null) {
-                    _event.emit(EventStoryEvent.ShowMessage(R.string.event_story_message_notification_delete_success))
+                    _event.emit(EventStoryUiEvent.ShowMessage(R.string.event_story_message_notification_delete_success))
                 }
             }
         }

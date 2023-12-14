@@ -97,6 +97,9 @@
         <action
             android:id="@+id/action_event_member_fragment_to_visitCalendarActivity"
             app:destination="@id/visit_calendar_activity" />
+        <action
+            android:id="@+id/action_event_member_fragment_to_login_activity"
+            app:destination="@id/login_activity" />
     </fragment>
     <fragment
         android:id="@+id/feed_content_fragment"

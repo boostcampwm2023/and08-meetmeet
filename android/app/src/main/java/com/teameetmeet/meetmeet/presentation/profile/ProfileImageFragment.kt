@@ -32,12 +32,9 @@ class ProfileImageFragment : BaseFragment<FragmentProfileImageBinding>(R.layout.
 
     private fun setTopAppBar() {
         binding.profileImageMtb.setNavigationOnClickListener {
+            (requireActivity() as? VisitCalendarActivity)?.changeProfileStatus(true)
             findNavController().popBackStack()
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        (requireActivity() as? VisitCalendarActivity)?.changeProfileStatus(true)
-    }
 }

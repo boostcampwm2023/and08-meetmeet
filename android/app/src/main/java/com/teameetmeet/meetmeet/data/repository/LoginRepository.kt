@@ -23,7 +23,7 @@ class LoginRepository @Inject constructor(
                 storeAppToken(response.accessToken, response.refreshToken)
                 response.isNewUser
             }.catch {
-                throw it
+                throw it.toException()
             }
     }
 

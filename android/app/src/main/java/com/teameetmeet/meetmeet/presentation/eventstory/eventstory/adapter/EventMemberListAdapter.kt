@@ -1,45 +1,20 @@
 package com.teameetmeet.meetmeet.presentation.eventstory.eventstory.adapter
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.teameetmeet.meetmeet.data.model.EventMember
-import com.teameetmeet.meetmeet.databinding.ItemEventMemberBinding
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnItemClickListener
 
 class EventMemberListAdapter(private val onItemClickListener: OnItemClickListener) :
-    ListAdapter<EventMember, EventMemberListAdapter.EventMemberViewHolder>(diffCallback) {
+    ListAdapter<EventMember, EventMemberViewHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventMemberViewHolder {
-        val binding =
-            ItemEventMemberBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        return EventMemberViewHolder(binding, onItemClickListener)
+        return EventMemberViewHolder.from(parent, onItemClickListener)
     }
 
     override fun onBindViewHolder(holder: EventMemberViewHolder, position: Int) {
         holder.bind(getItem(position))
-    }
-
-    class EventMemberViewHolder(
-        private val binding: ItemEventMemberBinding,
-        private val onItemClickListener: OnItemClickListener) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            binding.root.setOnClickListener {
-                onItemClickListener.onItemClick()
-            }
-        }
-
-        fun bind(item: EventMember) {
-            binding.item = item
-        }
     }
 
     companion object {

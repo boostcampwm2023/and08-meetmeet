@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -50,9 +51,26 @@ class CalendarViewModel @Inject constructor(
 
     fun fetchUserProfile() {
         viewModelScope.launch {
-            userRepository.getUserProfile().catch {
-                updateUserProfile(UserProfile(null, "", ""))
+            userRepository.getUserProfile().catch { exception ->
+                when(exception) {
+                    is UnknownHostException -> {
+                        getLocalUserProfile()
+                    }
+                    else -> {
+                        updateUserProfile(UserProfile(null, "", ""))
+                    }
+                }
             }.collect { userProfile ->
+                updateUserProfile(userProfile)
+            }
+        }
+    }
+
+    private fun getLocalUserProfile() {
+        viewModelScope.launch {
+            userRepository.getLocalUserProfile().catch {
+                updateUserProfile(UserProfile(null, "", ""))
+            }.collect {userProfile ->
                 updateUserProfile(userProfile)
             }
         }
