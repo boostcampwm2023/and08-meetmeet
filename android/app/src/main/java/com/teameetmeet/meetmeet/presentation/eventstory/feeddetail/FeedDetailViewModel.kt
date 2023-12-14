@@ -6,6 +6,8 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.model.Comment
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
+import com.teameetmeet.meetmeet.presentation.util.THROTTLE_DURATION
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,12 +23,19 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedDetailViewModel @Inject constructor(
     private val eventStoryRepository: EventStoryRepository
-) : ViewModel() {
+) : ViewModel(), CommentDeleteClickListener {
     private val _feedDetailUiState = MutableStateFlow<FeedDetailUiState>(FeedDetailUiState(0))
     val feedDetailUiState: StateFlow<FeedDetailUiState> = _feedDetailUiState
 
     private val _feedDetailEvent = MutableSharedFlow<FeedDetailEvent>()
     val feedDetailEvent: SharedFlow<FeedDetailEvent> = _feedDetailEvent
+
+    private val _commentDeleteClickEvent = MutableSharedFlow<Comment>()
+
+    init {
+        setCommentDeleteRequestFlow()
+    }
+
 
     fun setFeedId(feedId: Int) {
         _feedDetailUiState.update { it.copy(feedId = feedId) }
@@ -107,6 +116,18 @@ class FeedDetailViewModel @Inject constructor(
                 }.collectLatest {
                     getFeedDetail()
                 }
+        }
+    }
+
+    override fun onClick(comment: Comment) {
+        viewModelScope.launch {
+            _commentDeleteClickEvent.emit(comment)
+        }
+    }
+
+    private fun setCommentDeleteRequestFlow() {
+        _commentDeleteClickEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) { comment ->
+            _feedDetailEvent.emit(FeedDetailEvent.DeleteComment(comment))
         }
     }
 }

@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.badge.BadgeDrawable
@@ -15,6 +16,7 @@ import com.teameetmeet.meetmeet.databinding.FragmentCalendarBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarFragment
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.OwnerMonthCalendarViewModel
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalBadgeUtils
@@ -73,15 +75,15 @@ class CalendarFragment : BaseFragment<FragmentCalendarBinding>(R.layout.fragment
     }
 
     private fun setClickListener() {
-        binding.calendarClProfile.setOnClickListener {
+        binding.calendarClProfile.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToSettingActivity())
         }
 
-        binding.calendarIbSearch.setOnClickListener {
+        binding.calendarIbSearch.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToSearchActivity())
         }
 
-        binding.calendarFlNotification.setOnClickListener {
+        binding.calendarFlNotification.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             findNavController().navigate(CalendarFragmentDirections.actionCalendarFragmentToNotificationActivity())
         }
     }

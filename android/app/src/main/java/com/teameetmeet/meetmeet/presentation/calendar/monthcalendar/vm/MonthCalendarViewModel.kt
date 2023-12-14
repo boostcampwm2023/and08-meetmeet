@@ -1,12 +1,17 @@
 package com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.CalendarItemClickListener
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.DayClickEvent
+import com.teameetmeet.meetmeet.presentation.follow.FollowActionType
 import com.teameetmeet.meetmeet.presentation.model.CalendarItem
 import com.teameetmeet.meetmeet.presentation.model.EventBar
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
-import com.teameetmeet.meetmeet.util.date.getDayListInMonth
+import com.teameetmeet.meetmeet.presentation.util.THROTTLE_DURATION
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
+import com.teameetmeet.meetmeet.presentation.util.throttleFirst
 import com.teameetmeet.meetmeet.util.date.getLocalDate
 import com.teameetmeet.meetmeet.util.date.toEndLong
 import com.teameetmeet.meetmeet.util.date.toLocalDate
@@ -17,6 +22,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import java.time.LocalDate
 
@@ -26,7 +33,7 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
     val currentDate: StateFlow<CalendarItem> = _currentDate
 
     private val _daysInMonth = MutableStateFlow<List<CalendarItem>>(
-        currentDate.value.date?.getDayListInMonth() ?: emptyList()
+        currentDate.value.date?.let { CalendarItem.getListFrom(it) } ?: emptyList()
     )
     val daysInMonth: StateFlow<List<CalendarItem>> = _daysInMonth
 
@@ -36,6 +43,10 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
     )
 
     val dayClickEvent: SharedFlow<DayClickEvent> = _dayClickEvent.asSharedFlow()
+
+    init {
+        setDayClickRequestFlow()
+    }
 
     abstract val isAddButtonVisible: Boolean
 
@@ -84,7 +95,6 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
             if (todayEvents.isEmpty()) continue
 
             val continuity = todayEvents
-                .sortedWith(comparator(today))
                 .groupBy { event ->
                     i % 7 != 0 && today.dayOfMonth != 1 &&
                             daysInMonth[i - 1].eventBars.any { it?.id == event.id }
@@ -103,17 +113,19 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
                 )
             }
 
-            continuity[false]?.map { event ->
-                val index = eventBars.indexOf(null)
-                val eventBar = EventBar(
-                    id = event.id,
-                    color = event.color,
-                    isStart = true,
-                    isEnd = i % 7 == 6 || i == calendarItems.lastIndex
-                            || event.endDateTime.toLocalDate() == today
-                )
-                if (index != -1) eventBars[index] = eventBar else eventBars.add(eventBar)
-            }
+            continuity[false]
+                ?.sortedWith(comparator(today))
+                ?.map { event ->
+                    val index = eventBars.indexOf(null)
+                    val eventBar = EventBar(
+                        id = event.id,
+                        color = event.color,
+                        isStart = true,
+                        isEnd = i % 7 == 6 || i == calendarItems.lastIndex
+                                || event.endDateTime.toLocalDate() == today
+                    )
+                    if (index != -1) eventBars[index] = eventBar else eventBars.add(eventBar)
+                }
 
             if (eventBars.size > 5) {
                 eventBars[4] = EventBar(
@@ -141,7 +153,7 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
             CalendarItem(it.date?.plusMonths(offset))
         }
         _daysInMonth.update {
-            currentDate.value.date?.getDayListInMonth() ?: emptyList()
+            currentDate.value.date?.let { CalendarItem.getListFrom(it) } ?: emptyList()
         }
         fetchEvents()
     }
@@ -161,5 +173,9 @@ abstract class MonthCalendarViewModel : ViewModel(), CalendarItemClickListener {
             }
         }
         _currentDate.update { calendarItem }
+    }
+
+    private fun setDayClickRequestFlow() {
+        _dayClickEvent.throttleFirst(THROTTLE_DURATION)
     }
 }

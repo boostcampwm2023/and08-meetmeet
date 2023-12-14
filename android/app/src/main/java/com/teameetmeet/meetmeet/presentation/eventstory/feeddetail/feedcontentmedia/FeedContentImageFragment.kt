@@ -2,6 +2,7 @@ package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontentm
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentFeedContentImageBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
@@ -9,6 +10,7 @@ import com.teameetmeet.meetmeet.presentation.bindingadapter.bindThumbnailImage
 import com.teameetmeet.meetmeet.presentation.bindingadapter.bindThumbnailImageCenterInside
 import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.FeedDetailFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontent.FeedContentFragment
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 
 class FeedContentImageFragment : BaseFragment<FragmentFeedContentImageBinding>(
     R.layout.fragment_feed_content_image
@@ -21,7 +23,7 @@ class FeedContentImageFragment : BaseFragment<FragmentFeedContentImageBinding>(
                     itemEventFeedIv.bindThumbnailImage(
                         arguments?.getString(IMAGE_URL)
                     )
-                    root.setOnClickListener {
+                    root.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                         parent.navigateToFeedContentDetail()
                     }
                 }
@@ -30,7 +32,7 @@ class FeedContentImageFragment : BaseFragment<FragmentFeedContentImageBinding>(
                     itemEventFeedIv.bindThumbnailImageCenterInside(
                         arguments?.getString(IMAGE_URL)
                     )
-                    root.setOnClickListener {
+                    root.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                         parent.changeTouchedStatus()
                     }
                 }

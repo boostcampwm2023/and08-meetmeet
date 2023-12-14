@@ -128,9 +128,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
         }
     }
 
-    override fun onItemClick() {
-        // todo: 프로필 이미지로..
-    }
+    override fun onItemClick() {}
 
     override fun onClick(event: EventResponse) {
         findNavController().navigate(

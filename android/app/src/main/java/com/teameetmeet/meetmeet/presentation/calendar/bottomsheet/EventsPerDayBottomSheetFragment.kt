@@ -13,6 +13,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentEventsPerDayBottomSheetBinding
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.MonthCalendarViewModel
 import com.teameetmeet.meetmeet.presentation.model.EventSimple
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -50,7 +51,7 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemCl
             vm = viewModel
             eventsPerDayBsRv.adapter =
                 EventsPerDayAdapter(this@EventsPerDayBottomSheetFragment)
-            eventsPerDayBsBtnAddEvent.setOnClickListener {
+            eventsPerDayBsBtnAddEvent.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 viewModel.currentDate.value.date?.let { date ->
                     requireParentFragment().findNavController().navigate(
                         EventsPerDayBottomSheetFragmentDirections
@@ -67,6 +68,7 @@ class EventsPerDayBottomSheetFragment : BottomSheetDialogFragment(), EventItemCl
     }
 
     override fun onItemClick(eventSimple: EventSimple) {
+
         requireParentFragment().findNavController().navigate(
             EventsPerDayBottomSheetFragmentDirections
                 .actionEventsPerDayBottomSheetFragmentToEventStoryActivity(eventSimple.id)

@@ -20,13 +20,14 @@ import com.teameetmeet.meetmeet.databinding.FragmentFeedDetailBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontentmedia.FeedContentAdapter
 import com.teameetmeet.meetmeet.presentation.model.EventAuthority
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
+import com.teameetmeet.meetmeet.presentation.util.setMenuClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FeedDetailFragment :
-    BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail),
-    CommentDeleteClickListener {
+    BaseFragment<FragmentFeedDetailBinding>(R.layout.fragment_feed_detail) {
     private val viewModel: FeedDetailViewModel by viewModels()
     private val navArgs: FeedDetailFragmentArgs by navArgs()
 
@@ -53,6 +54,7 @@ class FeedDetailFragment :
                     when (it) {
                         is FeedDetailEvent.ShowMessage -> showMessage(it.messageId, it.extraMessage)
                         is FeedDetailEvent.FinishFeedDetail -> findNavController().popBackStack()
+                        is FeedDetailEvent.DeleteComment -> confirmDeleteComment(it.comment)
                     }
                 }
             }
@@ -63,7 +65,7 @@ class FeedDetailFragment :
         with(binding) {
             vm = viewModel
             feedDetailRvComment.adapter =
-                FeedCommentAdapter(navArgs.authority, this@FeedDetailFragment)
+                FeedCommentAdapter(navArgs.authority, viewModel)
             feedDetailVpMedia.adapter = FeedContentAdapter(this@FeedDetailFragment)
             feedDetailClComment.isVisible = navArgs.authority != EventAuthority.GUEST
         }
@@ -79,7 +81,7 @@ class FeedDetailFragment :
                 }
             })
 
-            feedDetailIbCommentSend.setOnClickListener {
+            feedDetailIbCommentSend.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 viewModel.addComment()
                 val imm =
                     requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -96,11 +98,10 @@ class FeedDetailFragment :
         binding.topAppBar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
-        binding.topAppBar.setOnMenuItemClickListener {
-            when (it.itemId) {
+        binding.topAppBar.setMenuClickEvent(viewLifecycleOwner.lifecycleScope) {
+            when (it) {
                 R.id.menu_delete_feed_detail -> showFeedDeleteConfirmationDialog()
             }
-            true
         }
     }
 
@@ -126,7 +127,7 @@ class FeedDetailFragment :
         )
     }
 
-    override fun onClick(comment: Comment) {
+    private fun confirmDeleteComment(comment: Comment) {
         Snackbar
             .make(
                 binding.root,

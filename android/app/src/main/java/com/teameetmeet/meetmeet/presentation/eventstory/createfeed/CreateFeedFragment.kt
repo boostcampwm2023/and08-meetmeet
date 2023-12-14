@@ -17,6 +17,7 @@ import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.databinding.FragmentCreateFeedBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.model.FeedMedia
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import com.teameetmeet.meetmeet.util.getMimeType
 import com.teameetmeet.meetmeet.util.getSize
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,15 +52,15 @@ class CreateFeedFragment : BaseFragment<FragmentCreateFeedBinding>(
                 }?.let { viewModel.selectMedia(it) }
             }
 
-        binding.createFeedCvAddPhoto.setOnClickListener {
+        binding.createFeedCvAddPhoto.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             pickMedia.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo))
         }
     }
 
     private fun setTopAppBar() {
         with(binding.topAppBar) {
-            setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
+            binding.topAppBar.setOnMenuItemClickListener {
+                when (it.itemId) {
                     R.id.menu_save -> {
                         viewModel.onSave(navArgs.storyId)
                         showKeyboard(false)
