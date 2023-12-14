@@ -11,6 +11,8 @@ import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
 import com.teameetmeet.meetmeet.presentation.notification.event.EventNotificationItemClickListener
 import com.teameetmeet.meetmeet.presentation.notification.event.EventNotificationUiEvent
+import com.teameetmeet.meetmeet.presentation.util.THROTTLE_DURATION
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,6 +39,14 @@ class EventNotificationViewModel @Inject constructor(
     private val _event: MutableSharedFlow<EventNotificationUiEvent> = MutableSharedFlow()
     val event: SharedFlow<EventNotificationUiEvent> = _event
 
+    private val _inviteClickEvent = MutableSharedFlow<EventInvitationNotification>()
+    private val _deleteClickEvent = MutableSharedFlow<EventInvitationNotification>()
+
+    init {
+        setInviteEventRequestFlow()
+        setDeleteRequestFlow()
+    }
+
     fun fetchEventNotificationList() {
         viewModelScope.launch {
             userRepository.getEventInvitationNotification()
@@ -58,8 +68,22 @@ class EventNotificationViewModel @Inject constructor(
         }
     }
 
-    override fun onClick(event: EventInvitationNotification) {
+    fun onDeleteAll() {
         viewModelScope.launch {
+            if (_eventNotificationList.value.isNotEmpty()) {
+                userRepository.deleteUserNotification(
+                    _eventNotificationList.value.map { it.inviteId }.joinToString(",")
+                ).catch {
+                    emitExceptionEvent(it, R.string.notification_delete_fail)
+                }.collectLatest {
+                    fetchEventNotificationList()
+                }
+            }
+        }
+    }
+
+    private fun setInviteEventRequestFlow() {
+        _inviteClickEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) { event ->
             when (event.status) {
                 UserStatus.JOIN_STATUS_PENDING -> {
                     _event.emit(EventNotificationUiEvent.ShowAcceptDialog(event))
@@ -80,28 +104,26 @@ class EventNotificationViewModel @Inject constructor(
         }
     }
 
-    fun onDeleteAll() {
-        viewModelScope.launch {
-            if (_eventNotificationList.value.isNotEmpty()) {
-                userRepository.deleteUserNotification(
-                    _eventNotificationList.value.map { it.inviteId }.joinToString(",")
-                ).catch {
-                    emitExceptionEvent(it, R.string.notification_delete_fail)
-                }.collectLatest {
-                    fetchEventNotificationList()
-                }
-            }
-        }
-    }
-
-    override fun onDelete(event: EventInvitationNotification) {
-        viewModelScope.launch {
+    private fun setDeleteRequestFlow() {
+        _deleteClickEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) { event ->
             userRepository.deleteUserNotification(event.inviteId.toString())
                 .catch {
                     emitExceptionEvent(it, R.string.notification_delete_fail)
                 }.collectLatest {
                     fetchEventNotificationList()
                 }
+        }
+    }
+
+    override fun onInviteClick(event: EventInvitationNotification) {
+        viewModelScope.launch {
+            _inviteClickEvent.emit(event)
+        }
+    }
+
+    override fun onDeleteClick(event: EventInvitationNotification) {
+        viewModelScope.launch {
+            _deleteClickEvent.emit(event)
         }
     }
 

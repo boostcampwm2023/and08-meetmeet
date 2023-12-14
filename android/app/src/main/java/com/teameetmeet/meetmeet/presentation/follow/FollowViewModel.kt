@@ -9,6 +9,8 @@ import com.teameetmeet.meetmeet.data.model.UserStatus
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.data.repository.FollowRepository
 import com.teameetmeet.meetmeet.data.repository.UserRepository
+import com.teameetmeet.meetmeet.presentation.util.THROTTLE_DURATION
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -50,37 +52,49 @@ class FollowViewModel @Inject constructor(
     private val _showPlaceholder: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
 
+    private val _followClickEvent = MutableSharedFlow<UserStatus>()
+    private val _unfollowClickEvent = MutableSharedFlow<UserStatus>()
+    private val _inviteClickEvent = MutableSharedFlow<Pair<UserStatus, Int>>()
+
+    init {
+        setFollowRequestFlow()
+        setUnfollowRequestFlow()
+        setInviteEventRequestFlow()
+    }
+
     fun updateSearchedUser(actionType: FollowActionType, id: Int? = null) {
         viewModelScope.launch {
-            _showPlaceholder.update { true }
-            when (actionType) {
-                FollowActionType.FOLLOW -> {
-                    userRepository.getUserWithFollowStatus(
-                        _searchKeyword.value
-                    ).catch {
-                        emitExceptionEvent(it, R.string.follow_search_fail)
-                        _showPlaceholder.update { false }
-                    }.collectLatest { users ->
-                        _searchedUser.update { users }
+            if (_searchKeyword.value.isNotEmpty()) {
+                _showPlaceholder.update { true }
+                when (actionType) {
+                    FollowActionType.FOLLOW -> {
+                        userRepository.getUserWithFollowStatus(
+                            _searchKeyword.value
+                        ).catch {
+                            emitExceptionEvent(it, R.string.follow_search_fail)
+                            _showPlaceholder.update { false }
+                        }.collectLatest { users ->
+                            _searchedUser.update { users }
+                            _showPlaceholder.update { false }
+                        }
+                    }
+
+                    FollowActionType.EVENT -> {
+                        id?.let {
+                            eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
+                                .catch {
+                                    emitExceptionEvent(it, R.string.follow_search_fail)
+                                    _showPlaceholder.update { false }
+                                }.collectLatest { users ->
+                                    _searchedUser.update { users }
+                                    _showPlaceholder.update { false }
+                                }
+                        }
+                    }
+
+                    else -> {
                         _showPlaceholder.update { false }
                     }
-                }
-
-                FollowActionType.EVENT -> {
-                    id?.let {
-                        eventStoryRepository.getUserWithEventStatus(it, _searchKeyword.value)
-                            .catch {
-                                emitExceptionEvent(it, R.string.follow_search_fail)
-                                _showPlaceholder.update { false }
-                            }.collectLatest { users ->
-                                _searchedUser.update { users }
-                                _showPlaceholder.update { false }
-                            }
-                    }
-                }
-
-                else -> {
-                    _showPlaceholder.update { false }
                 }
             }
         }
@@ -160,18 +174,8 @@ class FollowViewModel @Inject constructor(
         _searchKeyword.update { keyword.toString() }
     }
 
-    override fun onProfileClick(user: UserStatus) {
-        viewModelScope.launch {
-            if (!user.isMe) {
-                _event.emit(
-                    FollowUiEvent.VisitProfile(user.id, user.nickname)
-                )
-            }
-        }
-    }
-
-    override fun onFollowClick(user: UserStatus) {
-        viewModelScope.launch {
+    private fun setFollowRequestFlow() {
+        _followClickEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) { user ->
             _showPlaceholder.update { true }
             followRepository.follow(user.id)
                 .catch {
@@ -186,8 +190,8 @@ class FollowViewModel @Inject constructor(
         }
     }
 
-    override fun onUnfollowClick(user: UserStatus) {
-        viewModelScope.launch {
+    private fun setUnfollowRequestFlow() {
+        _unfollowClickEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) { user ->
             _showPlaceholder.update { true }
             followRepository.unFollow(user.id)
                 .catch {
@@ -202,8 +206,9 @@ class FollowViewModel @Inject constructor(
         }
     }
 
-    override fun onInviteEventClick(user: UserStatus, id: Int) {
-        viewModelScope.launch {
+    private fun setInviteEventRequestFlow() {
+        _inviteClickEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) {
+            val (user, id) = it
             _showPlaceholder.update { true }
             eventStoryRepository.inviteEvent(id, user.id)
                 .catch {
@@ -215,6 +220,34 @@ class FollowViewModel @Inject constructor(
                     updateSearchedUser(FollowActionType.EVENT, id)
                     _showPlaceholder.update { false }
                 }
+        }
+    }
+
+    override fun onProfileClick(user: UserStatus) {
+        viewModelScope.launch {
+            if (!user.isMe) {
+                _event.emit(
+                    FollowUiEvent.VisitProfile(user.id, user.nickname)
+                )
+            }
+        }
+    }
+
+    override fun onFollowClick(user: UserStatus) {
+        viewModelScope.launch {
+            _followClickEvent.emit(user)
+        }
+    }
+
+    override fun onUnfollowClick(user: UserStatus) {
+        viewModelScope.launch {
+            _unfollowClickEvent.emit(user)
+        }
+    }
+
+    override fun onInviteEventClick(user: UserStatus, id: Int) {
+        viewModelScope.launch {
+            _inviteClickEvent.emit(Pair(user, id))
         }
     }
 

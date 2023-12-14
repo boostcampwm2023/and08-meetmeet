@@ -127,7 +127,7 @@ class SettingProfileViewModel @Inject constructor(
                     flowOf(true)
                 }
             val nicknameFlow =
-                if (_uiState.value.currentUserProfile.nickname != _uiState.value.nickname) {
+                if (_uiState.value.nickname.isNotEmpty() && _uiState.value.currentUserProfile.nickname != _uiState.value.nickname) {
                     userRepository.patchNickname(_uiState.value.nickname)
                 } else {
                     flowOf(true)

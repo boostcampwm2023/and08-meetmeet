@@ -16,6 +16,13 @@ import javax.inject.Inject
 
 class NotificationHelper @Inject constructor(private val context: Context) {
 
+    private val notificationManager: NotificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+    val activeNotificationCount: MutableStateFlow<Int> =
+        MutableStateFlow(notificationManager.activeNotifications.filter { it.tag == null }.size)
+
+
     fun createNotification(
         channelId: String,
         requestCode: Int,
@@ -132,16 +139,8 @@ class NotificationHelper @Inject constructor(private val context: Context) {
         val channel = NotificationChannel(channelId, name, importance).apply {
             description = descriptionText
         }
-        val notificationManager: NotificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
-
-    private val notificationManager: NotificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-    val activeNotificationCount: MutableStateFlow<Int> =
-        MutableStateFlow(notificationManager.activeNotifications.filter { it.tag == null }.size)
 
     fun emitActiveNotificationCount() {
         activeNotificationCount.tryEmit(notificationManager.activeNotifications.filter { it.tag == null }.size)
