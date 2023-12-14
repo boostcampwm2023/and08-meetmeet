@@ -14,6 +14,7 @@ import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.CreateMon
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.MonthCalendarViewModel
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.MonthCalendarViewModelFactory
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.OwnerMonthCalendarViewModel
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -54,7 +55,7 @@ class MonthCalendarFragment : BaseFragment<FragmentCalendarMonthBinding>(
     }
 
     private fun setClickListener() {
-        binding.fabAddEvent.setOnClickListener {
+        binding.fabAddEvent.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             viewModel.currentDate.value.date?.let {
                 findNavController().navigate(
                     MonthCalendarFragmentDirections.actionMonthCalendarFragmentToAddEventActivity(it)
@@ -66,12 +67,11 @@ class MonthCalendarFragment : BaseFragment<FragmentCalendarMonthBinding>(
     private fun collectViewModelEvent() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.dayClickEvent.collect {
+                viewModel.showBottomSheetEvent.collect {
                     findNavController().navigate(
                         MonthCalendarFragmentDirections
                             .actionMonthCalendarFragmentToEventsPerDayBottomSheetFragment()
                     )
-                    delay(1000)
                 }
             }
         }

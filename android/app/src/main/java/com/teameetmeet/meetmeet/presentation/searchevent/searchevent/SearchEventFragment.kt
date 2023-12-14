@@ -16,6 +16,7 @@ import com.teameetmeet.meetmeet.data.network.entity.EventResponse
 import com.teameetmeet.meetmeet.databinding.FragmentSearchEventBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.eventstory.OnItemClickListener
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import com.teameetmeet.meetmeet.util.date.addUtcTimeOffset
 import com.teameetmeet.meetmeet.util.date.toEndLong
 import com.teameetmeet.meetmeet.util.date.toLocalDate
@@ -44,7 +45,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
             searchEventSpinner.setSelection(1)
             searchEventRv.adapter =
                 SearchResultEventAdapter(this@SearchEventFragment, this@SearchEventFragment)
-            searchEventIbNavPre.setOnClickListener {
+            searchEventIbNavPre.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 requireActivity().finish()
             }
         }
@@ -59,7 +60,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
                 }
                 false
             }
-            searchEventIbSearch.setOnClickListener {
+            searchEventIbSearch.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                 performSearch()
                 searchEventEtSearch.clearFocus()
             }
@@ -102,7 +103,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
         datePickerBuilder: MaterialDatePicker.Builder<Pair<Long, Long>>,
         constraintsBuilder: CalendarConstraints.Builder
     ) {
-        binding.searchEventTvDateRange.setOnClickListener {
+        binding.searchEventTvDateRange.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             datePickerBuilder
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
@@ -128,9 +129,7 @@ class SearchEventFragment : BaseFragment<FragmentSearchEventBinding>(
         }
     }
 
-    override fun onItemClick() {
-        // todo: 프로필 이미지로..
-    }
+    override fun onItemClick() {}
 
     override fun onClick(event: EventResponse) {
         findNavController().navigate(

@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.teameetmeet.meetmeet.R
 import com.teameetmeet.meetmeet.data.repository.EventStoryRepository
 import com.teameetmeet.meetmeet.presentation.model.FeedMedia
+import com.teameetmeet.meetmeet.presentation.util.THROTTLE_DURATION
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +33,12 @@ class CreateFeedViewModel @Inject constructor(
     private val _showPlaceholder = MutableStateFlow<Boolean>(false)
     val showPlaceholder: StateFlow<Boolean> = _showPlaceholder
 
+    private val _feedMediaCancelEvent = MutableSharedFlow<FeedMedia>()
+
+    init {
+        setFeedMediaCancleRequestFlow()
+    }
+
     fun setFeedText(text: CharSequence) {
         _feedText.update { text.toString() }
     }
@@ -40,7 +48,15 @@ class CreateFeedViewModel @Inject constructor(
     }
 
     override fun onItemClick(feedMedia: FeedMedia) {
-        _mediaList.update { it.filter { item -> item != feedMedia } }
+        viewModelScope.launch {
+            _feedMediaCancelEvent.emit(feedMedia)
+        }
+    }
+
+    private fun setFeedMediaCancleRequestFlow() {
+        _feedMediaCancelEvent.setClickEvent(viewModelScope, THROTTLE_DURATION) { feedMedia ->
+            _mediaList.update { it.filter { item -> item != feedMedia } }
+        }
     }
 
     fun onSave(eventId: Int) {

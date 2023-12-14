@@ -78,7 +78,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:onClick="@{v -> vm.onFollowButtonClick()}"
             android:text="@{vm.userProfile.followed?@string/follow_title_unfollow:@string/follow_title_follow}"
             android:textAppearance="@style/small"
             android:visibility="@{vm.profileIsVisible ? View.VISIBLE : View.GONE}"

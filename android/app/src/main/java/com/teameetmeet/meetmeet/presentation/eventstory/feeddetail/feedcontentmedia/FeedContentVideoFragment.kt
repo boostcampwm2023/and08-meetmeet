@@ -3,6 +3,7 @@ package com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontentm
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.OptIn
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
@@ -14,6 +15,7 @@ import com.teameetmeet.meetmeet.databinding.FragmentFeedContentVideoBinding
 import com.teameetmeet.meetmeet.presentation.base.BaseFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.FeedDetailFragment
 import com.teameetmeet.meetmeet.presentation.eventstory.feeddetail.feedcontent.FeedContentFragment
+import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -54,7 +56,7 @@ class FeedContentVideoFragment : BaseFragment<FragmentFeedContentVideoBinding>(
                 is FeedDetailFragment -> {
                     itemEventFeedPv.resizeMode = RESIZE_MODE_ZOOM
                     itemEventFeedPv.useController = false
-                    root.setOnClickListener {
+                    root.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                         parent.navigateToFeedContentDetail()
                     }
                 }
@@ -63,7 +65,7 @@ class FeedContentVideoFragment : BaseFragment<FragmentFeedContentVideoBinding>(
                     itemEventFeedPv.setShowNextButton(false)
                     itemEventFeedPv.setShowPreviousButton(false)
                     itemEventFeedPv.resizeMode = RESIZE_MODE_FIT
-                    root.setOnClickListener {
+                    root.setClickEvent(viewLifecycleOwner.lifecycleScope) {
                         parent.changeTouchedStatus()
                     }
                 }
