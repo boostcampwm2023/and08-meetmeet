@@ -26,6 +26,12 @@
 
 <table>
   <tr>
+    <th>캘린더 화면</th>
+    <th>일정 추가</th>
+    <th>일정 수정/삭제</th>
+    <th>일정 알림</th>
+  </tr>
+  <tr>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/69cf24fd-2ebd-4a71-9558-738afd5aa330" width="200" height="430"></td>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/9e65e63d-9049-433f-8408-53f58ba50c96" width="200" height="430"></td>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/65765257-0992-4c1d-9440-7f3b9ec85927" width="200" height="430"></td>
@@ -41,12 +47,22 @@
 
 <table>
   <tr>
+    <th>팔로우</th>
+    <th>팔로우 알림</th>
+  </tr>
+  <tr>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/d449fd64-580b-4ec5-853b-bca44f56c110" width="200" height="430"></td>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8e700bda-d4ee-4bd4-877f-54d69e6bb52c" width="200" height="430"></td>
   </tr>
 </table>
 
 <table>
+  <tr>
+    <th>일정 초대</th>
+    <th>일정 초대 알림</th>
+    <th>친구 달력 놀러가기</th>
+    <th>일정 참가</th>
+  </tr>
   <tr>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/909176f3-8801-4a0c-a0b5-08250eeb1c1d" width="200" height="430"></td>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8a1e67ec-586a-4448-82e0-79a220ddcaaa" width="200" height="430"></td>
@@ -62,6 +78,11 @@
 <p>일정에 피드를 남겨서 사진과 동영상을 공유하고 다운을 받아보세요!!</p>
 
 <table>
+  <tr>
+    <th>피드 생성</th>
+    <th>피드 댓글 남기기</th>
+    <th>미디어 파일 크게 보기 & 다운로드</th>
+  </tr>
   <tr>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/c138b653-cc45-4071-881f-4858dc9d5acc" width="200" height="430"></td>
     <td><img src="https://github.com/boostcampwm2023/and08-meetmeet/assets/87304360/8d5e7dea-6512-4d50-a204-3647b87fd64f" width="200" height="430"></td>
