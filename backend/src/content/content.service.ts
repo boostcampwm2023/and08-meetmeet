@@ -82,6 +82,8 @@ export class ContentService {
   }
 
   generateFilePath(dir: string, fileName: string) {
-    return `${dir}/${uuidv4().split('-').slice(2).join()}${extname(fileName)}`;
+    return `${dir}/${uuidv4().split('-').slice(2).join('')}${extname(
+      fileName,
+    )}`;
   }
 }

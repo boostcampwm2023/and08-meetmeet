@@ -37,22 +37,22 @@ export class DetailService {
   }
 
   async updateDetail(detail: Detail, createScheduleDto: CreateScheduleDto) {
-    return await this.detailRepository.save({
-      ...detail,
-      ...createScheduleDto,
-    });
+    await this.detailRepository.save({ ...detail, ...createScheduleDto });
   }
 
-  async deleteDetail(detail: Detail) {
-    return await this.detailRepository.softDelete(detail.id);
+  async deleteDetailsById(idList: number[]) {
+    if (!idList.length) {
+      return;
+    }
+    await this.detailRepository.softDelete(idList);
   }
 
-  async bulkUpdateDetail(detailIds: number[], detail: Detail) {
-    await this.detailRepository
-      .createQueryBuilder('detail')
-      .update()
-      .set(detail)
-      .whereInIds(detailIds)
-      .execute();
+  async updateDetailBulk(
+    detailIds: number[],
+    createScheduleDto: CreateScheduleDto,
+  ) {
+    const detail = this.detailRepository.create({ ...createScheduleDto });
+
+    await this.detailRepository.update(detailIds, detail);
   }
 }

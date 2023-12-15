@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { EventMember } from './entities/eventMember.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { In, MoreThanOrEqual, Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Detail } from '../detail/entities/detail.entity';
 import { Authority } from './entities/authority.entity';
 import { Event } from '../event/entities/event.entity';
+import { DetailService } from 'src/detail/detail.service';
+import { EventDetailNotFoundException } from 'src/event/exception/event.exception';
 
 @Injectable()
 export class EventMemberService {
@@ -14,6 +16,7 @@ export class EventMemberService {
     private eventMemberRepository: Repository<EventMember>,
     @InjectRepository(Authority)
     private authorityRepository: Repository<Authority>,
+    private readonly detailService: DetailService,
   ) {}
 
   async getAuthorityId(displayName: string) {
@@ -72,23 +75,55 @@ export class EventMemberService {
     return result?.authority?.displayName;
   }
 
-  async deleteEventMemberByEventId(event: Event) {
-    const EventMembers = await this.eventMemberRepository.find({
-      where: { event: { id: event.id } },
-    });
-
-    for (const eventMember of EventMembers) {
-      await this.eventMemberRepository.softRemove(eventMember);
-    }
-  }
-
   async getEventMemberByUserIdAndEventId(userId: number, eventId: number) {
     return await this.eventMemberRepository.findOne({
       where: { user: { id: userId }, event: { id: eventId } },
     });
   }
 
-  async deleteEventMemberByEventMemberId(eventMemberId: number) {
-    await this.eventMemberRepository.softDelete({ id: eventMemberId });
+  async deleteEventMembers(eventMembers: EventMember[]) {
+    if (!eventMembers.length) {
+      return;
+    }
+    await this.detailService.deleteDetailsById(
+      eventMembers.map((eventMember) => {
+        if (!eventMember.detail) {
+          throw new EventDetailNotFoundException();
+        }
+        return eventMember.detail.id;
+      }),
+    );
+
+    await this.eventMemberRepository.softDelete(
+      eventMembers.map((eventMember) => eventMember.id),
+    );
+  }
+
+  async deleteEventMembersByEventIds(eventIds: number[]) {
+    const eventMembers = await this.eventMemberRepository
+      .createQueryBuilder('em')
+      .leftJoinAndSelect('em.detail', 'detail')
+      .leftJoinAndSelect('em.event', 'event')
+      .where({ event: { id: In(eventIds) } })
+      .getMany();
+
+    await this.deleteEventMembers(eventMembers);
+  }
+
+  async getEventMembersByStartDateAndRepeatPolicy(
+    userId: number,
+    startDate: Date,
+    repeatPolicyId: number,
+  ) {
+    return await this.eventMemberRepository.find({
+      relations: ['event', 'user', 'detail'],
+      where: {
+        user: { id: userId },
+        event: {
+          repeatPolicyId: repeatPolicyId,
+          startDate: MoreThanOrEqual(startDate),
+        },
+      },
+    });
   }
 }
