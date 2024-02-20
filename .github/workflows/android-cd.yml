@@ -1,0 +1,67 @@
+name: Build & upload to Firebase App Distribution
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./android
+
+    env:
+      LOCAL_PROPERTIES_CONTENTS: ${{ secrets.LOCAL_PROPERTIES_CONTENTS }}
+      GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
+      - name: Grant Permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Decode And Save Keystore Base64
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/meetmeetkey.jks
+
+      - name: Create google-services.json
+        run: echo "$GOOGLE_SERVICES_JSON" > app/google-services.json
+
+      - name: Create local.properties
+        run: |
+          echo "$LOCAL_PROPERTIES_CONTENTS" > local.properties
+
+      - name: Build Release APK
+        run: ./gradlew :app:assembleRelease
+
+      - name: Upload Release Build to Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-artifacts
+          path: android/app/build/outputs/apk/release/
+          if-no-files-found: error
+
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            app/build/outputs/apk/release/app-release.apk
+
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: 팀-밋밋
+          file: app/build/outputs/apk/release/app-release.apk
