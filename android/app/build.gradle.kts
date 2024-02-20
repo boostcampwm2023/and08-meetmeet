@@ -23,12 +23,22 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", getApiKey("KAKAO_NATIVE_APP_KEY"))
-        manifestPlaceholders["kakao_auth_host"] = getApiKey("kakao_auth_host")
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", getPropertyKey("KAKAO_NATIVE_APP_KEY"))
+        manifestPlaceholders["kakao_auth_host"] = getPropertyKey("KAKAO_AUTH_HOST")
+    }
+
+    signingConfigs {
+        create("releaseConfig") {
+            keyAlias = getPropertyKey("SIGNED_KEY_ALIAS")
+            keyPassword = getPropertyKey("SIGNED_KEY_PASSWORD")
+            storePassword = getPropertyKey("SIGNED_STORE_PASSWORD")
+            storeFile = file(getPropertyKey("SIGNED_STORE_FILE"))
+        }
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("releaseConfig")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
@@ -49,7 +59,7 @@ android {
     }
 }
 
-fun getApiKey(propertyKey: String): String {
+fun getPropertyKey(propertyKey: String): String {
     return gradleLocalProperties(rootDir).getProperty(propertyKey)
 }
 
