@@ -36,8 +36,14 @@ jobs:
     - name: Create local.properties
       run: echo "$LOCAL_PROPERTIES_CONTENTS" > local.properties
     
-    - name: Build with Gradle
-      run: ./gradlew :app:assembleDebug
+    - name: Test with Gradle
+      run: ./gradlew :app:testdebugUnitTest
 
-    - name: unit test
-      run: ./gradlew testdebugUnitTest
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: |
+          test-results/**/*.xml
+          test-results/**/*.trx
+          test-results/**/*.json
