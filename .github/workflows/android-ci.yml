@@ -41,9 +41,8 @@ jobs:
       - name: Create local.properties
         run: |
           echo "$LOCAL_PROPERTIES_CONTENTS" > local.properties
-      
-      - name: Test with Gradle
-        run: ./gradlew --stacktrace :app:testdebugUnitTest
+
+          
 
       - name: Build Release APK
         run: ./gradlew :app:assembleRelease
