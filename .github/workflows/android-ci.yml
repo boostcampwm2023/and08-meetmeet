@@ -40,6 +40,9 @@ jobs:
     - name: Create local.properties
       run: echo "$LOCAL_PROPERTIES_CONTENTS" > local.properties
     
+    - name: Print local.properties content
+      run: cat ./local.properties || echo "local.properties not found"
+    
     - name: Test with Gradle
       run: ./gradlew :app:testdebugUnitTest
 
