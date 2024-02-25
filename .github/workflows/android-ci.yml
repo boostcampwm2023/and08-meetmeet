@@ -42,10 +42,8 @@ jobs:
         run: |
           echo "$LOCAL_PROPERTIES_CONTENTS" > local.properties
 
-          
-
-      - name: Build Release APK
-        run: ./gradlew :app:assembleRelease
+      - name: Test with Gradle
+        run: ./gradlew --stacktrace :app:testdebugUnitTest
 
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
