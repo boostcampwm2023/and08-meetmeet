@@ -39,6 +39,9 @@ jobs:
 
     - name: Create local.properties
       run: echo "$LOCAL_PROPERTIES_CONTENTS" > local.properties
+
+    - name: Print local.properties
+        run: cat local.properties
     
     - name: Test with Gradle
       run: ./gradlew :app:testdebugUnitTest
