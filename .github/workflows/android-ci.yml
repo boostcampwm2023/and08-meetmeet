@@ -45,6 +45,9 @@ jobs:
       - name: Test with Gradle
         run: ./gradlew --stacktrace :app:testdebugUnitTest
 
+      - name: Build Release APK
+        run: ./gradlew :app:assembleRelease
+
       - name: Publish Test Results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
