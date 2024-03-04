@@ -18,8 +18,8 @@
 |<img width="200" height="430" src="https://github.com/boostcampwm2023/and08-meetmeet/assets/97400357/8336fca3-03aa-47cf-ae59-268aef2d7302"/>|<img width="200" height="430"  src="https://github.com/boostcampwm2023/and08-meetmeet/assets/97400357/bf22c572-a0a5-4c6b-84d6-a28df9980d4d"/>|<img width="200" height="430" src="https://github.com/boostcampwm2023/and08-meetmeet/assets/97400357/92d685c7-8da5-4de4-bfe0-6b11260ac884"/>|<img width="200" height="430" src="https://github.com/boostcampwm2023/and08-meetmeet/assets/97400357/2892e3b0-33f5-4462-b9ff-3eb61fb84735"/>|<img width="200" height="430" src="https://github.com/boostcampwm2023/and08-meetmeet/assets/97400357/960fed3c-8a8e-4886-bc59-a3622a1e6b91"/>|
 
 <details>
-<summary><h3>기능 자세히 보기<h3></summary>
-</div>
+<summary><strong>기능 자세히 보기</strong></summary>
+<div>
 <h3>📌 관리하고 싶은 일정을 추가해보세요!!</h3>
 
 <p>기본 달력에서 제공하는 기능을 모두 제공해드립니다</p>
