@@ -6,6 +6,12 @@ export class EventNotFoundException extends HttpException {
   }
 }
 
+export class EventPropertyNotFoundException extends HttpException {
+  constructor() {
+    super('일정 속성을 전부 입력해주세요.', HttpStatus.NOT_FOUND);
+  }
+}
+
 export class EventDetailNotFoundException extends HttpException {
   constructor() {
     super('일정 내용을 찾을 수 없습니다.', HttpStatus.NOT_FOUND);
@@ -32,6 +38,12 @@ export class AlreadyJoinedException extends HttpException {
 export class InvalidRepeatPolicyException extends HttpException {
   constructor() {
     super('올바르지 않은 반복 설정입니다.', HttpStatus.BAD_REQUEST);
+  }
+}
+
+export class UpdateAllRepeatEventsException extends HttpException {
+  constructor() {
+    super('이후의 반복 일정을 전부 업데이트해야 합니다.', 423);
   }
 }
 

@@ -26,13 +26,12 @@ export class Event extends commonEntity {
   announcement: string | null;
 
   @Column({ nullable: true })
-  repeatPolicyId: number;
+  repeatPolicyId: number | null;
 
   @ManyToOne(() => RepeatPolicy, (repeatPolicy) => repeatPolicy.events)
   repeatPolicy: RepeatPolicy;
 
   @OneToMany(() => EventMember, (eventMember) => eventMember.event, {
-    cascade: ['soft-remove'],
     eager: true,
   })
   eventMembers: EventMember[];
