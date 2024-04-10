@@ -7,7 +7,6 @@ import java.time.YearMonth
 data class CalendarItem(
     val date: LocalDate? = null,
     val events: List<EventSimple> = emptyList(),
-    val eventBars: List<EventBar?> = emptyList(),
     val isSelected: Boolean = false
 ) {
     fun getDay(): String {
