@@ -1,6 +1,8 @@
 package com.teameetmeet.meetmeet.presentation.calendar.monthcalendar
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +18,6 @@ import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.MonthCale
 import com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.vm.OwnerMonthCalendarViewModel
 import com.teameetmeet.meetmeet.presentation.util.setClickEvent
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,10 +51,10 @@ class MonthCalendarFragment : BaseFragment<FragmentCalendarMonthBinding>(
     private fun setBinding() {
         with(binding) {
             vm = viewModel
-            calendarRvCalendar.adapter = MonthCalendarAdapter(viewModel)
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setClickListener() {
         binding.fabAddEvent.setClickEvent(viewLifecycleOwner.lifecycleScope) {
             viewModel.currentDate.value.date?.let {
@@ -61,6 +62,15 @@ class MonthCalendarFragment : BaseFragment<FragmentCalendarMonthBinding>(
                     MonthCalendarFragmentDirections.actionMonthCalendarFragmentToAddEventActivity(it)
                 )
             }
+        }
+
+        binding.calendarCv.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    viewModel.selectDay((v as MonthCalendarView).findDay(event.x, event.y))
+                }
+            }
+            true
         }
     }
 
