@@ -60,9 +60,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/calendar_day_of_week_monday"
+            android:textAlignment="center"
             app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_tuesday"
             app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="@id/calendar_rv_calendar"
+            app:layout_constraintStart_toStartOf="@id/calendar_cv"
             app:layout_constraintTop_toBottomOf="@id/calendar_tv_date" />
 
         <TextView
@@ -71,6 +72,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_tuesday"
+            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
             app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_wednesday"
             app:layout_constraintStart_toEndOf="@id/calendar_tv_day_monday"
@@ -82,6 +84,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_wednesday"
+            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
             app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_thursday"
             app:layout_constraintStart_toEndOf="@id/calendar_tv_day_tuesday"
@@ -93,6 +96,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_thursday"
+            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
             app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_friday"
             app:layout_constraintStart_toEndOf="@id/calendar_tv_day_wednesday"
@@ -104,6 +108,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_friday"
+            android:textAlignment="center"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
             app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_saturday"
             app:layout_constraintStart_toEndOf="@id/calendar_tv_day_thursday"
@@ -115,6 +120,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_saturday"
+            android:textAlignment="center"
             android:textColor="@color/blue"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
             app:layout_constraintEnd_toStartOf="@id/calendar_tv_day_sunday"
@@ -127,25 +133,24 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/calendar_day_of_week_sunday"
+            android:textAlignment="center"
             android:textColor="@color/red"
             app:layout_constraintBottom_toBottomOf="@id/calendar_tv_day_monday"
-            app:layout_constraintEnd_toEndOf="@id/calendar_rv_calendar"
+            app:layout_constraintEnd_toEndOf="@id/calendar_cv"
             app:layout_constraintStart_toEndOf="@id/calendar_tv_day_saturday"
             app:layout_constraintTop_toTopOf="@id/calendar_tv_day_monday" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/calendar_rv_calendar"
-            sub_list="@{vm.daysInMonth}"
+        <com.teameetmeet.meetmeet.presentation.calendar.monthcalendar.MonthCalendarView
+            android:id="@+id/calendar_cv"
+            days_in_month="@{vm.daysInMonth}"
+            monthly_events="@{vm.monthlyEvents}"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_margin="16dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/calendar_tv_day_monday"
-            app:spanCount="7"
-            tools:itemCount="31" />
+            app:layout_constraintTop_toBottomOf="@id/calendar_tv_day_monday" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_event"
